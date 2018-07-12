@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Inspection Sheet</string>
-    <string name="selectTaskText">Please, select task</string>
     <string name="addDefectBtText">Add defect</string>
     <string name="syncBtText">Sync data</string>
 </resources>
