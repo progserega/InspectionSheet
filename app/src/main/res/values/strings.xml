@@ -10,4 +10,7 @@
     <string name="ps35_110_kv_text">Ps 35-110 kV</string>
     <string name="tp_6_10_04_kv_text">Tp 6-10/0.4 kV</string>
     <string name="search_near_text">Search in nearest</string>
+    <string name="selectBySpBtText">Select by Sp</string>
+    <string name="selectNameText">Or select by name</string>
+    <string name="searchByNameBt">Search by name</string>
 </resources>

@@ -11,11 +11,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/electNameTextId"
+        <Button
+            android:id="@+id/selectBySpBt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="@string/selectBySpBtText" />
+
+        <TextView
+            android:id="@+id/selectNameTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectNameText" />
 
         <EditText
             android:id="@+id/editText"
@@ -33,10 +39,10 @@
             tools:layout_editor_absoluteY="19dp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/searchByNameBt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="@string/searchByNameBt" />
 
         <ListView
             android:id="@+id/drsk_object_search_list"
