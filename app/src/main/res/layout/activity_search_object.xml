@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/electNameTextId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView" />
@@ -23,14 +23,14 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:selectAllOnFocus="true" />
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/search_near_text"
+            tools:layout_editor_absoluteY="19dp" />
 
         <Button
             android:id="@+id/button"
@@ -41,7 +41,9 @@
         <ListView
             android:id="@+id/drsk_object_search_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
+
+        </ListView>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
