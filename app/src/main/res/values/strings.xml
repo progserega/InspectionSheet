@@ -3,4 +3,10 @@
     <string name="selectTaskText">Please, select task</string>
     <string name="addDefectBtText">Add defect</string>
     <string name="syncBtText">Sync data</string>
+    <string name="defectCreate">Defect create</string>
+    <string name="vl04BtText">Vl 0.4 kV</string>
+    <string name="vl_6_10_kv_text">Vl 6-10 kV</string>
+    <string name="vl_35_110_kv_text">Vl 35-110 kV</string>
+    <string name="ps35_110_kv_text">Ps 35-110 kV</string>
+    <string name="tp_6_10_04_kv_text">Tp 6-10/0.4 kV</string>
 </resources>

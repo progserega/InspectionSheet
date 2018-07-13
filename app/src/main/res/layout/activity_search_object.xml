@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".searchObject">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,22 +12,36 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/selectTask"
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/selectTaskText" />
+            android:text="TextView" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CheckBox" />
 
         <Button
-            android:id="@+id/addDefectButton"
+            android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="addDefect"
-            android:text="@string/addDefectBtText" />
+            android:text="Button" />
 
-        <Button
-            android:id="@+id/syncButton"
+        <ListView
+            android:id="@+id/drsk_object_search_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/syncBtText" />
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

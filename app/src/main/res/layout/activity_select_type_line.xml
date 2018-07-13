@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectTypeLine">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/selectTypeLineText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defectCreate" />
+
+        <Button
+            android:id="@+id/vl04button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="defectInVl04"
+            android:text="@string/vl04BtText" />
+
+        <Button
+            android:id="@+id/vl6_10_kv_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="defectInVl6_10"
+            android:text="@string/vl_6_10_kv_text" />
+
+        <Button
+            android:id="@+id/vl35_110_kv_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="defectInVl35_110"
+            android:text="@string/vl_35_110_kv_text" />
+
+        <Button
+            android:id="@+id/ps35_110_kv_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="defectInPs35_110"
+            android:text="@string/ps35_110_kv_text" />
+
+        <Button
+            android:id="@+id/tp6_10_04_kv_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="defectInTp6_10_04"
+            android:text="@string/tp_6_10_04_kv_text" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
