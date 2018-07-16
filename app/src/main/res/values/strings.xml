@@ -13,4 +13,8 @@
     <string name="selectBySpBtText">Select by Sp</string>
     <string name="selectNameText">Or select by name</string>
     <string name="searchByNameBt">Search by name</string>
+    <string name="selectSpText">Select SP</string>
+    <string name="selectResText">Select RES</string>
+    <string name="selectObjectText">Select object</string>
+    <string name="next">Next</string>
 </resources>
