@@ -18,4 +18,7 @@
     <string name="selectObjectText">Select object</string>
     <string name="next">Next</string>
     <string name="towerNameText">Tower №</string>
+    <string name="inspectionTypeText">Type of inspection</string>
+    <string name="towerMaterialText">Tower material</string>
+    <string name="towerTypeText">Tower type</string>
 </resources>
