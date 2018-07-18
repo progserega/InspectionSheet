@@ -19,7 +19,9 @@
         <activity android:name=".SelectTypeLine" />
         <activity android:name=".searchObject" />
         <activity android:name=".searchBySpRes" />
-        <activity android:name=".createInspection"></activity>
+        <activity android:name=".createInspection" />
+        <activity android:name=".CreateDefect" />
+        <activity android:name=".FoundedDefects"></activity>
     </application>
 
 </manifest>

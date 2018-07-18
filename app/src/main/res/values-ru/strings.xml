@@ -22,4 +22,6 @@
     <string name="inspectionTypeText">Type of inspection</string>
     <string name="towerMaterialText">Tower material</string>
     <string name="towerTypeText">Tower type</string>
+    <string name="createDefectBtText">Add Defect</string>
+    <string name="addPhotoDefectBtText">Фотофиксация</string>
 </resources>

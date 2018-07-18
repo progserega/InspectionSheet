@@ -54,7 +54,7 @@
             <Spinner
                 android:id="@+id/towerMaterialSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
@@ -72,7 +72,7 @@
             <Spinner
                 android:id="@+id/towerTypeSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
@@ -90,7 +90,7 @@
             <Spinner
                 android:id="@+id/inspectionTypeSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
