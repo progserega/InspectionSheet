@@ -6,4 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".FoundedDefects">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lineAndTowerNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/foundedDefectsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/faundedDefectsText" />
+
+        <CheckBox
+            android:id="@+id/defectTowerTiltCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/towerTiltText"
+            android:textAllCaps="false" />
+
+        <CheckBox
+            android:id="@+id/defectBracesCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defectBracesText" />
+
+        <CheckBox
+            android:id="@+id/defectNestsCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defectNestsText" />
+
+        <CheckBox
+            android:id="@+id/defectFoundamentSqueezingCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defectFoundamentSqueezingText" />
+
+        <CheckBox
+            android:id="@+id/defectSettlingOfFoundationsCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defectSettlingOfFoundationsText" />
+
+        <CheckBox
+            android:id="@+id/checkBox7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CheckBox" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

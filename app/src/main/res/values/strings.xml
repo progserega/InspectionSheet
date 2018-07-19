@@ -23,4 +23,10 @@
     <string name="towerTypeText">Tower type</string>
     <string name="createDefectBtText">Add Defect</string>
     <string name="addPhotoDefectBtText">Add Photo for defect</string>
+    <string name="faundedDefectsText">Founded defects</string>
+    <string name="towerTiltText">Tower tilt</string>
+    <string name="defectBracesText">Loose or damaged braces</string>
+    <string name="defectNestsText">The presence of nests</string>
+    <string name="defectFoundamentSqueezingText">squeezing of the Foundation</string>
+    <string name="defectSettlingOfFoundationsText">Settling Of foundations</string>
 </resources>
