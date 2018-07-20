@@ -21,7 +21,8 @@
         <activity android:name=".searchBySpRes" />
         <activity android:name=".createInspection" />
         <activity android:name=".CreateDefect" />
-        <activity android:name=".FoundedDefects"></activity>
+        <activity android:name=".FoundedDefects" />
+        <activity android:name=".EndInspection"></activity>
     </application>
 
 </manifest>

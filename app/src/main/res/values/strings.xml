@@ -29,4 +29,8 @@
     <string name="defectNestsText">The presence of nests</string>
     <string name="defectFoundamentSqueezingText">squeezing of the Foundation</string>
     <string name="defectSettlingOfFoundationsText">Settling Of foundations</string>
+    <string name="defectPresenceObjectsText">Presence of foreign objects</string>
+    <string name="defectPresenceDispItemsText">the presence of dispatch items</string>
+    <string name="defectCracksSupportsText">Cracks in the supports</string>
+    <string name="endInspectionBt">End Inspection</string>
 </resources>

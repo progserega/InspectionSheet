@@ -15,6 +15,7 @@
             android:id="@+id/lineAndTowerNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="TextView" />
 
         <TextView
@@ -22,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_weight="1"
             android:text="@string/faundedDefectsText" />
 
         <CheckBox
@@ -29,36 +31,63 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/towerTiltText"
+            android:layout_weight="1"
             android:textAllCaps="false" />
 
         <CheckBox
             android:id="@+id/defectBracesCb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/defectBracesText" />
 
         <CheckBox
             android:id="@+id/defectNestsCb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/defectNestsText" />
 
         <CheckBox
             android:id="@+id/defectFoundamentSqueezingCb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/defectFoundamentSqueezingText" />
 
         <CheckBox
             android:id="@+id/defectSettlingOfFoundationsCb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/defectSettlingOfFoundationsText" />
 
         <CheckBox
-            android:id="@+id/checkBox7"
+            android:id="@+id/defectPresenceObjectsCb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox" />
+            android:layout_weight="1"
+            android:text="@string/defectPresenceObjectsText" />
+
+        <CheckBox
+            android:id="@+id/defectPresenceDispItemsCb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/defectPresenceDispItemsText" />
+
+        <CheckBox
+            android:id="@+id/checkBox3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/defectCracksSupportsText" />
+
+        <Button
+            android:id="@+id/nextBt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/next" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
