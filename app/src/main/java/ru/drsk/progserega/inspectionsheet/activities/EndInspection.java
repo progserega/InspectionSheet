@@ -1,7 +1,9 @@
-package ru.drsk.progserega.inspectionsheet;
+package ru.drsk.progserega.inspectionsheet.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import ru.drsk.progserega.inspectionsheet.R;
 
 public class EndInspection extends AppCompatActivity {
 

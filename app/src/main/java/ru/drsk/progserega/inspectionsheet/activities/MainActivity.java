@@ -1,14 +1,15 @@
-package ru.drsk.progserega.inspectionsheet;
+package ru.drsk.progserega.inspectionsheet.activities;
 
+import android.app.Application;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
+import ru.drsk.progserega.inspectionsheet.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,4 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("addDefect()", "3");
     }
 
+//    public void getApplication(View vie){
+//        InspectionSheetApplication application = (InspectionSheetApplication) this.getApplication();
+//        Log.i("main activity", application.test);
+//    }
 }

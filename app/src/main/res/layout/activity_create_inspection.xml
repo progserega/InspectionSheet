@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".createInspection">
+    tools:context=".activities.createInspection">
 
     <LinearLayout
         android:layout_width="match_parent"

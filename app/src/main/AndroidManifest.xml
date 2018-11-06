@@ -8,21 +8,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        android:name=".InspectionSheetApplication" >
+
+
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SelectTypeLine" />
-        <activity android:name=".searchObject" />
-        <activity android:name=".searchBySpRes" />
-        <activity android:name=".createInspection" />
-        <activity android:name=".CreateDefect" />
-        <activity android:name=".FoundedDefects" />
-        <activity android:name=".EndInspection"></activity>
+        <activity android:name=".activities.SelectTypeLine" />
+        <activity android:name=".activities.SearchObject" />
+        <activity android:name=".activities.searchBySpRes" />
+        <activity android:name=".activities.createInspection" />
+        <activity android:name=".activities.CreateDefect" />
+        <activity android:name=".activities.FoundedDefects" />
+        <activity android:name=".activities.EndInspection"></activity>
     </application>
 
 </manifest>
