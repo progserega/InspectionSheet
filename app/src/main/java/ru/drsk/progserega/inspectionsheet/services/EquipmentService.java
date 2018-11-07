@@ -1,55 +1,81 @@
 package ru.drsk.progserega.inspectionsheet.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
+import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 
 public class EquipmentService {
 
-   // private LinesService linesService;
+    public static final String FILTER_TYPE = "type";
+    public static final String FILTER_VOLTAGE = "voltage";
+    public static final String FILTER_NAME = "name";
+    public static final String FILTER_POSITION = "position";
+    public static final String FILTER_POSITION_RADIUS = "radius";
+
+
+    private Map<String, Object> filters;
+
+    // private LinesService linesService;
     private ILineStorage lineStorage;
     private ILocation location;
 
-    public EquipmentService(ILineStorage lineStorage,  ILocation location){
+    public EquipmentService(ILineStorage lineStorage, ILocation location) {
         this.lineStorage = lineStorage;
         this.location = location;
+
+        this.filters = new HashMap<>();
     }
 
-    public List<Equipment> getByType(EquipmentType type){
-
-        return  new ArrayList<>();
+    public Map<String, Object> getFilters() {
+        return filters;
     }
 
-    public List<Equipment> getByType(EquipmentType type, Voltage voltage){
+    public void addFilter(String filterName, Object value) {
+        this.filters.put(filterName, value);
+    }
 
-        List<Equipment> equipmentLines = new ArrayList<>();
-        List<Line>  lines =  lineStorage.getLinesByType(voltage);
+    public void removeFilter(String filterName) {
+        this.filters.remove(filterName);
+    }
 
-        for (Line line: lines) {
-            equipmentLines.add((Equipment) line);
+
+    private List<Equipment> linesToEquipment(List<Line> lines) {
+        List<Equipment> equipments = new ArrayList<>();
+        for (Line line : lines) {
+            equipments.add((Equipment) line);
         }
-        return  equipmentLines;
+        return equipments;
     }
 
-    public List<Equipment> getByTypeAndName(EquipmentType type, Voltage voltage, String name){
-        List<Equipment> equipmentLines = new ArrayList<>();
-        List<Line>  lines =  lineStorage.getLinesByTypeAndName(voltage, name);
+    public List<Equipment> getEquipments() {
 
-        for (Line line: lines) {
-            equipmentLines.add((Equipment) line);
+        List<Equipment> equipments = new ArrayList<>();
+
+        if (filters.get(EquipmentService.FILTER_TYPE) == null) {
+            //тип должен быть задан всегда
+            return equipments;
         }
-        return  equipmentLines;
+
+        if ((EquipmentType) filters.get(EquipmentService.FILTER_TYPE) == EquipmentType.LINE) {
+            List<Line> lines = lineStorage.getByFilters(this.filters);
+            return linesToEquipment(lines);
+        }
+        else{
+            //NOT IMPLEMENTED
+
+        }
+
+
+        return equipments;
     }
 
-    public List<Equipment> getByTypeAndPoint(EquipmentType type, Point point){
-        List<Equipment> equipmentLines = new ArrayList<>();
-
-        return equipmentLines;
-    }
 }

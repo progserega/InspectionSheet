@@ -13,4 +13,9 @@ public class LocationService implements ILocation {
     public double distanceBetween(Point p1, Point p2) {
         return 0;
     }
+
+    @Override
+    public float defaultSearchRadius() {
+        return 0;
+    }
 }

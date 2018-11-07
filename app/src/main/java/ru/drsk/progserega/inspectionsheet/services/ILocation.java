@@ -7,5 +7,6 @@ public interface ILocation {
 
     double distanceBetween(Point p1, Point p2);
 
+    float defaultSearchRadius();
 
 }

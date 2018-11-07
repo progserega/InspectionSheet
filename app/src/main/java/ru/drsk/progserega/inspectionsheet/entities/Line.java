@@ -12,6 +12,10 @@ public class Line extends Equipment{
         return towers;
     }
 
+    public void setTowers(List<LineTower> towers) {
+        this.towers = towers;
+    }
+
     public Voltage getVoltage() {
         return voltage;
     }
