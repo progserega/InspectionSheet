@@ -1,12 +1,15 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -18,10 +21,13 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
+import ru.drsk.progserega.inspectionsheet.services.ILocation;
+import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
-public class SearchObject extends ListActivity {
+public class SearchObject extends AppCompatActivity {
 
     public final static String OBJECT_TYPE = "object_type";
     public final static String LINE_TYPE = "line_type";
@@ -29,6 +35,10 @@ public class SearchObject extends ListActivity {
     private InspectionSheetApplication application;
     private EquipmentListAdapter listAdapter;
     private EquipmentService equipmentService;
+    private OrganizationService organizationService;
+    private ILocation locationService;
+
+    SelectOrganizationDialogFragment selectOrganizationDlog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +47,8 @@ public class SearchObject extends ListActivity {
 
         this.application = (InspectionSheetApplication) this.getApplication();
         this.equipmentService = this.application.getEquipmentService();
+        this.locationService = this.application.getLocationService();
+        this.organizationService = this.application.getOrganizationService();
 
         Intent intent = getIntent();
 
@@ -50,14 +62,24 @@ public class SearchObject extends ListActivity {
             equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, voltage);
         }
 
+        final SearchObject that = this;
 
         listAdapter = new EquipmentListAdapter(this, new ArrayList<Equipment>());
-        setListAdapter(listAdapter);
+        ListView equipmentList = (ListView) findViewById(R.id.equipmentList);
+        equipmentList.setAdapter(listAdapter);
+        //Создание слушателя
+        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
+                    public void onItemClick(AdapterView<?> list, View itemView, int position, long id) {
+                        that.onListItemClick(list, itemView, position, id);
+                    }
+                };
+        equipmentList.setOnItemClickListener(itemClickListener);
+
         ReloadListValues();
 
 
         EditText nameFilterText = (EditText) findViewById(R.id.editText);
-        final SearchObject that = this;
+
         nameFilterText.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -79,18 +101,11 @@ public class SearchObject extends ListActivity {
         });
     }
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        Equipment item = (Equipment) getListAdapter().getItem(position);
+    protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
+        Equipment item = (Equipment) listAdapter.getItem(position);
 
         Toast.makeText(this, item.getName() + " selected", Toast.LENGTH_LONG).show();
     }
-
-//    public void SearchBtnClick(View view) {
-//        List<Equipment> equipments = this.application.getEquipmentService().getByType(EquipmentType.LINE, Voltage.VL_35_110KV);
-//
-//        ReloadListValues(equipments);
-//    }
 
     private void ReloadListValues() {
         List<Equipment> equipments = equipmentService.getEquipments();
@@ -100,5 +115,27 @@ public class SearchObject extends ListActivity {
         listAdapter.getValues().addAll(equipments);
         // fire the event
         listAdapter.notifyDataSetChanged();
+    }
+
+    public void onSearchNearestCheckboxClicked(View view){
+        boolean checked = ((CheckBox) view).isChecked();
+        if(checked){
+            Point userPosition = locationService.getUserPosition();
+            equipmentService.addFilter(EquipmentService.FILTER_POSITION, userPosition);
+        }else{
+            equipmentService.removeFilter(EquipmentService.FILTER_POSITION);
+        }
+
+        ReloadListValues();
+
+    }
+
+    public void onSelectOrganizationBtnClick(View view){
+        FragmentManager fm = getSupportFragmentManager();
+        if(selectOrganizationDlog == null) {
+            selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(organizationService);
+        }
+        selectOrganizationDlog.show(fm, "select_organization");
+
     }
 }

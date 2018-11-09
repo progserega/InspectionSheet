@@ -26,11 +26,11 @@ public class EquipmentService {
 
     // private LinesService linesService;
     private ILineStorage lineStorage;
-    private ILocation location;
+    //private ILocation location;
 
-    public EquipmentService(ILineStorage lineStorage, ILocation location) {
+    public EquipmentService(ILineStorage lineStorage) {
         this.lineStorage = lineStorage;
-        this.location = location;
+        //this.location = location;
 
         this.filters = new HashMap<>();
     }

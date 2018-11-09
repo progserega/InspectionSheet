@@ -15,6 +15,7 @@
             android:id="@+id/selectBySpBt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="onSelectOrganizationBtnClick"
             android:text="@string/selectBySpBtText" />
 
         <TextView
@@ -32,14 +33,16 @@
             android:selectAllOnFocus="true" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/searchNearestChb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/search_near_text"
-            tools:layout_editor_absoluteY="19dp" />
+            tools:layout_editor_absoluteY="19dp"
+            android:onClick="onSearchNearestCheckboxClicked"
+            />
 
         <ListView
-            android:id="@android:id/list"
+            android:id="@+id/equipmentList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

@@ -34,4 +34,10 @@
     <string name="defectPresenceDispItemsText">Ниличие диспетчерских наименований</string>
     <string name="defectCracksSupportsText">Трещины в опорах, гнилые опоры</string>
     <string name="endInspectionBt">Закончить осмотр</string>
+    <string-array name="animals">
+        <item>Кот</item>
+        <item>Кошка</item>
+        <item>Котёнок</item>
+        <item>Животное</item>
+    </string-array>
 </resources>
