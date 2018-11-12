@@ -4,6 +4,9 @@ package ru.drsk.progserega.inspectionsheet.entities.organization;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сетевое Предприятие
+ */
 public class NetworkEnterprise {
     private int id;
     private String name;

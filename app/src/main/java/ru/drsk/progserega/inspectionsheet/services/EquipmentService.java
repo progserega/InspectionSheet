@@ -20,6 +20,8 @@ public class EquipmentService {
     public static final String FILTER_NAME = "name";
     public static final String FILTER_POSITION = "position";
     public static final String FILTER_POSITION_RADIUS = "radius";
+    public static final String FILTER_ENTERPRISE = "enterprise";
+    public static final String FILTER_AREA = "area";
 
 
     private Map<String, Object> filters;

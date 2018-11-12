@@ -2,7 +2,6 @@ package ru.drsk.progserega.inspectionsheet.activities;
 
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.Display;
@@ -12,20 +11,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.organization.ElectricNetworkArea;
 import ru.drsk.progserega.inspectionsheet.entities.organization.NetworkEnterprise;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
+/**
+ * Диалог выбора СП и РЭС
+ *
+ * TODO Есть баг, при повторном вызове окна диалога не отображает выбранный в предыдущий раз РЭС
+ */
 public class SelectOrganizationDialogFragment extends DialogFragment {
 
+    public interface ISelectOrganizationListener {
+        void onSelectOrganization(int enterpriseId, int areaId);
+    }
+
     private OrganizationService organizationService;
+    private List<NetworkEnterprise> enterprisesList;
+    private ArrayAdapter<String> enterpriseAdapter;
+    private ArrayAdapter<String> areaAdapter;
+    private ISelectOrganizationListener selectOrganizationListener;
+
+    private Spinner enterpriseSpinner;
+//    private int enterpriseSpinnerSelection = 0;
+
+    private Spinner areaSpinner;
+    private int areaSpinnerSelection = 0;
+
+    private NetworkEnterprise selectedEnterprise = null;
+    private ElectricNetworkArea selectedArea = null;
 
     public void setOrganizationService(OrganizationService organizationService) {
         this.organizationService = organizationService;
@@ -40,11 +64,7 @@ public class SelectOrganizationDialogFragment extends DialogFragment {
     public static SelectOrganizationDialogFragment newInstance(OrganizationService organizationService) {
         SelectOrganizationDialogFragment frag = new SelectOrganizationDialogFragment();
         frag.setOrganizationService(organizationService);
-
-//        Bundle args = new Bundle();
-//        args.putString("title", "OLOLO!!!");
-//        frag.setArguments(args);
-       // frag.setCancelable(false); //Запрет закрытия по клику на пустом месте
+        frag.setCancelable(false); //Запрет закрытия по клику на пустом месте
         return frag;
     }
 
@@ -52,54 +72,121 @@ public class SelectOrganizationDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        List<NetworkEnterprise> enterprisesList = organizationService.getAllEnterprices();
-        String[] enterprises = new String[enterprisesList.size()];
-        for (int i = 0; i < enterprises.length; i++) {
-            enterprises[i] = enterprisesList.get(i).getName();
+        View view = inflater.inflate(R.layout.select_organization_dialog, container, false);
+
+        enterprisesList = organizationService.getAllEnterprices();
+        List<String> enterpriseSpinnerItems = new ArrayList<>();
+        enterpriseSpinnerItems.add("Все СП");
+        for (NetworkEnterprise enterprise : enterprisesList) {
+            enterpriseSpinnerItems.add(enterprise.getName());
         }
 
-        View view = inflater.inflate(R.layout.select_organization_dialog, container, false);
-        // Получаем экземпляр элемента Spinner
-        final Spinner spinner = (Spinner)view.findViewById(R.id.spinner);
 
-        // Настраиваем адаптер
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),  android.R.layout.simple_spinner_item, enterprises);
-        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinner.setAdapter(adapter);
+        selectOrganizationListener = (ISelectOrganizationListener) this.getActivity();
+
+        enterpriseSpinner = (Spinner) view.findViewById(R.id.enterprise_spinner);
+        enterpriseAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, enterpriseSpinnerItems);
+        enterpriseAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        enterpriseSpinner.setAdapter(enterpriseAdapter);
+       // enterpriseSpinner.setSelection(enterpriseSpinnerSelection);
+
+        enterpriseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                onSlectEnterpriseItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+
+        areaSpinner = (Spinner) view.findViewById(R.id.area_spinner);
+        areaAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, createAreaSpinnerItems(selectedEnterprise));
+        areaAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        areaSpinner.setAdapter(areaAdapter);
+
+        areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                onSelectAreaItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+        TextView textView = (TextView) view.findViewById(R.id.txtclose);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog().dismiss();
+            }
+        });
+
+        Button selectButton = (Button) view.findViewById(R.id.btnselect);
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectOrganizationBtnClick();
+            }
+        });
 
         return view;
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        // Get field from view
-//      //  mEditText = (EditText) view.findViewById(R.id.txt_your_name);
-//        // Fetch arguments from bundle and set title
-//        String title = getArguments().getString("title", "Enter Name");
-//        getDialog().setTitle(title);
-//        // Show soft keyboard automatically and request focus to field
-//        //mEditText.requestFocus();
-//        getDialog().getWindow().setSoftInputMode(  WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//    }
+    private void onSlectEnterpriseItem(int position) {
+        areaAdapter.clear();
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        View view = getView();
-
-        if(view == null){
+        if (position == 0) {
+            selectedEnterprise = null;
             return;
         }
 
+        selectedEnterprise = enterprisesList.get(position - 1);
+        areaAdapter.addAll(createAreaSpinnerItems(selectedEnterprise));
+        areaAdapter.notifyDataSetChanged();
+        areaSpinner.setSelection(0);
 
-        Log.i("TEST TAG", organizationService.toString());
+    }
 
-//            TextView title = (TextView) view.findViewById(R.id.textTitle);
-//            Workout workout = Workout.workouts[(int) workoutId];
-//            title.setText(workout.getName());
-//            TextView description = (TextView) view.findViewById(R.id.textDescription);
-//            description.setText(workout.getDescription());
+    private List<String> createAreaSpinnerItems(NetworkEnterprise enterprise) {
+        List<String> areas = new ArrayList<>();
+        if (enterprise == null) {
+            return areas;
+        }
+
+        List<ElectricNetworkArea> areaList = enterprise.getENAreas();
+        areas.add("все РЭС");
+        for (ElectricNetworkArea area : areaList) {
+            areas.add(area.getName());
+        }
+        return areas;
+    }
+
+    private void onSelectAreaItem(int position) {
+        areaSpinnerSelection = position;
+        if (position == 0) {
+            selectedArea = null;
+            return;
+        }
+
+        selectedArea = selectedEnterprise.getENAreas().get(position - 1);
+    }
+
+    private void onSelectOrganizationBtnClick() {
+
+        int enterpriseId = (selectedEnterprise != null) ? selectedEnterprise.getId() : 0;
+        int areaId = (selectedArea != null) ? selectedArea.getId() : 0;
+        selectOrganizationListener.onSelectOrganization(enterpriseId, areaId);
+        getDialog().dismiss();
     }
 
 
@@ -120,6 +207,12 @@ public class SelectOrganizationDialogFragment extends DialogFragment {
         window.setGravity(Gravity.CENTER);
         // Call super onResume after sizing
         super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        selectOrganizationListener = null;
     }
 
 }

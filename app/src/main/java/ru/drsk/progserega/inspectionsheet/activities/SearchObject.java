@@ -27,7 +27,7 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
-public class SearchObject extends AppCompatActivity {
+public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener {
 
     public final static String OBJECT_TYPE = "object_type";
     public final static String LINE_TYPE = "line_type";
@@ -68,11 +68,11 @@ public class SearchObject extends AppCompatActivity {
         ListView equipmentList = (ListView) findViewById(R.id.equipmentList);
         equipmentList.setAdapter(listAdapter);
         //Создание слушателя
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
-                    public void onItemClick(AdapterView<?> list, View itemView, int position, long id) {
-                        that.onListItemClick(list, itemView, position, id);
-                    }
-                };
+        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> list, View itemView, int position, long id) {
+                that.onListItemClick(list, itemView, position, id);
+            }
+        };
         equipmentList.setOnItemClickListener(itemClickListener);
 
         ReloadListValues();
@@ -117,12 +117,12 @@ public class SearchObject extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
-    public void onSearchNearestCheckboxClicked(View view){
+    public void onSearchNearestCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
-        if(checked){
+        if (checked) {
             Point userPosition = locationService.getUserPosition();
             equipmentService.addFilter(EquipmentService.FILTER_POSITION, userPosition);
-        }else{
+        } else {
             equipmentService.removeFilter(EquipmentService.FILTER_POSITION);
         }
 
@@ -130,12 +130,30 @@ public class SearchObject extends AppCompatActivity {
 
     }
 
-    public void onSelectOrganizationBtnClick(View view){
+    public void onSelectOrganizationBtnClick(View view) {
         FragmentManager fm = getSupportFragmentManager();
-        if(selectOrganizationDlog == null) {
+        if (selectOrganizationDlog == null) {
             selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(organizationService);
         }
         selectOrganizationDlog.show(fm, "select_organization");
 
+    }
+
+    @Override
+    public void onSelectOrganization(int enterpriseId, int areaId) {
+
+        equipmentService.removeFilter(EquipmentService.FILTER_AREA);
+        equipmentService.removeFilter(EquipmentService.FILTER_ENTERPRISE);
+
+        if (enterpriseId != 0) {
+            equipmentService.addFilter(EquipmentService.FILTER_ENTERPRISE, enterpriseId);
+        }
+
+        if (areaId != 0) {
+            equipmentService.addFilter(EquipmentService.FILTER_AREA, areaId);
+        }
+
+        ReloadListValues();
+        //Toast.makeText(this, inputText, Toast.LENGTH_LONG).show();
     }
 }

@@ -1,5 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.entities.organization;
 
+/**
+ * Район Электрических Сетей
+ */
 public class ElectricNetworkArea {
     private int id;
     private String name;
