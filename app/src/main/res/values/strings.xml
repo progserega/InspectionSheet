@@ -33,10 +33,6 @@
     <string name="defectPresenceDispItemsText">the presence of dispatch items</string>
     <string name="defectCracksSupportsText">Cracks in the supports</string>
     <string name="endInspectionBt">End Inspection</string>
-    <string-array name="animals">
-        <item>Кот</item>
-        <item>Кошка</item>
-        <item>Котёнок</item>
-        <item>Животное</item>
-    </string-array>
+    <string name="tower_number">tower №</string>
+
 </resources>

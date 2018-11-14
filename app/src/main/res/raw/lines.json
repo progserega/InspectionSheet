@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Line 1",
+    "voltage": "VL_04KV"
+  },
+  {
+    "id": 2,
+    "name": "Line 2",
+    "voltage": "VL_04KV"
+  },
+  {
+    "id": 3,
+    "name": "Line 3",
+    "voltage": "VL_04KV"
+  },
+  {
+    "id": 4,
+    "name": "Line 4",
+    "voltage": "VL_6_10KV"
+  },
+  {
+    "id": 5,
+    "name": "Line 5",
+    "voltage": "VL_6_10KV"
+  },
+  {
+    "id": 6,
+    "name": "Line 6",
+    "voltage": "VL_6_10KV"
+  },
+  {
+    "id": 7,
+    "name": "Line 7",
+    "voltage": "VL_35_110KV"
+  },
+  {
+    "id": 8,
+    "name": "Line 8",
+    "voltage": "VL_35_110KV"
+  },
+  {
+    "id": 9,
+    "name": "Line 9",
+    "voltage": "VL_35_110KV"
+  }
+]

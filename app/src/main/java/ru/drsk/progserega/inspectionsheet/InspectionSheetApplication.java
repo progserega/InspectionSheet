@@ -7,10 +7,14 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.LocationServiceStub;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
+import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.LineStorageJSON;
 import ru.drsk.progserega.inspectionsheet.storages.LineStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.OrganizationStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.TowerStorageStub;
 
 public class InspectionSheetApplication extends Application {
 
@@ -24,6 +28,11 @@ public class InspectionSheetApplication extends Application {
     //Сервис для работы с GPS
     private ILocation locationService;
 
+    private TowersService towersService;
+
+
+
+
     public EquipmentService getEquipmentService() {
         return equipmentService;
     }
@@ -36,6 +45,10 @@ public class InspectionSheetApplication extends Application {
         return organizationService;
     }
 
+    public TowersService getTowersService() {
+        return towersService;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,14 +58,21 @@ public class InspectionSheetApplication extends Application {
         locationService = new LocationServiceStub();
 
         //ILineStorage lineStorage = new LineStorageSqlight();
-        ILineStorage lineStorage = new LineStorageStub(locationService);
+        LineStorageStub lineStorage = new LineStorageStub(locationService);
+        lineStorage.setLines(LineStorageStub.initLinesWithTowersStub());
         //linesService = new LinesService(lineStorage);
+
+        //ILineStorage lineStorage = new LineStorageJSON();
+
 
         IOrganizationStorage organizationStorage = new OrganizationStorageStub();
         this.organizationService = new OrganizationService(organizationStorage);
 
         this.equipmentService = new EquipmentService(lineStorage);
 
+        ITowerStorage towerStorage = new TowerStorageStub();
+
+        towersService = new TowersService(towerStorage, lineStorage);
     }
 
 

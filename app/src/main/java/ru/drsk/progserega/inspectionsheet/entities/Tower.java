@@ -10,7 +10,7 @@ public class Tower extends Equipment {
         return mapPoint;
     }
 
-    public Tower(int id, Point point ){
+    public Tower(long id, Point point ){
         this.id = id;
         this.name = "опора";
         this.type = EquipmentType.TOWER;

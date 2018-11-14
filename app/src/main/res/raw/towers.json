@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "location": {
+      "lat": 1,
+      "lon": 1
+    }
+  },
+  {
+    "id": 2,
+    "location": {
+      "lat": 2,
+      "lon": 1
+    }
+  },
+  {
+    "id": 3,
+    "location": {
+      "lat": 2,
+      "lon": 2
+    }
+  },
+  {
+    "id": 4,
+    "location": {
+      "lat": 1,
+      "lon": 2
+    }
+  },
+  {
+    "id": 5,
+    "location": {
+      "lat": 1,
+      "lon": 3
+    }
+  },
+  {
+    "id": 6,
+    "location": {
+      "lat": 1,
+      "lon": 4
+    }
+  },
+  {
+    "id": 7,
+    "location": {
+      "lat": 4,
+      "lon": 4
+    }
+  },
+  {
+    "id": 8,
+    "location": {
+      "lat": 5,
+      "lon": 1
+    }
+  },
+  {
+    "id": 9,
+    "location": {
+      "lat": 5,
+      "lon": 5
+    }
+  },
+  {
+    "id": 10,
+    "location": {
+      "lat": 2,
+      "lon": 5
+    }
+  }
+]

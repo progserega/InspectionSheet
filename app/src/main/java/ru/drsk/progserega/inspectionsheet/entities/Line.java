@@ -20,7 +20,7 @@ public class Line extends Equipment{
         return voltage;
     }
 
-    public Line(int id, String name, Voltage type, List<LineTower> towers){
+    public Line(long id, String name, Voltage type, List<LineTower> towers){
         this.id = id;
         this.name = name;
         this.voltage = type;

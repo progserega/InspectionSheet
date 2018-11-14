@@ -10,6 +10,7 @@ import java.util.jar.Attributes;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
+import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
@@ -77,31 +78,79 @@ public class LineStorageStub implements ILineStorage {
         lines.add(new Line(1, "test 3 VL_35_110KV", Voltage.VL_35_110KV, towers));
     }
 
-    @Override
-    public ArrayList<Line> getLinesByType(Voltage voltage) {
+    public static ArrayList<Line> initLinesWithTowersStub() {
+        ArrayList<Line> lines = new ArrayList<>();
 
-        ArrayList<Line> result = new ArrayList<>();
-        for (Line line : lines) {
-            if (line.getVoltage().equals(voltage)) {
-                result.add(line);
-            }
-        }
+        Tower t1 = new Tower(1, new Point(1, 1));
+        Tower t2 = new Tower(2, new Point(2, 1));
+        Tower t3 = new Tower(3, new Point(2, 2));
+        Tower t4 = new Tower(4, new Point(1, 2));
+        Tower t5 = new Tower(5, new Point(1, 3));
+        Tower t6 = new Tower(6, new Point(1, 4));
+        Tower t7 = new Tower(7, new Point(4, 4));
+        Tower t8 = new Tower(8, new Point(5, 1));
+        Tower t9 = new Tower(9, new Point(5, 5));
+        Tower t10 = new Tower(10, new Point(2, 5));
 
-        return result;
+        Line l1 = new Line(1, "line 1", Voltage.VL_04KV, null);
+        Line l2 = new Line(2, "line 2", Voltage.VL_04KV, null);
+        Line l3 = new Line(3, "line 3", Voltage.VL_04KV, null);
+
+        List<LineTower> l1Towers = new ArrayList<>();
+        l1Towers.add(new LineTower(l1, t1, "1-1"));
+        l1Towers.add(new LineTower(l1, t2, "1-2"));
+        l1Towers.add(new LineTower(l1, t8, "1-3"));
+        l1.setTowers(l1Towers);
+
+        List<LineTower> l2Towers = new ArrayList<>();
+        l2.setTowers(l2Towers);
+        l2Towers.add(new LineTower(l2, t2, "2-1"));
+        l2Towers.add(new LineTower(l2, t3, "2-2"));
+        l2Towers.add(new LineTower(l2, t7, "2-3"));
+        l2Towers.add(new LineTower(l2, t9, "2-4"));
+
+
+        List<LineTower> l3Towers = new ArrayList<>();
+        l3.setTowers(l3Towers);
+        l3Towers.add(new LineTower(l3, t3, "3-1"));
+        l3Towers.add(new LineTower(l3, t4, "3-2"));
+        l3Towers.add(new LineTower(l3, t5, "3-3"));
+        l3Towers.add(new LineTower(l3, t6, "3-4"));
+        l3Towers.add(new LineTower(l3, t10, "3-5"));
+
+
+        lines.add(l1);
+        lines.add(l2);
+        lines.add(l3);
+
+
+        return lines;
     }
-
-    @Override
-    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name) {
-
-        ArrayList<Line> result = new ArrayList<>();
-        for (Line line : lines) {
-            if (line.getVoltage().equals(voltage) && line.getName().toLowerCase().contains(name.toLowerCase())) {
-                result.add(line);
-            }
-        }
-
-        return result;
-    }
+//    @Override
+//    public ArrayList<Line> getLinesByType(Voltage voltage) {
+//
+//        ArrayList<Line> result = new ArrayList<>();
+//        for (Line line : lines) {
+//            if (line.getVoltage().equals(voltage)) {
+//                result.add(line);
+//            }
+//        }
+//
+//        return result;
+//    }
+//
+//    @Override
+//    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name) {
+//
+//        ArrayList<Line> result = new ArrayList<>();
+//        for (Line line : lines) {
+//            if (line.getVoltage().equals(voltage) && line.getName().toLowerCase().contains(name.toLowerCase())) {
+//                result.add(line);
+//            }
+//        }
+//
+//        return result;
+//    }
 
     @Override
     public List<Line> getByFilters(Map<String, Object> filters) {
@@ -179,4 +228,14 @@ public class LineStorageStub implements ILineStorage {
         return lines;
     }
 
+    @Override
+    public Line getById(long id) {
+
+        for (Line line: lines){
+            if(line.getId() == id){
+                return line;
+            }
+        }
+        return null;
+    }
 }

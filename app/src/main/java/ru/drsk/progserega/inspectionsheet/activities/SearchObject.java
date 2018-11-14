@@ -27,6 +27,9 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
+import static ru.drsk.progserega.inspectionsheet.activities.InspectTower.LINE_ID;
+import static ru.drsk.progserega.inspectionsheet.activities.InspectTower.LINE_NAME;
+
 public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener {
 
     public final static String OBJECT_TYPE = "object_type";
@@ -102,9 +105,17 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     }
 
     protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
-        Equipment item = (Equipment) listAdapter.getItem(position);
+        Equipment equipment = (Equipment) listAdapter.getItem(position);
 
-        Toast.makeText(this, item.getName() + " selected", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, equipment.getName() + " selected", Toast.LENGTH_LONG).show();
+
+        if(equipment.getType() == EquipmentType.LINE) {
+            Intent intent = new Intent(this, InspectTower.class);
+            intent.putExtra(LINE_ID, equipment.getId());
+            intent.putExtra(LINE_NAME, equipment.getName());
+            startActivity(intent);
+        }
+
     }
 
     private void ReloadListValues() {

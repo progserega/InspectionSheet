@@ -1,11 +1,11 @@
 package ru.drsk.progserega.inspectionsheet.entities;
 
 public class Equipment {
-    protected int id;
+    protected long id;
     protected String name;
     protected EquipmentType type;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

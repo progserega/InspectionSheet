@@ -15,12 +15,17 @@ public class LineStorageSqlight implements ILineStorage {
     }
 
     @Override
-    public ArrayList<Line> getLinesByType(Voltage voltage) {
+    public Line getById(long id) {
         return null;
     }
 
-    @Override
-    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name) {
-        return null;
-    }
+//    @Override
+//    public ArrayList<Line> getLinesByType(Voltage voltage) {
+//        return null;
+//    }
+//
+//    @Override
+//    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name) {
+//        return null;
+//    }
 }
