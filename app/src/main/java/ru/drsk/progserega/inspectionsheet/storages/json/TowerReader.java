@@ -63,7 +63,7 @@ public class TowerReader {
             }
         }
         reader.endObject();
-        return new Tower(id, point);
+        return new Tower(id, point, null, null);
     }
 
     private Point readPoint(JsonReader reader) throws IOException {

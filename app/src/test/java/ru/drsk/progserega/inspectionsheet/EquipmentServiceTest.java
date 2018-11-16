@@ -2,28 +2,23 @@ package ru.drsk.progserega.inspectionsheet;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Line;
-import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
-import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.LocationServiceStub;
-import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
-import ru.drsk.progserega.inspectionsheet.storages.LineStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static ru.drsk.progserega.inspectionsheet.storages.LineStorageStub.initLinesWithTowersStub;
+import static ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub.initLinesWithTowersStub;
 
 public class EquipmentServiceTest {
 

@@ -19,13 +19,13 @@ public class LocationServiceStub implements ILocation {
      * Находит расстояние между двумя точками
      *
      * Для отладки запилим на плоскости по теореме пифагора
-     * @param p1 первая точка
-     * @param p2 вторая точка
+     * @param equipmentPoint первая точка
+     * @param userPosition вторая точка
      * @return расстояние
      */
     @Override
-    public double distanceBetween(Point p1, Point p2) {
-        return Math.sqrt((p2.getLat() - p1.getLat()) * (p2.getLat() - p1.getLat()) + (p2.getLon() - p1.getLon()) * (p2.getLon() - p1.getLon()));
+    public double distanceBetween(Point equipmentPoint, Point userPosition) {
+        return Math.sqrt((userPosition.getLat() - equipmentPoint.getLat()) * (userPosition.getLat() - equipmentPoint.getLat()) + (userPosition.getLon() - equipmentPoint.getLon()) * (userPosition.getLon() - equipmentPoint.getLon()));
     }
 
 

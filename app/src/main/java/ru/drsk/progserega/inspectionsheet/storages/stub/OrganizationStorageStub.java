@@ -1,10 +1,11 @@
-package ru.drsk.progserega.inspectionsheet.storages;
+package ru.drsk.progserega.inspectionsheet.storages.stub;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.organization.ElectricNetworkArea;
 import ru.drsk.progserega.inspectionsheet.entities.organization.NetworkEnterprise;
+import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 
 public class OrganizationStorageStub implements IOrganizationStorage {
 

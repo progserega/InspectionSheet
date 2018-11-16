@@ -28,6 +28,7 @@
             android:id="@+id/syncButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="syncData"
             android:text="@string/syncBtText" />
 
     </LinearLayout>

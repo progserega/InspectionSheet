@@ -1,19 +1,18 @@
-package ru.drsk.progserega.inspectionsheet.storages;
-
-import android.util.Log;
+package ru.drsk.progserega.inspectionsheet.storages.stub;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
 
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
+import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 
 public class LineStorageStub implements ILineStorage {
 
@@ -81,16 +80,19 @@ public class LineStorageStub implements ILineStorage {
     public static ArrayList<Line> initLinesWithTowersStub() {
         ArrayList<Line> lines = new ArrayList<>();
 
-        Tower t1 = new Tower(1, new Point(1, 1));
-        Tower t2 = new Tower(2, new Point(2, 1));
-        Tower t3 = new Tower(3, new Point(2, 2));
-        Tower t4 = new Tower(4, new Point(1, 2));
-        Tower t5 = new Tower(5, new Point(1, 3));
-        Tower t6 = new Tower(6, new Point(1, 4));
-        Tower t7 = new Tower(7, new Point(4, 4));
-        Tower t8 = new Tower(8, new Point(5, 1));
-        Tower t9 = new Tower(9, new Point(5, 5));
-        Tower t10 = new Tower(10, new Point(2, 5));
+
+
+
+        Tower t1 = new Tower(1, new Point(1, 1), null, null);
+        Tower t2 = new Tower(2, new Point(2, 1), null, null);
+        Tower t3 = new Tower(3, new Point(2, 2),  null, null);
+        Tower t4 = new Tower(4, new Point(1, 2),  null, null);
+        Tower t5 = new Tower(5, new Point(1, 3),  null, null);
+        Tower t6 = new Tower(6, new Point(1, 4),  null, null);
+        Tower t7 = new Tower(7, new Point(4, 4),  null, null);
+        Tower t8 = new Tower(8, new Point(5, 1),  null, null);
+        Tower t9 = new Tower(9, new Point(5, 5),  null, null);
+        Tower t10 = new Tower(10, new Point(2, 5), null, null);
 
         Line l1 = new Line(1, "line 1", Voltage.VL_04KV, null);
         Line l2 = new Line(2, "line 2", Voltage.VL_04KV, null);
@@ -144,7 +146,7 @@ public class LineStorageStub implements ILineStorage {
 //
 //        ArrayList<Line> result = new ArrayList<>();
 //        for (Line line : lines) {
-//            if (line.getVoltage().equals(voltage) && line.getName().toLowerCase().contains(name.toLowerCase())) {
+//            if (line.getVoltage().equals(voltage) && line.getInspection().toLowerCase().contains(name.toLowerCase())) {
 //                result.add(line);
 //            }
 //        }

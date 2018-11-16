@@ -5,7 +5,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Point;
 public interface ILocation {
     Point getUserPosition();
 
-    double distanceBetween(Point p1, Point p2);
+    double distanceBetween(Point equipmentPoint, Point userPosition);
 
     float defaultSearchRadius();
 

@@ -1,6 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +13,13 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.InspectionType;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
+import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 
 public class InspectTower extends AppCompatActivity {
 
@@ -24,7 +28,9 @@ public class InspectTower extends AppCompatActivity {
 
     private InspectionSheetApplication application;
     private TowersService towersService;
-    private long lineId;
+    private ICatalogStorage catalogStorage;
+
+   // private long lineId;
 
     private Spinner towersSpinner;
     private ArrayAdapter towersAdapter;
@@ -35,6 +41,12 @@ public class InspectTower extends AppCompatActivity {
     private Spinner inspectionTypesSpinner;
     private ArrayAdapter inspectionTypesAdapter;
 
+    private List<LineTower> lineTowers;
+    private LineTower selectedLineTower;
+    List<Material> materials;
+    List<TowerType> towerTypes;
+    List<InspectionType> inspectionTypes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +54,16 @@ public class InspectTower extends AppCompatActivity {
 
         this.application = (InspectionSheetApplication) this.getApplication();
         towersService = application.getTowersService();
+        catalogStorage = application.getCatalogStorage();
 
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
 
-        lineId = intent.getLongExtra(LINE_ID, 0);
-        String lineName = intent.getStringExtra(LINE_NAME);
+//        lineId = intent.getLongExtra(LINE_ID, 0);
+//        String lineName = intent.getStringExtra(LINE_NAME);
+        Line line = application.getInspection().getLine();
 
         TextView lineNameText = (TextView) findViewById(R.id.inspection_tower_name);
-        lineNameText.setText(lineName);
+        lineNameText.setText(line.getName());
 
 
         towersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<String>());
@@ -124,9 +138,18 @@ public class InspectTower extends AppCompatActivity {
 
         });
 
+        //lineTowers = towersService.getTowersByLine(lineId);
+        lineTowers = line.getTowers();
+        setTowersSpinnerData(lineTowers);
 
-        List<LineTower> towers = towersService.getTowersByLine(lineId);
-        setTowersSpinnerData(towers);
+        materials = catalogStorage.getMaterials();
+        setMaterialsSpinnerData(materials);
+
+        towerTypes = catalogStorage.getTowerTypes();
+        setTowerTypesSpinnerData(towerTypes);
+
+        inspectionTypes = catalogStorage.getInspectionTypes();
+        setInspectionTypesSpinnerData(inspectionTypes);
     }
 
     private void setTowersSpinnerData(List<LineTower> lineTowers){
@@ -141,17 +164,82 @@ public class InspectTower extends AppCompatActivity {
         towersAdapter.notifyDataSetChanged();
     }
 
+    private void setMaterialsSpinnerData(List<Material> materials){
+        List<String> spinerItems = new ArrayList<>();
+        spinerItems.add("не задан");
+        for(Material mat: materials){
+            spinerItems.add(mat.getName());
+        }
+
+        materialsAdapter.clear();
+        materialsAdapter.addAll(spinerItems);
+        materialsAdapter.notifyDataSetChanged();
+    }
+
+    private void setTowerTypesSpinnerData(List<TowerType> types){
+        List<String> spinerItems = new ArrayList<>();
+        spinerItems.add("не задан");
+        for(TowerType type: types){
+            spinerItems.add(type.getType());
+        }
+
+        towerTypesAdapter.clear();
+        towerTypesAdapter.addAll(spinerItems);
+        towerTypesAdapter.notifyDataSetChanged();
+    }
+
+    private void setInspectionTypesSpinnerData(List<InspectionType> types){
+        List<String> spinerItems = new ArrayList<>();
+        spinerItems.add("не задан");
+        for(InspectionType type: types){
+            spinerItems.add(type.getInspection());
+        }
+
+        inspectionTypesAdapter.clear();
+        inspectionTypesAdapter.addAll(spinerItems);
+        inspectionTypesAdapter.notifyDataSetChanged();
+    }
 
     private void onSelectTower(int position) {
+        if(position == 0){
+            selectedLineTower = null;
+            return;
+        }
+
+        selectedLineTower = lineTowers.get(position - 1);
+        application.getInspection().setLineTower(selectedLineTower);
+
+        //TODO:
+        // Set material spinner item
+        // Set towerType spinner item
+        // Set InspectionType spinner item
+
     }
 
     private void onSelectMaterial(int position) {
+
+        if(position == 0 || selectedLineTower == null){
+            materialsSpinner.setSelection(0);
+            return;
+        }
+
+        selectedLineTower.getTower().setMaterial(materials.get(position - 1));
+
     }
 
     private void onSelectTowerType(int position) {
+        if(position == 0 || selectedLineTower == null){
+            return;
+        }
+
+        selectedLineTower.getTower().setTowerType(towerTypes.get(position - 1));
     }
 
     private void onSelectInspectionType(int position) {
+        if(position == 0){
+            return;
+        }
+        application.getInspection().setInspectionType(inspectionTypes.get(position - 1));
     }
 
 }

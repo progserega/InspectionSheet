@@ -80,4 +80,8 @@ public class EquipmentService {
         return equipments;
     }
 
+    public Line getLineById (long lineId){
+        return lineStorage.getById(lineId);
+    }
+
 }

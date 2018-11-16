@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.drsk.progserega.inspectionsheet">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".InspectionSheetApplication"
         android:allowBackup="true"
@@ -24,7 +26,8 @@
         <activity android:name=".activities.CreateDefect" />
         <activity android:name=".activities.FoundedDefects" />
         <activity android:name=".activities.EndInspection" />
-        <activity android:name=".activities.InspectTower"></activity>
+        <activity android:name=".activities.InspectTower" />
+        <activity android:name=".activities.AddDefect"></activity>
     </application>
 
 </manifest>

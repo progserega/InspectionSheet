@@ -20,7 +20,7 @@
     <string name="towerNameText">Tower №</string>
     <string name="inspectionTypeText">Type of inspection</string>
     <string name="towerMaterialText">Tower material</string>
-    <string name="towerTypeText">Tower type</string>
+    <string name="towerTypeText">Tower inspection</string>
     <string name="createDefectBtText">Add Defect</string>
     <string name="addPhotoDefectBtText">Add Photo for defect</string>
     <string name="faundedDefectsText">Founded defects</string>

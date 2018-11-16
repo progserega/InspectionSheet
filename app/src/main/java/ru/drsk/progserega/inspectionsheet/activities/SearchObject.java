@@ -1,8 +1,14 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,16 +27,16 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.Inspection;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
-import static ru.drsk.progserega.inspectionsheet.activities.InspectTower.LINE_ID;
-import static ru.drsk.progserega.inspectionsheet.activities.InspectTower.LINE_NAME;
+public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener {
+    private static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 5;
 
     public final static String OBJECT_TYPE = "object_type";
     public final static String LINE_TYPE = "line_type";
@@ -42,6 +48,9 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     private ILocation locationService;
 
     SelectOrganizationDialogFragment selectOrganizationDlog;
+
+    private CheckBox gpsCheckbox;
+    private boolean allowGPS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,17 +111,23 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
                 that.ReloadListValues();
             }
         });
+
+        gpsCheckbox = (CheckBox) findViewById(R.id.searchNearestChb);
     }
 
     protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
         Equipment equipment = (Equipment) listAdapter.getItem(position);
 
-       // Toast.makeText(this, equipment.getName() + " selected", Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, equipment.getInspection() + " selected", Toast.LENGTH_LONG).show();
 
-        if(equipment.getType() == EquipmentType.LINE) {
+        if (equipment.getType() == EquipmentType.LINE) {
+
+            Inspection inspection = new Inspection(equipmentService.getLineById(equipment.getId()));
+            application.setInspection(inspection);
+
             Intent intent = new Intent(this, InspectTower.class);
-            intent.putExtra(LINE_ID, equipment.getId());
-            intent.putExtra(LINE_NAME, equipment.getName());
+//            intent.putExtra(LINE_ID, equipment.getId());
+//            intent.putExtra(LINE_NAME, equipment.getName());
             startActivity(intent);
         }
 
@@ -130,9 +145,16 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
     public void onSearchNearestCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
+
         if (checked) {
-            Point userPosition = locationService.getUserPosition();
-            equipmentService.addFilter(EquipmentService.FILTER_POSITION, userPosition);
+
+            if (checkGPSPermission()) {
+                filterByPosition();
+            }else {
+                requestGPSAccess();
+            }
+
+
         } else {
             equipmentService.removeFilter(EquipmentService.FILTER_POSITION);
         }
@@ -166,5 +188,101 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         ReloadListValues();
         //Toast.makeText(this, inputText, Toast.LENGTH_LONG).show();
+    }
+
+    private void filterByPosition() {
+        Toast.makeText(this, "Фильтруем позицию!!!!", Toast.LENGTH_LONG).show();
+        Point userPosition = locationService.getUserPosition();
+        if (userPosition.getLon() == 0 || userPosition.getLat() == 0) {
+            buildAlertMessageNoGps();
+        }
+        equipmentService.addFilter(EquipmentService.FILTER_POSITION, userPosition);
+    }
+
+    private boolean checkGPSPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            Toast.makeText(this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    }
+
+    private void requestGPSAccess(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            showExplanation(
+                    "Необходимо разрешение",
+                    "Для получения координат местоположения, необходим доступ к модулю GPS",
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    REQUEST_CODE_ACCESS_FINE_LOCATION);
+
+        } else {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_CODE_ACCESS_FINE_LOCATION);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ACCESS_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+                    filterByPosition();
+                    ReloadListValues();
+                } else {
+                    Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                    gpsCheckbox.setChecked(false);
+                }
+        }
+    }
+
+    private void showExplanation(String title, String message, final String permission, final int permissionRequestCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        requestPermission(permission, permissionRequestCode);
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void requestPermission(String permissionName, int permissionRequestCode) {
+        ActivityCompat.requestPermissions(SearchObject.this,
+                new String[]{permissionName}, permissionRequestCode);
+    }
+
+
+    private void buildAlertMessageNoGps() {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        // builder1.setMessage(getResources().getString(R.string.location_not_deter));
+        builder1.setMessage("ПОЗИЦИЯ НЕ УСТАНОВЛЕНА");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                //getResources().getString(R.string.try_again),
+                "ПОПРОБОВАТЬ СНОВА",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        //setLocationAddress();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                android.R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        finish();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

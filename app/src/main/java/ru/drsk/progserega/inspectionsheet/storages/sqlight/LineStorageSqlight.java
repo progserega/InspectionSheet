@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.storages;
+package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 
 public class LineStorageSqlight implements ILineStorage {
 
