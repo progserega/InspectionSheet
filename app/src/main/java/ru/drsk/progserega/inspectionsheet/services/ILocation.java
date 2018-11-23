@@ -9,4 +9,7 @@ public interface ILocation {
 
     float defaultSearchRadius();
 
+    void setLocationChangeListener(ILocationChangeListener listener);
+
+    void stopUsingGPS();
 }

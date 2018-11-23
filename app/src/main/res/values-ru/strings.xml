@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Inspection Sheet</string>
-    <string name="addDefectBtText">Добавить дефект</string>
+    <string name="addDefectBtText">Осмотр оборудования</string>
     <string name="vl04BtText">ВЛ 0,4 кВ</string>
     <string name="vl_6_10_kv_text">ВЛ 6-10 кВ</string>
     <string name="vl_35_110_kv_text">ВЛ 35-110 кВ</string>
@@ -35,4 +35,5 @@
     <string name="defectCracksSupportsText">Трещины в опорах, гнилые опоры</string>
     <string name="endInspectionBt">Закончить осмотр</string>
     <string name="tower_number">№ опоры</string>
+    <string name="save">Сохранить</string>
 </resources>

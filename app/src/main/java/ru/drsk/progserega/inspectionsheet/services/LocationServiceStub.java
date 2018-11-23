@@ -29,4 +29,13 @@ public class LocationServiceStub implements ILocation {
     }
 
 
+    @Override
+    public void stopUsingGPS() {
+        return;
+    }
+
+    @Override
+    public void setLocationChangeListener(ILocationChangeListener listener) {
+
+    }
 }

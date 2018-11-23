@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.activities;
+package ru.drsk.progserega.inspectionsheet.activities.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,7 +17,7 @@ public class EquipmentListAdapter extends ArrayAdapter<Equipment> {
     private final Context context;
     private  List<Equipment> values;
 
-    EquipmentListAdapter(Context context, List<Equipment> values){
+    public EquipmentListAdapter(Context context, List<Equipment> values){
         super(context, -1, values);
         this.context = context;
         this.values = values;

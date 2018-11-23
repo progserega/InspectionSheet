@@ -10,8 +10,10 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
+import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 
 public class EquipmentService {
 
@@ -30,9 +32,12 @@ public class EquipmentService {
     private ILineStorage lineStorage;
     //private ILocation location;
 
-    public EquipmentService(ILineStorage lineStorage) {
+    private ISubstationStorage substationStorage;
+
+    public EquipmentService(ILineStorage lineStorage, ISubstationStorage substationStorage) {
         this.lineStorage = lineStorage;
         //this.location = location;
+        this.substationStorage = substationStorage;
 
         this.filters = new HashMap<>();
     }
@@ -58,6 +63,14 @@ public class EquipmentService {
         return equipments;
     }
 
+    private List<Equipment> substationsToEquipment(List<Substation> substations) {
+        List<Equipment> equipments = new ArrayList<>();
+        for (Substation substation : substations) {
+            equipments.add((Equipment) substation);
+        }
+        return equipments;
+    }
+
     public List<Equipment> getEquipments() {
 
         List<Equipment> equipments = new ArrayList<>();
@@ -71,6 +84,10 @@ public class EquipmentService {
             List<Line> lines = lineStorage.getByFilters(this.filters);
             return linesToEquipment(lines);
         }
+        else if ((EquipmentType) filters.get(EquipmentService.FILTER_TYPE) == EquipmentType.SUBSTATION) {
+            List<Substation> substations = substationStorage.getByFilters(this.filters);
+            return substationsToEquipment(substations);
+        }
         else{
             //NOT IMPLEMENTED
 
@@ -82,6 +99,10 @@ public class EquipmentService {
 
     public Line getLineById (long lineId){
         return lineStorage.getById(lineId);
+    }
+
+    public Substation getSubstationById(long substationId){
+        return substationStorage.getById(substationId);
     }
 
 }

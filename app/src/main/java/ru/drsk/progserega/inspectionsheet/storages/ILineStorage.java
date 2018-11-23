@@ -13,6 +13,4 @@ public interface ILineStorage {
 
     public Line getById(long id);
 
-//    public ArrayList<Line> getLinesByType(Voltage voltage);
-//    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name);
 }

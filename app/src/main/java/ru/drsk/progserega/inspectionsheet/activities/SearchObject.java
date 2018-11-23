@@ -25,6 +25,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.activities.adapters.EquipmentListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Inspection;
@@ -32,9 +33,10 @@ import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
+import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 
-public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
 
     private static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 5;
 
@@ -113,6 +115,8 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         });
 
         gpsCheckbox = (CheckBox) findViewById(R.id.searchNearestChb);
+
+        locationService.setLocationChangeListener(this);
     }
 
     protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
@@ -120,17 +124,27 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         // Toast.makeText(this, equipment.getInspection() + " selected", Toast.LENGTH_LONG).show();
 
-        if (equipment.getType() == EquipmentType.LINE) {
-
-            Inspection inspection = new Inspection(equipmentService.getLineById(equipment.getId()));
-            application.setInspection(inspection);
-
-            Intent intent = new Intent(this, InspectTower.class);
-//            intent.putExtra(LINE_ID, equipment.getId());
-//            intent.putExtra(LINE_NAME, equipment.getName());
-            startActivity(intent);
+        if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
+            //NOT IMPLEMENTED
+            return;
         }
 
+        Inspection inspection = null;
+        Intent intent = null;
+        if (equipment.getType() == EquipmentType.LINE) {
+            inspection = new Inspection(equipmentService.getLineById(equipment.getId()));
+            intent = new Intent(this, InspectTower.class);
+        }
+
+        if (equipment.getType() == EquipmentType.SUBSTATION) {
+            inspection = new Inspection(equipmentService.getSubstationById(equipment.getId()));
+            intent = new Intent(this, InspectTransformator.class);
+        }
+
+        application.setInspection(inspection);
+        startActivity(intent);
+
+        locationService.stopUsingGPS();
     }
 
     private void ReloadListValues() {
@@ -149,14 +163,13 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         if (checked) {
 
             if (checkGPSPermission()) {
-                filterByPosition();
-            }else {
+                filterByPosition(locationService.getUserPosition());
+            } else {
                 requestGPSAccess();
             }
-
-
         } else {
             equipmentService.removeFilter(EquipmentService.FILTER_POSITION);
+            locationService.stopUsingGPS();
         }
 
         ReloadListValues();
@@ -190,9 +203,9 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         //Toast.makeText(this, inputText, Toast.LENGTH_LONG).show();
     }
 
-    private void filterByPosition() {
+    private void filterByPosition(Point userPosition) {
         Toast.makeText(this, "Фильтруем позицию!!!!", Toast.LENGTH_LONG).show();
-        Point userPosition = locationService.getUserPosition();
+
         if (userPosition.getLon() == 0 || userPosition.getLat() == 0) {
             buildAlertMessageNoGps();
         }
@@ -210,7 +223,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         }
     }
 
-    private void requestGPSAccess(){
+    private void requestGPSAccess() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
             showExplanation(
@@ -223,13 +236,14 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
             requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_CODE_ACCESS_FINE_LOCATION);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
-                    filterByPosition();
+                    filterByPosition(locationService.getUserPosition());
                     ReloadListValues();
                 } else {
                     Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
@@ -284,5 +298,11 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
+    }
+
+    @Override
+    public void onLocationChange(Point location) {
+        filterByPosition(location);
+        ReloadListValues();
     }
 }

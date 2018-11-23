@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import ru.drsk.progserega.inspectionsheet.entities.Inspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
@@ -12,10 +13,12 @@ import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.OrganizationStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.stub.SubstationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
 
 public class InspectionSheetApplication extends Application {
@@ -35,6 +38,8 @@ public class InspectionSheetApplication extends Application {
     private ICatalogStorage catalogStorage;
 
     private Inspection inspection;
+
+    private Deffect deffect;
 
     public EquipmentService getEquipmentService() {
         return equipmentService;
@@ -64,6 +69,14 @@ public class InspectionSheetApplication extends Application {
         this.inspection = inspection;
     }
 
+    public Deffect getDeffect() {
+        return deffect;
+    }
+
+    public void setDeffect(Deffect deffect) {
+        this.deffect = deffect;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -83,12 +96,14 @@ public class InspectionSheetApplication extends Application {
 
         //ILineStorage lineStorage = new LineStorageJSON();
 
+        ISubstationStorage substationStorage = new SubstationStorageStub();
+
         catalogStorage = new CatalogStorageStub();
 
         IOrganizationStorage organizationStorage = new OrganizationStorageStub();
         this.organizationService = new OrganizationService(organizationStorage);
 
-        this.equipmentService = new EquipmentService(lineStorage);
+        this.equipmentService = new EquipmentService(lineStorage, substationStorage);
 
         ITowerStorage towerStorage = new TowerStorageStub();
 

@@ -1,39 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.AddDefect">
 
-    <TextView
-        android:id="@+id/textView3"
+    <!-- Content Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/add_defect_inspection_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/add_defect_description"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:hint="описание"
+            android:inputType="textMultiLine"
+            android:layout_marginTop="10dp"/>
+
+
+        <Button
+            android:id="@+id/add_defect_photo_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAddPhotoBtnClick"
+            android:text="Добавить фото" />
+
+        <GridView
+            android:id="@+id/add_defect_photos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:columnWidth="115dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="5dp"
+            android:horizontalSpacing="5dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            />
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="40dp"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:background="@color/colorPrimaryDark"
+        >
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <!--<Button-->
+            <!--android:id="@+id/button3"-->
+            <!--android:layout_width="200dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:gravity="center"-->
+            <!--android:text="Button"-->
+            <!--/>-->
+        <LinearLayout
+            android:id="@+id/linLayout"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:onClick="onSaveBtnPress"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+            <ImageButton
+                android:id="@+id/save_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_save_24px"
+                android:onClick="onSaveBtnPress" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="148dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textMultiLine" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/save"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <!--<android.support.design.widget.BottomNavigationView-->
+        <!--android:id="@+id/bottom_navigation"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--app:itemBackground="@color/colorPrimary"-->
+        <!--app:itemIconTint="@color/white"-->
+        <!--app:itemTextColor="@color/white"-->
+        <!--app:menu="@menu/bootom_save_menu" />-->
+
+</RelativeLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--tools:context=".activities.AddDefect"-->
+    <!--android:padding="8dp">-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/add_defect_inspection_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="TextView"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:textSize="16sp" />-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/add_defect_description"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:gravity="top"-->
+        <!--android:hint="описание"-->
+        <!--android:inputType="textMultiLine"-->
+        <!--android:layout_marginTop="10dp"/>-->
+
+
+    <!--<Button-->
+        <!--android:id="@+id/add_defect_photo_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:onClick="onAddPhotoBtnClick"-->
+        <!--android:text="Добавить фото" />-->
+
+    <!--<GridView-->
+        <!--android:id="@+id/add_defect_photos"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="2"-->
+        <!--android:columnWidth="115dp"-->
+        <!--android:numColumns="auto_fit"-->
+        <!--android:verticalSpacing="5dp"-->
+        <!--android:horizontalSpacing="5dp"-->
+        <!--android:stretchMode="columnWidth"-->
+        <!--android:gravity="center"-->
+        <!--/>-->
+   <!---->
+<!--</LinearLayout>-->

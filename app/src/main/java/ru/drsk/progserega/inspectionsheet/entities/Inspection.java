@@ -6,6 +6,7 @@ public class Inspection {
     private Line line;
     private LineTower lineTower;
     private InspectionType inspectionType;
+    private Substation substation;
 
     public Line getLine() {
         return line;
@@ -37,4 +38,9 @@ public class Inspection {
     public Inspection(Line line) {
         this.line = line;
     }
+
+    public Inspection(Substation substation) {
+        this.substation = substation;
+    }
+
 }
