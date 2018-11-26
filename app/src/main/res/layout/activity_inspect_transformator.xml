@@ -7,18 +7,37 @@
     android:orientation="vertical"
     tools:context=".activities.InspectTransformator">
 
+
     <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/inspection_transformator_substation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="name"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+
+        />
+
+    <TextView
+        android:layout_marginTop="10dp"
         android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="Трансформатор"
+
+        />
+
 
     <Spinner
-        android:id="@+id/spinner3"
+
+        android:id="@+id/select_transformator_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ListView
+        android:layout_marginTop="10dp"
         android:id="@+id/inspection_transformator_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

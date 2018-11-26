@@ -60,7 +60,7 @@ public class InspectTower extends AppCompatActivity {
 
 //        lineId = intent.getLongExtra(LINE_ID, 0);
 //        String lineName = intent.getStringExtra(LINE_NAME);
-        Line line = application.getInspection().getLine();
+        Line line = application.getEquipmentInspection().getLine();
 
         TextView lineNameText = (TextView) findViewById(R.id.inspection_tower_name);
         lineNameText.setText(line.getName());
@@ -207,7 +207,7 @@ public class InspectTower extends AppCompatActivity {
         }
 
         selectedLineTower = lineTowers.get(position - 1);
-        application.getInspection().setLineTower(selectedLineTower);
+        application.getEquipmentInspection().setLineTower(selectedLineTower);
 
         //TODO:
         // Set material spinner item
@@ -239,7 +239,7 @@ public class InspectTower extends AppCompatActivity {
         if(position == 0){
             return;
         }
-        application.getInspection().setInspectionType(inspectionTypes.get(position - 1));
+        application.getEquipmentInspection().setInspectionType(inspectionTypes.get(position - 1));
     }
 
 }

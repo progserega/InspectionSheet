@@ -1,8 +1,11 @@
-package ru.drsk.progserega.inspectionsheet.entities;
+package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
+import ru.drsk.progserega.inspectionsheet.entities.Line;
+import ru.drsk.progserega.inspectionsheet.entities.LineTower;
+import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.InspectionType;
 
-public class Inspection {
+public class EquipmentInspection {
     private Line line;
     private LineTower lineTower;
     private InspectionType inspectionType;
@@ -28,18 +31,22 @@ public class Inspection {
         return inspectionType;
     }
 
+    public Substation getSubstation() {
+        return substation;
+    }
+
     public void setInspectionType(InspectionType inspectionType) {
         this.inspectionType = inspectionType;
     }
 
-    public Inspection() {
+    public EquipmentInspection() {
     }
 
-    public Inspection(Line line) {
+    public EquipmentInspection(Line line) {
         this.line = line;
     }
 
-    public Inspection(Substation substation) {
+    public EquipmentInspection(Substation substation) {
         this.substation = substation;
     }
 

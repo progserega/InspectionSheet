@@ -35,7 +35,7 @@ import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 
-import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility.REQUEST_CODE_READ_EXTERNAL_STORAGE;
+import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility.REQUEST_CODE_WRITE_EXTERNAL_STORAGE;
 
 public class AddDefect extends AppCompatActivity {
 
@@ -81,7 +81,7 @@ public class AddDefect extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(AddDefect.this, "" + position, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(AddDefect.this, "" + position, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -149,7 +149,7 @@ public class AddDefect extends AppCompatActivity {
         }
 
         if (requestCode == REQUEST_CAMERA) {
-            Toast.makeText(this, "IMAGE FROM CAMERA", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "IMAGE FROM CAMERA", Toast.LENGTH_SHORT).show();
             onCaptureImageResult(data);
         }
     }
@@ -158,7 +158,7 @@ public class AddDefect extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_CODE_READ_EXTERNAL_STORAGE:
+            case REQUEST_CODE_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (userChooseTask.equals("CAMERA")) {
                         cameraIntent();
@@ -167,7 +167,7 @@ public class AddDefect extends AppCompatActivity {
                         galeryIntent();
                     }
                 } else {
-                    Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
         }
     }

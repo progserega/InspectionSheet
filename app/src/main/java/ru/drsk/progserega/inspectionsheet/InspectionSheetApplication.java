@@ -3,12 +3,12 @@ package ru.drsk.progserega.inspectionsheet;
 import android.app.Application;
 import android.util.Log;
 
-import ru.drsk.progserega.inspectionsheet.entities.Inspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
-import ru.drsk.progserega.inspectionsheet.services.LocationServiceStub;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
@@ -37,7 +37,9 @@ public class InspectionSheetApplication extends Application {
 
     private ICatalogStorage catalogStorage;
 
-    private Inspection inspection;
+    private EquipmentInspection equipmentInspection;
+
+    private SubstationInspection substationInspection;
 
     private Deffect deffect;
 
@@ -61,12 +63,20 @@ public class InspectionSheetApplication extends Application {
         return catalogStorage;
     }
 
-    public Inspection getInspection() {
-        return inspection;
+    public EquipmentInspection getEquipmentInspection() {
+        return equipmentInspection;
     }
 
-    public void setInspection(Inspection inspection) {
-        this.inspection = inspection;
+    public void setEquipmentInspection(EquipmentInspection equipmentInspection) {
+        this.equipmentInspection = equipmentInspection;
+    }
+
+    public SubstationInspection getSubstationInspection() {
+        return substationInspection;
+    }
+
+    public void setSubstationInspection(SubstationInspection substationInspection) {
+        this.substationInspection = substationInspection;
     }
 
     public Deffect getDeffect() {

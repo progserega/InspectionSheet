@@ -28,9 +28,10 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.EquipmentListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Inspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
@@ -122,26 +123,30 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
         Equipment equipment = (Equipment) listAdapter.getItem(position);
 
-        // Toast.makeText(this, equipment.getInspection() + " selected", Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, equipment.getEquipmentInspection() + " selected", Toast.LENGTH_LONG).show();
 
         if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
             //NOT IMPLEMENTED
             return;
         }
 
-        Inspection inspection = null;
+        EquipmentInspection equipmentInspection = null;
         Intent intent = null;
         if (equipment.getType() == EquipmentType.LINE) {
-            inspection = new Inspection(equipmentService.getLineById(equipment.getId()));
+            equipmentInspection = new EquipmentInspection(equipmentService.getLineById(equipment.getId()));
             intent = new Intent(this, InspectTower.class);
+            application.setEquipmentInspection(equipmentInspection);
         }
 
         if (equipment.getType() == EquipmentType.SUBSTATION) {
-            inspection = new Inspection(equipmentService.getSubstationById(equipment.getId()));
+            //equipmentInspection = new EquipmentInspection(equipmentService.getSubstationById(equipment.getId()));
+            SubstationInspection substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
+            application.setSubstationInspection(substationInspection);
+
             intent = new Intent(this, InspectTransformator.class);
         }
 
-        application.setInspection(inspection);
+
         startActivity(intent);
 
         locationService.stopUsingGPS();

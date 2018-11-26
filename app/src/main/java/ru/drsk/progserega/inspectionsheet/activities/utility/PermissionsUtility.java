@@ -16,7 +16,7 @@ import ru.drsk.progserega.inspectionsheet.activities.SearchObject;
 public class PermissionsUtility {
 
     public static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 0;
-    public static final int REQUEST_CODE_READ_EXTERNAL_STORAGE = 1;
+    public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
 
 
 
@@ -24,7 +24,7 @@ public class PermissionsUtility {
 
         int currentAPIVersion = Build.VERSION.SDK_INT;
 
-        if(checkPermission(activity,  Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if(checkPermission(activity,  Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             return true;
         }
 
@@ -60,17 +60,17 @@ public class PermissionsUtility {
 //    }
 
     private static void requestStorageAccess(Activity activity) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
             showExplanation(
                     "Необходимо разрешение",
                     "Для доступа к фотографиям необходимо разрешение",
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    REQUEST_CODE_READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    REQUEST_CODE_WRITE_EXTERNAL_STORAGE,
                     activity);
 
         } else {
-            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_READ_EXTERNAL_STORAGE, activity);
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_WRITE_EXTERNAL_STORAGE, activity);
         }
     }
 

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
@@ -22,6 +23,15 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
     private final Context context;
     private TransformatorInspection inspection;
     private List<InspectionItem> inspectionItems;
+
+    public void setInspection(TransformatorInspection inspection) {
+        this.inspection = inspection;
+        if(inspection == null){
+            inspectionItems = new ArrayList<>();
+        }else {
+            inspectionItems = inspection.getInspectionItems();
+        }
+    }
 
     public TransformatorInspectionAdapter(Context context, TransformatorInspection inspection){
         this.context = context;

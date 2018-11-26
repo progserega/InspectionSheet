@@ -6,6 +6,7 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformatorStorage;
 
 public class SubstationStorageStub implements ISubstationStorage {
 

@@ -18,9 +18,9 @@
     <string name="selectObjectText">Select object</string>
     <string name="next">Next</string>
     <string name="towerNameText">Tower №</string>
-    <string name="inspectionTypeText">Type of inspection</string>
+    <string name="inspectionTypeText">Type of equipmentInspection</string>
     <string name="towerMaterialText">Tower material</string>
-    <string name="towerTypeText">Tower inspection</string>
+    <string name="towerTypeText">Tower equipmentInspection</string>
     <string name="createDefectBtText">Add Defect</string>
     <string name="addPhotoDefectBtText">Add Photo for defect</string>
     <string name="faundedDefectsText">Founded defects</string>
