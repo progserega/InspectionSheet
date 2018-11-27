@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +42,7 @@ public class TransfInspectionListReader {
 
 
     private Map<Integer, InspectionItem> readLinesArray(JsonReader reader ) throws IOException {
-        Map<Integer, InspectionItem> linesMap = new HashMap<>();
+        Map<Integer, InspectionItem> linesMap = new LinkedHashMap<>();
         reader.beginArray();
         while (reader.hasNext()) {
             InspectionItem line = readLine(reader);

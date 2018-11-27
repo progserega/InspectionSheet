@@ -36,4 +36,6 @@
     <string name="endInspectionBt">Закончить осмотр</string>
     <string name="tower_number">№ опоры</string>
     <string name="save">Сохранить</string>
+    <string name="inspection">Осмотр</string>
+    <string name="export_results">Экспорт результатов</string>
 </resources>

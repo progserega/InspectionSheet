@@ -40,5 +40,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_test2">Test2</string>
     <string name="save">Save</string>
+    <string name="inspection">inspection</string>
+    <string name="export_results">export</string>
 
 </resources>
