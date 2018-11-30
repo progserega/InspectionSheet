@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,15 +15,15 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformatorInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformatorInspectionAdapter extends BaseAdapter {
 
     private final Context context;
-    private TransformatorInspection inspection;
+    private TransformerInspection inspection;
     private List<InspectionItem> inspectionItems;
 
-    public void setInspection(TransformatorInspection inspection) {
+    public void setInspection(TransformerInspection inspection) {
         this.inspection = inspection;
         if(inspection == null){
             inspectionItems = new ArrayList<>();
@@ -33,7 +32,7 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         }
     }
 
-    public TransformatorInspectionAdapter(Context context, TransformatorInspection inspection){
+    public TransformatorInspectionAdapter(Context context, TransformerInspection inspection){
         this.context = context;
         this.inspection = inspection;
         this.inspectionItems = inspection.getInspectionItems();

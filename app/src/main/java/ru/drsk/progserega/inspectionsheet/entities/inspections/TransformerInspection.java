@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
-import ru.drsk.progserega.inspectionsheet.entities.Transformator;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 
-public class TransformatorInspection {
+public class TransformerInspection {
 
     private Substation substation;
-    private Transformator transformator;
+    private Transformer transformator;
     private List<InspectionItem> inspectionItems;
     private Date date;
 
@@ -28,7 +28,7 @@ public class TransformatorInspection {
         this.date = date;
     }
 
-    public TransformatorInspection(Substation substation, Transformator transformator) {
+    public TransformerInspection(Substation substation, Transformer transformator) {
 
         inspectionItems = new ArrayList<>();
     }

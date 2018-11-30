@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Substation extends Equipment {
 
-    private List<Transformator> transformators;
+    private List<Transformer> transformators;
 
-    public List<Transformator> getTransformators() {
+    public List<Transformer> getTransformators() {
         return transformators;
     }
 
-    public void setTransformators(List<Transformator> transformators) {
+    public void setTransformators(List<Transformer> transformators) {
         this.transformators = transformators;
     }
 

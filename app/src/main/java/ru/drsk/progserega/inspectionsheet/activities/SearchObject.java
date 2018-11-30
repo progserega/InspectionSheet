@@ -143,7 +143,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
             SubstationInspection substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
             application.setSubstationInspection(substationInspection);
 
-            intent = new Intent(this, InspectTransformator.class);
+            intent = new Intent(this, InspectTransformer.class);
         }
 
 

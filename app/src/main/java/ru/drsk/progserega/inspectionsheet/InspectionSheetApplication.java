@@ -1,8 +1,14 @@
 package ru.drsk.progserega.inspectionsheet;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
@@ -15,6 +21,8 @@ import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDBHelper;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.OrganizationStorageStub;
@@ -42,6 +50,8 @@ public class InspectionSheetApplication extends Application {
     private SubstationInspection substationInspection;
 
     private Deffect deffect;
+
+    private SQLiteOpenHelper dbHelper;
 
     public EquipmentService getEquipmentService() {
         return equipmentService;
@@ -87,6 +97,13 @@ public class InspectionSheetApplication extends Application {
         this.deffect = deffect;
     }
 
+    private static IApiSTE apiSTE;
+    private Retrofit retrofit;
+
+    public SQLiteOpenHelper getDbHelper() {
+        return dbHelper;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -118,9 +135,26 @@ public class InspectionSheetApplication extends Application {
         ITowerStorage towerStorage = new TowerStorageStub();
 
         towersService = new TowersService(towerStorage, lineStorage);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(60*2, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://api-ste.rs.int") //Базовая часть адреса
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
+                .build();
+        apiSTE = retrofit.create(IApiSTE.class); //Создаем объект, при помощи которого будем выполнять запросы
+
+        dbHelper = new InspectionSheetDBHelper(getApplicationContext());
+
     }
 
 
-
-
+    public IApiSTE getApiSTE() {
+        return apiSTE;
+    }
 }

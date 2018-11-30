@@ -3,22 +3,20 @@ package ru.drsk.progserega.inspectionsheet.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformatorInspection;
+public class Transformer extends Equipment{
 
-public class Transformator extends Equipment{
-
-    public Transformator(long id, String name) {
+    public Transformer(long id, String name) {
         this.id = id;
         this.name = name;
-        this.type = EquipmentType.TRANSFORMATOR;
+        this.type = EquipmentType.TRANSFORMER;
     }
 
-    public static List<String> getNames(List<Transformator> transformators){
+    public static List<String> getNames(List<Transformer> transformators){
         List<String> names = new ArrayList<>();
         if(transformators == null){
             return  names;
         }
-        for (Transformator trans: transformators){
+        for (Transformer trans: transformators){
             names.add(trans.getName());
         }
         return names;

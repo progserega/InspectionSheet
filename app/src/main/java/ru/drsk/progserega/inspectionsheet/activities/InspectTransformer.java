@@ -8,34 +8,34 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformatorInspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
-import ru.drsk.progserega.inspectionsheet.entities.Transformator;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformatorInspection;
-import ru.drsk.progserega.inspectionsheet.storages.ITransformatorStorage;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
-import ru.drsk.progserega.inspectionsheet.storages.stub.TransformatorStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.stub.TransformerStorageStub;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
 
-public class InspectTransformator extends AppCompatActivity {
+public class InspectTransformer extends AppCompatActivity {
 
     static final int GET_DEFFECT_VALUE_REQUEST = 1;
 
     private TransformatorInspectionAdapter transformatorInspectionAdapter;
-    private TransformatorInspection inspection;
+    private TransformerInspection inspection;
     private InspectionSheetApplication application;
 
 
@@ -44,24 +44,34 @@ public class InspectTransformator extends AppCompatActivity {
 
     SubstationInspection substationInspection;
 
-    private  List<Transformator> transformators;
+    private  List<Transformer> transformers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspect_transformator);
+
+        ImageButton imageButton =  (ImageButton) findViewById(R.id.inpsect_transformator_save_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
+        }else {
+            /* старые версии не поддерживают векторные рисунки */
+            imageButton.setImageResource(R.drawable.ic_save_balack_png);
+        }
+        imageButton.invalidate();
+
         this.application = (InspectionSheetApplication) this.getApplication();
 
         substationInspection = this.application.getSubstationInspection();
 
-        ITransformatorStorage transformatorStorage = new TransformatorStorageStub();
+        ITransformerStorage transformatorStorage = new TransformerStorageStub();
         Substation substation = substationInspection.getSubstation();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
         substationNameText.setText(substation.getName());
 
-        transformators = transformatorStorage.getBySubstantionId(substation.getId());
-        List<String> transfNames = Transformator.getNames(transformators);
+        transformers = transformatorStorage.getBySubstantionId(substation.getId());
+        List<String> transfNames = Transformer.getNames(transformers);
         transfNames.add(0, "не выбран");
 
         transformatorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, transfNames);
@@ -84,7 +94,7 @@ public class InspectTransformator extends AppCompatActivity {
 
 
 
-        inspection = new TransformatorInspection(substation, null);
+        inspection = new TransformerInspection(substation, null);
         //inspection.loadList(inspectionListReader);
 
         transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection);
@@ -133,11 +143,11 @@ public class InspectTransformator extends AppCompatActivity {
             return;
         }
 
-        Transformator transformator = transformators.get(position - 1);
+        Transformer transformator = transformers.get(position - 1);
 
-        TransformatorInspection inspection = substationInspection.getInspectionByTransformator(transformator.getId());
+        TransformerInspection inspection = substationInspection.getInspectionByTransformator(transformator.getId());
         if(inspection == null){
-            inspection = new TransformatorInspection(substationInspection.getSubstation(), transformator);
+            inspection = new TransformerInspection(substationInspection.getSubstation(), transformator);
             TransfInspectionListReader inspectionListReader = new TransfInspectionListReader(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list));
             inspection.loadList(inspectionListReader);
             substationInspection.addInspection(transformator.getId(), inspection);

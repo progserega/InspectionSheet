@@ -1,11 +1,13 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -15,10 +17,12 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +66,16 @@ public class AddDefect extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_defect);
 
+
+        ImageButton imageButton =  (ImageButton) findViewById(R.id.save_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
+        }else {
+            /* старые версии не поддерживают векторные рисунки */
+            imageButton.setImageResource(R.drawable.ic_save_balack_png);
+        }
+        imageButton.invalidate();
+
         this.application = (InspectionSheetApplication) this.getApplication();
         Intent intent = getIntent();
         String inspectionName = (String) intent.getStringExtra(DEFFECT_NAME);
@@ -76,8 +90,9 @@ public class AddDefect extends AppCompatActivity {
 
 
         GridView gridview = (GridView) findViewById(R.id.add_defect_photos);
-        float scalefactor = getResources().getDisplayMetrics().density;
-        int imageWidth = (int) (115 * scalefactor);
+//        float scalefactor = getResources().getDisplayMetrics().density;
+//        int imageWidth = (int) (115 * scalefactor);
+        int imageWidth = dpToPx(115);
 
         saveDeffectPhotos(deffect.getPhotos());
 
@@ -129,10 +144,10 @@ public class AddDefect extends AppCompatActivity {
         builder.show();
     }
 
-    private void cameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
+//    private void cameraIntent() {
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(intent, REQUEST_CAMERA);
+//    }
 
     private void galeryIntent() {
         Intent intent = new Intent();
@@ -180,32 +195,54 @@ public class AddDefect extends AppCompatActivity {
 
     private void onCaptureImageResult(Intent data) {
 
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        // Get the dimensions of the View
+        int targetW = dpToPx(115);
+        int targetH = dpToPx(115);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 9, outputStream);
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
 
-        String storageDir = Environment.getExternalStorageDirectory()+"/InspectionSheet/Photo";
-        File destinationDir = new File(storageDir);
-        File destination = new File(storageDir, System.currentTimeMillis() + ".jpg");
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
-        if(!PermissionsUtility.isExternalStorageWritable()){
-           return;
-        }
-        FileOutputStream fo;
-        try {
-            if(!destinationDir.exists()){
-                destinationDir.mkdirs();
-            }
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(outputStream.toByteArray());
-            fo.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
 
-        deffectPhotos.add(new DeffectPhoto(thumbnail));
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+       // mImageView.setImageBitmap(bitmap);
+
+//        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+//
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        thumbnail.compress(Bitmap.CompressFormat.JPEG, 9, outputStream);
+//
+//        String storageDir = Environment.getExternalStorageDirectory()+"/InspectionSheet/Photo";
+//        File destinationDir = new File(storageDir);
+//        File destination = new File(storageDir, System.currentTimeMillis() + ".jpg");
+//
+//        if(!PermissionsUtility.isExternalStorageWritable()){
+//           return;
+//        }
+//        FileOutputStream fo;
+//        try {
+//            if(!destinationDir.exists()){
+//                destinationDir.mkdirs();
+//            }
+//            destination.createNewFile();
+//            fo = new FileOutputStream(destination);
+//            fo.write(outputStream.toByteArray());
+//            fo.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+        deffectPhotos.add(new DeffectPhoto(bitmap));
         imageAdapter.notifyDataSetChanged();
 
     }
@@ -279,7 +316,7 @@ public class AddDefect extends AppCompatActivity {
         return image;
     }
 
-    private void cameraIntent2() {
+    private void cameraIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -293,9 +330,17 @@ public class AddDefect extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
+                        "ru.drsk.progserega.inspectionsheet.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                /* ----------- Фикс для старых андроидов ---------------*/
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
+                    }
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+                /*------------------------------------------*/
                 startActivityForResult(takePictureIntent, REQUEST_CAMERA);
             }
         }
@@ -309,5 +354,17 @@ public class AddDefect extends AppCompatActivity {
         Intent returnIntent = getIntent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    public int pxToDp(int px) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 }

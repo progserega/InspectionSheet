@@ -7,7 +7,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Substation;
 
 public class SubstationInspection {
     private Substation substation;
-    private Map<Long, TransformatorInspection> transformatorInspectionMap;
+    private Map<Long, TransformerInspection> transformatorInspectionMap;
 
     public Substation getSubstation() {
         return substation;
@@ -18,11 +18,11 @@ public class SubstationInspection {
         transformatorInspectionMap = new HashMap<>();
     }
 
-    public TransformatorInspection getInspectionByTransformator(long transformatorId){
+    public TransformerInspection getInspectionByTransformator(long transformatorId){
         return transformatorInspectionMap.get(transformatorId);
     }
 
-    public void addInspection(long transformatorId, TransformatorInspection inspection ){
+    public void addInspection(long transformatorId, TransformerInspection inspection ){
         transformatorInspectionMap.put(transformatorId, inspection);
     }
 }

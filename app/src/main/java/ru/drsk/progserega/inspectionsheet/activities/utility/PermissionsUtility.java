@@ -41,7 +41,7 @@ public class PermissionsUtility {
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             return false;
         } else {
-            Toast.makeText(context, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(context, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
             return true;
         }
     }

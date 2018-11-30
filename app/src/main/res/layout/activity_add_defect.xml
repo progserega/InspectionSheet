@@ -67,13 +67,7 @@
         android:background="@color/colorPrimaryDark"
         >
 
-        <!--<Button-->
-            <!--android:id="@+id/button3"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="Button"-->
-            <!--/>-->
+
         <LinearLayout
             android:id="@+id/linLayout"
             android:layout_width="80dp"
@@ -86,7 +80,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_save_24px"
+                android:background="@null"
                 android:onClick="onSaveBtnPress" />
 
             <TextView
@@ -100,6 +94,9 @@
 
         </LinearLayout>
     </LinearLayout>
+    <!--android:background="@drawable/ic_baseline_save_24px"-->
+
+
     <!--<android.support.design.widget.BottomNavigationView-->
         <!--android:id="@+id/bottom_navigation"-->
         <!--android:layout_width="match_parent"-->

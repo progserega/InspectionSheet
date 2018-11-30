@@ -1,29 +1,29 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
-import android.Manifest;
-import android.app.Application;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 
 public class MainActivity extends AppCompatActivity {
+
+    private InspectionSheetApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.application = (InspectionSheetApplication) this.getApplication();
     }
 
     /**
@@ -45,6 +45,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void syncData(View view){
        // showGPSPermission();
+
+        application.getApiSTE().getData("api/all-tp").enqueue(new Callback<SteTPResponse>() {
+            @Override
+            public void onResponse(Call<SteTPResponse> call, Response<SteTPResponse> response) {
+                //Данные успешно пришли, но надо проверить response.body() на null
+                int a = 0;
+            }
+            @Override
+            public void onFailure(Call<SteTPResponse> call, Throwable t) {
+                //Произошла ошибка
+                int a = 0;
+            }
+        });
     }
 
 }

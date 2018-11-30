@@ -1,5 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.entities;
 
-public class TransformatorSubstation extends Equipment {
+public class TransformerSubstation extends Equipment {
 
 }
