@@ -30,6 +30,21 @@
             android:layout_height="wrap_content"
             android:onClick="syncData"
             android:text="@string/syncBtText" />
+        <ProgressBar
+            android:layout_marginTop="50dp"
+            android:id="@+id/loading_progress"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
+        </ProgressBar>
+        <TextView
+            android:id="@+id/loading_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_gravity="center">
+        </TextView>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

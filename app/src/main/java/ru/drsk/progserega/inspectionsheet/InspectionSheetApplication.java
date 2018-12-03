@@ -22,6 +22,8 @@ import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
+import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
+import ru.drsk.progserega.inspectionsheet.storages.http.RemoteSorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDBHelper;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
@@ -52,6 +54,8 @@ public class InspectionSheetApplication extends Application {
     private Deffect deffect;
 
     private SQLiteOpenHelper dbHelper;
+
+    private IRemoteStorage remoteStorage;
 
     public EquipmentService getEquipmentService() {
         return equipmentService;
@@ -97,22 +101,25 @@ public class InspectionSheetApplication extends Application {
         this.deffect = deffect;
     }
 
-    private static IApiSTE apiSTE;
-    private Retrofit retrofit;
+//    private static IApiSTE apiSTE;
+//    private Retrofit retrofit;
+
 
     public SQLiteOpenHelper getDbHelper() {
         return dbHelper;
+    }
+
+    public IRemoteStorage getRemoteStorage() {
+        return remoteStorage;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.i("App onCreate", "Страртуем приложение");
 
        // locationService = new LocationServiceStub();
         LocationService  location = new LocationService(getApplicationContext());
-
 
         locationService = (ILocation) location;
 
@@ -136,25 +143,13 @@ public class InspectionSheetApplication extends Application {
 
         towersService = new TowersService(towerStorage, lineStorage);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(60*2, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://api-ste.rs.int") //Базовая часть адреса
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
-                .build();
-        apiSTE = retrofit.create(IApiSTE.class); //Создаем объект, при помощи которого будем выполнять запросы
-
         dbHelper = new InspectionSheetDBHelper(getApplicationContext());
 
+        remoteStorage = new RemoteSorage();
     }
 
 
-    public IApiSTE getApiSTE() {
-        return apiSTE;
-    }
+//    public IApiSTE getApiSTE() {
+//        return apiSTE;
+//    }
 }

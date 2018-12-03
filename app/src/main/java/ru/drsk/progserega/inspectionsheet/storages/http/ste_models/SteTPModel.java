@@ -19,7 +19,7 @@ public class SteTPModel {
 
     @SerializedName("disp_name_name")
     @Expose
-    private String dispNameName;
+    private String dispName;
 
     @SerializedName("sp_name")
     @Expose
@@ -31,11 +31,11 @@ public class SteTPModel {
 
     @SerializedName("location_lat")
     @Expose
-    private long lat;
+    private double lat;
 
     @SerializedName("location_lon")
     @Expose
-    private long lon;
+    private double lon;
 
 
     @SerializedName("t1")
@@ -74,12 +74,12 @@ public class SteTPModel {
         this.powerCenterName = powerCenterName;
     }
 
-    public String getDispNameName() {
-        return dispNameName;
+    public String getDispName() {
+        return dispName;
     }
 
-    public void setDispNameName(String dispNameName) {
-        this.dispNameName = dispNameName;
+    public void setDispName(String dispName) {
+        this.dispName = dispName;
     }
 
     public String getSpName() {
@@ -98,19 +98,19 @@ public class SteTPModel {
         this.resName = resName;
     }
 
-    public long getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(long lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public long getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(long lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
