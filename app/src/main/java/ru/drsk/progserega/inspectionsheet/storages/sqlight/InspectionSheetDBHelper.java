@@ -25,13 +25,18 @@ public class InspectionSheetDBHelper extends SQLiteOpenHelper {
 
     private void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 1) {
-//            db.execSQL("CREATE TABLE DRINK (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-//                    + "NAME TEXT, "
-//                    + "DESCRIPTION TEXT, "
-//                    + "IMAGE_RESOURCE_ID INTEGER);");
 
-            db.execSQL("CREATE TABLE \"RES\" ( \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, \"name\" TEXT, \"name_full\" TEXT )");
-            db.execSQL("CREATE TABLE \"SP\" ( \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,  \"name\" TEXT, \"name_full\" TEXT )");
+            db.execSQL("CREATE TABLE \"SP\" (" +
+                    " \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,  " +
+                    "\"name\" TEXT, " +
+                    "\"name_full\" TEXT )");
+
+            db.execSQL("CREATE TABLE \"RES\" ( " +
+                    "\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+                    "\"sp_id\" INTEGER, " +
+                    " \"name\" TEXT," +
+                    " \"name_full\" TEXT )");
+
 
             db.execSQL("CREATE TABLE \"TransformerSubstation\" ( " +
                     " \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +

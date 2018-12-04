@@ -5,13 +5,18 @@ import java.util.List;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener {
 
-    SteAsyncLoader steAsyncLoader;
-
-    public RemoteSorage() {
+    private SteAsyncLoader steAsyncLoader;
+    private DBDataImporter dbDataImporter;
+    public RemoteSorage(DBDataImporter dbDataImporter) {
+        this.dbDataImporter = dbDataImporter;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api-ste.rs.int") //Базовая часть адреса
@@ -20,8 +25,10 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
 
         IApiSTE apiSTE = retrofit.create(IApiSTE.class); //Создаем объект, при помощи которого будем выполнять запросы
 
-        steAsyncLoader = new SteAsyncLoader(apiSTE,  this);
+        steAsyncLoader = new SteAsyncLoader(apiSTE, this);
+
     }
+
 
     @Override
     public void setProgressListener(IProgressListener progressListener) {
@@ -35,10 +42,12 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
 
     /**
      * Этот метод вызывается когда прилетел кусок данных
-     * @param tpModels
+     * от апи с сервера
+     *
+     * @param tpModels список моделей трансформаторной подстанции
      */
     @Override
     public void SteTPModelsArrived(List<SteTPModel> tpModels) {
-        int a = 0;
+        dbDataImporter.loadSteTpModel(tpModels);
     }
 }

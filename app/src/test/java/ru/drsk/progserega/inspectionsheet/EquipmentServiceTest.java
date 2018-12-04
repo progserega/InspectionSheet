@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet;
 
+import android.support.v4.app.NavUtils;
+
 import org.junit.Test;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class EquipmentServiceTest {
         LineStorageStub lineStorage = new LineStorageStub(loc);
         lineStorage.setLines(initLinesWithTowersStub());
 
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
         equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_04KV);
 
@@ -84,7 +86,7 @@ public class EquipmentServiceTest {
         lineStorage.setLines(initLinesWithTowersStub());
 
 
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
 
         assertNotNull(equipmentService.getFilters());
 
@@ -92,7 +94,7 @@ public class EquipmentServiceTest {
 
     @Test
     public void canAddFilter() {
-        EquipmentService equipmentService = new EquipmentService(null);
+        EquipmentService equipmentService = new EquipmentService(null, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
 
@@ -102,7 +104,7 @@ public class EquipmentServiceTest {
 
     @Test
     public void canRemoveFilter() {
-        EquipmentService equipmentService = new EquipmentService(null);
+        EquipmentService equipmentService = new EquipmentService(null, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
         equipmentService.removeFilter(EquipmentService.FILTER_TYPE);
@@ -116,7 +118,7 @@ public class EquipmentServiceTest {
         ILocation loc = new LocationServiceStub();
         LineStorageStub lineStorage = new LineStorageStub(loc);
 
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
         List<Equipment> equipments = equipmentService.getEquipments();
@@ -127,7 +129,7 @@ public class EquipmentServiceTest {
     public void shouldAcceptFiltersTypeVoltage() {
         ILocation loc = new LocationServiceStub();
         LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
         equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_6_10KV);
@@ -141,7 +143,7 @@ public class EquipmentServiceTest {
     public void shouldAcceptFiltersTypeVoltageName() {
         ILocation loc = new LocationServiceStub();
         LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
         equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_04KV);
@@ -156,7 +158,7 @@ public class EquipmentServiceTest {
     public void shouldAcceptFiltersTypeName() {
         ILocation loc = new LocationServiceStub();
         LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage);
+        EquipmentService equipmentService = new EquipmentService(lineStorage, null);
 
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
 

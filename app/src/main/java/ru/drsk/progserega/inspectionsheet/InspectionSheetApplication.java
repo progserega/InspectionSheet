@@ -21,15 +21,21 @@ import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteSorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDBHelper;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.OrganizationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.SubstationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.stub.TransformerStorageStub;
 
 public class InspectionSheetApplication extends Application {
 
@@ -43,6 +49,9 @@ public class InspectionSheetApplication extends Application {
     //Сервис для работы с GPS
     private ILocation locationService;
 
+    //Сервис для работы с sqlight
+    private SQLiteOpenHelper dbHelper;
+
     private TowersService towersService;
 
     private ICatalogStorage catalogStorage;
@@ -53,7 +62,6 @@ public class InspectionSheetApplication extends Application {
 
     private Deffect deffect;
 
-    private SQLiteOpenHelper dbHelper;
 
     private IRemoteStorage remoteStorage;
 
@@ -117,10 +125,10 @@ public class InspectionSheetApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        dbHelper = new InspectionSheetDBHelper(getApplicationContext());
 
        // locationService = new LocationServiceStub();
         LocationService  location = new LocationService(getApplicationContext());
-
         locationService = (ILocation) location;
 
         //ILineStorage lineStorage = new LineStorageSqlight();
@@ -134,18 +142,20 @@ public class InspectionSheetApplication extends Application {
 
         catalogStorage = new CatalogStorageStub();
 
-        IOrganizationStorage organizationStorage = new OrganizationStorageStub();
-        this.organizationService = new OrganizationService(organizationStorage);
+        IOrganizationStorage organizationStorage = new OrganizationStorage(dbHelper);
+        organizationService = new OrganizationService(organizationStorage);
 
-        this.equipmentService = new EquipmentService(lineStorage, substationStorage);
+        equipmentService = new EquipmentService(lineStorage, substationStorage);
 
         ITowerStorage towerStorage = new TowerStorageStub();
 
         towersService = new TowersService(towerStorage, lineStorage);
 
-        dbHelper = new InspectionSheetDBHelper(getApplicationContext());
+        ITransformerStorage transformerStorage = new TransformerStorageStub();
+        ITransformerSubstationStorage transformerSubstationStorage = new TransformerSubstationStorage();
 
-        remoteStorage = new RemoteSorage();
+        DBDataImporter dbDataImporter = new DBDataImporter(organizationStorage, transformerSubstationStorage, transformerStorage);
+        remoteStorage = new RemoteSorage(dbDataImporter);
     }
 
 
