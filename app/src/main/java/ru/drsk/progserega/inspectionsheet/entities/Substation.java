@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Substation extends Equipment {
 
-    private List<Transformer> transformators;
+    private List<Transformer> transformers;
 
-    public List<Transformer> getTransformators() {
-        return transformators;
+    public List<Transformer> getTransformers() {
+        return transformers;
     }
 
-    public void setTransformators(List<Transformer> transformators) {
-        this.transformators = transformators;
+    public void setTransformers(List<Transformer> transformers) {
+        this.transformers = transformers;
     }
 
     public Substation(long id, String name ){
@@ -20,6 +20,6 @@ public class Substation extends Equipment {
         this.name = name;
         this.type = EquipmentType.SUBSTATION;
 
-        this.transformators = new ArrayList<>();
+        this.transformers = new ArrayList<>();
     }
 }

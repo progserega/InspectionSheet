@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet;
+package ru.drsk.progserega.inspectionsheet.json;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.storages.LineStorageJSON;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineReader;

@@ -105,20 +105,6 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
                 list.setLayoutManager(new LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL,false));
                 list.setAdapter(new HorizontalAdapter(inspectionItem.getDeffect().getPhotos()));
 
-//                GridView horizontalGridView = (GridView)rowView.findViewById(R.id.inspection_defect_photos);
-//                horizontalGridView.setNumColumns(inspectionItem.getDeffect().getPhotos().size());
-//
-//                float scalefactor = this.context.getResources().getDisplayMetrics().density;
-//                int imageWidth = (int) (48 * scalefactor);
-//
-//                //saveDeffectPhotos(deffect.getPhotos());
-//
-//                ImageAdapter imageAdapter = new ImageAdapter(this.context, inspectionItem.getDeffect().getPhotos(), imageWidth);
-//                horizontalGridView.setAdapter(imageAdapter);
-
-
-
-
                 break;
 
         }

@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,17 +17,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,7 +78,7 @@ public class AddDefect extends AppCompatActivity {
         TextView deffectNameTextView = (TextView) findViewById(R.id.add_defect_inspection_name);
         deffectNameTextView.setText(inspectionName);
 
-        deffect = application.getDeffect();
+        deffect = application.getCurrentDeffect();
 
         deffectDescription = (TextView) findViewById(R.id.add_defect_description);
         deffectDescription.setText(deffect.getDescription());

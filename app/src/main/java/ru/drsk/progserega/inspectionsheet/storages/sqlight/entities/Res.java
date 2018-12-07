@@ -19,9 +19,9 @@ import android.arch.persistence.room.PrimaryKey;
         indices = {@Index("sp_id")}
 )
 public class Res {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -30,20 +30,20 @@ public class Res {
     private String fullName;
 
     @ColumnInfo(name = "sp_id")
-    private int enterpriseId;
+    private long enterpriseId;
 
-    public Res(int id, String name, String fullName, int enterpriseId) {
+    public Res(long id, String name, String fullName, long enterpriseId) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
         this.enterpriseId = enterpriseId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -63,11 +63,11 @@ public class Res {
         this.fullName = fullName;
     }
 
-    public int getEnterpriseId() {
+    public long getEnterpriseId() {
         return enterpriseId;
     }
 
-    public void setEnterpriseId(int enterpriseId) {
+    public void setEnterpriseId(long enterpriseId) {
         this.enterpriseId = enterpriseId;
     }
 }

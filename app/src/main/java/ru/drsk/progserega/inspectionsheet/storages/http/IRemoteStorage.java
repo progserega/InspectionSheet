@@ -6,5 +6,7 @@ public interface IRemoteStorage {
 
     void loadTrasformerSubstations();
 
+    void loadSubstations();
+
     void setProgressListener(IProgressListener progressListener);
 }

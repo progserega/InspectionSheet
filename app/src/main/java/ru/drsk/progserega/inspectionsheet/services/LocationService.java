@@ -84,7 +84,7 @@ public class LocationService implements ILocation, LocationListener {
      */
     @Override
     public float defaultSearchRadius() {
-        return 100;
+        return 500;
     }
 
 

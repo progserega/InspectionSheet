@@ -8,11 +8,11 @@ import java.util.List;
  * Сетевое Предприятие
  */
 public class NetworkEnterprise {
-    private int id;
+    private long id;
     private String name;
     private List<ElectricNetworkArea> ENAreas;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -28,13 +28,13 @@ public class NetworkEnterprise {
         this.ENAreas = ENAreas;
     }
 
-    public NetworkEnterprise(int id, String name) {
+    public NetworkEnterprise(long id, String name) {
         this.id = id;
         this.name = name;
         this.ENAreas = new ArrayList<>();
     }
 
-    public NetworkEnterprise(int id, String name, List<ElectricNetworkArea> ENAreas) {
+    public NetworkEnterprise(long id, String name, List<ElectricNetworkArea> ENAreas) {
         this.id = id;
         this.name = name;
         this.ENAreas = ENAreas;

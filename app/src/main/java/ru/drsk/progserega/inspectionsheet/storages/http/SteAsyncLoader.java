@@ -5,10 +5,8 @@ import android.os.AsyncTask;
 import java.io.IOException;
 
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
-import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
-import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 
 public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
@@ -62,9 +60,27 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
             publishProgress((int) ((page / (float) totalPages) * 100));
 
         } while ((offset + PAGE_SIZE) < total);
+//
+//        publishProgress(0);
+//        loadSubstations();
+//        publishProgress(100);
         return null;
     }
 
+//    private void loadSubstations(){
+//        try {
+//            Response response = apiSTE.getAllSubstations("api/get-all-ps").execute();
+//            if (response.body() == null) {
+//                return;
+//            }
+//
+//            GeoSubstationsResponse substationsResponse = (GeoSubstationsResponse) response.body();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//
+//        }
+//    }
     protected void onProgressUpdate(Integer... progress) {
         if (progressListener != null) {
             progressListener.progressUpdate(progress[0]);

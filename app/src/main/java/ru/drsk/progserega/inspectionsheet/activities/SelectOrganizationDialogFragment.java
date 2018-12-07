@@ -3,7 +3,6 @@ package ru.drsk.progserega.inspectionsheet.activities;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,7 +32,7 @@ import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 public class SelectOrganizationDialogFragment extends DialogFragment {
 
     public interface ISelectOrganizationListener {
-        void onSelectOrganization(int enterpriseId, int areaId);
+        void onSelectOrganization(long enterpriseId, long areaId);
     }
 
     private OrganizationService organizationService;
@@ -183,8 +182,8 @@ public class SelectOrganizationDialogFragment extends DialogFragment {
 
     private void onSelectOrganizationBtnClick() {
 
-        int enterpriseId = (selectedEnterprise != null) ? selectedEnterprise.getId() : 0;
-        int areaId = (selectedArea != null) ? selectedArea.getId() : 0;
+        long enterpriseId = (selectedEnterprise != null) ? selectedEnterprise.getId() : 0;
+        long areaId = (selectedArea != null) ? selectedArea.getId() : 0;
         selectOrganizationListener.onSelectOrganization(enterpriseId, areaId);
         getDialog().dismiss();
     }

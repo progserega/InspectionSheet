@@ -18,6 +18,9 @@ public interface ResDao {
     @Insert
     void insertAll(Res... areas);
 
+    @Insert
+    long insert(Res res);
+
     @Delete
     void delete(Res area);
 

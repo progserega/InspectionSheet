@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet;
+package ru.drsk.progserega.inspectionsheet.json;
 
 
 import android.content.Context;
@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
+import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.json.TPReader;
 

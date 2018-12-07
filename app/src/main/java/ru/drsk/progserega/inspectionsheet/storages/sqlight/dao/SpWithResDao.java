@@ -16,4 +16,8 @@ public interface SpWithResDao {
     @Query("SELECT * FROM sp WHERE id = :spId")
     SpWithRes loadEnterpriseById(int spId);
 
+    @Query("SELECT * FROM sp WHERE name = :name")
+    SpWithRes loadEnterpriseByName(String name);
+
+
 }

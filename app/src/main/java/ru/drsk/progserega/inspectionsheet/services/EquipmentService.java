@@ -11,9 +11,11 @@ import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 
 public class EquipmentService {
 
@@ -34,10 +36,14 @@ public class EquipmentService {
 
     private ISubstationStorage substationStorage;
 
-    public EquipmentService(ILineStorage lineStorage, ISubstationStorage substationStorage) {
+    private ITransformerSubstationStorage transformerSubstationStorage;
+
+    public EquipmentService(ILineStorage lineStorage, ISubstationStorage substationStorage, ITransformerSubstationStorage transformerSubstationStorage) {
         this.lineStorage = lineStorage;
         //this.location = location;
         this.substationStorage = substationStorage;
+
+        this.transformerSubstationStorage = transformerSubstationStorage;
 
         this.filters = new HashMap<>();
     }
@@ -71,6 +77,14 @@ public class EquipmentService {
         return equipments;
     }
 
+    private List<Equipment> transformerSubstationsToEquipment(List<TransformerSubstation> substations) {
+        List<Equipment> equipments = new ArrayList<>();
+        for (TransformerSubstation substation : substations) {
+            equipments.add((Equipment) substation);
+        }
+        return equipments;
+    }
+
     public List<Equipment> getEquipments() {
 
         List<Equipment> equipments = new ArrayList<>();
@@ -88,7 +102,12 @@ public class EquipmentService {
             List<Substation> substations = substationStorage.getByFilters(this.filters);
             return substationsToEquipment(substations);
         }
-        else{
+        else if ((EquipmentType) filters.get(EquipmentService.FILTER_TYPE) == EquipmentType.TRANS_SUBSTATION) {
+            List<TransformerSubstation> substations = transformerSubstationStorage.getByFilters(this.filters);
+            return transformerSubstationsToEquipment(substations);
+        }
+        else
+            {
             //NOT IMPLEMENTED
 
         }
@@ -104,5 +123,10 @@ public class EquipmentService {
     public Substation getSubstationById(long substationId){
         return substationStorage.getById(substationId);
     }
+
+    public TransformerSubstation getTransformerSubstationById(long id){
+        return transformerSubstationStorage.getById(id);
+    }
+
 
 }

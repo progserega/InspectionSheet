@@ -7,26 +7,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformatorInspectionAdapter;
-import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
+import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
-import ru.drsk.progserega.inspectionsheet.storages.stub.TransformerStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
 
@@ -39,12 +41,15 @@ public class InspectTransformer extends AppCompatActivity {
     private InspectionSheetApplication application;
 
 
-    private ArrayAdapter<String> transformatorAdapter;
+   // private ArrayAdapter<String> transformerSpinnerAdapter;
+    private TransformerSpinnerAdapter transformerSpinnerAdapter;
     private Spinner transformatorSpinner;
 
-    SubstationInspection substationInspection;
+    private ISubstationInspection substationInspection;
 
     private  List<Transformer> transformers;
+
+    private List<TransformerInspection> transformerInspections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,22 +67,27 @@ public class InspectTransformer extends AppCompatActivity {
 
         this.application = (InspectionSheetApplication) this.getApplication();
 
-        substationInspection = this.application.getSubstationInspection();
+        substationInspection = this.application.getCurrentSubstationInspection();
 
-        ITransformerStorage transformatorStorage = new TransformerStorageStub();
-        Substation substation = substationInspection.getSubstation();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
+        Equipment substation = substationInspection.getEquipment();
         substationNameText.setText(substation.getName());
 
-        transformers = transformatorStorage.getBySubstantionId(substation.getId());
-        List<String> transfNames = Transformer.getNames(transformers);
-        transfNames.add(0, "не выбран");
+        ITransformerStorage transformatorStorage = new TransformerStorage(application.getDb());
+        transformers = transformatorStorage.getBySubstantionId(substation.getId(), substation.getType());
 
-        transformatorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, transfNames);
-        transformatorAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        transformerInspections = substationInspection.getTransformerInspections();
+        if(transformerInspections == null) {
+            transformerInspections = initInspectionsList(transformers);
+            substationInspection.setInspection(transformerInspections);
+        }
+
+
+
+        transformerSpinnerAdapter = new TransformerSpinnerAdapter(this, transformerInspections);
         transformatorSpinner = (Spinner) findViewById(R.id.select_transformator_spinner);
-        transformatorSpinner.setAdapter(transformatorAdapter);
+        transformatorSpinner.setAdapter(transformerSpinnerAdapter);
         transformatorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -95,7 +105,7 @@ public class InspectTransformer extends AppCompatActivity {
 
 
         inspection = new TransformerInspection(substation, null);
-        //inspection.loadList(inspectionListReader);
+
 
         transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection);
         ListView transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
@@ -115,7 +125,7 @@ public class InspectTransformer extends AppCompatActivity {
 
         Deffect deffect = inspectionItem.getDeffect();
 
-        application.setDeffect(deffect);
+        application.setCurrentDeffect(deffect);
        // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(this, AddDefect.class);
@@ -138,22 +148,30 @@ public class InspectTransformer extends AppCompatActivity {
 
     private void onSelectTransormator(int position){
 
-        if(position == 0){
 
-            return;
-        }
-
-        Transformer transformator = transformers.get(position - 1);
-
-        TransformerInspection inspection = substationInspection.getInspectionByTransformator(transformator.getId());
-        if(inspection == null){
-            inspection = new TransformerInspection(substationInspection.getSubstation(), transformator);
-            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list));
-            inspection.loadList(inspectionListReader);
-            substationInspection.addInspection(transformator.getId(), inspection);
-        }
-
+        TransformerInspection inspection = transformerInspections.get(position);
         transformatorInspectionAdapter.setInspection(inspection);
         transformatorInspectionAdapter.notifyDataSetChanged();
+    }
+
+    private List<TransformerInspection> initInspectionsList(List<Transformer> transformers){
+        List<TransformerInspection> inspectionList = new ArrayList<>();
+
+        for(Transformer transformer: transformers){
+            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list));
+            inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
+            inspection.loadList(inspectionListReader);
+            inspectionList.add(inspection);
+        }
+
+        return inspectionList;
+    }
+
+    public void onSaveBtnPress(View view){
+        TransformerInspection inspection =  (TransformerInspection) transformatorSpinner.getSelectedItem();
+        inspection.setDone(true);
+        transformerSpinnerAdapter.notifyDataSetChanged();
+
+        Toast.makeText(this, "SAVE !!!", Toast.LENGTH_LONG).show();
     }
 }

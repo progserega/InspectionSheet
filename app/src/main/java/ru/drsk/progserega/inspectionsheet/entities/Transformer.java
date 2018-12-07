@@ -5,8 +5,15 @@ import java.util.List;
 
 public class Transformer extends Equipment{
 
-    public Transformer(long id, String name) {
+    private long typeId;
+
+    public long getTypeId() {
+        return typeId;
+    }
+
+    public Transformer(long id, long typeId, String name) {
         this.id = id;
+        this.typeId = typeId;
         this.name = name;
         this.type = EquipmentType.TRANSFORMER;
     }

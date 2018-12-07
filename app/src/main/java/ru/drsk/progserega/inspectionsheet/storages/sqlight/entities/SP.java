@@ -10,9 +10,9 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "sp")
 public class SP {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -20,17 +20,17 @@ public class SP {
     @ColumnInfo(name = "full_name")
     private String fullName;
 
-    public SP(int id, String name, String fullName) {
+    public SP(long id, String name, String fullName) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

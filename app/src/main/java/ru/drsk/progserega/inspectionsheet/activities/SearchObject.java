@@ -31,7 +31,9 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerSubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
@@ -125,10 +127,6 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         // Toast.makeText(this, equipment.getEquipmentInspection() + " selected", Toast.LENGTH_LONG).show();
 
-        if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
-            //NOT IMPLEMENTED
-            return;
-        }
 
         EquipmentInspection equipmentInspection = null;
         Intent intent = null;
@@ -140,8 +138,25 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         if (equipment.getType() == EquipmentType.SUBSTATION) {
             //equipmentInspection = new EquipmentInspection(equipmentService.getSubstationById(equipment.getId()));
-            SubstationInspection substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
-            application.setSubstationInspection(substationInspection);
+            ISubstationInspection substationInspection = getInspection(equipment);
+            if(substationInspection == null){
+                 substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
+                 application.getSubstationInspections().add(substationInspection);
+            }
+
+            application.setCurrentSubstationInspection(substationInspection);
+
+            intent = new Intent(this, InspectTransformer.class);
+        }
+
+        if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
+
+            ISubstationInspection substationInspection = getInspection(equipment);
+            if(substationInspection == null){
+                substationInspection = new TransformerSubstationInspection( equipmentService.getTransformerSubstationById(equipment.getId()) );
+                application.getSubstationInspections().add(substationInspection);
+            }
+            application.setCurrentSubstationInspection(substationInspection);
 
             intent = new Intent(this, InspectTransformer.class);
         }
@@ -191,7 +206,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     }
 
     @Override
-    public void onSelectOrganization(int enterpriseId, int areaId) {
+    public void onSelectOrganization(long enterpriseId, long areaId) {
 
         equipmentService.removeFilter(EquipmentService.FILTER_AREA);
         equipmentService.removeFilter(EquipmentService.FILTER_ENTERPRISE);
@@ -309,5 +324,19 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     public void onLocationChange(Point location) {
         filterByPosition(location);
         ReloadListValues();
+    }
+
+
+    private ISubstationInspection getInspection(Equipment equipment){
+        List<ISubstationInspection> inspections = application.getSubstationInspections();
+
+        for(ISubstationInspection substationInspection: inspections){
+            Equipment substationInspectionEquipment = substationInspection.getEquipment();
+            if(substationInspectionEquipment.getType().equals(equipment.getType())
+                    && substationInspectionEquipment.getId() == equipment.getId()){
+                return substationInspection;
+            }
+        }
+        return null;
     }
 }

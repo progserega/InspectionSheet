@@ -2,8 +2,9 @@ package ru.drsk.progserega.inspectionsheet.storages;
 
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 
 public interface ITransformerStorage {
-    List<Transformer> getBySubstantionId(long substantionId);
+    List<Transformer> getBySubstantionId(long substantionId, EquipmentType type);
 }

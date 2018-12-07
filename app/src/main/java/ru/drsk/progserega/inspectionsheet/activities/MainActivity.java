@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         progressBar.setVisibility(View.VISIBLE);
         application.getRemoteStorage().setProgressListener(this);
         application.getRemoteStorage().loadTrasformerSubstations();
+       // application.getRemoteStorage().loadSubstations();
+
     }
 
     @Override

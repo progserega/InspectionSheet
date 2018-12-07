@@ -1,17 +1,14 @@
 package ru.drsk.progserega.inspectionsheet;
 
 import android.app.Application;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.arch.persistence.room.Room;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
@@ -23,16 +20,14 @@ import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
-import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteSorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDBHelper;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
-import ru.drsk.progserega.inspectionsheet.storages.stub.OrganizationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.SubstationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TransformerStorageStub;
@@ -50,7 +45,7 @@ public class InspectionSheetApplication extends Application {
     private ILocation locationService;
 
     //Сервис для работы с sqlight
-    private SQLiteOpenHelper dbHelper;
+    private InspectionSheetDatabase db;
 
     private TowersService towersService;
 
@@ -58,10 +53,11 @@ public class InspectionSheetApplication extends Application {
 
     private EquipmentInspection equipmentInspection;
 
-    private SubstationInspection substationInspection;
+    private ISubstationInspection currentSubstationInspection;
 
-    private Deffect deffect;
+    private List<ISubstationInspection> substationInspections;
 
+    private Deffect currentDeffect;
 
     private IRemoteStorage remoteStorage;
 
@@ -93,28 +89,28 @@ public class InspectionSheetApplication extends Application {
         this.equipmentInspection = equipmentInspection;
     }
 
-    public SubstationInspection getSubstationInspection() {
-        return substationInspection;
+    public ISubstationInspection getCurrentSubstationInspection() {
+        return currentSubstationInspection;
     }
 
-    public void setSubstationInspection(SubstationInspection substationInspection) {
-        this.substationInspection = substationInspection;
+    public void setCurrentSubstationInspection(ISubstationInspection currentSubstationInspection) {
+        this.currentSubstationInspection = currentSubstationInspection;
     }
 
-    public Deffect getDeffect() {
-        return deffect;
+    public List<ISubstationInspection> getSubstationInspections() {
+        return substationInspections;
     }
 
-    public void setDeffect(Deffect deffect) {
-        this.deffect = deffect;
+    public Deffect getCurrentDeffect() {
+        return currentDeffect;
     }
 
-//    private static IApiSTE apiSTE;
-//    private Retrofit retrofit;
+    public void setCurrentDeffect(Deffect currentDeffect) {
+        this.currentDeffect = currentDeffect;
+    }
 
-
-    public SQLiteOpenHelper getDbHelper() {
-        return dbHelper;
+    public InspectionSheetDatabase getDb() {
+        return db;
     }
 
     public IRemoteStorage getRemoteStorage() {
@@ -125,10 +121,16 @@ public class InspectionSheetApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        dbHelper = new InspectionSheetDBHelper(getApplicationContext());
+        db = Room.databaseBuilder(
+                getApplicationContext(),
+                InspectionSheetDatabase.class,
+                "inspection_sheet_db")
+                .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
+                .build();
 
-       // locationService = new LocationServiceStub();
-        LocationService  location = new LocationService(getApplicationContext());
+
+        // locationService = new LocationServiceStub();
+        LocationService location = new LocationService(getApplicationContext());
         locationService = (ILocation) location;
 
         //ILineStorage lineStorage = new LineStorageSqlight();
@@ -142,24 +144,24 @@ public class InspectionSheetApplication extends Application {
 
         catalogStorage = new CatalogStorageStub();
 
-        IOrganizationStorage organizationStorage = new OrganizationStorage(dbHelper);
+        IOrganizationStorage organizationStorage = new OrganizationStorage(db);
         organizationService = new OrganizationService(organizationStorage);
 
-        equipmentService = new EquipmentService(lineStorage, substationStorage);
 
         ITowerStorage towerStorage = new TowerStorageStub();
 
         towersService = new TowersService(towerStorage, lineStorage);
 
         ITransformerStorage transformerStorage = new TransformerStorageStub();
-        ITransformerSubstationStorage transformerSubstationStorage = new TransformerSubstationStorage();
+        ITransformerSubstationStorage transformerSubstationStorage = new TransformerSubstationStorage(db, locationService);
 
-        DBDataImporter dbDataImporter = new DBDataImporter(organizationStorage, transformerSubstationStorage, transformerStorage);
-        remoteStorage = new RemoteSorage(dbDataImporter);
+        equipmentService = new EquipmentService(lineStorage, substationStorage, transformerSubstationStorage);
+
+
+        DBDataImporter dbDataImporter = new DBDataImporter(db);
+        remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
+
+        substationInspections = new ArrayList<>();
     }
 
-
-//    public IApiSTE getApiSTE() {
-//        return apiSTE;
-//    }
 }

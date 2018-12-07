@@ -18,6 +18,9 @@ public interface SPDao {
     @Insert
     void insertAll(SP... enterprises);
 
+    @Insert
+    long insert(SP enterprise);
+
     @Delete
     void delete(SP enterprise);
 
