@@ -53,6 +53,9 @@ public class LocationService implements ILocation, LocationListener {
     @Override
     public Point getUserPosition() {
         Location loc = getLocation();
+        if (loc == null){
+            return new Point(0,0);
+        }
         return new Point(loc.getLatitude(), loc.getLongitude());
     }
 

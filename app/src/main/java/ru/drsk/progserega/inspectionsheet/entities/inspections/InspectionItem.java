@@ -2,7 +2,8 @@ package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
 public class InspectionItem {
 
-    private int id;
+    private long id;
+    private int valueId;
     private String number;
     private String name;
     private InspectionItemType type;
@@ -10,8 +11,16 @@ public class InspectionItem {
     private Deffect deffect;
 
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getValueId() {
+        return valueId;
     }
 
     public String getNumber() {
@@ -34,9 +43,11 @@ public class InspectionItem {
         this.deffect = deffect;
     }
 
-    public InspectionItem(int id, String number, String name, InspectionItemType type) {
+
+    public InspectionItem(int id, int valueId, String number, String name, InspectionItemType type) {
         this.number = number;
         this.id = id;
+        this.valueId = valueId;
         this.name = name;
         this.type = type;
         this.deffect = new Deffect();

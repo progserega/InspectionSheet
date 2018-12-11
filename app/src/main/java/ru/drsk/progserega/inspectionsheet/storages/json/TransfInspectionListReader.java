@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +14,7 @@ import java.util.Map;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 
+//TODO переделать на GSON
 public class TransfInspectionListReader {
 
     private int id = 0;
@@ -25,34 +24,34 @@ public class TransfInspectionListReader {
         this.is = is;
     }
 
-    public List<InspectionItem> readLines() throws IOException {
+    public List<InspectionItem> readInspections() throws IOException {
 
-        Map<Integer, InspectionItem> linesMap = readLinesMap();
-        return new ArrayList<InspectionItem>(linesMap.values());
+        Map<Long, InspectionItem> inspectionsMap = readInspectionsMap();
+        return new ArrayList<InspectionItem>(inspectionsMap.values());
     }
 
-    public Map<Integer, InspectionItem> readLinesMap() throws IOException{
+    public Map<Long, InspectionItem> readInspectionsMap() throws IOException{
         JsonReader reader = new JsonReader(new InputStreamReader(is, "UTF-8"));
         try {
-            return  readLinesArray(reader);
+            return  readInspectionsArray(reader);
         } finally {
             reader.close();
         }
     }
 
 
-    private Map<Integer, InspectionItem> readLinesArray(JsonReader reader ) throws IOException {
-        Map<Integer, InspectionItem> linesMap = new LinkedHashMap<>();
+    private Map<Long, InspectionItem> readInspectionsArray(JsonReader reader ) throws IOException {
+        Map<Long, InspectionItem> inspectionItemMap = new LinkedHashMap<>();
         reader.beginArray();
         while (reader.hasNext()) {
-            InspectionItem line = readLine(reader);
-            linesMap.put(line.getId(), line);
+            InspectionItem inspection = readInspection(reader);
+            inspectionItemMap.put((long)inspection.getValueId(), inspection);
         }
         reader.endArray();
-        return linesMap;
+        return inspectionItemMap;
     }
 
-    private InspectionItem readLine(JsonReader reader) throws IOException {
+    private InspectionItem readInspection(JsonReader reader) throws IOException {
         id++;
         String number = null;
         String nameItem = null;
@@ -76,7 +75,7 @@ public class TransfInspectionListReader {
             }
         }
         reader.endObject();
-        return new InspectionItem(id, number, nameItem, type);
+        return new InspectionItem(0, id, number, nameItem, type);
     }
 
 }

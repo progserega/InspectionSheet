@@ -8,7 +8,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 
-public class LineStorageSqlight implements ILineStorage {
+public class LineStorage implements ILineStorage {
 
     @Override
     public List<Line> getByFilters(Map<String, Object> filters) {

@@ -42,5 +42,6 @@
     <string name="save">Save</string>
     <string name="inspection">inspection</string>
     <string name="export_results">export</string>
+    <string name="add_transformer">Add transformer</string>
 
 </resources>

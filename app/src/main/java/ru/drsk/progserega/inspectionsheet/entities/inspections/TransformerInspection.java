@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 
@@ -48,7 +47,7 @@ public class TransformerInspection {
 
     public void loadList( TransfInspectionListReader reader){
         try {
-            inspectionItems = reader.readLines();
+            inspectionItems = reader.readInspections();
         } catch (IOException e) {
             e.printStackTrace();
         }

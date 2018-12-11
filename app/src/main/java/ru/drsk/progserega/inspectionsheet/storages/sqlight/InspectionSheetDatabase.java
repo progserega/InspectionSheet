@@ -5,6 +5,8 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
@@ -13,6 +15,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipme
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
@@ -28,7 +32,9 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         TransformerSubstationModel.class,
         TransformerSubstationEuipmentModel.class,
         SubstationModel.class,
-        SubstationEquipmentModel.class
+        SubstationEquipmentModel.class,
+        InspectionModel.class,
+        InspectionPhotoModel.class
 }, version = 1)
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -49,5 +55,10 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract SubstationDao substationDao();
 
     public abstract SubstationEquipmentDao substationEquipmentDao();
+
+    public abstract InspectionDao inspectionDao();
+
+    public abstract InspectionPhotoDao inspectionPhotoDao();
+
 
 }

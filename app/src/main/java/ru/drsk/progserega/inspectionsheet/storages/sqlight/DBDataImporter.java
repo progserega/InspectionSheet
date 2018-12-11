@@ -24,6 +24,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubsta
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
@@ -226,13 +227,33 @@ public class DBDataImporter {
                 spId = findSpIdInCache(spNames, spName);
             }
 
-            //TODO Добавить "Не определен" в СП
 
+            long resId = 0;
+            if(substation.getRes() == null || substation.getRes().isEmpty()) {
+                resId = 0;
+            }
+            else{
+                String resName = substation.getRes().get("name");
+                resId = findResIdInCache(resNames, resName);
+                if(resId == 0){
+                    resId = getOrCreateRes(resName, spId);
+                }
+            }
 
+            SubstationModel substationModel = new SubstationModel(
+                    0,
+                    substation.getName(),
+                    substation.getVoltage(),
+                    substation.getObjectType(),
+                    spId,
+                    resId,
+                    substation.getLat(),
+                    substation.getLon()
+            );
 
+            long substationId = substationDao.insert(substationModel);
         }
 
-        int c = 0;
     }
 
     private long getOrCreateSp(String spName) {
@@ -278,5 +299,30 @@ public class DBDataImporter {
             }
         }
         return spId;
+    }
+
+    private long findResIdInCache(Set<String> ResNames, String ResName){
+
+        long resId = 0;
+        for(String savedResName: ResNames){
+            if(savedResName.equals(ResName)){
+                resId = resCache.get(savedResName);
+                break;
+            }
+        }
+
+        if(resId > 0){
+            return resId;
+        }
+
+        ResName = ResName.replace("РЭС", "").trim();
+        for(String savedResName: ResNames){
+            if(savedResName.toLowerCase().contains(ResName.toLowerCase())){
+                resId = resCache.get(savedResName);
+                break;
+            }
+        }
+
+        return resId;
     }
 }

@@ -63,8 +63,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         progressText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         application.getRemoteStorage().setProgressListener(this);
+
+        //TODO сделать общую асинхронную загрузку
         application.getRemoteStorage().loadTrasformerSubstations();
-       // application.getRemoteStorage().loadSubstations();
+        //application.getRemoteStorage().loadSubstations();
+
 
     }
 
@@ -78,5 +81,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     public void progressComplete() {
         progressText.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+
+        //TODO сделать общую асинхронную загрузку
+        application.getRemoteStorage().loadSubstations();
     }
 }

@@ -38,4 +38,5 @@
     <string name="save">Сохранить</string>
     <string name="inspection">Осмотр</string>
     <string name="export_results">Экспорт результатов</string>
+    <string name="add_transformer">Добавить трансформатор</string>
 </resources>
