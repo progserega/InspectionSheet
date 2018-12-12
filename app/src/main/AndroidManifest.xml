@@ -15,12 +15,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:usesCleartextTraffic="true"
-        >
+        android:usesCleartextTraffic="true">
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +35,9 @@
         <activity android:name=".activities.FoundedDefects" />
         <activity android:name=".activities.EndInspection" />
         <activity android:name=".activities.InspectTower" />
-        <activity android:name=".activities.AddDefect" />
+        <activity
+            android:name=".activities.AddDefect"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.InspectTransformer" />
         <activity
             android:name=".activities.Test2"
@@ -49,8 +50,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
     </application>

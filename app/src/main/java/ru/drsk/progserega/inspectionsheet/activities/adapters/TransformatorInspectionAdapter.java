@@ -1,8 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.activities.adapters;
 
+import android.arch.persistence.room.util.StringUtil;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,11 +93,25 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
                 TextView itemNumberTextView = (TextView) rowView.findViewById(R.id.transf_inspection_item_number);
                 itemNumberTextView.setText(inspectionItem.getNumber());
 
+                String deffectValuesText = "";
+                TextView valuesTextView = (TextView) rowView.findViewById(R.id.transf_inspection_item_values);
+
+                if(inspectionItem.getResult() != null){
+                    List<String> values = new ArrayList<>();
+                    values.addAll(inspectionItem.getResult().getValues());
+                    values.addAll(inspectionItem.getResult().getSubValues());
+
+                    deffectValuesText = TextUtils.join(", ", values);
+                    valuesTextView.setText(deffectValuesText);
+
+                }
+                valuesTextView.setText(deffectValuesText);
+
                 String deffectText = "";
                 TextView descriptionTextView = (TextView) rowView.findViewById(R.id.transf_inspection_item_description);
 
-                if(inspectionItem.getDeffect() != null){
-                    deffectText = inspectionItem.getDeffect().getDescription();
+                if(inspectionItem.getResult() != null){
+                    deffectText = inspectionItem.getResult().getComment();
                     descriptionTextView.setText(deffectText);
 
                 }
@@ -103,7 +119,7 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
 
                 RecyclerView list = (RecyclerView) rowView.findViewById(R.id.transf_inspection_photos);
                 list.setLayoutManager(new LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL,false));
-                list.setAdapter(new HorizontalAdapter(inspectionItem.getDeffect().getPhotos()));
+                list.setAdapter(new HorizontalAdapter(inspectionItem.getResult().getPhotos()));
 
                 break;
 

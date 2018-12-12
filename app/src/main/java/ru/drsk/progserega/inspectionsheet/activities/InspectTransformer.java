@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformatorInspe
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -145,9 +146,9 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
     private void onListItemClick(AdapterView<?> list, View v, int position, long id) {
         InspectionItem inspectionItem = (InspectionItem) transformatorInspectionAdapter.getItem(position);
 
-        Deffect deffect = inspectionItem.getDeffect();
+        InspectionItemResult inspectionItemResult = inspectionItem.getResult();
 
-        application.setCurrentDeffect(deffect);
+        application.setCurrentDeffect(inspectionItemResult);
         // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(this, AddDefect.class);
@@ -181,9 +182,9 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         for (Transformer transformer : transformers) {
-            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list));
+
             TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
-            inspection.loadList(inspectionListReader);
+            initInspections(inspection);
             inspectionList.add(inspection);
 
             //Загрузка значений из бд
@@ -224,13 +225,23 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
         Transformer transformer = transformerStorage.getById(transformerTypeId);
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
-        TransfInspectionListReader inspectionListReader = new TransfInspectionListReader(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list));
-        inspection.loadList(inspectionListReader);
+        initInspections(inspection);
         //Добавляем к списку осмотров
         substationInspection.getTransformerInspections().add(inspection);
 
 
         transformerSpinnerAdapter.notifyDataSetChanged();
+
+    }
+
+    private void initInspections(TransformerInspection inspection){
+
+        try {
+            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
+            inspection.setInspectionItems(inspectionListReader.readInspections(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

@@ -2,9 +2,15 @@ package ru.drsk.progserega.inspectionsheet.storages.json;
 
 import android.util.JsonReader;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,69 +19,31 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemJson;
 
-//TODO переделать на GSON
 public class TransfInspectionListReader {
 
-    private int id = 0;
-    InputStream is;
-    public TransfInspectionListReader(InputStream is) {
-        this.id = 0;
-        this.is = is;
-    }
+    public List<InspectionItem> readInspections(InputStream is) throws IOException {
 
-    public List<InspectionItem> readInspections() throws IOException {
+        String  jsonString = JsonUtils.readJson(is);
 
-        Map<Long, InspectionItem> inspectionsMap = readInspectionsMap();
-        return new ArrayList<InspectionItem>(inspectionsMap.values());
-    }
-
-    public Map<Long, InspectionItem> readInspectionsMap() throws IOException{
-        JsonReader reader = new JsonReader(new InputStreamReader(is, "UTF-8"));
-        try {
-            return  readInspectionsArray(reader);
-        } finally {
-            reader.close();
+        Gson gson = new Gson();
+        InspectionItemJson[] response = gson.fromJson(jsonString,InspectionItemJson[].class);
+        List<InspectionItem> inspectionItems = new ArrayList<>();
+        int cnt = 1;
+        for(InspectionItemJson item: response ){
+            inspectionItems.add(new InspectionItem(
+                    0,
+                    cnt,
+                    item.getNumber(),
+                    item.getName(),
+                    item.getType(),
+                    item.getResult(),
+                    item.getSubResult()
+            ));
+            cnt++;
         }
-    }
-
-
-    private Map<Long, InspectionItem> readInspectionsArray(JsonReader reader ) throws IOException {
-        Map<Long, InspectionItem> inspectionItemMap = new LinkedHashMap<>();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            InspectionItem inspection = readInspection(reader);
-            inspectionItemMap.put((long)inspection.getValueId(), inspection);
-        }
-        reader.endArray();
-        return inspectionItemMap;
-    }
-
-    private InspectionItem readInspection(JsonReader reader) throws IOException {
-        id++;
-        String number = null;
-        String nameItem = null;
-        //String voltage = null;
-        InspectionItemType type = null;
-
-        reader.beginObject();
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (name.equals("id")) {
-                id = reader.nextInt();
-            } else if (name.equals("number")) {
-                number = reader.nextString();
-            } else if (name.equals("name")) {
-                nameItem = reader.nextString();
-            } else if (name.equals("type")) {
-                type = InspectionItemType.valueOf(reader.nextString());
-            }
-            else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-        return new InspectionItem(0, id, number, nameItem, type);
+        return inspectionItems;
     }
 
 }

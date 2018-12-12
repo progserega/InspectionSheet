@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -44,7 +43,7 @@ public class InspectionStorage implements IInspectionStorage {
                     inspection.getSubstation().getType().getValue(),
                     inspection.getTransformator().getId(),
                     inspectionItem.getValueId(),
-                    inspectionItem.getDeffect().getDescription()
+                    inspectionItem.getResult().getComment()
             );
 
             if (inspectionItem.getId() == 0) {
@@ -83,7 +82,7 @@ public class InspectionStorage implements IInspectionStorage {
 
             InspectionModel inspectionModel = inpectionsMap.get(Long.valueOf(inspectionItem.getValueId()));
             if(inspectionModel != null) {
-                inspectionItem.getDeffect().setDescription(inspectionModel.getDeffectValue());
+                inspectionItem.getResult().setComment(inspectionModel.getDeffectValue());
             }
 
             //TODO Load photos

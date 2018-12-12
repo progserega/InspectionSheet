@@ -45,12 +45,8 @@ public class TransformerInspection {
         done = false;
     }
 
-    public void loadList( TransfInspectionListReader reader){
-        try {
-            inspectionItems = reader.readInspections();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setInspectionItems(List<InspectionItem> inspectionItems) {
+        this.inspectionItems = inspectionItems;
     }
 
     public boolean isDone() {

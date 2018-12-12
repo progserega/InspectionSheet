@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
+import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemResultValues;
+
 public class InspectionItem {
 
     private long id;
@@ -8,7 +10,7 @@ public class InspectionItem {
     private String name;
     private InspectionItemType type;
 
-    private Deffect deffect;
+    private InspectionItemResult result;
 
 
     public long getId() {
@@ -35,21 +37,21 @@ public class InspectionItem {
         return type;
     }
 
-    public Deffect getDeffect() {
-        return deffect;
+    public InspectionItemResult getResult() {
+        return result;
     }
 
-    public void setDeffect(Deffect deffect) {
-        this.deffect = deffect;
+    public void setResult(InspectionItemResult result) {
+        this.result = result;
     }
 
 
-    public InspectionItem(int id, int valueId, String number, String name, InspectionItemType type) {
+    public InspectionItem(int id, int valueId, String number, String name, InspectionItemType type, InspectionItemResultValues values, InspectionItemResultValues subresultValues) {
         this.number = number;
         this.id = id;
         this.valueId = valueId;
         this.name = name;
         this.type = type;
-        this.deffect = new Deffect();
+        this.result = new InspectionItemResult(values, subresultValues);
     }
 }

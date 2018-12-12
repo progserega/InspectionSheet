@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
@@ -32,9 +32,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
-import ru.drsk.progserega.inspectionsheet.storages.stub.SubstationStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
-import ru.drsk.progserega.inspectionsheet.storages.stub.TransformerStorageStub;
 
 public class InspectionSheetApplication extends Application {
 
@@ -61,7 +59,7 @@ public class InspectionSheetApplication extends Application {
 
     private List<ISubstationInspection> substationInspections;
 
-    private Deffect currentDeffect;
+    private InspectionItemResult currentDeffect;
 
     private IRemoteStorage remoteStorage;
 
@@ -114,11 +112,11 @@ public class InspectionSheetApplication extends Application {
         return substationInspections;
     }
 
-    public Deffect getCurrentDeffect() {
+    public InspectionItemResult getCurrentDeffect() {
         return currentDeffect;
     }
 
-    public void setCurrentDeffect(Deffect currentDeffect) {
+    public void setCurrentDeffect(InspectionItemResult currentDeffect) {
         this.currentDeffect = currentDeffect;
     }
 

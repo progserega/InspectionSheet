@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -16,11 +15,10 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -33,8 +31,9 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
+import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.Deffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 
 import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility.REQUEST_CODE_WRITE_EXTERNAL_STORAGE;
@@ -48,24 +47,30 @@ public class AddDefect extends AppCompatActivity {
     private InspectionSheetApplication application;
 
     private ImageAdapter imageAdapter;
-    private Deffect deffect;
+    private InspectionItemResult deffect;
 
     private List<DeffectPhoto> deffectPhotos;
 
-    private  TextView deffectDescription;
+    private TextView deffectDescription;
 
     private String mCurrentPhotoPath;
+
+    private DeffectValuesView valuesView;
+
+    private DeffectValuesView subValuesView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_defect);
 
+        //  this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        ImageButton imageButton =  (ImageButton) findViewById(R.id.save_btn);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        ImageButton imageButton = (ImageButton) findViewById(R.id.save_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
-        }else {
+        } else {
             /* старые версии не поддерживают векторные рисунки */
             imageButton.setImageResource(R.drawable.ic_save_balack_png);
         }
@@ -81,13 +86,34 @@ public class AddDefect extends AppCompatActivity {
         deffect = application.getCurrentDeffect();
 
         deffectDescription = (TextView) findViewById(R.id.add_defect_description);
-        deffectDescription.setText(deffect.getDescription());
+        deffectDescription.setText(deffect.getComment());
 
+        if (deffect.getResultValues() != null) {
+            //   addDinamicContent((LinearLayout) findViewById(R.id.add_defect_result_layout), deffect.getResultValues());;
+            valuesView = new DeffectValuesView(
+                    (LinearLayout) findViewById(R.id.add_defect_result_layout),
+                    deffect.getResultValues(),
+                    deffect.getValues(),
+                    this);
+            valuesView.build();
+        }
 
-        GridView gridview = (GridView) findViewById(R.id.add_defect_photos);
+        if (deffect.getSubresultValues() != null) {
+            //addDinamicContent((LinearLayout) findViewById(R.id.add_defect_subresult_layout), deffect.getSubresultValues());
+            subValuesView = new DeffectValuesView(
+                    (LinearLayout) findViewById(R.id.add_defect_result_layout),
+                    deffect.getSubresultValues(),
+                    deffect.getSubValues(),
+                    this);
+            subValuesView.build();
+        }
+
+        ExpandableHeightGridView gridview = (ExpandableHeightGridView) findViewById(R.id.add_defect_photos);
+        gridview.setExpanded(true);
+
 //        float scalefactor = getResources().getDisplayMetrics().density;
 //        int imageWidth = (int) (115 * scalefactor);
-        int imageWidth = dpToPx(115);
+        int imageWidth = MetricsUtils.dpToPx(115, this);
 
         saveDeffectPhotos(deffect.getPhotos());
 
@@ -97,16 +123,16 @@ public class AddDefect extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-               // Toast.makeText(AddDefect.this, "" + position, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(AddDefect.this, "" + position, Toast.LENGTH_SHORT).show();
             }
         });
 
 
     }
 
-    private void saveDeffectPhotos(List<DeffectPhoto> photos){
+    private void saveDeffectPhotos(List<DeffectPhoto> photos) {
         deffectPhotos = new ArrayList<>();
-        for(DeffectPhoto photo: photos){
+        for (DeffectPhoto photo : photos) {
             deffectPhotos.add(photo);
         }
     }
@@ -183,81 +209,40 @@ public class AddDefect extends AppCompatActivity {
                         galeryIntent();
                     }
                 } else {
-                   // Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
         }
     }
 
     private void onCaptureImageResult(Intent data) {
 
-        // Get the dimensions of the View
-        int targetW = dpToPx(115);
-        int targetH = dpToPx(115);
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-       // mImageView.setImageBitmap(bitmap);
-
-//        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-//
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        thumbnail.compress(Bitmap.CompressFormat.JPEG, 9, outputStream);
-//
-//        String storageDir = Environment.getExternalStorageDirectory()+"/InspectionSheet/Photo";
-//        File destinationDir = new File(storageDir);
-//        File destination = new File(storageDir, System.currentTimeMillis() + ".jpg");
-//
-//        if(!PermissionsUtility.isExternalStorageWritable()){
-//           return;
-//        }
-//        FileOutputStream fo;
-//        try {
-//            if(!destinationDir.exists()){
-//                destinationDir.mkdirs();
-//            }
-//            destination.createNewFile();
-//            fo = new FileOutputStream(destination);
-//            fo.write(outputStream.toByteArray());
-//            fo.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-        deffectPhotos.add(new DeffectPhoto(bitmap));
+        deffectPhotos.add(new DeffectPhoto(mCurrentPhotoPath, this));
         imageAdapter.notifyDataSetChanged();
 
     }
 
     private void onSelectFromGaleryResult(Intent data) {
 
-        if(data == null){
+        if (data == null) {
             return;
         }
 
         Bitmap bitmap = null;
+        Uri selectedImage = data.getData();
+//        String path =  selectedImage.getPath();
+//        deffectPhotos.add(new DeffectPhoto(path, this));
+//        imageAdapter.notifyDataSetChanged();
 
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), selectedImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         deffectPhotos.add(new DeffectPhoto(bitmap));
         imageAdapter.notifyDataSetChanged();
+
+
 //        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 //        List<String> imagesEncodedList = new ArrayList<String>();
 //
@@ -295,6 +280,7 @@ public class AddDefect extends AppCompatActivity {
 //        imageAdapter.notifyDataSetChanged();
 
     }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -329,37 +315,38 @@ public class AddDefect extends AppCompatActivity {
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 /* ----------- Фикс для старых андроидов ---------------*/
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
                     }
-                    takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
                 /*------------------------------------------*/
                 startActivityForResult(takePictureIntent, REQUEST_CAMERA);
             }
         }
     }
-    public void onSaveBtnPress(View view){
+
+
+    public void onSaveBtnPress(View view) {
 
         deffect.setPhotos(deffectPhotos);
 
-        deffect.setDescription(deffectDescription.getText().toString());
+        deffect.setComment(deffectDescription.getText().toString());
+
+
+        if (valuesView != null){
+            deffect.getValues().clear();
+            deffect.getValues().addAll( valuesView.getResult());
+        }
+
+        if (subValuesView != null){
+            deffect.getSubValues().clear();
+            deffect.getSubValues().addAll( subValuesView.getResult());
+        }
 
         Intent returnIntent = getIntent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
-    }
-
-    public int pxToDp(int px) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
     }
 }
