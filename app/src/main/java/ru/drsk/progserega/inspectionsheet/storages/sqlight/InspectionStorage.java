@@ -1,9 +1,13 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
+import android.content.Context;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -11,17 +15,20 @@ import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 
 public class InspectionStorage implements IInspectionStorage {
 
     private InspectionSheetDatabase db;
     private InspectionDao inspectionDao;
     private InspectionPhotoDao inspectionPhotoDao;
+    private Context context;
 
-    public InspectionStorage(InspectionSheetDatabase db) {
+    public InspectionStorage(InspectionSheetDatabase db, Context context) {
         this.db = db;
         inspectionDao = db.inspectionDao();
         inspectionPhotoDao = db.inspectionPhotoDao();
+        this.context = context;
     }
 
     @Override
@@ -38,12 +45,10 @@ public class InspectionStorage implements IInspectionStorage {
             }
 
             InspectionModel inspectionModel = new InspectionModel(
-                    inspectionItem.getId(),
                     inspection.getSubstation().getId(),
                     inspection.getSubstation().getType().getValue(),
                     inspection.getTransformator().getId(),
-                    inspectionItem.getValueId(),
-                    inspectionItem.getResult().getComment()
+                    inspectionItem
             );
 
             if (inspectionItem.getId() == 0) {
@@ -53,7 +58,15 @@ public class InspectionStorage implements IInspectionStorage {
                 inspectionDao.update(inspectionModel);
             }
 
-            //TODO save photos
+            //save photos
+            for (DeffectPhoto photo: inspectionItem.getResult().getPhotos()){
+
+                if(photo.getId() == 0) {
+                    InspectionPhotoModel photoModel = new InspectionPhotoModel(0, inspectionItem.getId(), photo.getPath());
+                    long photoId =  inspectionPhotoDao.insert(photoModel);
+                    photo.setId(photoId);
+                }
+            }
         }
 
     }
@@ -82,10 +95,26 @@ public class InspectionStorage implements IInspectionStorage {
 
             InspectionModel inspectionModel = inpectionsMap.get(Long.valueOf(inspectionItem.getValueId()));
             if(inspectionModel != null) {
-                inspectionItem.getResult().setComment(inspectionModel.getDeffectValue());
+                inspectionItem.setId(inspectionModel.getId());
+                inspectionItem.getResult().setComment(inspectionModel.getDeffectComment());
+                String valuesString = inspectionModel.getDeffectValues();
+                if(!valuesString.isEmpty()) {
+                    List<String> values = Arrays.asList(valuesString.split(","));
+                    inspectionItem.getResult().getValues().addAll(values);
+                }
+
+                String subValuesString = inspectionModel.getDeffectSubValues();
+                if(!subValuesString.isEmpty()) {
+                    List<String> subValues = Arrays.asList(subValuesString.split(","));
+                    inspectionItem.getResult().getSubValues().addAll(subValues);
+                }
             }
 
-            //TODO Load photos
+            //Load photos
+            List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId());
+            for(InspectionPhotoModel photoModel: photoModels){
+                inspectionItem.getResult().getPhotos().add(new DeffectPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
+            }
         }
     }
 }

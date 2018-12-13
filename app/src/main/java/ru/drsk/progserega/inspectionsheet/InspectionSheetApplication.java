@@ -179,7 +179,7 @@ public class InspectionSheetApplication extends Application {
 
         substationInspections = new ArrayList<>();
 
-        inspectionStorage = new InspectionStorage(db);
+        inspectionStorage = new InspectionStorage(db, getApplicationContext());
     }
 
 }

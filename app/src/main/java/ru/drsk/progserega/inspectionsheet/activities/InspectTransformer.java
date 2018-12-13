@@ -219,10 +219,11 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
     @Override
     public void onAddTransformer(long transformerTypeId) {
         //Добавляем трансформатор к списку оборудования подстанции
-        transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment());
+        long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment());
 
         //Выбираем трансформатор
         Transformer transformer = transformerStorage.getById(transformerTypeId);
+        transformer.setId(insertedId);
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
         initInspections(inspection);

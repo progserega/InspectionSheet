@@ -12,6 +12,9 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformerSpinnerAdapter extends BaseAdapter {
@@ -50,12 +53,23 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
         TextView textView = (TextView) rowView.findViewById(R.id.transf_spinner_item_name);
         textView.setText(transformers.get(position).getTransformator().getName());
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.transf_inspection_done_img);
-        if(transformers.get(position).isDone()) {
-            imageView.setImageResource(R.drawable.ic_done_png);
-        }else{
-            imageView.setImageResource(0);
+        TextView percentText = (TextView) rowView.findViewById(R.id.transf_inspection_done_percent);
+        int percent = transformers.get(position).calcInspectionPercent();
+        if (percent > 0) {
+            percentText.setText(percent + "%");
+        } else {
+            percentText.setText("");
         }
+
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.transf_inspection_done_img);
+        //if(transformers.get(position).isDone()) {
+        if (percent > 0) {
+            imageView.setImageResource(R.drawable.ic_done_png);
+        } else {
+            imageView.setImageResource(0);
+
+        }
+
 
         return rowView;
     }

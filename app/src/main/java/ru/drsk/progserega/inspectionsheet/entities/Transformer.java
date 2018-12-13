@@ -11,6 +11,7 @@ public class Transformer extends Equipment{
         return typeId;
     }
 
+
     public Transformer(long id, long typeId, String name) {
         this.id = id;
         this.typeId = typeId;

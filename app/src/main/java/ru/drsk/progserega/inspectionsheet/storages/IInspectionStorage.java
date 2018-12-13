@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages;
 
+import android.content.Context;
+
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public interface IInspectionStorage {

@@ -3,6 +3,10 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.text.TextUtils;
+
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 
 @Entity(tableName = "inspections")
 public class InspectionModel {
@@ -23,18 +27,36 @@ public class InspectionModel {
     @ColumnInfo(name = "deffect_id")
     private long deffectId;
 
-    @ColumnInfo(name = "deffect_value")
-    private String deffectValue;
+    @ColumnInfo(name = "deffect_values")
+    private String deffectValues;
 
-    public InspectionModel(long id, long substationId, int substationType, long equipmentId, long deffectId, String deffectValue) {
+    @ColumnInfo(name = "deffect_sub_values")
+    private String deffectSubValues;
+
+    @ColumnInfo(name = "deffect_comment")
+    private String deffectComment;
+
+    public InspectionModel(long id, long substationId, int substationType, long equipmentId, long deffectId, String deffectValues, String deffectSubValues, String deffectComment) {
         this.id = id;
         this.substationId = substationId;
         this.substationType = substationType;
         this.equipmentId = equipmentId;
         this.deffectId = deffectId;
-        this.deffectValue = deffectValue;
+        this.deffectValues = deffectValues;
+        this.deffectSubValues = deffectSubValues;
+        this.deffectComment = deffectComment;
     }
 
+    public InspectionModel(long substationId, int substationType, long equipmentId, InspectionItem inspectionItem) {
+        this.id = inspectionItem.getId();
+        this.deffectId = inspectionItem.getValueId();
+        this.substationId = substationId;
+        this.substationType = substationType;
+        this.equipmentId = equipmentId;
+        this.deffectValues = TextUtils.join(",", inspectionItem.getResult().getValues());
+        this.deffectSubValues = TextUtils.join(",", inspectionItem.getResult().getSubValues());
+        this.deffectComment = inspectionItem.getResult().getComment();
+    }
 
     public long getId() {
         return id;
@@ -76,11 +98,27 @@ public class InspectionModel {
         this.deffectId = deffectId;
     }
 
-    public String getDeffectValue() {
-        return deffectValue;
+    public String getDeffectComment() {
+        return deffectComment;
     }
 
-    public void setDeffectValue(String deffectValue) {
-        this.deffectValue = deffectValue;
+    public void setDeffectComment(String deffectComment) {
+        this.deffectComment = deffectComment;
+    }
+
+    public String getDeffectValues() {
+        return deffectValues;
+    }
+
+    public void setDeffectValues(String deffectValues) {
+        this.deffectValues = deffectValues;
+    }
+
+    public String getDeffectSubValues() {
+        return deffectSubValues;
+    }
+
+    public void setDeffectSubValues(String deffectSubValues) {
+        this.deffectSubValues = deffectSubValues;
     }
 }

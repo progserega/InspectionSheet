@@ -7,11 +7,24 @@ import android.util.DisplayMetrics;
 
 public class DeffectPhoto {
 
+    private long id;
 
     Context context;
     private Bitmap thumbnail;
 
     private String path;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPath() {
+        return path;
+    }
 
     public Bitmap getThumbnail() {
         return thumbnail;
@@ -24,7 +37,8 @@ public class DeffectPhoto {
 
     }
 
-    public DeffectPhoto(String path, Context context) {
+    public DeffectPhoto(long id, String path, Context context) {
+        this.id = id;
         this.context = context;
         this.path = path;
 

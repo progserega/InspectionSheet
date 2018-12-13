@@ -31,8 +31,10 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
+import ru.drsk.progserega.inspectionsheet.activities.utility.ImageFilePath;
 import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
+import ru.drsk.progserega.inspectionsheet.activities.utility.RealPathUtil;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 
@@ -216,30 +218,20 @@ public class AddDefect extends AppCompatActivity {
 
     private void onCaptureImageResult(Intent data) {
 
-        deffectPhotos.add(new DeffectPhoto(mCurrentPhotoPath, this));
+        deffectPhotos.add(new DeffectPhoto(0, mCurrentPhotoPath, this));
         imageAdapter.notifyDataSetChanged();
 
     }
 
     private void onSelectFromGaleryResult(Intent data) {
 
-        if (data == null) {
+        if (data == null || data.getData() == null) {
             return;
         }
 
-        Bitmap bitmap = null;
-        Uri selectedImage = data.getData();
-//        String path =  selectedImage.getPath();
-//        deffectPhotos.add(new DeffectPhoto(path, this));
-//        imageAdapter.notifyDataSetChanged();
+        String realPath = ImageFilePath.getPath(this, data.getData());
 
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), selectedImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        deffectPhotos.add(new DeffectPhoto(bitmap));
+        deffectPhotos.add(new DeffectPhoto(0, realPath, this));
         imageAdapter.notifyDataSetChanged();
 
 
