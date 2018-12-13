@@ -50,7 +50,7 @@ public class InspectionSorageTest {
     @Test
     public void shouldSaveAndLoadInspections() throws IOException {
 
-        InspectionStorage storage = new InspectionStorage(mDb);
+        InspectionStorage storage = new InspectionStorage(mDb, context);
 
         Equipment substation = new Substation(1, "Substation 1");
         Transformer transformer = new Transformer(1, 1, "Transformerr name");
