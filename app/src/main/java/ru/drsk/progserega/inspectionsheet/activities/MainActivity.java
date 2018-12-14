@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
-import android.os.StrictMode;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,18 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 
 public class MainActivity extends AppCompatActivity implements IProgressListener {
 
@@ -58,31 +50,67 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void syncData(View view) {
-        // showGPSPermission();
+        showQuestion("Загрузить данные с сервера?", "Важно! Все предыдущие данные будут очищены");
+    }
 
+    private void showQuestion(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        loadData();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        builder.create().show();
+    }
+
+
+    private void loadData() {
         progressText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         application.getRemoteStorage().setProgressListener(this);
 
-        //TODO сделать общую асинхронную загрузку
-        application.getRemoteStorage().loadTrasformerSubstations();
-        //application.getRemoteStorage().loadSubstations();
 
+        application.getRemoteStorage().loadRemoteData();
 
     }
 
     @Override
     public void progressUpdate(int progress) {
-        Log.d("DOWNLOAD", "DOWNLOAD PERCENT "+ String.valueOf(progress));
-        progressText.setText(String.valueOf(progress)+" %");
+        Log.d("DOWNLOAD", "DOWNLOAD PERCENT " + String.valueOf(progress));
+        progressText.setText(String.valueOf(progress) + " %");
     }
 
     @Override
     public void progressComplete() {
         progressText.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
-
-        //TODO сделать общую асинхронную загрузку
-        application.getRemoteStorage().loadSubstations();
     }
+
+    @Override
+    public void progressError(Exception ex) {
+
+        showError("Ошибка", ex.getMessage());
+    }
+
+    private void showError(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create().show();
+    }
+
+
 }

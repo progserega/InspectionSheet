@@ -4,9 +4,7 @@ import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
 
 public interface IRemoteStorage {
 
-    void loadTrasformerSubstations();
-
-    void loadSubstations();
+    void loadRemoteData();
 
     void setProgressListener(IProgressListener progressListener);
 }

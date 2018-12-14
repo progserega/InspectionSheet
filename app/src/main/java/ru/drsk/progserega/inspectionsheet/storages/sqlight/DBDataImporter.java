@@ -13,6 +13,8 @@ import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
@@ -21,6 +23,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipme
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
@@ -39,6 +42,8 @@ public class DBDataImporter {
     private TransformerSubstationEquipmentDao transformerSubstationEquipmentDao;
     private SubstationDao substationDao;
     private SubstationEquipmentDao substationEquipmentDao;
+    private InspectionDao inspectionDao;
+    private InspectionPhotoDao inspectionPhotoDao;
 
     private Map<String, Long> spCache;
     private Map<String, Long> resCache;
@@ -58,6 +63,8 @@ public class DBDataImporter {
         transformerSubstationEquipmentDao = db.transfSubstationEquipmentDao();
         substationDao = db.substationDao();
         substationEquipmentDao = db.substationEquipmentDao();
+        inspectionDao = db.inspectionDao();
+        inspectionPhotoDao = db.inspectionPhotoDao();
 
         spCache = new HashMap<>();
         resCache = new HashMap<>();
@@ -144,6 +151,8 @@ public class DBDataImporter {
             transformerDao.delete();
             transformerSubstationDao.delete();
             transformerSubstationEquipmentDao.delete();
+            inspectionDao.deleteAll();
+            inspectionPhotoDao.deleteAll();
             isClearTransformerSusbstations = true;
 
         }
@@ -210,6 +219,8 @@ public class DBDataImporter {
         if (!isClearSusbstations) {
             substationDao.delete();
             substationEquipmentDao.delete();
+            inspectionDao.deleteAll();
+            inspectionPhotoDao.deleteAll();
             isClearSusbstations = true;
         }
 
