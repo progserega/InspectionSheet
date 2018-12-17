@@ -188,6 +188,7 @@ public class DBDataImporter {
                 steTransformators.add(tpModel.getT3());
             }
 
+            int slot = 1;
             for (SteTransformator transformator : steTransformators) {
 
                 TransformerModel transformerModel = new TransformerModel(
@@ -201,8 +202,9 @@ public class DBDataImporter {
                     transfCache.add(transformator.getId());
                 }
 
-                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpId, transformator.getId() );
+                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpId, transformator.getId(), slot );
                 transformerSubstationEquipmentDao.insert(transformerSubstationEuipmentModel);
+                slot++;
             }
         }
 

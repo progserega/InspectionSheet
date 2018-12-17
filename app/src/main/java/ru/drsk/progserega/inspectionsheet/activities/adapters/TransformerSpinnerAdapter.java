@@ -53,6 +53,10 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
         TextView textView = (TextView) rowView.findViewById(R.id.transf_spinner_item_name);
         textView.setText(transformers.get(position).getTransformator().getName());
 
+        TextView slotTextView = (TextView) rowView.findViewById(R.id.transf_spinner_item_slot);
+        slotTextView.setText("ТР "+transformers.get(position).getTransformator().getSlot());
+
+
         TextView percentText = (TextView) rowView.findViewById(R.id.transf_inspection_done_percent);
         int percent = transformers.get(position).calcInspectionPercent();
         if (percent > 0) {

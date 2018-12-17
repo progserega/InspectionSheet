@@ -7,16 +7,26 @@ public class Transformer extends Equipment{
 
     private long typeId;
 
+    private int slot;
+
     public long getTypeId() {
         return typeId;
     }
 
+    public int getSlot() {
+        return slot;
+    }
 
-    public Transformer(long id, long typeId, String name) {
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+
+    public Transformer(long id, long typeId, String name, int slot) {
         this.id = id;
         this.typeId = typeId;
         this.name = name;
         this.type = EquipmentType.TRANSFORMER;
+        this.slot = slot;
     }
 
     public static List<String> getNames(List<Transformer> transformators){

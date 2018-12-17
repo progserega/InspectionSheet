@@ -100,9 +100,9 @@ public class TPWithTransformersRoomStorageTest {
         insertId = transformerDao.insert(trans2);
         assertTrue(insertId == 2);
 
-        TransformerSubstationEuipmentModel tpTransformer = new TransformerSubstationEuipmentModel(0, 1, 1);
+        TransformerSubstationEuipmentModel tpTransformer = new TransformerSubstationEuipmentModel(0, 1, 1, 1);
         transformerSubstationEquipmentDao.insert(tpTransformer);
-        TransformerSubstationEuipmentModel tpTransformer2 = new TransformerSubstationEuipmentModel(0, 1, 2);
+        TransformerSubstationEuipmentModel tpTransformer2 = new TransformerSubstationEuipmentModel(0, 1, 2, 2);
         transformerSubstationEquipmentDao.insert(tpTransformer2);
         List<TransformerModel> transformers = transformerSubstationEquipmentDao.getByTPId(1);
         assertFalse(transformers.isEmpty());
@@ -121,9 +121,9 @@ public class TPWithTransformersRoomStorageTest {
         insertId = transformerDao.insert(trans2);
         assertTrue(insertId == 2);
 
-        TransformerSubstationEuipmentModel tpTransformer = new TransformerSubstationEuipmentModel(0, 1, 1);
+        TransformerSubstationEuipmentModel tpTransformer = new TransformerSubstationEuipmentModel(0, 1, 1, 1);
         transformerSubstationEquipmentDao.insert(tpTransformer);
-        TransformerSubstationEuipmentModel tpTransformer2 = new TransformerSubstationEuipmentModel(0, 1, 2);
+        TransformerSubstationEuipmentModel tpTransformer2 = new TransformerSubstationEuipmentModel(0, 1, 2, 2);
         transformerSubstationEquipmentDao.insert(tpTransformer2);
         List<TransformerInsideSubstaionModel> transformers = transformerSubstationEquipmentDao.getBySubstation(1);
         assertFalse(transformers.isEmpty());

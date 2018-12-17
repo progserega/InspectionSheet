@@ -30,11 +30,21 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 public class SelectTransformerDialog  extends DialogFragment {
 
     public interface AddTransformerListener{
-        void onAddTransformer(long transformerTypeId);
+        void onAddTransformer(long transformerTypeId, int slot);
     }
 
     private AddTransformerListener addTransformerListener;
     private  ListView transformerList;
+
+    private int slot;
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
 
     public SelectTransformerDialog() {
         // Empty constructor is required for DialogFragment
@@ -93,7 +103,7 @@ public class SelectTransformerDialog  extends DialogFragment {
                 int pos = transformerList.getCheckedItemPosition();
                 Transformer transformer  = (Transformer) transformerList.getAdapter().getItem(pos);
                 if( transformer != null) {
-                    addTransformerListener.onAddTransformer(transformer.getTypeId());
+                    addTransformerListener.onAddTransformer(transformer.getTypeId(), slot);
                     getDialog().dismiss();
                 }
             }

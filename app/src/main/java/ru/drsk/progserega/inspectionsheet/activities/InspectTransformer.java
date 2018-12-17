@@ -132,9 +132,17 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
         int id = item.getItemId();
         // Операции для выбранного пункта меню
         switch (id) {
-            case R.id.transformer_menu_add:
+            case R.id.transformer_menu_add_t1:
                 // Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
-                onAddTramsformerMenuClick();
+                onAddTramsformerMenuClick(1);
+                return true;
+            case R.id.transformer_menu_add_t2:
+                // Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+                onAddTramsformerMenuClick(2);
+                return true;
+            case R.id.transformer_menu_add_t3:
+                // Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+                onAddTramsformerMenuClick(3);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -207,23 +215,27 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
     }
 
 
-    public void onAddTramsformerMenuClick() {
+    public void onAddTramsformerMenuClick(int slot) {
         FragmentManager fm = getSupportFragmentManager();
         if (selectTransformerDialog == null) {
             selectTransformerDialog = SelectTransformerDialog.newInstance();
         }
-        selectTransformerDialog.show(fm, "select_organization");
+        selectTransformerDialog.setSlot(slot);
+        selectTransformerDialog.show(fm, "select_transformer");
 
     }
 
     @Override
-    public void onAddTransformer(long transformerTypeId) {
+    public void onAddTransformer(long transformerTypeId, int slot) {
         //Добавляем трансформатор к списку оборудования подстанции
-        long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment());
+
+        long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment(), slot);
 
         //Выбираем трансформатор
         Transformer transformer = transformerStorage.getById(transformerTypeId);
         transformer.setId(insertedId);
+        transformer.setSlot(slot);
+
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
         initInspections(inspection);

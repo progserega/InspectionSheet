@@ -20,16 +20,16 @@ public class TransformerStorageStub implements ITransformerStorage {
 
         List<Transformer> transformators = new ArrayList<>();
 
-        transformators.add(new Transformer(1, 1,"SteTransformator 1"));
-        transformators.add(new Transformer(2, 1, "SteTransformator 2"));
-        transformators.add(new Transformer(3, 1, "SteTransformator 3"));
-        transformators.add(new Transformer(4, 1, "SteTransformator 4"));
-        transformators.add(new Transformer(5, 1, "SteTransformator 5"));
+        transformators.add(new Transformer(1, 1,"SteTransformator 1",0));
+        transformators.add(new Transformer(2, 1, "SteTransformator 2", 0));
+        transformators.add(new Transformer(3, 1, "SteTransformator 3", 0));
+        transformators.add(new Transformer(4, 1, "SteTransformator 4", 0));
+        transformators.add(new Transformer(5, 1, "SteTransformator 5", 0));
         return transformators;
     }
 
     @Override
-    public long addToSubstation(long transformerTypeId, Equipment substation) {
+    public long addToSubstation(long transformerTypeId, Equipment substation, int slot) {
         return 0;
     }
 

@@ -13,7 +13,7 @@ public interface ITransformerStorage {
 
     List<Transformer> getBySubstantionId(long substantionId, EquipmentType type);
 
-    long addToSubstation(long transformerTypeId, Equipment substation);
+    long addToSubstation(long transformerTypeId, Equipment substation, int slot);
 
 
 }

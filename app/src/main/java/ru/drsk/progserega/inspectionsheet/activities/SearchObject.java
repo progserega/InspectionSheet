@@ -38,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
+//TODO Баг с включением GPS когда включили но вышли
 
 public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
 

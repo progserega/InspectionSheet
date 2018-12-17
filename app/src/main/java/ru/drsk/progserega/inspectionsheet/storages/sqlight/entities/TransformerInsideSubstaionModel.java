@@ -10,6 +10,9 @@ public class TransformerInsideSubstaionModel {
     @ColumnInfo(name = "equipment_id")
     private long equipmentId;
 
+    @ColumnInfo(name = "slot")
+    private int slot;
+
     public TransformerModel getTransformer() {
         return transformer;
     }
@@ -24,5 +27,13 @@ public class TransformerInsideSubstaionModel {
 
     public void setEquipmentId(long equipmentId) {
         this.equipmentId = equipmentId;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 }

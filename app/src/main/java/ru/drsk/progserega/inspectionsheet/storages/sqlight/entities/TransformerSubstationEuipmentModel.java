@@ -17,10 +17,15 @@ public class TransformerSubstationEuipmentModel {
     @ColumnInfo(name = "transformer_id")
     private long transformerId;
 
-    public TransformerSubstationEuipmentModel(long id, long tpId, long transformerId) {
+    @ColumnInfo(name = "slot")
+    private int slot;
+
+    public TransformerSubstationEuipmentModel(long id, long tpId, long transformerId, int slot) {
         this.id = id;
         this.tpId = tpId;
         this.transformerId = transformerId;
+        this.slot = slot;
+
     }
 
     public long getId() {
@@ -45,5 +50,13 @@ public class TransformerSubstationEuipmentModel {
 
     public void setTransformerId(long transformerId) {
         this.transformerId = transformerId;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 }

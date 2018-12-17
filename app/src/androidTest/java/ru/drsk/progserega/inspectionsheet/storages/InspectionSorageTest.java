@@ -53,7 +53,7 @@ public class InspectionSorageTest {
         InspectionStorage storage = new InspectionStorage(mDb, context);
 
         Equipment substation = new Substation(1, "Substation 1");
-        Transformer transformer = new Transformer(1, 1, "Transformerr name");
+        Transformer transformer = new Transformer(1, 1, "Transformerr name", 1);
         TransformerInspection transformerInspection = new TransformerInspection(substation, transformer);
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
         transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.transormator_inspection_list)));
