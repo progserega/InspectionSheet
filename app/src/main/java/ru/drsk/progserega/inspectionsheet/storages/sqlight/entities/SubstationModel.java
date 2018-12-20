@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(tableName = "substations")
 public class SubstationModel {
 
@@ -35,6 +37,12 @@ public class SubstationModel {
     @ColumnInfo(name = "location_lon")
     private double lon;
 
+    @ColumnInfo(name = "inspection_date")
+    private Date inspectionDate;
+
+    @ColumnInfo(name = "inspection_percent")
+    private float inspectionPercent;
+
     public SubstationModel(long id, String name, String voltage, String objectType, long spId, long resId, double lat, double lon) {
         this.id = id;
         this.name = name;
@@ -44,6 +52,9 @@ public class SubstationModel {
         this.resId = resId;
         this.lat = lat;
         this.lon = lon;
+
+        this.inspectionDate = new Date(0);
+        this.inspectionPercent = 0;
     }
 
     public long getId() {
@@ -116,5 +127,21 @@ public class SubstationModel {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public Date getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(Date inspectionDate) {
+        this.inspectionDate = inspectionDate;
+    }
+
+    public float getInspectionPercent() {
+        return inspectionPercent;
+    }
+
+    public void setInspectionPercent(float inspectionPercent) {
+        this.inspectionPercent = inspectionPercent;
     }
 }

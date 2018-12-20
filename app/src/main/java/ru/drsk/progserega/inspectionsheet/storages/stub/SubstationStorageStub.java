@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages.stub;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +20,11 @@ public class SubstationStorageStub implements ISubstationStorage {
     private List<Substation> initSubstations(){
         List<Substation> substations = new ArrayList<>();
 
-        substations.add(new Substation(1, "Подстанция 1"));
-        substations.add(new Substation(2, "Подстанция 2"));
-        substations.add(new Substation(3, "Подстанция 3"));
-        substations.add(new Substation(4, "Подстанция 4"));
-        substations.add(new Substation(5, "Подстанция 5"));
+        substations.add(new Substation(1, "Подстанция 1", new Date(0), 0));
+        substations.add(new Substation(2, "Подстанция 2",  new Date(0), 0));
+        substations.add(new Substation(3, "Подстанция 3",  new Date(0), 0));
+        substations.add(new Substation(4, "Подстанция 4",  new Date(0), 0));
+        substations.add(new Substation(5, "Подстанция 5",  new Date(0), 0));
 
         return substations;
 

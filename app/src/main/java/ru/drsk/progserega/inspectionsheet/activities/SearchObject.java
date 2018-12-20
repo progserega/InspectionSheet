@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.audiofx.DynamicsProcessing;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -38,7 +39,6 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
-//TODO Баг с включением GPS когда включили но вышли
 
 public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
 
@@ -52,6 +52,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     private EquipmentService equipmentService;
     private OrganizationService organizationService;
     private ILocation locationService;
+    private  EquipmentType equipmentType;
 
     SelectOrganizationDialogFragment selectOrganizationDlog;
 
@@ -70,7 +71,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
 
         Intent intent = getIntent();
 
-        EquipmentType equipmentType = (EquipmentType) intent.getSerializableExtra(OBJECT_TYPE);
+        equipmentType = (EquipmentType) intent.getSerializableExtra(OBJECT_TYPE);
         equipmentService.addFilter(EquipmentService.FILTER_TYPE, equipmentType);
 
         Log.i("SearchObject", equipmentType.name());
@@ -172,8 +173,8 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         List<Equipment> equipments = equipmentService.getEquipments();
 
         // update data in our listAdapter
-        listAdapter.getValues().clear();
-        listAdapter.getValues().addAll(equipments);
+        listAdapter.getEquipments().clear();
+        listAdapter.getEquipments().addAll(equipments);
         // fire the event
         listAdapter.notifyDataSetChanged();
     }
@@ -325,6 +326,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
     public void onLocationChange(Point location) {
         filterByPosition(location);
         ReloadListValues();
+       // Toast.makeText(this, "Позиция изменилась!!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -339,5 +341,41 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
             }
         }
         return null;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(equipmentType.equals(EquipmentType.SUBSTATION) || equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
+            ISubstationInspection inspection = application.getCurrentSubstationInspection();
+            if(inspection == null){
+                return;
+            }
+
+            Equipment equipment = inspection.getEquipment();
+            if(equipment == null){
+                return;
+            }
+
+            for(Equipment eq: listAdapter.getEquipments()){
+                if(eq.getId() == equipment.getId()){
+                    eq.setInspectionDate(equipment.getInspectionDate());
+                    eq.setInspectionPercent(equipment.getInspectionPercent());
+                    break;
+                }
+            }
+
+            listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        equipmentService.clearFilters();
+        locationService.stopUsingGPS();
+
     }
 }

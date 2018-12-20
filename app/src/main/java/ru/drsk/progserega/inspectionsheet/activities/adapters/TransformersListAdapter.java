@@ -38,7 +38,7 @@ public class TransformersListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return transformers.get(position).getTypeId();
+        return transformers.get(position).getId();
     }
 
     @Override

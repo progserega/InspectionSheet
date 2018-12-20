@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 import android.arch.persistence.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
@@ -34,7 +35,8 @@ public interface TransformerSubstationDao {
     @Update
     void update(TransformerSubstationModel tp);
 
-
+    @Query("UPDATE tp SET inspection_date = :date, inspection_percent = :percent WHERE id = :id ")
+    void updateInspectionInfo(long id, Date date, float percent);
 
     @Delete
     void delete(TransformerSubstationModel tp);

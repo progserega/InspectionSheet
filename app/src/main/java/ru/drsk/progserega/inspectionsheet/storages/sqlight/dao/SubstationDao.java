@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 import android.arch.persistence.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
@@ -27,6 +28,9 @@ public interface SubstationDao {
 
     @Insert
     long insert(SubstationModel substationModel);
+
+    @Query("UPDATE substations SET inspection_date = :date, inspection_percent = :percent WHERE id = :id ")
+    void updateInspectionInfo(long id, Date date, float percent);
 
     @Update
     void update(SubstationModel substationModel);

@@ -209,11 +209,6 @@ public class InspectTower extends AppCompatActivity {
         selectedLineTower = lineTowers.get(position - 1);
         application.getEquipmentInspection().setLineTower(selectedLineTower);
 
-        //TODO:
-        // Set material spinner item
-        // Set towerType spinner item
-        // Set InspectionType spinner item
-
     }
 
     private void onSelectMaterial(int position) {

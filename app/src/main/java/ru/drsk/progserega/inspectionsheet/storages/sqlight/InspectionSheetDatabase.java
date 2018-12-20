@@ -3,8 +3,10 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
@@ -36,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         InspectionModel.class,
         InspectionPhotoModel.class
 }, version = 1)
+@TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     private static InspectionSheetDatabase INSTANCE;

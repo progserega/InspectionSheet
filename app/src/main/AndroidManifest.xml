@@ -39,9 +39,6 @@
             android:name=".activities.AddDefect"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.InspectTransformer" />
-        <activity
-            android:name=".activities.Test2"
-            android:label="@string/title_activity_test2"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

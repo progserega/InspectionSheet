@@ -103,7 +103,7 @@ public class SelectTransformerDialog  extends DialogFragment {
                 int pos = transformerList.getCheckedItemPosition();
                 Transformer transformer  = (Transformer) transformerList.getAdapter().getItem(pos);
                 if( transformer != null) {
-                    addTransformerListener.onAddTransformer(transformer.getTypeId(), slot);
+                    addTransformerListener.onAddTransformer(transformer.getId(), slot);
                     getDialog().dismiss();
                 }
             }

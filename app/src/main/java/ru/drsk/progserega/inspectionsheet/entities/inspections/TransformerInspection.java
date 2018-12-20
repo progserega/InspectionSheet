@@ -1,18 +1,16 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 
 public class TransformerInspection {
 
     private Equipment substation;
-    private Transformer transformator;
+    private TransformerInSlot transformator;
     private List<InspectionItem> inspectionItems;
     private Date date;
     private boolean done;
@@ -21,7 +19,7 @@ public class TransformerInspection {
         return substation;
     }
 
-    public Transformer getTransformator() {
+    public TransformerInSlot getTransformator() {
         return transformator;
     }
 
@@ -37,7 +35,7 @@ public class TransformerInspection {
         this.date = date;
     }
 
-    public TransformerInspection(Equipment substation, Transformer transformator) {
+    public TransformerInspection(Equipment substation, TransformerInSlot transformator) {
 
         this.substation = substation;
         this.transformator = transformator;

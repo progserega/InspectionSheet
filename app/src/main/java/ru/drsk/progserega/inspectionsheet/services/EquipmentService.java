@@ -60,6 +60,9 @@ public class EquipmentService {
         this.filters.remove(filterName);
     }
 
+    public void clearFilters(){
+        this.filters.clear();
+    }
 
     private List<Equipment> linesToEquipment(List<Line> lines) {
         List<Equipment> equipments = new ArrayList<>();

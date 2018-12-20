@@ -86,13 +86,13 @@ public class SubstationStorage implements ISubstationStorage {
     @Override
     public Substation getById(long id) {
         SubstationModel substationModel = substationDao.getById(id);
-        return new Substation(substationModel.getId(), substationModel.getName());
+        return new Substation(substationModel.getId(), substationModel.getName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
     }
 
     private List<Substation> dbModelToEntity(List<SubstationModel> substationModels) {
         List<Substation> substations = new ArrayList<>();
         for (SubstationModel substationModel : substationModels) {
-            substations.add(new Substation(substationModel.getId(), substationModel.getName()));
+            substations.add(new Substation(substationModel.getId(), substationModel.getName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
         }
 
         return substations;

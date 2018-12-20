@@ -4,6 +4,7 @@ import android.arch.persistence.db.SimpleSQLiteQuery;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +98,7 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     private List<TransformerSubstation> dbModelToEntity(List<TransformerSubstationModel> substationModels) {
         List<TransformerSubstation> substations = new ArrayList<>();
         for (TransformerSubstationModel substationModel : substationModels) {
-            substations.add(new TransformerSubstation(substationModel.getId(), substationModel.getDispName()));
+            substations.add(new TransformerSubstation(substationModel.getId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
         }
 
         return substations;
@@ -106,6 +107,6 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     @Override
     public TransformerSubstation getById(long id) {
         TransformerSubstationModel substationModel = transformerSubstationDao.getById(id);
-        return new TransformerSubstation(substationModel.getId(), substationModel.getDispName());
+        return new TransformerSubstation(substationModel.getId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
     }
 }

@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Substation extends Equipment {
@@ -15,11 +16,13 @@ public class Substation extends Equipment {
         this.transformers = transformers;
     }
 
-    public Substation(long id, String name ){
+    public Substation(long id, String name , Date inspectionDate, float inspectionPercent){
         this.id = id;
         this.name = name;
         this.type = EquipmentType.SUBSTATION;
 
         this.transformers = new ArrayList<>();
+        this.inspectionDate = inspectionDate;
+        this.inspectionPercent = inspectionPercent;
     }
 }

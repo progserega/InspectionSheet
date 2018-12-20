@@ -11,10 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformerSpinnerAdapter extends BaseAdapter {
@@ -51,7 +47,7 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
         View rowView = inflater.inflate(R.layout.transf_spinner_item, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.transf_spinner_item_name);
-        textView.setText(transformers.get(position).getTransformator().getName());
+        textView.setText(transformers.get(position).getTransformator().getTransformer().getName());
 
         TextView slotTextView = (TextView) rowView.findViewById(R.id.transf_spinner_item_slot);
         slotTextView.setText("ТР "+transformers.get(position).getTransformator().getSlot());

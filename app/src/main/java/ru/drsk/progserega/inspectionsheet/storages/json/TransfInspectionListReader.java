@@ -21,6 +21,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemJson;
 
+//TODO добавить id в json
 public class TransfInspectionListReader {
 
     public List<InspectionItem> readInspections(InputStream is) throws IOException {

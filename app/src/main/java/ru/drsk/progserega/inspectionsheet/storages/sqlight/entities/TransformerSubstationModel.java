@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+
 
 /**
  * Модель таблици описывает Трансформаторную подстанцию
@@ -36,6 +38,12 @@ public class TransformerSubstationModel {
     @ColumnInfo(name = "location_lon")
     private double lon;
 
+    @ColumnInfo(name = "inspection_date")
+    private Date inspectionDate;
+
+    @ColumnInfo(name = "inspection_percent")
+    private float inspectionPercent;
+
 
     public TransformerSubstationModel(long id, long uniqId, String powerCenterName, String dispName, long spId, long resId, double lat, double lon) {
         this.id = id;
@@ -46,6 +54,8 @@ public class TransformerSubstationModel {
         this.resId = resId;
         this.lat = lat;
         this.lon = lon;
+        this.inspectionDate = new Date(0);
+        this.inspectionPercent = 0;
     }
 
     public long getId() {
@@ -110,5 +120,21 @@ public class TransformerSubstationModel {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public Date getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(Date inspectionDate) {
+        this.inspectionDate = inspectionDate;
+    }
+
+    public float getInspectionPercent() {
+        return inspectionPercent;
+    }
+
+    public void setInspectionPercent(float inspectionPercent) {
+        this.inspectionPercent = inspectionPercent;
     }
 }

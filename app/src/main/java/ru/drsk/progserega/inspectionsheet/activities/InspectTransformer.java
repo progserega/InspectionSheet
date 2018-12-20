@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
@@ -26,6 +27,7 @@ import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformatorInspe
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
@@ -51,7 +53,7 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     private ISubstationInspection substationInspection;
 
-    private List<Transformer> transformers;
+    private List<TransformerInSlot> transformers;
 
     private List<TransformerInspection> transformerInspections;
 
@@ -185,11 +187,11 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
         transformatorInspectionAdapter.notifyDataSetChanged();
     }
 
-    private List<TransformerInspection> initInspectionsList(List<Transformer> transformers) {
+    private List<TransformerInspection> initInspectionsList(List<TransformerInSlot> transformers) {
         List<TransformerInspection> inspectionList = new ArrayList<>();
 
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
-        for (Transformer transformer : transformers) {
+        for (TransformerInSlot transformer : transformers) {
 
             TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
             initInspections(inspection);
@@ -204,6 +206,17 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     public void onSaveBtnPress(View view) {
         TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
+
+        inspection.getSubstation().setInspectionDate(new Date());
+
+        List<TransformerInspection> allInspections = substationInspection.getTransformerInspections();
+        float sum = 0;
+        for (TransformerInspection transformerInspection : allInspections) {
+            sum += transformerInspection.calcInspectionPercent();
+        }
+        float middlePercent = sum / allInspections.size();
+
+        inspection.getSubstation().setInspectionPercent(middlePercent);
 
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         inspectionStorage.saveInspection(inspection);
@@ -233,11 +246,10 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
         //Выбираем трансформатор
         Transformer transformer = transformerStorage.getById(transformerTypeId);
-        transformer.setId(insertedId);
-        transformer.setSlot(slot);
+        TransformerInSlot transformerInSlot = new TransformerInSlot(insertedId, slot, transformer);
 
         //Создаем новый объект для осмотра
-        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
+        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformerInSlot);
         initInspections(inspection);
         //Добавляем к списку осмотров
         substationInspection.getTransformerInspections().add(inspection);
@@ -247,7 +259,7 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     }
 
-    private void initInspections(TransformerInspection inspection){
+    private void initInspections(TransformerInspection inspection) {
 
         try {
             TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
