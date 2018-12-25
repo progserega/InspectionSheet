@@ -12,6 +12,8 @@ public interface ITransformerStorage {
 
     List<Transformer> getAll();
 
+    List<Transformer> getAllByInstallationInEquipment(EquipmentType type);
+
     List<TransformerInSlot> getBySubstantionId(long substantionId, EquipmentType type);
 
     long addToSubstation(long transformerTypeId, Equipment substation, int slot);

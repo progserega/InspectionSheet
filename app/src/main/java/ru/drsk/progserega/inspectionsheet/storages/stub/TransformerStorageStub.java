@@ -41,6 +41,11 @@ public class TransformerStorageStub implements ITransformerStorage {
     public Transformer getById(long transformerTypeId) {
         return null;
     }
+
+    @Override
+    public List<Transformer> getAllByInstallationInEquipment(EquipmentType type) {
+        return null;
+    }
 }
 
 

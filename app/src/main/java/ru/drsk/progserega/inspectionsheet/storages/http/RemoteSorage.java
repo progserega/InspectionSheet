@@ -19,6 +19,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener {
@@ -71,4 +72,10 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
     public void GeoSubstationsArrived(List<GeoSubstation> substations) {
        dbDataImporter.loadGeoSubstationsWithClean(substations);
     }
+
+    @Override
+    public void SubstationTransformersArrived(List<SubstationTransformerJson> transformers){
+        dbDataImporter.loadSubstationTransformers(transformers);
+    }
+
 }

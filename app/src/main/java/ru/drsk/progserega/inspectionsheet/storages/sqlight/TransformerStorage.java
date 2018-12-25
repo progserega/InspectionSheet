@@ -80,6 +80,23 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
+    public List<Transformer> getAllByInstallationInEquipment(EquipmentType type) {
+        if(type.equals(EquipmentType.TRANS_SUBSTATION)){
+            List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("transformer_substation");
+            return dbTransformerModelToEntity(transformerModelLit);
+        }
+
+        if(type.equals(EquipmentType.SUBSTATION)){
+            List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("substation");
+            return dbTransformerModelToEntity(transformerModelLit);
+        }
+
+        return new ArrayList<>();
+
+
+    }
+
+    @Override
     public long addToSubstation(long transformerTypeId, Equipment substation, int slot) {
 
         if(substation.getType().equals(EquipmentType.SUBSTATION)){

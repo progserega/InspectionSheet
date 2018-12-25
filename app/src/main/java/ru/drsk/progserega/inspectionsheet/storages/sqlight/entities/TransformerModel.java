@@ -18,11 +18,14 @@ public class TransformerModel {
     @ColumnInfo(name = "desc")
     private String desc;
 
+    @ColumnInfo(name = "installation_in")
+    private String installationIn;
 
-    public TransformerModel(long id, String type, String desc) {
+    public TransformerModel(long id, String type, String desc, String installationIn) {
         this.id = id;
         this.type = type;
         this.desc = desc;
+        this.installationIn = installationIn;
     }
 
     public long getId() {
@@ -49,4 +52,11 @@ public class TransformerModel {
         this.desc = desc;
     }
 
+    public String getInstallationIn() {
+        return installationIn;
+    }
+
+    public void setInstallationIn(String installationIn) {
+        this.installationIn = installationIn;
+    }
 }

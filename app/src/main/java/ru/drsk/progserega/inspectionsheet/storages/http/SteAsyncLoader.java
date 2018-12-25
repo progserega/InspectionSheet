@@ -14,6 +14,8 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
+import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 
 public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
 
@@ -77,6 +79,9 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
         publishProgress(0);
         loadSubstations();
         publishProgress(100);
+
+        //Загружаем трансформаторы для подстанций
+        loadSubstationTransformers();
         return null;
     }
 
@@ -125,6 +130,18 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
 
     }
 
+    private void loadSubstationTransformers(){
+
+        SubstationTransformersReader reader = new SubstationTransformersReader();
+        try {
+            List<SubstationTransformerJson> transformersJson = reader.readSubstationTransformers(context.getResources().openRawResource(R.raw.substation_transformers));
+            dataArrivedListener.SubstationTransformersArrived(transformersJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //progressListener.progressError(e);
+            ex = e;
+        }
+    }
 
     protected void onProgressUpdate(Integer... progress) {
         if (progressListener != null) {

@@ -234,6 +234,9 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
             selectTransformerDialog = SelectTransformerDialog.newInstance();
         }
         selectTransformerDialog.setSlot(slot);
+        selectTransformerDialog.setType(substationInspection.getEquipment().getType());
+
+
         selectTransformerDialog.show(fm, "select_transformer");
 
     }

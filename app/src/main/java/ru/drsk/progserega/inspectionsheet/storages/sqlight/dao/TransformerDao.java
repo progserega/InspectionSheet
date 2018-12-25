@@ -17,8 +17,14 @@ public interface TransformerDao {
     @Query("SELECT * FROM transformers")
     List<TransformerModel> loadAllTransformers();
 
+    @Query("SELECT * FROM transformers WHERE installation_in = :install")
+    List<TransformerModel> loadAllTransformersByInstallation(String install);
+
     @Query("SELECT * FROM transformers WHERE id = :id ")
     TransformerModel getById(long id);
+
+    @Query("SELECT max(id) as maxId FROM transformers  ")
+    long getMaxId();
 
     @Insert
     long insert(TransformerModel transformer);

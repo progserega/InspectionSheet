@@ -24,6 +24,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformersListAdapter;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 
@@ -38,12 +39,22 @@ public class SelectTransformerDialog  extends DialogFragment {
 
     private int slot;
 
+    private EquipmentType type;
+
     public int getSlot() {
         return slot;
     }
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public EquipmentType getType() {
+        return type;
+    }
+
+    public void setType(EquipmentType type) {
+        this.type = type;
     }
 
     public SelectTransformerDialog() {
@@ -70,7 +81,8 @@ public class SelectTransformerDialog  extends DialogFragment {
         InspectionSheetApplication application = (InspectionSheetApplication) getActivity().getApplication();
 
         ITransformerStorage transformerStorage = application.getTransformerStorage();
-        List<Transformer> transformers = transformerStorage.getAll();
+        List<Transformer> transformers = transformerStorage.getAllByInstallationInEquipment(type);
+        //List<Transformer> transformers = transformerStorage.getAll();
 
 
         transformerList = (ListView) view.findViewById(R.id.transformers_list);

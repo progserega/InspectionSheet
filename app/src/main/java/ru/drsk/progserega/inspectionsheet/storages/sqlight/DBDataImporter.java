@@ -13,6 +13,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
@@ -194,7 +195,8 @@ public class DBDataImporter {
                 TransformerModel transformerModel = new TransformerModel(
                         transformator.getId(),
                         transformator.getTrType(),
-                        transformator.getDesc());
+                        transformator.getDesc(),
+                        "transformer_substation");
 
 
                 if(!transfCache.contains(transformator.getId())){
@@ -267,6 +269,30 @@ public class DBDataImporter {
             long substationId = substationDao.insert(substationModel);
         }
 
+    }
+
+    public void loadSubstationTransformers(List<SubstationTransformerJson> transformers){
+
+        long maxId = transformerDao.getMaxId();
+        for(SubstationTransformerJson transformerJson: transformers){
+
+            String descr = String.format("%s %s MBA, %s кВ, РПН: %s, наличие ПВБ: %s, защита масла: %s",
+                    transformerJson.getType(),
+                    transformerJson.getPower(),
+                    transformerJson.getVoltage(),
+                    transformerJson.getRpnType(),
+                    transformerJson.getIsPVB(),
+                    transformerJson.getOilDefenceType());
+
+            maxId++;
+            TransformerModel transformerModel = new TransformerModel(
+                    maxId,
+                    transformerJson.getType(),
+                    descr,
+                    "substation");
+
+            transformerDao.insert(transformerModel);
+        }
     }
 
     private long getOrCreateSp(String spName) {
