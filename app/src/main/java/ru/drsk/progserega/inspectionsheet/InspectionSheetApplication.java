@@ -11,6 +11,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemRes
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
@@ -67,6 +68,7 @@ public class InspectionSheetApplication extends Application {
 
     IInspectionStorage inspectionStorage;
 
+    InspectionService inspectionService;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -132,6 +134,10 @@ public class InspectionSheetApplication extends Application {
         return inspectionStorage;
     }
 
+    public InspectionService getInspectionService() {
+        return inspectionService;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -167,7 +173,7 @@ public class InspectionSheetApplication extends Application {
         towersService = new TowersService(towerStorage, lineStorage);
 
         transformerStorage = new TransformerStorage(db);
-        ISubstationStorage substationStorage = new SubstationStorage(db, locationService );
+        ISubstationStorage substationStorage = new SubstationStorage(db, locationService);
         //
         ITransformerSubstationStorage transformerSubstationStorage = new TransformerSubstationStorage(db, locationService);
 
@@ -180,6 +186,9 @@ public class InspectionSheetApplication extends Application {
         substationInspections = new ArrayList<>();
 
         inspectionStorage = new InspectionStorage(db, getApplicationContext());
+
+        inspectionService = new InspectionService(db, transformerStorage, inspectionStorage, getApplicationContext());
+
     }
 
 }

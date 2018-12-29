@@ -68,6 +68,7 @@ public class SearchObject extends AppCompatActivity implements SelectOrganizatio
         this.equipmentService = this.application.getEquipmentService();
         this.locationService = this.application.getLocationService();
         this.organizationService = this.application.getOrganizationService();
+        this.application.setCurrentSubstationInspection(null);
 
         Intent intent = getIntent();
 

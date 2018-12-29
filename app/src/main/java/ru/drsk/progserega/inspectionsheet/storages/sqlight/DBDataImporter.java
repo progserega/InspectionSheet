@@ -276,13 +276,15 @@ public class DBDataImporter {
         long maxId = transformerDao.getMaxId();
         for(SubstationTransformerJson transformerJson: transformers){
 
-            String descr = String.format("%s %s MBA, %s кВ, РПН: %s, наличие ПВБ: %s, защита масла: %s",
-                    transformerJson.getType(),
-                    transformerJson.getPower(),
-                    transformerJson.getVoltage(),
-                    transformerJson.getRpnType(),
-                    transformerJson.getIsPVB(),
-                    transformerJson.getOilDefenceType());
+//            String descr = String.format("%s %s MBA, %s кВ, РПН: %s, наличие ПВБ: %s, защита масла: %s",
+//                    transformerJson.getType(),
+//                    transformerJson.getPower(),
+//                    transformerJson.getVoltage(),
+//                    transformerJson.getRpnType(),
+//                    transformerJson.getIsPVB(),
+//                    transformerJson.getOilDefenceType());
+
+            String descr = String.format("%s",transformerJson.getType());
 
             maxId++;
             TransformerModel transformerModel = new TransformerModel(

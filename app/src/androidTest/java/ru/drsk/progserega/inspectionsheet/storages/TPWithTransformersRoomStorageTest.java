@@ -79,7 +79,7 @@ public class TPWithTransformersRoomStorageTest {
 
     @Test
     public void shouldInsertAndSelectTransformers() {
-        TransformerModel trans = new TransformerModel(1, "type", "descr 1");
+        TransformerModel trans = new TransformerModel(1, "type", "descr 1", "s");
         long insertId = transformerDao.insert(trans);
         assertTrue(insertId == 1);
 
@@ -92,11 +92,11 @@ public class TPWithTransformersRoomStorageTest {
 
     @Test
     public void shouldInsertAndSelectTransformersBySubstationId() {
-        TransformerModel trans = new TransformerModel(1, "type", "descr 1");
+        TransformerModel trans = new TransformerModel(1, "type", "descr 1", "s");
         long insertId = transformerDao.insert(trans);
         assertTrue(insertId == 1);
 
-        TransformerModel trans2 = new TransformerModel(2, "type", "descr 2");
+        TransformerModel trans2 = new TransformerModel(2, "type", "descr 2", "s");
         insertId = transformerDao.insert(trans2);
         assertTrue(insertId == 2);
 
@@ -113,11 +113,11 @@ public class TPWithTransformersRoomStorageTest {
 
     @Test
     public void shouldInsertAndSelectTransformersBySubstationIdWithEquipmentID() {
-        TransformerModel trans = new TransformerModel(1, "type", "descr 1");
+        TransformerModel trans = new TransformerModel(1, "type", "descr 1", "");
         long insertId = transformerDao.insert(trans);
         assertTrue(insertId == 1);
 
-        TransformerModel trans2 = new TransformerModel(2, "type", "descr 2");
+        TransformerModel trans2 = new TransformerModel(2, "type", "descr 2", "");
         insertId = transformerDao.insert(trans2);
         assertTrue(insertId == 2);
 
@@ -134,7 +134,7 @@ public class TPWithTransformersRoomStorageTest {
 
     @Test
     public void shouldInsertTransformersWithDefinedId() {
-        TransformerModel trans = new TransformerModel(255, "type", "descr 1");
+        TransformerModel trans = new TransformerModel(255, "type", "descr 1", "");
         long insertId = transformerDao.insert(trans);
         assertTrue(insertId == 255);
 

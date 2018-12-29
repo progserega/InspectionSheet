@@ -26,6 +26,10 @@ public interface SubstationDao {
     @Query("SELECT * FROM substations WHERE id = :id ")
     SubstationModel getById(long id);
 
+
+    @Query("SELECT * FROM substations WHERE inspection_percent > 0")
+    List<SubstationModel> loadInspected();
+
     @Insert
     long insert(SubstationModel substationModel);
 

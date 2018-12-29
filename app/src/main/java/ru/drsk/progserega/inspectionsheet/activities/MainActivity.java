@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -112,5 +113,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         builder.create().show();
     }
 
+    public void exportInspections(View view) {
 
+    }
 }

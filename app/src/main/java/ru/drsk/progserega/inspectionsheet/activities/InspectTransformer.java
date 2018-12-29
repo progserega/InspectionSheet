@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +31,9 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemRes
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
-import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
 
@@ -53,11 +51,13 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     private ISubstationInspection substationInspection;
 
-    private List<TransformerInSlot> transformers;
+    //private List<TransformerInSlot> transformers;
 
     private List<TransformerInspection> transformerInspections;
 
     private SelectTransformerDialog selectTransformerDialog;
+
+    private InspectionService inspectionService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,18 +76,17 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
         this.application = (InspectionSheetApplication) this.getApplication();
 
         substationInspection = this.application.getCurrentSubstationInspection();
-
+        inspectionService = this.application.getInspectionService();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
         Equipment substation = substationInspection.getEquipment();
         substationNameText.setText(substation.getName());
 
-        transformerStorage = new TransformerStorage(application.getDb());
-        transformers = transformerStorage.getBySubstantionId(substation.getId(), substation.getType());
+        transformerStorage = this.application.getTransformerStorage();
 
         transformerInspections = substationInspection.getTransformerInspections();
         if (transformerInspections == null) {
-            transformerInspections = initInspectionsList(transformers);
+            transformerInspections = inspectionService.getSubstationTransformersWithInspections(substation);
             substationInspection.setInspection(transformerInspections);
         }
 
@@ -187,23 +186,6 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
         transformatorInspectionAdapter.notifyDataSetChanged();
     }
 
-    private List<TransformerInspection> initInspectionsList(List<TransformerInSlot> transformers) {
-        List<TransformerInspection> inspectionList = new ArrayList<>();
-
-        IInspectionStorage inspectionStorage = application.getInspectionStorage();
-        for (TransformerInSlot transformer : transformers) {
-
-            TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
-            initInspections(inspection);
-            inspectionList.add(inspection);
-
-            //Загрузка значений из бд
-            inspectionStorage.loadInspections(inspection);
-        }
-
-        return inspectionList;
-    }
-
     public void onSaveBtnPress(View view) {
         TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
 
@@ -253,7 +235,8 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformerInSlot);
-        initInspections(inspection);
+        inspection.setInspectionItems(inspectionService.loadInspectionTemplates());
+
         //Добавляем к списку осмотров
         substationInspection.getTransformerInspections().add(inspection);
 
@@ -262,14 +245,5 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     }
 
-    private void initInspections(TransformerInspection inspection) {
 
-        try {
-            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
-            inspection.setInspectionItems(inspectionListReader.readInspections(getBaseContext().getResources().openRawResource(R.raw.transormator_inspection_list)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
