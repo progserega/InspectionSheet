@@ -44,7 +44,7 @@ public class InspectionService {
 
     }
 
-    List<TransformerInspection> getInspectionByEquipment(EquipmentType equipmentType){
+    public List<TransformerInspection> getInspectionByEquipment(EquipmentType equipmentType){
 
         if(equipmentType.equals(EquipmentType.SUBSTATION))
         {

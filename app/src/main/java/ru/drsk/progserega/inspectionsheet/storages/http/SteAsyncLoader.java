@@ -2,6 +2,7 @@ package ru.drsk.progserega.inspectionsheet.storages.http;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +42,18 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
+        loadTP();
+
+        publishProgress(0);
+        loadSubstations();
+        publishProgress(100);
+
+        //Загружаем трансформаторы для подстанций
+        loadSubstationTransformers();
+        return null;
+    }
+
+    private void loadTP(){
         int page = 0;
         int total = 0;
         int offset = 0;
@@ -62,10 +75,11 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
                 }
 
             } catch (IOException e) {
+                Log.e("SYNC ERROR", String.valueOf(offset));
                 e.printStackTrace();
                 //break;
                 ex = e;
-                return null;
+                return;
             }
 
             page++;
@@ -76,15 +90,7 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
 
         } while ((offset + PAGE_SIZE) < total);
 
-        publishProgress(0);
-        loadSubstations();
-        publishProgress(100);
-
-        //Загружаем трансформаторы для подстанций
-        loadSubstationTransformers();
-        return null;
     }
-
 
     public void loadSubstations() {
 

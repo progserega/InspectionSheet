@@ -31,10 +31,9 @@
         <activity android:name=".activities.SearchObject" />
         <activity android:name=".activities.searchBySpRes" />
         <activity android:name=".activities.createInspection" />
-        <activity android:name=".activities.CreateDefect" />
         <activity android:name=".activities.FoundedDefects" />
         <activity android:name=".activities.EndInspection" />
-        <activity android:name=".activities.InspectTower" />
+        <activity android:name=".ui.activities.InspectTower" />
         <activity
             android:name=".activities.AddDefect"
             android:windowSoftInputMode="adjustPan" />
@@ -47,9 +46,12 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
+        <activity
+            android:name=".ui.activities.TowerDeffectsActivity"
+            android:label="@string/title_activity_tower_deffects"></activity>
     </application>
 
 </manifest>

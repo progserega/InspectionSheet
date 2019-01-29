@@ -2,23 +2,14 @@ package ru.drsk.progserega.inspectionsheet.storages.http;
 
 import android.content.Context;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
-import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
@@ -29,6 +20,8 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
     private DBDataImporter dbDataImporter;
     private IProgressListener progressListener;
     private Context context;
+    private  IApiInspectionSheet apiIS;
+
 
     public RemoteSorage(DBDataImporter dbDataImporter, Context context) {
         this.dbDataImporter = dbDataImporter;
@@ -41,6 +34,15 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
         apiSTE = retrofit.create(IApiSTE.class); //Создаем объект, при помощи которого будем выполнять запросы
 
         this.context = context;
+
+        Retrofit retrofitInspectionBackend = new Retrofit.Builder()
+                .baseUrl("http://172.21.168.71:3010") //Базовая часть адреса
+                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
+                .build();
+
+        apiIS = retrofitInspectionBackend.create(IApiInspectionSheet.class);
+
+
     }
 
 
@@ -76,6 +78,15 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
     @Override
     public void SubstationTransformersArrived(List<SubstationTransformerJson> transformers){
         dbDataImporter.loadSubstationTransformers(transformers);
+    }
+
+    @Override
+    public void uploadTransformersInspections(List<TransformerInspection> transformerInspections){
+        //Надо каждый раз создавать новую асинхронную задачу
+        InspectionResultsAsyncUploader inspectionResultsAsyncUploader = new InspectionResultsAsyncUploader(apiIS, transformerInspections,this);
+        inspectionResultsAsyncUploader.setProgressListener(this.progressListener);
+        inspectionResultsAsyncUploader.execute();
+
     }
 
 }

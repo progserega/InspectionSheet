@@ -13,9 +13,10 @@
         android:layout_marginBottom="8dp"
         android:onClick="exportInspections"
         android:text="Экспрорт результатов"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"

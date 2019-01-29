@@ -16,6 +16,10 @@ public class ImageAdapter extends BaseAdapter {
     private List<DeffectPhoto> photos;
     private int imageWidthPx;
 
+    public void setPhotos(List<DeffectPhoto> photos) {
+        this.photos = photos;
+    }
+
     public ImageAdapter(Context c, List<DeffectPhoto> photos, int width) {
         mContext = c;
         this.photos = photos;

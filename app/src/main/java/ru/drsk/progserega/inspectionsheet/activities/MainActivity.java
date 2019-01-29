@@ -12,8 +12,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.List;
+
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 
 public class MainActivity extends AppCompatActivity implements IProgressListener {
 
@@ -114,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void exportInspections(View view) {
+        application.getRemoteStorage().setProgressListener(this);
 
+        InspectionService inspectionService = application.getInspectionService();
+        List<TransformerInspection> inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
+
+        application.getRemoteStorage().uploadTransformersInspections(inspections);
     }
 }

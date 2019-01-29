@@ -7,10 +7,12 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
@@ -25,9 +27,15 @@ import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListRead
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +48,8 @@ public class InspectionServiceTest {
     private TransformerDao transformerDao;
     private TransformerSubstationDao transformerSubstationDao;
     private TransformerSubstationEquipmentDao transformerSubstationEquipmentDao;
+    private SubstationDao substationDao;
+    private SubstationEquipmentDao substationEquipmentDao;
 
     @Before
     public void createDb() {
@@ -48,6 +58,8 @@ public class InspectionServiceTest {
         transformerDao = mDb.transformerDao();
         transformerSubstationDao = mDb.transformerSubstationDao();
         transformerSubstationEquipmentDao = mDb.transfSubstationEquipmentDao();
+        substationDao = mDb.substationDao();
+        substationEquipmentDao = mDb.substationEquipmentDao();
     }
 
     @After
@@ -62,7 +74,13 @@ public class InspectionServiceTest {
         ITransformerStorage transformerStorage = new TransformerStorage(mDb);
 
         Equipment substation = new Substation(1, "Substation 1", null, 0);
-        TransformerInSlot transformer = new TransformerInSlot(1, 1, new Transformer( 1, "Transformerr name"));
+        substationDao.insert(new SubstationModel(1, "Substation 1", "", "", 0, 0, 0, 0));
+
+        transformerDao.insert(new TransformerModel(1, "type", "desc", "substation"));
+        substationEquipmentDao.insert(new SubstationEquipmentModel(1, 1, 1, 1));
+
+        //Добавить в БД трансформаторы
+        TransformerInSlot transformer = new TransformerInSlot(1, 1, new Transformer(1, "Transformerr name"));
         TransformerInspection transformerInspection = new TransformerInspection(substation, transformer);
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
         transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.transormator_inspection_list)));
@@ -72,7 +90,7 @@ public class InspectionServiceTest {
         assertTrue(transformerInspection.getInspectionItems().get(1).getId() > 0);
 
 
-        InspectionService inspectionService = new InspectionService(mDb, transformerStorage, storage, context );
+        InspectionService inspectionService = new InspectionService(mDb, transformerStorage, storage, context);
         List<TransformerInspection> inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
 
         assertFalse(inspections == null);

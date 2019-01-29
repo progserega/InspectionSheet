@@ -1,10 +1,12 @@
-package ru.drsk.progserega.inspectionsheet.activities;
+package ru.drsk.progserega.inspectionsheet.ui.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
+import ru.drsk.progserega.inspectionsheet.ui.activities.TowerDeffectsActivity;
 
 public class InspectTower extends AppCompatActivity {
 
@@ -51,6 +54,15 @@ public class InspectTower extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspect_tower);
+
+        ImageButton imageButton = (ImageButton) findViewById(R.id.inpsect_tower_save_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
+        } else {
+            /* старые версии не поддерживают векторные рисунки */
+            imageButton.setImageResource(R.drawable.ic_save_balack_png);
+        }
+        imageButton.invalidate();
 
         this.application = (InspectionSheetApplication) this.getApplication();
         towersService = application.getTowersService();
@@ -235,6 +247,15 @@ public class InspectTower extends AppCompatActivity {
             return;
         }
         application.getEquipmentInspection().setInspectionType(inspectionTypes.get(position - 1));
+    }
+
+    public void onNextBtnPress(View view){
+        Intent intent = new Intent(this, TowerDeffectsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onSaveBtnPress(View view){
+
     }
 
 }

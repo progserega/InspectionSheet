@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.audiofx.DynamicsProcessing;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -39,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
+import ru.drsk.progserega.inspectionsheet.ui.activities.InspectTower;
 
 public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
 

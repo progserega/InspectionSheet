@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
-    tools:context=".activities.InspectTower">
+    tools:context=".ui.activities.InspectTower">
 
     <TextView
         android:id="@+id/inspection_tower_name"
@@ -28,9 +27,10 @@
             android:layout_width="74dp"
             android:layout_height="27dp"
 
+            android:layout_marginLeft="8dp"
             android:gravity="center_vertical"
-            android:text="@string/tower_number"
 
+            android:text="@string/tower_number"
             android:textColor="@android:color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -76,18 +76,14 @@
     </android.support.constraint.ConstraintLayout>
 
 
-
-
-
-
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Материал"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
-        android:textColor="@android:color/black"
-        />
+        android:text="Материал"
+        android:textColor="@android:color/black" />
 
     <Spinner
         android:id="@+id/materials_spinner"
@@ -98,10 +94,10 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Тип опоры"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
-        android:textColor="@android:color/black"
-        />
+        android:text="Тип опоры"
+        android:textColor="@android:color/black" />
 
     <Spinner
         android:id="@+id/tower_type_spinner"
@@ -112,10 +108,10 @@
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Тип осмотра"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
-        android:textColor="@android:color/black"
-        />
+        android:text="Тип осмотра"
+        android:textColor="@android:color/black" />
 
     <Spinner
         android:id="@+id/inspection_type_spinner"
@@ -128,5 +124,47 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
+        android:onClick="onNextBtnPress"
         android:text="@string/next" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/linLayout"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:onClick="onSaveBtnPress"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/inpsect_tower_save_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    android:onClick="onSaveBtnPress" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/save"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
