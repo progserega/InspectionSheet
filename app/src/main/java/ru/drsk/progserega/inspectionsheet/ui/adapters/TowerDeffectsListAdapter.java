@@ -1,26 +1,19 @@
 package ru.drsk.progserega.inspectionsheet.ui.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
-import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
 public class TowerDeffectsListAdapter extends BaseAdapter {
@@ -84,7 +77,7 @@ public class TowerDeffectsListAdapter extends BaseAdapter {
 
 //        RecyclerView list = (RecyclerView) rowView.findViewById(R.id.tower_defect_photos);
 //        list.setLayoutManager(new LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,false));
-//        list.setAdapter(new HorizontalAdapter(deffect.getPhotos()));
+//        list.setAdapter(new HorizontalPhotoListAdapter(deffect.getPhotos()));
 
 
         ExpandableHeightGridView gridview = (ExpandableHeightGridView) rowView.findViewById(R.id.tower_defect_photos);

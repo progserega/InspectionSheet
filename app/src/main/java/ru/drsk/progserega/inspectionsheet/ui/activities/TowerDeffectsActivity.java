@@ -135,5 +135,10 @@ public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDe
 
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
 
 }

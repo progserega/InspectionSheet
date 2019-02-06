@@ -24,6 +24,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteSorage;
+import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
@@ -181,7 +182,8 @@ public class InspectionSheetApplication extends Application {
 
 
         DBDataImporter dbDataImporter = new DBDataImporter(db);
-        remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
+       // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
+        remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext());
 
         substationInspections = new ArrayList<>();
 

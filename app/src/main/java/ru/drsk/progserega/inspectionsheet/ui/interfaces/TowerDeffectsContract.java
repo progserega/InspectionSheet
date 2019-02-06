@@ -17,6 +17,8 @@ public class TowerDeffectsContract {
         void onAddDeffectBtnPress();
 
         void addDeffect(TowerDeffectType deffectType);
+
+        void onDestroy();
     }
 
 

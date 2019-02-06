@@ -1,7 +1,12 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
+import android.content.Context;
 import android.provider.Settings;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,12 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
+import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
@@ -24,6 +33,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipme
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
@@ -45,14 +55,13 @@ public class DBDataImporter {
     private SubstationEquipmentDao substationEquipmentDao;
     private InspectionDao inspectionDao;
     private InspectionPhotoDao inspectionPhotoDao;
+    private InspectionItemDao inspectionItemDao;
 
     private Map<String, Long> spCache;
     private Map<String, Long> resCache;
     private Set<Long> transfCache;
 
-    private boolean isEnterpriseCacheLoaded = false;
-    private boolean isClearTransformerSusbstations = false;
-    private boolean isClearSusbstations = false;
+
 
     public DBDataImporter(InspectionSheetDatabase db) {
         this.db = db;
@@ -67,96 +76,27 @@ public class DBDataImporter {
         inspectionDao = db.inspectionDao();
         inspectionPhotoDao = db.inspectionPhotoDao();
 
+        inspectionItemDao = db.inspectionItemDao();
+
         spCache = new HashMap<>();
         resCache = new HashMap<>();
         transfCache = new HashSet<>();
 
-        isEnterpriseCacheLoaded = false;
-        isClearTransformerSusbstations = false;
-        isClearSusbstations = false;
+
 
     }
-/*
-    public void loadSteTpModelWithUpdate(List<SteTPModel> tpModels) {
-        if (!isEnterpriseCacheLoaded) {
-            initEnterpriseCache();
-            isEnterpriseCacheLoaded = true;
-        }
 
-        for (SteTPModel tpModel : tpModels) {
-
-            long spId = getOrCreateSp(tpModel.getSpName());
-            long resId = getOrCreateRes(tpModel.getResName(), spId);
-
-            TransformerSubstationModel substationModel = new TransformerSubstationModel(
-                    tpModel.getId(),
-                    tpModel.getUniqId(),
-                    tpModel.getPowerCenterName(),
-                    tpModel.getDispName(),
-                    spId,
-                    resId,
-                    tpModel.getLat(),
-                    tpModel.getLon());
-
-
-            TransformerSubstationModel savedSubstationModel = transformerSubstationDao.getByUniqId(tpModel.getUniqId());
-
-
-            if (savedSubstationModel == null) {
-                transformerSubstationDao.insert(substationModel);
-            } else {
-                transformerSubstationDao.update(substationModel);
-            }
-
-            Map<Long, SteTransformator> steTransformatorMap = new HashMap<>();
-            List<SteTransformator> steTransformators = new ArrayList<>();
-            if (tpModel.getT1() != null && tpModel.getT1().getDesc() != null) {
-                steTransformators.add(tpModel.getT1());
-                steTransformatorMap.put(tpModel.getT1().getId(), tpModel.getT1());
-            }
-            if (tpModel.getT2() != null && tpModel.getT2().getDesc() != null) {
-                steTransformators.add(tpModel.getT2());
-                steTransformatorMap.put(tpModel.getT2().getId(), tpModel.getT2());
-            }
-
-            if (tpModel.getT3() != null && tpModel.getT3().getDesc() != null) {
-                steTransformators.add(tpModel.getT3());
-                steTransformatorMap.put(tpModel.getT3().getId(), tpModel.getT3());
-            }
-
-            for (SteTransformator transformator : steTransformators) {
-
-                TransformerModel transformerModel = new TransformerModel(
-                        transformator.getId(),
-                        transformator.getTrType(),
-                        transformator.getDesc());
-
-
-
-            }
-
-            //TODO: убить трансформаторы которых уже нет в списке (переместили и всетакое)
-
-
-        }
+    public void ClearDB(){
+        transformerDao.delete();
+        transformerSubstationDao.delete();
+        transformerSubstationEquipmentDao.delete();
+        substationDao.delete();
+        substationEquipmentDao.delete();
+        inspectionDao.deleteAll();
+        inspectionPhotoDao.deleteAll();
     }
-*/
-    public void loadSteTpModelWithClean(List<SteTPModel> tpModels) {
-        if (!isEnterpriseCacheLoaded) {
-            initEnterpriseCache();
-            isEnterpriseCacheLoaded = true;
-        }
 
-        if (!isClearTransformerSusbstations) {
-
-            transformerDao.delete();
-            transformerSubstationDao.delete();
-            transformerSubstationEquipmentDao.delete();
-            inspectionDao.deleteAll();
-            inspectionPhotoDao.deleteAll();
-            isClearTransformerSusbstations = true;
-
-        }
+    public void loadSteTpModel(List<SteTPModel> tpModels) {
 
         for (SteTPModel tpModel : tpModels) {
 
@@ -213,20 +153,7 @@ public class DBDataImporter {
 
     }
 
-    public void loadGeoSubstationsWithClean(List<GeoSubstation> substations) {
-
-        if (!isEnterpriseCacheLoaded) {
-            initEnterpriseCache();
-            isEnterpriseCacheLoaded = true;
-        }
-
-        if (!isClearSusbstations) {
-            substationDao.delete();
-            substationEquipmentDao.delete();
-            inspectionDao.deleteAll();
-            inspectionPhotoDao.deleteAll();
-            isClearSusbstations = true;
-        }
+    public void loadGeoSubstations(List<GeoSubstation> substations) {
 
         Set<String> spNames = spCache.keySet();
         Set<String> resNames = resCache.keySet();
@@ -318,7 +245,7 @@ public class DBDataImporter {
     }
 
 
-    private void initEnterpriseCache() {
+    public void initEnterpriseCache() {
         List<SpWithRes> spWithRes = spWithResDao.loadEnterprises();
         for (SpWithRes sp_res : spWithRes) {
 
@@ -365,5 +292,39 @@ public class DBDataImporter {
         }
 
         return resId;
+    }
+
+
+    public void loadInspectionItems(Context appContext){
+        inspectionItemDao.deleteAll();
+
+        TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
+        List<InspectionItem> inspectionItems = null;
+        try {
+            inspectionItems = inspectionListReader.readInspections(
+                    appContext.getResources().openRawResource(R.raw.transormator_inspection_list)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Gson gson = new Gson();
+        for(InspectionItem inspectionItem: inspectionItems){
+            String result = "";
+            if(inspectionItem.getResult().getResultValues()!=null){
+                result = gson.toJson(inspectionItem.getResult().getResultValues());
+            }
+
+            String subResult = "";
+            if(inspectionItem.getResult().getSubresultValues()!=null){
+                subResult = gson.toJson(inspectionItem.getResult().getSubresultValues());
+            }
+            InspectionItemModel inspectionItemModel = new InspectionItemModel(inspectionItem, result, subResult);
+
+            inspectionItemDao.insert(inspectionItemModel);
+        }
+
+        int a = 0;
     }
 }

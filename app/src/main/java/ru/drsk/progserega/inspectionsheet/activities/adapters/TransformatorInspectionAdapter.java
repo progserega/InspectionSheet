@@ -1,6 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.activities.adapters;
 
-import android.arch.persistence.room.util.StringUtil;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,20 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformatorInspectionAdapter extends BaseAdapter {
 
+    public interface OnItemPhotoClickListener {
+        void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position);
+    }
+
     private final Context context;
     private TransformerInspection inspection;
     private List<InspectionItem> inspectionItems;
+    private OnItemPhotoClickListener onItemPhotoClickListener;
 
     public void setInspection(TransformerInspection inspection) {
         this.inspection = inspection;
@@ -34,10 +40,11 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         }
     }
 
-    public TransformatorInspectionAdapter(Context context, TransformerInspection inspection){
+    public TransformatorInspectionAdapter(Context context, TransformerInspection inspection, OnItemPhotoClickListener photoClickListener){
         this.context = context;
         this.inspection = inspection;
         this.inspectionItems = inspection.getInspectionItems();
+        this.onItemPhotoClickListener = photoClickListener;
     }
 
     @Override
@@ -67,7 +74,8 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
 
     @Override
     public boolean isEnabled(int position) {
-        return inspectionItems.get(position).getType() == InspectionItemType.ITEM;
+        //return inspectionItems.get(position).getType() == InspectionItemType.ITEM;
+        return true;
     }
 
     @Override
@@ -76,7 +84,7 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = null;
-        InspectionItem inspectionItem = inspectionItems.get(position);
+        final InspectionItem inspectionItem = inspectionItems.get(position);
         switch (inspectionItem.getType()){
             case HEADER:
                 rowView = inflater.inflate(R.layout.transf_inspection_header, parent, false);
@@ -119,7 +127,13 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
 
                 RecyclerView list = (RecyclerView) rowView.findViewById(R.id.transf_inspection_photos);
                 list.setLayoutManager(new LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL,false));
-                list.setAdapter(new HorizontalAdapter(inspectionItem.getResult().getPhotos()));
+                list.setAdapter(new HorizontalPhotoListAdapter(inspectionItem.getResult().getPhotos(), new HorizontalPhotoListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(DeffectPhoto photo, int position) {
+                        //Toast.makeText(context, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();;
+                        onItemPhotoClickListener.onItemPhotoClick(inspectionItem, photo, position);
+                    }
+                }));
 
                 break;
 

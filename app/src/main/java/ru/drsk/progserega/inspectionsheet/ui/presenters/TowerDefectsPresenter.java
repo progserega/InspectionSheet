@@ -38,4 +38,9 @@ public class TowerDefectsPresenter implements TowerDeffectsContract.Presenter {
 
         view.updateDeffectsList(deffectList);
     }
+
+    @Override
+    public void onDestroy() {
+        this.view = null;
+    }
 }

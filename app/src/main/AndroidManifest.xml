@@ -51,7 +51,16 @@
 
         <activity
             android:name=".ui.activities.TowerDeffectsActivity"
-            android:label="@string/title_activity_tower_deffects"></activity>
+            android:label="@string/title_activity_tower_deffects" />
+        <activity
+            android:name=".ui.activities.FullscreenImageActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar"
+
+
+            ></activity>
     </application>
 
+    <!--android:configChanges="orientation|keyboardHidden|screenSize"-->
+    <!--android:label="@string/title_activity_fullscreen_image"-->
+    <!--android:theme="@style/FullscreenTheme"-->
 </manifest>

@@ -37,8 +37,10 @@ import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
 import ru.drsk.progserega.inspectionsheet.activities.utility.RealPathUtil;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
 
 import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility.REQUEST_CODE_WRITE_EXTERNAL_STORAGE;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
 public class AddDefect extends AppCompatActivity {
 
@@ -125,7 +127,7 @@ public class AddDefect extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                // Toast.makeText(AddDefect.this, "" + position, Toast.LENGTH_SHORT).show();
+                showFullscreenPhoto(position);
             }
         });
 
@@ -339,5 +341,11 @@ public class AddDefect extends AppCompatActivity {
         Intent returnIntent = getIntent();
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    private void showFullscreenPhoto(int position){
+        Intent intent = new Intent(AddDefect.this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        startActivity(intent);
     }
 }

@@ -6,8 +6,10 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
@@ -17,6 +19,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipme
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
@@ -36,7 +39,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         SubstationModel.class,
         SubstationEquipmentModel.class,
         InspectionModel.class,
-        InspectionPhotoModel.class
+        InspectionPhotoModel.class,
+        InspectionItemModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
@@ -63,5 +67,6 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     public abstract InspectionPhotoDao inspectionPhotoDao();
 
+    public abstract InspectionItemDao inspectionItemDao();
 
 }

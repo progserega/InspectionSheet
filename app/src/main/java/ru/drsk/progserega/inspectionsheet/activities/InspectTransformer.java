@@ -27,6 +27,7 @@ import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinner
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
@@ -34,10 +35,14 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspec
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
+import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
-public class InspectTransformer extends AppCompatActivity implements SelectTransformerDialog.AddTransformerListener {
+public class InspectTransformer extends AppCompatActivity implements
+        SelectTransformerDialog.AddTransformerListener,
+        TransformatorInspectionAdapter.OnItemPhotoClickListener {
 
     static final int GET_DEFFECT_VALUE_REQUEST = 1;
 
@@ -108,7 +113,7 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
 
         TransformerInspection inspection = new TransformerInspection(substation, null);
-        transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection);
+        transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection, this);
         ListView transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(transformatorInspectionAdapter);
 
@@ -180,7 +185,6 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     private void onSelectTransormator(int position) {
 
-
         TransformerInspection inspection = transformerInspections.get(position);
         transformatorInspectionAdapter.setInspection(inspection);
         transformatorInspectionAdapter.notifyDataSetChanged();
@@ -245,5 +249,12 @@ public class InspectTransformer extends AppCompatActivity implements SelectTrans
 
     }
 
-
+    @Override
+    public void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position) {
+        Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        application.setCurrentDeffect(inspectionItem.getResult());
+        startActivity(intent);
+    }
 }

@@ -53,6 +53,12 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
 
     @Override
     public void loadRemoteData() {
+
+       // dbDataImporter.loadInspectionItems(context);
+       // if(true) return;
+        dbDataImporter.ClearDB();
+        dbDataImporter.initEnterpriseCache();
+
         //Надо каждый раз создавать новую асинхронную задачу
         SteAsyncLoader steAsyncLoader = new SteAsyncLoader(apiSTE, this, context);
         steAsyncLoader.setProgressListener(this.progressListener);
@@ -67,12 +73,12 @@ public class RemoteSorage implements IRemoteStorage, IRemoteDataArrivedListener 
      */
     @Override
     public void SteTPModelsArrived(List<SteTPModel> tpModels) {
-        dbDataImporter.loadSteTpModelWithClean(tpModels);
+        dbDataImporter.loadSteTpModel(tpModels);
     }
 
     @Override
     public void GeoSubstationsArrived(List<GeoSubstation> substations) {
-       dbDataImporter.loadGeoSubstationsWithClean(substations);
+       dbDataImporter.loadGeoSubstations(substations);
     }
 
     @Override
