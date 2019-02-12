@@ -15,6 +15,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.InspectionType;
@@ -55,14 +56,7 @@ public class InspectTower extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspect_tower);
 
-        ImageButton imageButton = (ImageButton) findViewById(R.id.inpsect_tower_save_btn);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
-        } else {
-            /* старые версии не поддерживают векторные рисунки */
-            imageButton.setImageResource(R.drawable.ic_save_balack_png);
-        }
-        imageButton.invalidate();
+        ButtonUtils.initSaveBtnImg((ImageButton) findViewById(R.id.inpsect_tower_save_btn));
 
         this.application = (InspectionSheetApplication) this.getApplication();
         towersService = application.getTowersService();

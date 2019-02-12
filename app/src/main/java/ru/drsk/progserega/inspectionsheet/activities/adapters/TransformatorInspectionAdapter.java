@@ -40,6 +40,10 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         }
     }
 
+    public List<InspectionItem> getInspectionItems() {
+        return inspectionItems;
+    }
+
     public TransformatorInspectionAdapter(Context context, TransformerInspection inspection, OnItemPhotoClickListener photoClickListener){
         this.context = context;
         this.inspection = inspection;

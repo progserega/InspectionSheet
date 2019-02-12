@@ -6,7 +6,9 @@ import android.arch.persistence.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
@@ -70,6 +72,11 @@ public class InspectionSheetApplication extends Application {
     IInspectionStorage inspectionStorage;
 
     InspectionService inspectionService;
+
+    InspectionItem currentInspectionItem;
+    List<InspectionItem> inspectionItemsGroup;
+
+    List<DeffectPhoto> photosForFullscreen;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -137,6 +144,30 @@ public class InspectionSheetApplication extends Application {
 
     public InspectionService getInspectionService() {
         return inspectionService;
+    }
+
+    public InspectionItem getCurrentInspectionItem() {
+        return currentInspectionItem;
+    }
+
+    public void setCurrentInspectionItem(InspectionItem currentInspectionItem) {
+        this.currentInspectionItem = currentInspectionItem;
+    }
+
+    public List<InspectionItem> getInspectionItemsGroup() {
+        return inspectionItemsGroup;
+    }
+
+    public void setInspectionItemsGroup(List<InspectionItem> inspectionItemsGroup) {
+        this.inspectionItemsGroup = inspectionItemsGroup;
+    }
+
+    public List<DeffectPhoto> getPhotosForFullscreen() {
+        return photosForFullscreen;
+    }
+
+    public void setPhotosForFullscreen(List<DeffectPhoto> photosForFullscreen) {
+        this.photosForFullscreen = photosForFullscreen;
     }
 
     @Override

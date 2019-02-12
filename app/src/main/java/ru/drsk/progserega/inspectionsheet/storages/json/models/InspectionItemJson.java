@@ -22,11 +22,11 @@ public class InspectionItemJson {
 
     @SerializedName("result")
     @Expose
-    private InspectionItemResultValues result;
+    private InspectionItemPossibleResult result;
 
     @SerializedName("sub_result")
     @Expose
-    private InspectionItemResultValues subResult;
+    private InspectionItemPossibleResult subResult;
 
 
     public String getNumber() {
@@ -53,19 +53,19 @@ public class InspectionItemJson {
         this.type = type;
     }
 
-    public InspectionItemResultValues getResult() {
+    public InspectionItemPossibleResult getResult() {
         return result;
     }
 
-    public void setResult(InspectionItemResultValues result) {
+    public void setResult(InspectionItemPossibleResult result) {
         this.result = result;
     }
 
-    public InspectionItemResultValues getSubResult() {
+    public InspectionItemPossibleResult getSubResult() {
         return subResult;
     }
 
-    public void setSubResult(InspectionItemResultValues subResult) {
+    public void setSubResult(InspectionItemPossibleResult subResult) {
         this.subResult = subResult;
     }
 }

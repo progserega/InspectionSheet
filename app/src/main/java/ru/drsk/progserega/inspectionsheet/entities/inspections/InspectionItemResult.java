@@ -3,18 +3,25 @@ package ru.drsk.progserega.inspectionsheet.entities.inspections;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemResultValues;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemPossibleResult;
 
 public class InspectionItemResult {
-    private String comment;
 
-    private InspectionItemResultValues resultValues;
-    private InspectionItemResultValues subresultValues;
+    private InspectionItemPossibleResult possibleResult;
+    private InspectionItemPossibleResult possibleSubresult;
 
     private List<String> values;
     private List<String> subValues;
-
+    private String comment;
     private List<DeffectPhoto> photos;
+
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+
+    public void setSubValues(List<String> subValues) {
+        this.subValues = subValues;
+    }
 
     public String getComment() {
         return comment;
@@ -32,12 +39,12 @@ public class InspectionItemResult {
         this.photos = photos;
     }
 
-    public InspectionItemResultValues getResultValues() {
-        return resultValues;
+    public InspectionItemPossibleResult getPossibleResult() {
+        return possibleResult;
     }
 
-    public InspectionItemResultValues getSubresultValues() {
-        return subresultValues;
+    public InspectionItemPossibleResult getPossibleSubresult() {
+        return possibleSubresult;
     }
 
     public List<String> getValues() {
@@ -48,9 +55,9 @@ public class InspectionItemResult {
         return subValues;
     }
 
-    public InspectionItemResult(InspectionItemResultValues resultValues, InspectionItemResultValues subresultValues) {
-        this.resultValues = resultValues;
-        this.subresultValues = subresultValues;
+    public InspectionItemResult(InspectionItemPossibleResult possibleResult, InspectionItemPossibleResult possibleSubresult) {
+        this.possibleResult = possibleResult;
+        this.possibleSubresult = possibleSubresult;
         comment = "";
         values = new ArrayList<>();
         subValues = new ArrayList<>();

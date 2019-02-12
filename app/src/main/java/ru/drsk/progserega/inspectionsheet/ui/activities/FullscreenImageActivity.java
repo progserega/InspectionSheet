@@ -22,6 +22,7 @@ public class FullscreenImageActivity extends Activity {
     public static final String IMAGE_IDX= "image_idx";
 
     private InspectionSheetApplication application;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -31,7 +32,7 @@ public class FullscreenImageActivity extends Activity {
 
         setContentView(R.layout.activity_fullscreen_image);
 
-        FullScreenImageAdapter fullScreenImageAdapter = new FullScreenImageAdapter(this,application.getCurrentDeffect().getPhotos());
+        FullScreenImageAdapter fullScreenImageAdapter = new FullScreenImageAdapter(this, application.getPhotosForFullscreen());
         ViewPager pager =  findViewById(R.id.fullscreen_image_pager);
         pager.setAdapter(fullScreenImageAdapter);
 

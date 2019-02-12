@@ -1,11 +1,12 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
-import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemResultValues;
+import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemPossibleResult;
 
 public class InspectionItem {
 
     private long id;
     private int valueId;
+    private int parentId;
     private String number;
     private String name;
     private InspectionItemType type;
@@ -45,13 +46,24 @@ public class InspectionItem {
         this.result = result;
     }
 
+    public int getParentId() {
+        return parentId;
+    }
 
-    public InspectionItem(int id, int valueId, String number, String name, InspectionItemType type, InspectionItemResultValues values, InspectionItemResultValues subresultValues) {
+    public InspectionItem(int id,
+                          int valueId,
+                          String number,
+                          String name,
+                          InspectionItemType type,
+                          InspectionItemPossibleResult values,
+                          InspectionItemPossibleResult subresultValues,
+                          int parentId) {
         this.number = number;
         this.id = id;
         this.valueId = valueId;
         this.name = name;
         this.type = type;
         this.result = new InspectionItemResult(values, subresultValues);
+        this.parentId = parentId;
     }
 }

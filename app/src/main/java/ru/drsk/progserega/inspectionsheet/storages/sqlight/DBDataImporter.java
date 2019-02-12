@@ -1,12 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import android.content.Context;
-import android.provider.Settings;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
@@ -34,7 +31,6 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubsta
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
@@ -76,7 +72,7 @@ public class DBDataImporter {
         inspectionDao = db.inspectionDao();
         inspectionPhotoDao = db.inspectionPhotoDao();
 
-        inspectionItemDao = db.inspectionItemDao();
+       // inspectionItemDao = db.inspectionItemDao();
 
         spCache = new HashMap<>();
         resCache = new HashMap<>();
@@ -312,13 +308,13 @@ public class DBDataImporter {
         Gson gson = new Gson();
         for(InspectionItem inspectionItem: inspectionItems){
             String result = "";
-            if(inspectionItem.getResult().getResultValues()!=null){
-                result = gson.toJson(inspectionItem.getResult().getResultValues());
+            if(inspectionItem.getResult().getPossibleResult()!=null){
+                result = gson.toJson(inspectionItem.getResult().getPossibleResult());
             }
 
             String subResult = "";
-            if(inspectionItem.getResult().getSubresultValues()!=null){
-                subResult = gson.toJson(inspectionItem.getResult().getSubresultValues());
+            if(inspectionItem.getResult().getPossibleSubresult()!=null){
+                subResult = gson.toJson(inspectionItem.getResult().getPossibleSubresult());
             }
             InspectionItemModel inspectionItemModel = new InspectionItemModel(inspectionItem, result, subResult);
 

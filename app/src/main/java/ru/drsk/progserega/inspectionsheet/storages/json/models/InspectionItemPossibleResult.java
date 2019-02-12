@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class InspectionItemResultValues {
+public class InspectionItemPossibleResult {
 
     @SerializedName("type")
     @Expose
@@ -13,7 +13,7 @@ public class InspectionItemResultValues {
 
     @SerializedName("values")
     @Expose
-    private List<String> possibleValues;
+    private List<String> values;
 
     public String getType() {
         return type;
@@ -23,11 +23,11 @@ public class InspectionItemResultValues {
         this.type = type;
     }
 
-    public List<String> getPossibleValues() {
-        return possibleValues;
+    public List<String> getValues() {
+        return values;
     }
 
-    public void setPossibleValues(List<String> possibleValues) {
-        this.possibleValues = possibleValues;
+    public void setValues(List<String> values) {
+        this.values = values;
     }
 }

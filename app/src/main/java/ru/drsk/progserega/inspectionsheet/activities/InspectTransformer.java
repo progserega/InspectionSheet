@@ -31,11 +31,13 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
+import ru.drsk.progserega.inspectionsheet.ui.activities.GroupAddTransfrmerDeffect;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
@@ -160,15 +162,26 @@ public class InspectTransformer extends AppCompatActivity implements
     private void onListItemClick(AdapterView<?> list, View v, int position, long id) {
         InspectionItem inspectionItem = (InspectionItem) transformatorInspectionAdapter.getItem(position);
 
-        InspectionItemResult inspectionItemResult = inspectionItem.getResult();
+        if(inspectionItem.getType().equals(InspectionItemType.HEADER)){
+            List<InspectionItem> allItems = transformatorInspectionAdapter.getInspectionItems();
+            InspectionItem header = inspectionItem;
+            List<InspectionItem> group = getInspectionGroup(header, allItems );
+            application.setCurrentInspectionItem(header);
+            application.setInspectionItemsGroup(group);
 
-        application.setCurrentDeffect(inspectionItemResult);
-        // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
+            startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
 
-        Intent intent = new Intent(this, AddDefect.class);
-        intent.putExtra(DEFFECT_NAME, inspectionItem.getName());
-        startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
+        }else {
+            InspectionItemResult inspectionItemResult = inspectionItem.getResult();
 
+            application.setCurrentDeffect(inspectionItemResult);
+            // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(this, AddDefect.class);
+            intent.putExtra(DEFFECT_NAME, inspectionItem.getName());
+            startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
+        }
     }
 
     @Override
@@ -210,7 +223,7 @@ public class InspectTransformer extends AppCompatActivity implements
         inspection.setDone(true);
         transformerSpinnerAdapter.notifyDataSetChanged();
 
-        Toast.makeText(this, "SAVE !!!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "SAVE !!!", Toast.LENGTH_LONG).show();
     }
 
 
@@ -251,10 +264,20 @@ public class InspectTransformer extends AppCompatActivity implements
 
     @Override
     public void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position) {
-        Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
-        application.setCurrentDeffect(inspectionItem.getResult());
+        application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
         startActivity(intent);
+    }
+
+    private List<InspectionItem> getInspectionGroup(InspectionItem header, List<InspectionItem> allItems){
+        List<InspectionItem> group = new ArrayList<>();
+        for(InspectionItem item: allItems){
+            if(item.getParentId() == header.getValueId()){
+                group.add(item);
+            }
+        }
+        return group;
     }
 }

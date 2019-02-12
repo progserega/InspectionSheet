@@ -40,7 +40,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         SubstationEquipmentModel.class,
         InspectionModel.class,
         InspectionPhotoModel.class,
-        InspectionItemModel.class
+   //     InspectionItemModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
@@ -67,6 +67,6 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     public abstract InspectionPhotoDao inspectionPhotoDao();
 
-    public abstract InspectionItemDao inspectionItemDao();
+//    public abstract InspectionItemDao inspectionItemDao();
 
 }

@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -31,10 +30,10 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
+import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.ImageFilePath;
 import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
-import ru.drsk.progserega.inspectionsheet.activities.utility.RealPathUtil;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
 import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
@@ -71,14 +70,7 @@ public class AddDefect extends AppCompatActivity {
 
         //  this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        ImageButton imageButton = (ImageButton) findViewById(R.id.save_btn);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
-        } else {
-            /* старые версии не поддерживают векторные рисунки */
-            imageButton.setImageResource(R.drawable.ic_save_balack_png);
-        }
-        imageButton.invalidate();
+        ButtonUtils.initSaveBtnImg((ImageButton) findViewById(R.id.save_btn));
 
         this.application = (InspectionSheetApplication) this.getApplication();
         Intent intent = getIntent();
@@ -92,23 +84,33 @@ public class AddDefect extends AppCompatActivity {
         deffectDescription = (TextView) findViewById(R.id.add_defect_description);
         deffectDescription.setText(deffect.getComment());
 
-        if (deffect.getResultValues() != null) {
-            //   addDinamicContent((LinearLayout) findViewById(R.id.add_defect_result_layout), deffect.getResultValues());;
+        if (deffect.getPossibleResult() != null) {
+            //   addDinamicContent((LinearLayout) findViewById(R.id.add_defect_result_layout), deffect.getPossibleResult());;
             valuesView = new DeffectValuesView(
                     (LinearLayout) findViewById(R.id.add_defect_result_layout),
-                    deffect.getResultValues(),
+                    deffect.getPossibleResult(),
                     deffect.getValues(),
-                    this);
+                    this, new DeffectValuesView.OnValueChangeListener() {
+                @Override
+                public void valuesChange(List<String> values) {
+
+                }
+            });
             valuesView.build();
         }
 
-        if (deffect.getSubresultValues() != null) {
-            //addDinamicContent((LinearLayout) findViewById(R.id.add_defect_subresult_layout), deffect.getSubresultValues());
+        if (deffect.getPossibleSubresult() != null) {
+            //addDinamicContent((LinearLayout) findViewById(R.id.add_defect_subresult_layout), deffect.getPossibleSubresult());
             subValuesView = new DeffectValuesView(
                     (LinearLayout) findViewById(R.id.add_defect_result_layout),
-                    deffect.getSubresultValues(),
+                    deffect.getPossibleSubresult(),
                     deffect.getSubValues(),
-                    this);
+                    this, new DeffectValuesView.OnValueChangeListener() {
+                @Override
+                public void valuesChange(List<String> values) {
+
+                }
+            });
             subValuesView.build();
         }
 
@@ -328,14 +330,14 @@ public class AddDefect extends AppCompatActivity {
         deffect.setComment(deffectDescription.getText().toString());
 
 
-        if (valuesView != null){
+        if (valuesView != null) {
             deffect.getValues().clear();
-            deffect.getValues().addAll( valuesView.getResult());
+            deffect.getValues().addAll(valuesView.getResult());
         }
 
-        if (subValuesView != null){
+        if (subValuesView != null) {
             deffect.getSubValues().clear();
-            deffect.getSubValues().addAll( subValuesView.getResult());
+            deffect.getSubValues().addAll(subValuesView.getResult());
         }
 
         Intent returnIntent = getIntent();
@@ -343,9 +345,10 @@ public class AddDefect extends AppCompatActivity {
         finish();
     }
 
-    private void showFullscreenPhoto(int position){
+    private void showFullscreenPhoto(int position) {
         Intent intent = new Intent(AddDefect.this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
+        application.setPhotosForFullscreen(deffectPhotos);
         startActivity(intent);
     }
 }

@@ -50,5 +50,6 @@
     <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_group_add_transfrmer_deffect">GroupAddTransfrmerDeffect</string>
 
 </resources>

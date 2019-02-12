@@ -32,7 +32,16 @@ public class TransfInspectionListReader {
         InspectionItemJson[] response = gson.fromJson(jsonString,InspectionItemJson[].class);
         List<InspectionItem> inspectionItems = new ArrayList<>();
         int cnt = 1;
+        int parentId = 0;
+        int headerId = 0;
+
         for(InspectionItemJson item: response ){
+            if(item.getType().equals(InspectionItemType.HEADER)){
+                parentId = 0;
+                headerId = cnt;
+            }else{
+                parentId = headerId;
+            }
             inspectionItems.add(new InspectionItem(
                     0,
                     cnt,
@@ -40,7 +49,8 @@ public class TransfInspectionListReader {
                     item.getName(),
                     item.getType(),
                     item.getResult(),
-                    item.getSubResult()
+                    item.getSubResult(),
+                    parentId
             ));
             cnt++;
         }

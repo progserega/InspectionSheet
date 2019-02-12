@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- android:configChanges="orientation|keyboardHidden|screenSize" -->
+    <!-- android:label="@string/title_activity_fullscreen_image" -->
+    <!-- android:theme="@style/FullscreenTheme" -->
     <application
         android:name=".InspectionSheetApplication"
         android:allowBackup="true"
@@ -54,13 +57,11 @@
             android:label="@string/title_activity_tower_deffects" />
         <activity
             android:name=".ui.activities.FullscreenImageActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
-
-
-            ></activity>
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity
+            android:name=".ui.activities.GroupAddTransfrmerDeffect"
+            android:label="@string/title_activity_group_add_transfrmer_deffect"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
-    <!--android:configChanges="orientation|keyboardHidden|screenSize"-->
-    <!--android:label="@string/title_activity_fullscreen_image"-->
-    <!--android:theme="@style/FullscreenTheme"-->
 </manifest>
