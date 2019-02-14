@@ -146,5 +146,14 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         return rowView;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
 
+        if(inspection == null){
+            inspectionItems = new ArrayList<>();
+        }else {
+            inspectionItems = inspection.getInspectionItems();
+        }
+    }
 }

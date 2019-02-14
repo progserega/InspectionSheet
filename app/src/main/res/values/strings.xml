@@ -51,5 +51,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_group_add_transfrmer_deffect">GroupAddTransfrmerDeffect</string>
+    <string name="switch_inspections">Поменять местами осмотры</string>
 
 </resources>

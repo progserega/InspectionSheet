@@ -38,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
 import ru.drsk.progserega.inspectionsheet.ui.activities.GroupAddTransfrmerDeffect;
+import ru.drsk.progserega.inspectionsheet.ui.activities.SwitchTransformerInspectionsDialog;
 
 import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
@@ -152,6 +153,10 @@ public class InspectTransformer extends AppCompatActivity implements
                 // Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
                 onAddTramsformerMenuClick(3);
                 return true;
+            case R.id.transformer_menu_switch:
+                onSwitchInspectionsMenuClick();
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -162,17 +167,17 @@ public class InspectTransformer extends AppCompatActivity implements
     private void onListItemClick(AdapterView<?> list, View v, int position, long id) {
         InspectionItem inspectionItem = (InspectionItem) transformatorInspectionAdapter.getItem(position);
 
-        if(inspectionItem.getType().equals(InspectionItemType.HEADER)){
+        if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
             List<InspectionItem> allItems = transformatorInspectionAdapter.getInspectionItems();
             InspectionItem header = inspectionItem;
-            List<InspectionItem> group = getInspectionGroup(header, allItems );
+            List<InspectionItem> group = getInspectionGroup(header, allItems);
             application.setCurrentInspectionItem(header);
             application.setInspectionItemsGroup(group);
 
             Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
             startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
 
-        }else {
+        } else {
             InspectionItemResult inspectionItemResult = inspectionItem.getResult();
 
             application.setCurrentDeffect(inspectionItemResult);
@@ -204,26 +209,26 @@ public class InspectTransformer extends AppCompatActivity implements
     }
 
     public void onSaveBtnPress(View view) {
-        TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
-
-        inspection.getSubstation().setInspectionDate(new Date());
 
         List<TransformerInspection> allInspections = substationInspection.getTransformerInspections();
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
         float sum = 0;
         for (TransformerInspection transformerInspection : allInspections) {
+
+            inspectionStorage.saveInspection(transformerInspection);
+            transformerInspection.setDone(true);
+
             sum += transformerInspection.calcInspectionPercent();
         }
         float middlePercent = sum / allInspections.size();
 
+        TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
+        inspection.getSubstation().setInspectionDate(new Date());
         inspection.getSubstation().setInspectionPercent(middlePercent);
 
-        IInspectionStorage inspectionStorage = application.getInspectionStorage();
-        inspectionStorage.saveInspection(inspection);
-
-        inspection.setDone(true);
         transformerSpinnerAdapter.notifyDataSetChanged();
 
-        //Toast.makeText(this, "SAVE !!!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Сохранено!", Toast.LENGTH_LONG).show();
     }
 
 
@@ -264,20 +269,53 @@ public class InspectTransformer extends AppCompatActivity implements
 
     @Override
     public void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position) {
-       // Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
         application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
         startActivity(intent);
     }
 
-    private List<InspectionItem> getInspectionGroup(InspectionItem header, List<InspectionItem> allItems){
+    private List<InspectionItem> getInspectionGroup(InspectionItem header, List<InspectionItem> allItems) {
         List<InspectionItem> group = new ArrayList<>();
-        for(InspectionItem item: allItems){
-            if(item.getParentId() == header.getValueId()){
+        for (InspectionItem item : allItems) {
+            if (item.getParentId() == header.getValueId()) {
                 group.add(item);
             }
         }
         return group;
+    }
+
+    private void onSwitchInspectionsMenuClick() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        SwitchTransformerInspectionsDialog dialog = SwitchTransformerInspectionsDialog.newInstance(
+                this.transformerInspections,
+                new SwitchTransformerInspectionsDialog.AcceptListener() {
+                    @Override
+                    public void onAcceptBtnClick(long sourcePos, long destPos) {
+                        //Toast.makeText(InspectTransformer.this, String.format("SWITCH transformers  %d <---> %d",sourcePos, destPos), Toast.LENGTH_LONG).show();
+                        switchInspections(sourcePos, destPos);
+                    }
+                });
+        dialog.show(fm, "switch_inspections");
+    }
+
+    private void switchInspections(long sourcePos, long destPos){
+        if(sourcePos == destPos){
+            return;
+        }
+
+        TransformerInspection sourceInspection = transformerInspections.get((int)sourcePos);
+        TransformerInspection destInspection = transformerInspections.get((int) destPos);
+
+        List<InspectionItem> tmp = sourceInspection.getInspectionItems();
+
+        sourceInspection.setInspectionItems(destInspection.getInspectionItems());
+        destInspection.setInspectionItems(tmp);
+
+
+        transformerSpinnerAdapter.notifyDataSetChanged();
+        transformatorInspectionAdapter.notifyDataSetChanged();
     }
 }

@@ -41,4 +41,5 @@
     <string name="add_transformer_t1">Добавить трансформатор 1</string>
     <string name="add_transformer_t2">Добавить трансформатор 2</string>
     <string name="add_transformer_t3">Добавить трансформатор 3</string>
+    <string name="switch_inspections">Поменять местами осмотры</string>
 </resources>
