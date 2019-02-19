@@ -7,6 +7,10 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemTyp
 
 public class InspectionItemJson {
 
+    @SerializedName("id")
+    @Expose
+    private int id;
+
     @SerializedName("number")
     @Expose
     private String number;
@@ -28,6 +32,13 @@ public class InspectionItemJson {
     @Expose
     private InspectionItemPossibleResult subResult;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNumber() {
         return number;
