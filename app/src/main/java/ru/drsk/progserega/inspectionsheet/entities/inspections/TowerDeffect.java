@@ -9,7 +9,7 @@ public class TowerDeffect {
     private long id;
     private long towerId;
     private TowerDeffectType deffectType;
-    private List<DeffectPhoto> photos;
+    private List<InspectionPhoto> photos;
 
     public TowerDeffect(long id, long towerId, TowerDeffectType deffectType) {
         this.id = id;
@@ -30,11 +30,11 @@ public class TowerDeffect {
         return deffectType;
     }
 
-    public List<DeffectPhoto> getPhotos() {
+    public List<InspectionPhoto> getPhotos() {
         return photos;
     }
 
-    public void addPhoto(DeffectPhoto photo) {
+    public void addPhoto(InspectionPhoto photo) {
         photos.add(photo);
     }
 }

@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.activities.adapters;
+package ru.drsk.progserega.inspectionsheet.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,21 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalPhotoListAdapter;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformatorInspectionAdapter extends BaseAdapter {
 
     public interface OnItemPhotoClickListener {
-        void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position);
+        void onItemPhotoClick(InspectionItem inspectionItem, InspectionPhoto photo, int position);
     }
 
     private final Context context;
@@ -133,7 +132,7 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
                 list.setLayoutManager(new LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL,false));
                 list.setAdapter(new HorizontalPhotoListAdapter(inspectionItem.getResult().getPhotos(), new HorizontalPhotoListAdapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(DeffectPhoto photo, int position) {
+                    public void onItemClick(InspectionPhoto photo, int position) {
                         //Toast.makeText(context, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();;
                         onItemPhotoClickListener.onItemPhotoClick(inspectionItem, photo, position);
                     }

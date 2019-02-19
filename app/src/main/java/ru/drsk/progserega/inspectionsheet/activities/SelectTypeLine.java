@@ -24,42 +24,6 @@ public class SelectTypeLine extends AppCompatActivity {
         setContentView(R.layout.activity_select_type_line);
     }
 
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // получим идентификатор выбранного пункта меню
-//
-//        int id = item.getItemId();
-//
-//        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
-////
-////        TextView infoTextView = (TextView) findViewById(R.id.textView);
-////
-////        // Операции для выбранного пункта меню
-////        switch (id) {
-////            case R.id.action_cat1:
-////                infoTextView.setText("Вы выбрали кота!");
-////                return true;
-////            case R.id.action_cat2:
-////                infoTextView.setText("Вы выбрали кошку!");
-////                return true;
-////            case R.id.action_cat3:
-////                infoTextView.setText("Вы выбрали котёнка!");
-////                return true;
-////            default:
-////                return super.onOptionsItemSelected(item);
-////        }
-//
-//        return true;
-//    }
-
     public void defectInVl04(View view) {
 
         Intent intent = new Intent(this, SearchObject.class);

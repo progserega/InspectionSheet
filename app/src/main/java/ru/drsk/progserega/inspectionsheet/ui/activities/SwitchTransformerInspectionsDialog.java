@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -71,7 +69,7 @@ public class SwitchTransformerInspectionsDialog  extends DialogFragment {
 
         List<String> transformersNames = new ArrayList<>();
         for(TransformerInspection inspection: transformerInspections){
-            transformersNames.add(String.format("[T%d]  %s",inspection.getTransformator().getSlot(), inspection.getTransformator().getTransformer().getName()));
+            transformersNames.add(String.format("[T%d]  %s",inspection.getTransformator().getSlot(), inspection.getTransformator().getTransformerType().getName()));
         }
 
         ArrayAdapter<String> dataAdapterSource = new ArrayAdapter<String>(view.getContext(),

@@ -39,6 +39,7 @@ import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.ui.activities.InspectTower;
+import ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer;
 
 public class SearchObject extends AppCompatActivity implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
 

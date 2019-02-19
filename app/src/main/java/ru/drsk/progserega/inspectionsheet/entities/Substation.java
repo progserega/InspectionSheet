@@ -6,14 +6,14 @@ import java.util.List;
 
 public class Substation extends Equipment {
 
-    private List<Transformer> transformers;
+    private List<TransformerType> transformerTypes;
 
-    public List<Transformer> getTransformers() {
-        return transformers;
+    public List<TransformerType> getTransformerTypes() {
+        return transformerTypes;
     }
 
-    public void setTransformers(List<Transformer> transformers) {
-        this.transformers = transformers;
+    public void setTransformerTypes(List<TransformerType> transformerTypes) {
+        this.transformerTypes = transformerTypes;
     }
 
     public Substation(long id, String name , Date inspectionDate, float inspectionPercent){
@@ -21,7 +21,7 @@ public class Substation extends Equipment {
         this.name = name;
         this.type = EquipmentType.SUBSTATION;
 
-        this.transformers = new ArrayList<>();
+        this.transformerTypes = new ArrayList<>();
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
     }

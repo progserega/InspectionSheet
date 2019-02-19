@@ -6,7 +6,7 @@ import android.arch.persistence.room.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
@@ -25,7 +25,6 @@ import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
-import ru.drsk.progserega.inspectionsheet.storages.http.RemoteSorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
@@ -37,6 +36,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstation
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
+
+import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
 
 public class InspectionSheetApplication extends Application {
 
@@ -76,7 +77,7 @@ public class InspectionSheetApplication extends Application {
     InspectionItem currentInspectionItem;
     List<InspectionItem> inspectionItemsGroup;
 
-    List<DeffectPhoto> photosForFullscreen;
+    List<InspectionPhoto> photosForFullscreen;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -162,11 +163,11 @@ public class InspectionSheetApplication extends Application {
         this.inspectionItemsGroup = inspectionItemsGroup;
     }
 
-    public List<DeffectPhoto> getPhotosForFullscreen() {
+    public List<InspectionPhoto> getPhotosForFullscreen() {
         return photosForFullscreen;
     }
 
-    public void setPhotosForFullscreen(List<DeffectPhoto> photosForFullscreen) {
+    public void setPhotosForFullscreen(List<InspectionPhoto> photosForFullscreen) {
         this.photosForFullscreen = photosForFullscreen;
     }
 
@@ -179,6 +180,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
+                .addMigrations(MIGRATION_1_2)
                 .build();
 
 
@@ -204,7 +206,7 @@ public class InspectionSheetApplication extends Application {
 
         towersService = new TowersService(towerStorage, lineStorage);
 
-        transformerStorage = new TransformerStorage(db);
+        transformerStorage = new TransformerStorage(db, getApplicationContext());
         ISubstationStorage substationStorage = new SubstationStorage(db, locationService);
         //
         ITransformerSubstationStorage transformerSubstationStorage = new TransformerSubstationStorage(db, locationService);

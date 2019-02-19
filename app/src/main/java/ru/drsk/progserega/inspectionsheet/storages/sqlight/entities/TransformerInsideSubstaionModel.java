@@ -13,6 +13,9 @@ public class TransformerInsideSubstaionModel {
     @ColumnInfo(name = "slot")
     private int slot;
 
+    @ColumnInfo(name = "manufacture_year")
+    private int manufactureYear;
+
     public TransformerModel getTransformer() {
         return transformer;
     }
@@ -35,5 +38,13 @@ public class TransformerInsideSubstaionModel {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public int getManufactureYear() {
+        return manufactureYear;
+    }
+
+    public void setManufactureYear(int manufactureYear) {
+        this.manufactureYear = manufactureYear;
     }
 }

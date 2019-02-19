@@ -1,16 +1,21 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerInsideSubstaionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
@@ -22,12 +27,16 @@ public class TransformerStorage implements ITransformerStorage {
     private TransformerDao transformerDao;
     private TransformerSubstationEquipmentDao transformerSubstationEquipmentDao;
     private SubstationEquipmentDao substationEquipmentDao;
+    private EquipmentPhotoDao equipmentPhotoDao;
+    private Context context;
 
-    public TransformerStorage(InspectionSheetDatabase db) {
+    public TransformerStorage(InspectionSheetDatabase db, Context context) {
         this.db = db;
         transformerDao = db.transformerDao();
         transformerSubstationEquipmentDao = db.transfSubstationEquipmentDao();
         substationEquipmentDao = db.substationEquipmentDao();
+        equipmentPhotoDao = db.equipmentPhotoDao();
+        this.context = context;
     }
 
     @Override
@@ -37,50 +46,56 @@ public class TransformerStorage implements ITransformerStorage {
         if (type == EquipmentType.TRANS_SUBSTATION) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = transformerSubstationEquipmentDao.getBySubstation(substantionId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
         }
 
         if (type == EquipmentType.SUBSTATION) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = substationEquipmentDao.getBySubstation(substantionId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
         }
 
         return transformers;
     }
 
-    private List<TransformerInSlot> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels) {
+    private List<TransformerInSlot> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels, EquipmentType equipmentType) {
         List<TransformerInSlot> transformers = new ArrayList<>();
         for (TransformerInsideSubstaionModel transformerModel : transformerDBModels) {
             TransformerModel transformerDBModel = transformerModel.getTransformer();
-            Transformer transformer = new Transformer(transformerDBModel.getId(), transformerDBModel.getDesc() );
-            transformers.add(new TransformerInSlot(
+            TransformerType transformerType = new TransformerType(transformerDBModel.getId(), transformerDBModel.getDesc() );
+            TransformerInSlot transformerInSlot = new TransformerInSlot(
                     transformerModel.getEquipmentId(),
                     transformerModel.getSlot(),
-                    transformer
-                   ));
+                    transformerType,
+                    transformerModel.getManufactureYear()
+            );
+
+            List<EquipmentPhotoModel> equipmentPhotoModels = equipmentPhotoDao.getByEquipment( transformerModel.getEquipmentId(), equipmentType.getValue());
+            transformerInSlot.setPhotoList(equipmentPhotoModelToInspectionPhoto(equipmentPhotoModels));
+
+            transformers.add(transformerInSlot);
         }
         return transformers;
     }
 
-    private List<Transformer> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
-        List<Transformer> transformers = new ArrayList<>();
+    private List<TransformerType> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
+        List<TransformerType> transformerTypes = new ArrayList<>();
         for (TransformerModel transformerModel : transformerDBModels) {
-            transformers.add(new Transformer(  transformerModel.getId(),  transformerModel.getDesc()));
+            transformerTypes.add(new TransformerType(  transformerModel.getId(),  transformerModel.getDesc()));
         }
-        return transformers;
+        return transformerTypes;
     }
 
 
     @Override
-    public List<Transformer> getAll() {
+    public List<TransformerType> getAll() {
         List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformers();
         return dbTransformerModelToEntity(transformerModelLit);
 
     }
 
     @Override
-    public List<Transformer> getAllByInstallationInEquipment(EquipmentType type) {
+    public List<TransformerType> getAllByInstallationInEquipment(EquipmentType type) {
         if(type.equals(EquipmentType.TRANS_SUBSTATION)){
             List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("transformer_substation");
             return dbTransformerModelToEntity(transformerModelLit);
@@ -100,13 +115,13 @@ public class TransformerStorage implements ITransformerStorage {
     public long addToSubstation(long transformerTypeId, Equipment substation, int slot) {
 
         if(substation.getType().equals(EquipmentType.SUBSTATION)){
-            SubstationEquipmentModel equipment = new SubstationEquipmentModel(0,substation.getId(), transformerTypeId, slot);
+            SubstationEquipmentModel equipment = new SubstationEquipmentModel(0,substation.getId(), transformerTypeId, slot, 0);
             return substationEquipmentDao.insert(equipment);
         }
 
 
         if(substation.getType().equals(EquipmentType.TRANS_SUBSTATION)){
-            TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getId(), transformerTypeId, slot);
+            TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getId(), transformerTypeId, slot, 0);
             return transformerSubstationEquipmentDao.insert(euipmentModel);
         }
 
@@ -114,11 +129,20 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
-    public Transformer getById(long transformerTypeId) {
+    public TransformerType getById(long transformerTypeId) {
         TransformerModel transformerModel = transformerDao.getById(transformerTypeId);
         if(transformerModel == null){
             return null;
         }
-        return new Transformer( transformerModel.getId(), transformerModel.getDesc());
+        return new TransformerType( transformerModel.getId(), transformerModel.getDesc());
+    }
+
+
+    private List<InspectionPhoto> equipmentPhotoModelToInspectionPhoto(List<EquipmentPhotoModel> photoModels){
+        List<InspectionPhoto>  photos = new ArrayList<>();
+        for(EquipmentPhotoModel equipmentPhotoModel: photoModels){
+            photos.add(new InspectionPhoto(equipmentPhotoModel.getId(), equipmentPhotoModel.getPhotoPath(), this.context ));
+        }
+        return photos;
     }
 }

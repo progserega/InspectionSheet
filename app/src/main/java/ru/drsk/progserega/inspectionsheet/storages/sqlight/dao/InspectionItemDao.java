@@ -6,10 +6,16 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.List;
+
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 
 @Dao
 public interface InspectionItemDao {
+
+    @Query("SELECT * FROM inspection_items")
+    List<InspectionItemModel> getAllInspections();
+
 
     @Insert
     long insert(InspectionItemModel inspectionItemModel);

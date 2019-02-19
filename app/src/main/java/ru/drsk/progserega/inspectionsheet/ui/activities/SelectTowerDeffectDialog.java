@@ -75,7 +75,7 @@ public class SelectTowerDeffectDialog extends DialogFragment {
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  Transformer transformer =  (Transformer) transformerList.getSelectedItem();
+              //  TransformerType transformer =  (TransformerType) transformerList.getSelectedItem();
                 int pos = typesList.getCheckedItemPosition();
                 TowerDeffectType deffectType  = (TowerDeffectType) typesList.getAdapter().getItem(pos);
                 if( deffectType != null) {

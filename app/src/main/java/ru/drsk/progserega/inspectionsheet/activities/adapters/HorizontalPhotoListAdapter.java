@@ -5,24 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 
 public class HorizontalPhotoListAdapter extends RecyclerView.Adapter<HorizontalPhotoListAdapter.HorizontalViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(DeffectPhoto item, int position);
+        void onItemClick(InspectionPhoto item, int position);
     }
 
-    private List<DeffectPhoto> items;
+    private List<InspectionPhoto> items;
     private OnItemClickListener onItemClickListener;
 
 
-    public HorizontalPhotoListAdapter(List<DeffectPhoto> photos, OnItemClickListener listener) {
+    public void setItems(List<InspectionPhoto> items) {
+        this.items = items;
+    }
+
+    public HorizontalPhotoListAdapter(List<InspectionPhoto> photos, OnItemClickListener listener) {
 
         this.items = photos;
         this.onItemClickListener = listener;
@@ -54,7 +57,7 @@ public class HorizontalPhotoListAdapter extends RecyclerView.Adapter<HorizontalP
             image = itemView.findViewById(R.id.rec_image);
         }
 
-        public void bind(final DeffectPhoto item, final int position, final OnItemClickListener listener) {
+        public void bind(final InspectionPhoto item, final int position, final OnItemClickListener listener) {
 
             image.setImageBitmap(item.getThumbnail());
 

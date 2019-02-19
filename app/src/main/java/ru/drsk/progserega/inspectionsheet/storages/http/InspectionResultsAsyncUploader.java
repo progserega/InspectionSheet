@@ -1,33 +1,21 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import retrofit2.Response;
-import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.Simple;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadObject;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
-import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
-import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
-import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 
 public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Void> {
 
@@ -64,8 +52,8 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
 
             for(InspectionItem inspectionItem: transformerInspection.getInspectionItems()){
 
-                for(DeffectPhoto deffectPhoto: inspectionItem.getResult().getPhotos()){
-                    uploadPhoto(deffectPhoto);
+                for(InspectionPhoto inspectionPhoto : inspectionItem.getResult().getPhotos()){
+                    uploadPhoto(inspectionPhoto);
                 }
             }
             break;
@@ -136,7 +124,7 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
         this.progressListener = progressListener;
     }
 
-    private void uploadPhoto(DeffectPhoto photo)  {
+    private void uploadPhoto(InspectionPhoto photo)  {
 
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Filename " + file.getName());

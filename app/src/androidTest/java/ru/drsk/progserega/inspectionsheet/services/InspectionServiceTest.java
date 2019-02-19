@@ -7,19 +7,17 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
@@ -35,7 +33,6 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubsta
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -77,10 +74,10 @@ public class InspectionServiceTest {
         substationDao.insert(new SubstationModel(1, "Substation 1", "", "", 0, 0, 0, 0));
 
         transformerDao.insert(new TransformerModel(1, "type", "desc", "substation"));
-        substationEquipmentDao.insert(new SubstationEquipmentModel(1, 1, 1, 1));
+        substationEquipmentDao.insert(new SubstationEquipmentModel(1, 1, 1, 1, 0));
 
         //Добавить в БД трансформаторы
-        TransformerInSlot transformer = new TransformerInSlot(1, 1, new Transformer(1, "Transformerr name"));
+        TransformerInSlot transformer = new TransformerInSlot(1, 1, new TransformerType(1, "Transformerr name"));
         TransformerInspection transformerInspection = new TransformerInspection(substation, transformer);
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
         transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.transormator_inspection_list)));

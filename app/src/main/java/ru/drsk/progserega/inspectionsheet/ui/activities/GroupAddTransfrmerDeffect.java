@@ -15,7 +15,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformerDeffectGroupListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.GroupAddTransfDeffectContract;
@@ -126,7 +126,7 @@ public class GroupAddTransfrmerDeffect extends Activity implements
     }
 
     @Override
-    public void photoItemClick(int position, List<DeffectPhoto> photos) {
+    public void photoItemClick(int position, List<InspectionPhoto> photos) {
         application.setPhotosForFullscreen(photos);
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);

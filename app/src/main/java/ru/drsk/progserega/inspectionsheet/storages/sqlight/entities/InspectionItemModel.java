@@ -4,6 +4,7 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
@@ -15,6 +16,9 @@ public class InspectionItemModel {
     @PrimaryKey
     @ColumnInfo(name = "id")
     private long id;
+
+    @ColumnInfo(name = "parent_id")
+    private long parentId = 0;
 
     @ColumnInfo(name = "number")
     private String number;
@@ -37,6 +41,14 @@ public class InspectionItemModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 
     public String getNumber() {
@@ -79,8 +91,9 @@ public class InspectionItemModel {
         this.subResult = subResult;
     }
 
-    public InspectionItemModel(long id, String number, String name, int type, String result, String subResult) {
+    public InspectionItemModel(long id, long parentId, String number, String name, int type, String result, String subResult) {
         this.id = id;
+        this.parentId = parentId;
         this.number = number;
         this.name = name;
         this.type = type;

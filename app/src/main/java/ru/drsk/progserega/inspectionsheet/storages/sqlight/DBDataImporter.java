@@ -140,7 +140,7 @@ public class DBDataImporter {
                     transfCache.add(transformator.getId());
                 }
 
-                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpId, transformator.getId(), slot );
+                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpId, transformator.getId(), slot , 0);
                 transformerSubstationEquipmentDao.insert(transformerSubstationEuipmentModel);
                 slot++;
             }

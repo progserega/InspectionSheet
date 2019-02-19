@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.activities;
+package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,9 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -17,17 +21,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformatorInspectionAdapter;
+import ru.drsk.progserega.inspectionsheet.activities.SelectTransformerDialog;
+import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalPhotoListAdapter;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformatorInspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
+import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
+import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
@@ -36,18 +45,16 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspec
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
-import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
-import ru.drsk.progserega.inspectionsheet.ui.activities.GroupAddTransfrmerDeffect;
-import ru.drsk.progserega.inspectionsheet.ui.activities.SwitchTransformerInspectionsDialog;
 
-import static ru.drsk.progserega.inspectionsheet.activities.AddDefect.DEFFECT_NAME;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.AddDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
 public class InspectTransformer extends AppCompatActivity implements
         SelectTransformerDialog.AddTransformerListener,
-        TransformatorInspectionAdapter.OnItemPhotoClickListener {
+        TransformatorInspectionAdapter.OnItemPhotoClickListener,
+        PhotoUtility.ChoosedListener    {
 
-    static final int GET_DEFFECT_VALUE_REQUEST = 1;
+    static final int GET_DEFFECT_VALUE_REQUEST = 1001;
 
     private TransformatorInspectionAdapter transformatorInspectionAdapter;
     private InspectionSheetApplication application;
@@ -56,6 +63,7 @@ public class InspectTransformer extends AppCompatActivity implements
     // private ArrayAdapter<String> transformerSpinnerAdapter;
     private TransformerSpinnerAdapter transformerSpinnerAdapter;
     private Spinner transformatorSpinner;
+    private  ListView transfInspectionList;
 
     private ISubstationInspection substationInspection;
 
@@ -67,19 +75,21 @@ public class InspectTransformer extends AppCompatActivity implements
 
     private InspectionService inspectionService;
 
+    private TransformerInspection currentInspection;
+
+    private int year = 0;
+    private int maxYear = Calendar.getInstance().get(Calendar.YEAR);
+
+    private TextView transformerManufactureYear;
+    private PhotoUtility photoUtility;
+    private HorizontalPhotoListAdapter commonPhotoListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspect_transformator);
 
-        ImageButton imageButton = (ImageButton) findViewById(R.id.inpsect_transformator_save_btn);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            imageButton.setImageResource(R.drawable.ic_baseline_save_24px);
-        } else {
-            /* старые версии не поддерживают векторные рисунки */
-            imageButton.setImageResource(R.drawable.ic_save_balack_png);
-        }
-        imageButton.invalidate();
+        ButtonUtils.initSaveBtnImg((ImageButton) findViewById(R.id.inpsect_transformator_save_btn));
 
         this.application = (InspectionSheetApplication) this.getApplication();
 
@@ -89,6 +99,10 @@ public class InspectTransformer extends AppCompatActivity implements
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
         Equipment substation = substationInspection.getEquipment();
         substationNameText.setText(substation.getName());
+
+        setTitle(substation.getName());
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         transformerStorage = this.application.getTransformerStorage();
 
@@ -117,7 +131,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
         TransformerInspection inspection = new TransformerInspection(substation, null);
         transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection, this);
-        ListView transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
+        transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(transformatorInspectionAdapter);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
@@ -127,6 +141,29 @@ public class InspectTransformer extends AppCompatActivity implements
         };
         transfInspectionList.setOnItemClickListener(itemClickListener);
 
+        transformerManufactureYear = (TextView) findViewById(R.id.inspection_transformer_manufacture_year);
+        transformerManufactureYear.setText("");
+
+        ImageButton addPhotoBtn = (ImageButton) findViewById(R.id.add_transformer_photo_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            addPhotoBtn.setImageResource(R.drawable.ic_baseline_photo_camera_24px);
+        } else {
+            /* старые версии не поддерживают векторные рисунки */
+            addPhotoBtn.setImageResource(R.drawable.ic_camera_png);
+        }
+        addPhotoBtn.invalidate();
+
+        photoUtility = new PhotoUtility(this, this);
+
+        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(InspectionPhoto photo, int position) {
+                commonPhotoItemClick(position, currentInspection.getTransformator().getPhotoList());
+            }
+        });
+        list.setAdapter(commonPhotoListAdapter);
     }
 
     @Override
@@ -157,6 +194,12 @@ public class InspectTransformer extends AppCompatActivity implements
                 onSwitchInspectionsMenuClick();
 
                 return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -199,13 +242,22 @@ public class InspectTransformer extends AppCompatActivity implements
 
         //Toast.makeText(this, "GET DEFFECT RESULT!!!", Toast.LENGTH_LONG).show();
         transformatorInspectionAdapter.notifyDataSetChanged();
+
+        if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
+            photoUtility.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void onSelectTransormator(int position) {
 
-        TransformerInspection inspection = transformerInspections.get(position);
-        transformatorInspectionAdapter.setInspection(inspection);
+        currentInspection = transformerInspections.get(position);
+        transformatorInspectionAdapter.setInspection(currentInspection);
         transformatorInspectionAdapter.notifyDataSetChanged();
+        justifyListViewHeightBasedOnChildren(transfInspectionList);
+
+        setManufactureYear(currentInspection.getTransformator().getYear());
+
+        setTransformerPhotos(currentInspection);
     }
 
     public void onSaveBtnPress(View view) {
@@ -252,8 +304,8 @@ public class InspectTransformer extends AppCompatActivity implements
         long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment(), slot);
 
         //Выбираем трансформатор
-        Transformer transformer = transformerStorage.getById(transformerTypeId);
-        TransformerInSlot transformerInSlot = new TransformerInSlot(insertedId, slot, transformer);
+        TransformerType transformerType = transformerStorage.getById(transformerTypeId);
+        TransformerInSlot transformerInSlot = new TransformerInSlot(insertedId, slot, transformerType);
 
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformerInSlot);
@@ -268,7 +320,7 @@ public class InspectTransformer extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemPhotoClick(InspectionItem inspectionItem, DeffectPhoto photo, int position) {
+    public void onItemPhotoClick(InspectionItem inspectionItem, InspectionPhoto photo, int position) {
         // Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
@@ -301,12 +353,12 @@ public class InspectTransformer extends AppCompatActivity implements
         dialog.show(fm, "switch_inspections");
     }
 
-    private void switchInspections(long sourcePos, long destPos){
-        if(sourcePos == destPos){
+    private void switchInspections(long sourcePos, long destPos) {
+        if (sourcePos == destPos) {
             return;
         }
 
-        TransformerInspection sourceInspection = transformerInspections.get((int)sourcePos);
+        TransformerInspection sourceInspection = transformerInspections.get((int) sourcePos);
         TransformerInspection destInspection = transformerInspections.get((int) destPos);
 
         List<InspectionItem> tmp = sourceInspection.getInspectionItems();
@@ -318,4 +370,86 @@ public class InspectTransformer extends AppCompatActivity implements
         transformerSpinnerAdapter.notifyDataSetChanged();
         transformatorInspectionAdapter.notifyDataSetChanged();
     }
+
+    public static void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        TransformatorInspectionAdapter adapter = (TransformatorInspectionAdapter)listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
+    }
+
+    void onManufactureYearClick(View view){
+
+        FragmentManager fm = getSupportFragmentManager();
+
+        SelectYearDialog dialog = SelectYearDialog.newInstance(year, maxYear, new SelectYearDialog.SelectYearListener() {
+                    @Override
+                    public void onSelectYear(int year) {
+                        currentInspection.getTransformator().setYear(year);
+                        setManufactureYear(year);
+                    }
+                }
+        );
+        dialog.show(fm, "select_year");
+
+    }
+
+    void setManufactureYear(int year){
+        this.year = year;
+
+        if(year == 0){
+            transformerManufactureYear.setText(Html.fromHtml("<u>    не задан    </u>"));
+        }else {
+            transformerManufactureYear.setText(Html.fromHtml("<u>" + year + "</u>"));
+        }
+
+    }
+
+    void onAddTransformerPhotoBtnClick(View view){
+        if(currentInspection == null){
+            return;
+        }
+        photoUtility.showPhotoDialog();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        photoUtility.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    @Override
+    public void onImageTaken(String photoPath) {
+        currentInspection.getTransformator().getPhotoList().add(new InspectionPhoto(0,photoPath, this));
+        commonPhotoListAdapter.notifyDataSetChanged();
+    }
+
+
+    public void commonPhotoItemClick(int position, List<InspectionPhoto> photos) {
+        application.setPhotosForFullscreen(photos);
+        Intent intent = new Intent(this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        startActivity(intent);
+    }
+
+    private void setTransformerPhotos(TransformerInspection inspection){
+        commonPhotoListAdapter.setItems(inspection.getTransformator().getPhotoList());
+        commonPhotoListAdapter.notifyDataSetChanged();
+    }
+
 }

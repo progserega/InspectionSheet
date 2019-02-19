@@ -1,7 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.ui.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,25 +17,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.DeffectValuesView;
 import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
-
-import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
 
 public class TransformerDeffectGroupListAdapter extends BaseAdapter {
 
     public interface photoEventsListener {
         void addPhotoBtnPressed(int deffectPosition);
-        void photoItemClick(int position, List<DeffectPhoto> photos);
+        void photoItemClick(int position, List<InspectionPhoto> photos);
     }
 
     private photoEventsListener photoEventsListener;
@@ -48,7 +43,7 @@ public class TransformerDeffectGroupListAdapter extends BaseAdapter {
     private Map<Integer, List<String>> values;
     private Map<Integer, List<String>> subValues;
     private Map<Integer, String> comments;
-    private Map<Integer, List<DeffectPhoto>> photos;
+    private Map<Integer, List<InspectionPhoto>> photos;
 
 
     public TransformerDeffectGroupListAdapter(Context context, List<InspectionItem> deffects, photoEventsListener listener) {
@@ -186,7 +181,7 @@ public class TransformerDeffectGroupListAdapter extends BaseAdapter {
     }
 
     public void addPhoto(int position, String photoPath){
-            photos.get(position).add(new DeffectPhoto(0, photoPath, context));
+            photos.get(position).add(new InspectionPhoto(0, photoPath, context));
     }
 
     public Map<Integer, List<String>> getValues() {
@@ -201,7 +196,7 @@ public class TransformerDeffectGroupListAdapter extends BaseAdapter {
         return comments;
     }
 
-    public Map<Integer, List<DeffectPhoto>> getPhotos() {
+    public Map<Integer, List<InspectionPhoto>> getPhotos() {
         return photos;
     }
 }

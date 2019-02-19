@@ -42,9 +42,9 @@
     <string name="save">Save</string>
     <string name="inspection">inspection</string>
     <string name="export_results">export</string>
-    <string name="add_transformer_t1">Add transformer 1</string>
-    <string name="add_transformer_t2">Add transformer 2</string>
-    <string name="add_transformer_t3">Add transformer 3</string>
+    <string name="add_transformer_t1">Add transformerType 1</string>
+    <string name="add_transformer_t2">Add transformerType 2</string>
+    <string name="add_transformer_t3">Add transformerType 3</string>
     <string name="title_activity_tower_deffects">TowerDeffects</string>
 
     <string name="title_activity_fullscreen_image">FullscreenImageActivity</string>

@@ -10,35 +10,34 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 
 public class TransformersListAdapter extends BaseAdapter {
 
 
     private final Context context;
 
-    private List<Transformer> transformers;
+    private List<TransformerType> transformerTypes;
 
-    public TransformersListAdapter(Context context, List<Transformer> transformers) {
+    public TransformersListAdapter(Context context, List<TransformerType> transformerTypes) {
 
         this.context = context;
 
-        this.transformers = transformers;
+        this.transformerTypes = transformerTypes;
     }
     @Override
     public int getCount() {
-        return transformers.size();
+        return transformerTypes.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return transformers.get(position);
+        return transformerTypes.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return transformers.get(position).getId();
+        return transformerTypes.get(position).getId();
     }
 
     @Override
@@ -47,7 +46,7 @@ public class TransformersListAdapter extends BaseAdapter {
         View rowView = inflater.inflate(R.layout.transformers_list_item, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.transf_list_item_name);
-        textView.setText(transformers.get(position).getName());
+        textView.setText(transformerTypes.get(position).getName());
 
 
         return rowView;

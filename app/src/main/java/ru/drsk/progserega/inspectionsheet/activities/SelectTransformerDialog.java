@@ -9,23 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformersListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 
 public class SelectTransformerDialog  extends DialogFragment {
@@ -81,12 +76,12 @@ public class SelectTransformerDialog  extends DialogFragment {
         InspectionSheetApplication application = (InspectionSheetApplication) getActivity().getApplication();
 
         ITransformerStorage transformerStorage = application.getTransformerStorage();
-        List<Transformer> transformers = transformerStorage.getAllByInstallationInEquipment(type);
-        //List<Transformer> transformers = transformerStorage.getAll();
+        List<TransformerType> transformerTypes = transformerStorage.getAllByInstallationInEquipment(type);
+        //List<TransformerType> transformerTypes = transformerStorage.getAll();
 
 
         transformerList = (ListView) view.findViewById(R.id.transformers_list);
-        TransformersListAdapter transformersListAdapter = new TransformersListAdapter(this.getActivity(), transformers);
+        TransformersListAdapter transformersListAdapter = new TransformersListAdapter(this.getActivity(), transformerTypes);
         transformerList.setAdapter(transformersListAdapter);
         transformerList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -111,11 +106,11 @@ public class SelectTransformerDialog  extends DialogFragment {
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  Transformer transformer =  (Transformer) transformerList.getSelectedItem();
+              //  TransformerType transformerType =  (TransformerType) transformerList.getSelectedItem();
                 int pos = transformerList.getCheckedItemPosition();
-                Transformer transformer  = (Transformer) transformerList.getAdapter().getItem(pos);
-                if( transformer != null) {
-                    addTransformerListener.onAddTransformer(transformer.getId(), slot);
+                TransformerType transformerType = (TransformerType) transformerList.getAdapter().getItem(pos);
+                if( transformerType != null) {
+                    addTransformerListener.onAddTransformer(transformerType.getId(), slot);
                     getDialog().dismiss();
                 }
             }

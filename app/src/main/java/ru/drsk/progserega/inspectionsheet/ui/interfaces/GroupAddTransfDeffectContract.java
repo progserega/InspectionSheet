@@ -3,7 +3,7 @@ package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 import java.util.List;
 import java.util.Map;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 
 public class GroupAddTransfDeffectContract {
@@ -30,7 +30,7 @@ public class GroupAddTransfDeffectContract {
                 Map<Integer, List<String>> values,
                 Map<Integer, List<String>> subValues,
                 Map<Integer, String> comments,
-                Map<Integer, List<DeffectPhoto>> photos);
+                Map<Integer, List<InspectionPhoto>> photos);
 
         void onDestroy();
     }

@@ -9,16 +9,19 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 
@@ -29,6 +32,9 @@ public class InspectionStorage implements IInspectionStorage {
     private InspectionPhotoDao inspectionPhotoDao;
     private SubstationDao substationDao;
     private TransformerSubstationDao transformerSubstationDao;
+    private TransformerSubstationEquipmentDao transformerSubstationEquipmentDao;
+    private SubstationEquipmentDao substationEquipmentDao;
+    private EquipmentPhotoDao equipmentPhotoDao;
     private Context context;
 
     public InspectionStorage(InspectionSheetDatabase db, Context context) {
@@ -39,6 +45,9 @@ public class InspectionStorage implements IInspectionStorage {
 
         this.substationDao = db.substationDao();
         this.transformerSubstationDao = db.transformerSubstationDao();
+        this.transformerSubstationEquipmentDao = db.transfSubstationEquipmentDao();
+        this.substationEquipmentDao = db.substationEquipmentDao();
+        this.equipmentPhotoDao = db.equipmentPhotoDao();
     }
 
     @Override
@@ -69,7 +78,7 @@ public class InspectionStorage implements IInspectionStorage {
             }
 
             //save photos
-            for (DeffectPhoto photo : inspectionItem.getResult().getPhotos()) {
+            for (InspectionPhoto photo : inspectionItem.getResult().getPhotos()) {
 
                 if (photo.getId() == 0) {
                     InspectionPhotoModel photoModel = new InspectionPhotoModel(0, inspectionItem.getId(), photo.getPath());
@@ -81,6 +90,9 @@ public class InspectionStorage implements IInspectionStorage {
 
         updateSubstationInspectionInfo(inspection);
 
+        updateTransformerManufactureYear(inspection);
+
+        saveTransformerPhoto(inspection);
     }
 
     @Override
@@ -125,7 +137,7 @@ public class InspectionStorage implements IInspectionStorage {
             //Load photos
             List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId());
             for (InspectionPhotoModel photoModel : photoModels) {
-                inspectionItem.getResult().getPhotos().add(new DeffectPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
+                inspectionItem.getResult().getPhotos().add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
             }
         }
     }
@@ -146,5 +158,32 @@ public class InspectionStorage implements IInspectionStorage {
                     equipment.getInspectionPercent());
         }
 
+    }
+
+    private void updateTransformerManufactureYear(TransformerInspection inspection){
+        Equipment equipment = inspection.getSubstation();
+        if (equipment.getType().equals(EquipmentType.TRANS_SUBSTATION)) {
+            transformerSubstationEquipmentDao.updateTransformerManufYear(inspection.getTransformator().getYear(), inspection.getTransformator().getId());
+        }
+
+        if (equipment.getType().equals(EquipmentType.SUBSTATION)) {
+            substationEquipmentDao.updateTransformerManufYear(inspection.getTransformator().getYear(), inspection.getTransformator().getId());
+        }
+    }
+
+    private void saveTransformerPhoto(TransformerInspection inspection){
+        for (InspectionPhoto photo : inspection.getTransformator().getPhotoList()) {
+
+            if (photo.getId() == 0) {
+                EquipmentPhotoModel photoModel = new EquipmentPhotoModel(
+                        0,
+                        inspection.getTransformator().getId(),
+                        inspection.getSubstation().getType().getValue(),
+                        photo.getPath()
+                );
+                long photoId = equipmentPhotoDao.insert(photoModel);
+                photo.setId(photoId);
+            }
+        }
     }
 }

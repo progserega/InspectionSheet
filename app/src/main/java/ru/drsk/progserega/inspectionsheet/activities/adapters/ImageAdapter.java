@@ -9,18 +9,18 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private List<DeffectPhoto> photos;
+    private List<InspectionPhoto> photos;
     private int imageWidthPx;
 
-    public void setPhotos(List<DeffectPhoto> photos) {
+    public void setPhotos(List<InspectionPhoto> photos) {
         this.photos = photos;
     }
 
-    public ImageAdapter(Context c, List<DeffectPhoto> photos, int width) {
+    public ImageAdapter(Context c, List<InspectionPhoto> photos, int width) {
         mContext = c;
         this.photos = photos;
         imageWidthPx = width;

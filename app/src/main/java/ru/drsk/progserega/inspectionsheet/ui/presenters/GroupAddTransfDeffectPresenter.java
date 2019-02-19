@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.GroupAddTransfDeffectContract;
@@ -35,7 +35,7 @@ public class GroupAddTransfDeffectPresenter
     public void onSaveBtnPressed(Map<Integer, List<String>> values,
                                  Map<Integer, List<String>> subValues,
                                  Map<Integer, String> comments,
-                                 Map<Integer, List<DeffectPhoto>> photos) {
+                                 Map<Integer, List<InspectionPhoto>> photos) {
 
         List<InspectionItem> inspectionItemsGroup = application.getInspectionItemsGroup();
         for(int i =0; i < inspectionItemsGroup.size(); i++){

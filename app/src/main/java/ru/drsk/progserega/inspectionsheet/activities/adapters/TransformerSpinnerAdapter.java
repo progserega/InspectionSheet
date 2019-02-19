@@ -47,7 +47,7 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
         View rowView = inflater.inflate(R.layout.transf_spinner_item, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.transf_spinner_item_name);
-        textView.setText(transformers.get(position).getTransformator().getTransformer().getName());
+        textView.setText(transformers.get(position).getTransformator().getTransformerType().getName());
 
         TextView slotTextView = (TextView) rowView.findViewById(R.id.transf_spinner_item_slot);
         slotTextView.setText("ТР "+transformers.get(position).getTransformator().getSlot());

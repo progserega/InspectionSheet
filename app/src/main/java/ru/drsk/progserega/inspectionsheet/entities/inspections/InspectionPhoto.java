@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 
-public class DeffectPhoto {
+public class InspectionPhoto {
 
     private long id;
 
@@ -30,14 +30,14 @@ public class DeffectPhoto {
         return thumbnail;
     }
 
-    public DeffectPhoto(Bitmap thumbnail) {
+    public InspectionPhoto(Bitmap thumbnail) {
         this.thumbnail = thumbnail;
         this.path = path;
 
 
     }
 
-    public DeffectPhoto(long id, String path, Context context) {
+    public InspectionPhoto(long id, String path, Context context) {
         this.id = id;
         this.context = context;
         this.path = path;

@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.activities;
+package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -29,14 +29,15 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.activities.DeffectValuesView;
+import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.ImageFilePath;
 import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
-import ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 
 import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsUtility.REQUEST_CODE_WRITE_EXTERNAL_STORAGE;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
@@ -52,7 +53,7 @@ public class AddDefect extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     private InspectionItemResult deffect;
 
-    private List<DeffectPhoto> deffectPhotos;
+    private List<InspectionPhoto> inspectionPhotos;
 
     private TextView deffectDescription;
 
@@ -123,7 +124,7 @@ public class AddDefect extends AppCompatActivity {
 
         saveDeffectPhotos(deffect.getPhotos());
 
-        imageAdapter = new ImageAdapter(this, deffectPhotos, imageWidth);
+        imageAdapter = new ImageAdapter(this, inspectionPhotos, imageWidth);
         gridview.setAdapter(imageAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,10 +137,10 @@ public class AddDefect extends AppCompatActivity {
 
     }
 
-    private void saveDeffectPhotos(List<DeffectPhoto> photos) {
-        deffectPhotos = new ArrayList<>();
-        for (DeffectPhoto photo : photos) {
-            deffectPhotos.add(photo);
+    private void saveDeffectPhotos(List<InspectionPhoto> photos) {
+        inspectionPhotos = new ArrayList<>();
+        for (InspectionPhoto photo : photos) {
+            inspectionPhotos.add(photo);
         }
     }
 
@@ -221,7 +222,7 @@ public class AddDefect extends AppCompatActivity {
 
     private void onCaptureImageResult(Intent data) {
 
-        deffectPhotos.add(new DeffectPhoto(0, mCurrentPhotoPath, this));
+        inspectionPhotos.add(new InspectionPhoto(0, mCurrentPhotoPath, this));
         imageAdapter.notifyDataSetChanged();
 
     }
@@ -234,7 +235,7 @@ public class AddDefect extends AppCompatActivity {
 
         String realPath = ImageFilePath.getPath(this, data.getData());
 
-        deffectPhotos.add(new DeffectPhoto(0, realPath, this));
+        inspectionPhotos.add(new InspectionPhoto(0, realPath, this));
         imageAdapter.notifyDataSetChanged();
 
 
@@ -249,7 +250,7 @@ public class AddDefect extends AppCompatActivity {
 //                    //do something with the image (save it to some directory or whatever you need to do with it here)
 //                    try {
 //                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-//                        deffect.getPhotos().add(new DeffectPhoto(bitmap));
+//                        deffect.getPhotos().add(new InspectionPhoto(bitmap));
 //
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
@@ -325,7 +326,7 @@ public class AddDefect extends AppCompatActivity {
 
     public void onSaveBtnPress(View view) {
 
-        deffect.setPhotos(deffectPhotos);
+        deffect.setPhotos(inspectionPhotos);
 
         deffect.setComment(deffectDescription.getText().toString());
 
@@ -348,7 +349,7 @@ public class AddDefect extends AppCompatActivity {
     private void showFullscreenPhoto(int position) {
         Intent intent = new Intent(AddDefect.this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
-        application.setPhotosForFullscreen(deffectPhotos);
+        application.setPhotosForFullscreen(inspectionPhotos);
         startActivity(intent);
     }
 }

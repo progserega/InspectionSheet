@@ -12,28 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.ui.activities.TouchImageView;
 
 public class FullScreenImageAdapter extends PagerAdapter {
 
     private Activity _activity;
-    private List<DeffectPhoto> deffectPhotos;
+    private List<InspectionPhoto> inspectionPhotos;
     private LayoutInflater inflater;
 
     // constructor
     public FullScreenImageAdapter(Activity activity,
-                                  List<DeffectPhoto> photos) {
+                                  List<InspectionPhoto> photos) {
         this._activity = activity;
-        this.deffectPhotos = photos;
+        this.inspectionPhotos = photos;
     }
 
     @Override
     public int getCount() {
-        return this.deffectPhotos.size();
+        return this.inspectionPhotos.size();
     }
 
     @Override
@@ -58,7 +57,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(deffectPhotos.get(position).getPath(), options);
+        Bitmap bitmap = BitmapFactory.decodeFile(inspectionPhotos.get(position).getPath(), options);
         imgDisplay.setImageBitmap(bitmap);
 
         // close button click event

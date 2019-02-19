@@ -20,11 +20,16 @@ public class SubstationEquipmentModel {
     @ColumnInfo(name = "slot")
     private int slot;
 
-    public SubstationEquipmentModel(long id, long substationId, long transformerId, int slot) {
+    @ColumnInfo(name = "manufacture_year")
+    private int manufactureYear;
+
+
+    public SubstationEquipmentModel(long id, long substationId, long transformerId, int slot, int manufactureYear) {
         this.id = id;
         this.substationId = substationId;
         this.transformerId = transformerId;
         this.slot = slot;
+        this.manufactureYear = manufactureYear;
     }
 
     public long getId() {
@@ -57,5 +62,13 @@ public class SubstationEquipmentModel {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public int getManufactureYear() {
+        return manufactureYear;
+    }
+
+    public void setManufactureYear(int manufactureYear) {
+        this.manufactureYear = manufactureYear;
     }
 }

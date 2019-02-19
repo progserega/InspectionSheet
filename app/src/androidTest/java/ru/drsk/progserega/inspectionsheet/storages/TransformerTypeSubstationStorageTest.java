@@ -29,7 +29,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
 
 
 @RunWith(AndroidJUnit4.class)
-public class TransformerSubstationStorageTest {
+public class TransformerTypeSubstationStorageTest {
 
 
     private InspectionSheetDatabase mDb;

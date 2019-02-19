@@ -2,7 +2,6 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,15 +15,10 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
-import ru.drsk.progserega.inspectionsheet.activities.utility.ImageFilePath;
-import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TowerDeffectsListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.TowerDeffectsContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.TowerDefectsPresenter;
@@ -129,7 +123,7 @@ public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDe
 
     @Override
     public void onImageTaken(String photoPath) {
-        currentDeffect.addPhoto(new DeffectPhoto(0, photoPath, this));
+        currentDeffect.addPhoto(new InspectionPhoto(0, photoPath, this));
         deffectsListAdapter.notifyDataSetChanged();
     }
 

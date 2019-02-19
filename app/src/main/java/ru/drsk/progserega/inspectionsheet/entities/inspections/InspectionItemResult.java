@@ -13,7 +13,7 @@ public class InspectionItemResult {
     private List<String> values;
     private List<String> subValues;
     private String comment;
-    private List<DeffectPhoto> photos;
+    private List<InspectionPhoto> photos;
 
     public void setValues(List<String> values) {
         this.values = values;
@@ -31,11 +31,11 @@ public class InspectionItemResult {
         this.comment = comment;
     }
 
-    public List<DeffectPhoto> getPhotos() {
+    public List<InspectionPhoto> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<DeffectPhoto> photos) {
+    public void setPhotos(List<InspectionPhoto> photos) {
         this.photos = photos;
     }
 
