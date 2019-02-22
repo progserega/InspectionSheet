@@ -15,6 +15,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 
+import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
+import com.zfdang.multiple_images_selector.SelectorSettings;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -29,7 +32,7 @@ import static ru.drsk.progserega.inspectionsheet.activities.utility.PermissionsU
 public class PhotoUtility {
 
     public interface ChoosedListener {
-        void onImageTaken( String photoPath);
+        void onImageTaken(String photoPath);
 
     }
 
@@ -45,13 +48,15 @@ public class PhotoUtility {
 
     private ChoosedListener choosedListener;
 
-    public PhotoUtility( Activity activity,  ChoosedListener choosedListener){
+    private ArrayList<String> mResults = new ArrayList<>();
+
+    public PhotoUtility(Activity activity, ChoosedListener choosedListener) {
         this.context = activity.getBaseContext();
         this.activity = activity;
         this.choosedListener = choosedListener;
     }
 
-    public void showPhotoDialog(){
+    public void showPhotoDialog() {
         final CharSequence[] items = {"Камера", "Галерея", "Отмена"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -109,11 +114,24 @@ public class PhotoUtility {
     }
 
     private void galeryIntent() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        activity.startActivityForResult(Intent.createChooser(intent, "Select file"), SELECT_FILE);
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        activity.startActivityForResult(Intent.createChooser(intent, "Select file"), SELECT_FILE);
+
+        // start multiple photos selecto
+         Intent intent = new Intent(this.activity, ImagesSelectorActivity.class);
+        // max number of images to be selected
+        intent.putExtra(SelectorSettings.SELECTOR_MAX_IMAGE_NUMBER, 10);
+        // min size of image which will be shown; to filter tiny images (mainly icons)
+        intent.putExtra(SelectorSettings.SELECTOR_MIN_IMAGE_SIZE, 100);
+        // show camera or not
+        intent.putExtra(SelectorSettings.SELECTOR_SHOW_CAMERA, false);
+        // pass current selected images as the initial value
+        intent.putStringArrayListExtra(SelectorSettings.SELECTOR_INITIAL_SELECTED_LIST, mResults);
+        // start the selector
+        activity.startActivityForResult(intent, SELECT_FILE);
     }
 
     private File createImageFile() throws IOException {
@@ -138,12 +156,16 @@ public class PhotoUtility {
         }
 
         if (requestCode == SELECT_FILE) {
-            if (data == null || data.getData() == null) {
-                return;
+
+            mResults = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
+            assert mResults != null;
+
+            for(String result : mResults) {
+                choosedListener.onImageTaken(result);
             }
 
-            String realPath = ImageFilePath.getPath(this.context, data.getData());
-            choosedListener.onImageTaken( realPath);
+            mResults = null;
+
         }
 
         if (requestCode == REQUEST_CAMERA) {

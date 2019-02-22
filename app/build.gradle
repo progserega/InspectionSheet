@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "ru.drsk.progserega.inspectionsheet"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -77,4 +77,5 @@ dependencies {
 
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
+    implementation 'com.zfdang.multiple-images-selector:multiple-images-selector:1.1.5'
 }

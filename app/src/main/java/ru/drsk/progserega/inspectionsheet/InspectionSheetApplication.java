@@ -3,6 +3,8 @@ package ru.drsk.progserega.inspectionsheet;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,6 +226,8 @@ public class InspectionSheetApplication extends Application {
 
         inspectionService = new InspectionService(db, transformerStorage, inspectionStorage, getApplicationContext());
 
+
+        Fresco.initialize(getApplicationContext());
     }
 
 }

@@ -62,6 +62,10 @@
             android:name=".ui.activities.GroupAddTransfrmerDeffect"
             android:label="@string/title_activity_group_add_transfrmer_deffect"
             android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
+            android:configChanges="orientation|screenSize"/>
+
     </application>
 
 </manifest>
