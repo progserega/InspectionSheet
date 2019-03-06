@@ -77,5 +77,6 @@ dependencies {
 
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
+    //https://github.com/zfdang/android-multiple-images-selector
     implementation 'com.zfdang.multiple-images-selector:multiple-images-selector:1.1.5'
 }

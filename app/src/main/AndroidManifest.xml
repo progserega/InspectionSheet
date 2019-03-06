@@ -38,7 +38,7 @@
         <activity android:name=".activities.EndInspection" />
         <activity android:name=".ui.activities.InspectTower" />
         <activity
-            android:name=".ui.activities.AddDefect"
+            android:name=".ui.activities.AddTransformerDefect"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activities.InspectTransformer" />
 

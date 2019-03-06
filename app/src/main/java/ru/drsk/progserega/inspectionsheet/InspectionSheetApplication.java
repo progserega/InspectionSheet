@@ -18,6 +18,7 @@ import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
@@ -79,7 +80,11 @@ public class InspectionSheetApplication extends Application {
     InspectionItem currentInspectionItem;
     List<InspectionItem> inspectionItemsGroup;
 
-    List<InspectionPhoto> photosForFullscreen;
+  //  List<InspectionPhoto> photosForFullscreen;
+
+    private PhotoFullscreenManager photoFullscreenManager;
+
+
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -165,12 +170,20 @@ public class InspectionSheetApplication extends Application {
         this.inspectionItemsGroup = inspectionItemsGroup;
     }
 
-    public List<InspectionPhoto> getPhotosForFullscreen() {
-        return photosForFullscreen;
+//    public List<InspectionPhoto> getPhotosForFullscreen() {
+//        return photosForFullscreen;
+//    }
+//
+//    public void setPhotosForFullscreen(List<InspectionPhoto> photosForFullscreen) {
+//        this.photosForFullscreen = photosForFullscreen;
+//    }
+
+    public PhotoFullscreenManager getPhotoFullscreenManager() {
+        return photoFullscreenManager;
     }
 
-    public void setPhotosForFullscreen(List<InspectionPhoto> photosForFullscreen) {
-        this.photosForFullscreen = photosForFullscreen;
+    public void setPhotoFullscreenManager(PhotoFullscreenManager photoFullscreenManager) {
+        this.photoFullscreenManager = photoFullscreenManager;
     }
 
     @Override
@@ -228,6 +241,8 @@ public class InspectionSheetApplication extends Application {
 
 
         Fresco.initialize(getApplicationContext());
+
+        photoFullscreenManager = new PhotoFullscreenManager(db);
     }
 
 }

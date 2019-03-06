@@ -14,12 +14,18 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
 import com.zfdang.multiple_images_selector.SelectorSettings;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,7 +127,7 @@ public class PhotoUtility {
 //        activity.startActivityForResult(Intent.createChooser(intent, "Select file"), SELECT_FILE);
 
         // start multiple photos selecto
-         Intent intent = new Intent(this.activity, ImagesSelectorActivity.class);
+        Intent intent = new Intent(this.activity, ImagesSelectorActivity.class);
         // max number of images to be selected
         intent.putExtra(SelectorSettings.SELECTOR_MAX_IMAGE_NUMBER, 10);
         // min size of image which will be shown; to filter tiny images (mainly icons)
@@ -160,8 +166,14 @@ public class PhotoUtility {
             mResults = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
             assert mResults != null;
 
-            for(String result : mResults) {
-                choosedListener.onImageTaken(result);
+            for (String result : mResults) {
+
+                String imagePath = copyImageInsideAppPicturesFolder(result);
+                if (imagePath != null) {
+                    choosedListener.onImageTaken(imagePath);
+                } else {
+                    Toast.makeText(this.context, "Ошибка копирования файла из галереи!" + result, Toast.LENGTH_SHORT).show();
+                }
             }
 
             mResults = null;
@@ -172,6 +184,46 @@ public class PhotoUtility {
             //Toast.makeText(this, "IMAGE FROM CAMERA", Toast.LENGTH_SHORT).show();
             choosedListener.onImageTaken(mCurrentPhotoPath);
         }
+    }
+
+    private String copyImageInsideAppPicturesFolder(String galeryFilePath) {
+
+        String[] parts = galeryFilePath.split("/");
+        if (parts.length <= 1) {
+            return null;
+        }
+        String imageName = parts[parts.length - 1];
+        if (imageName.isEmpty()) {
+            return null;
+        }
+
+
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
+
+        File sourceLocation = new File(galeryFilePath);
+        File targetLocation = new File(targetpath);
+
+        InputStream in = null;
+        try {
+            in = new FileInputStream(sourceLocation);
+
+            OutputStream out = new FileOutputStream(targetLocation);
+
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return targetpath;
     }
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {

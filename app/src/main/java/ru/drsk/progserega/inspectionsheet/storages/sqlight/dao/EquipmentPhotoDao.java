@@ -28,6 +28,9 @@ public interface EquipmentPhotoDao {
     @Query("DELETE FROM equipment_photos")
     void deleteAll();
 
+    @Query("DELETE FROM equipment_photos WHERE id =:photoId")
+    void deleteById(long photoId);
+
     @Query("DELETE FROM equipment_photos WHERE equipment_id = :equipmentId AND substation_type =:substationType")
     void deleteByEquipment(long equipmentId, int substationType);
 }

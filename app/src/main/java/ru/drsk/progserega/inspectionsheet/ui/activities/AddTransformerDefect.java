@@ -24,10 +24,11 @@ import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
-public class AddDefect extends AppCompatActivity
+public class AddTransformerDefect extends AppCompatActivity
     implements PhotoUtility.ChoosedListener {
 
     public static final String DEFFECT_NAME = "deffect_name";
@@ -169,9 +170,18 @@ public class AddDefect extends AppCompatActivity
     }
 
     private void showFullscreenPhoto(int position) {
-        Intent intent = new Intent(AddDefect.this, FullscreenImageActivity.class);
+        Intent intent = new Intent(AddTransformerDefect.this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
-        application.setPhotosForFullscreen(inspectionPhotos);
+        //application.setPhotosForFullscreen(inspectionPhotos);
+
+        application.getPhotoFullscreenManager().setPhotos(inspectionPhotos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                imageAdapter.notifyDataSetChanged();
+            }
+        });
         startActivity(intent);
     }
 

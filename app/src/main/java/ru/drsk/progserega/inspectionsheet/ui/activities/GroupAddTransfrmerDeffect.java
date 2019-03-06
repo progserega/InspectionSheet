@@ -17,6 +17,7 @@ import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformerDeffectGroupListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.GroupAddTransfDeffectContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.GroupAddTransfDeffectPresenter;
@@ -127,7 +128,14 @@ public class GroupAddTransfrmerDeffect extends Activity implements
 
     @Override
     public void photoItemClick(int position, List<InspectionPhoto> photos) {
-        application.setPhotosForFullscreen(photos);
+        application.getPhotoFullscreenManager().setPhotos(photos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                groupListAdapter.notifyDataSetChanged();
+            }
+        });
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
         startActivity(intent);

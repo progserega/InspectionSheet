@@ -30,12 +30,12 @@ public class InspectionPhoto {
         return thumbnail;
     }
 
-    public InspectionPhoto(Bitmap thumbnail) {
-        this.thumbnail = thumbnail;
-        this.path = path;
-
-
-    }
+//    public InspectionPhoto(Bitmap thumbnail) {
+//        this.thumbnail = thumbnail;
+//        this.path = path;
+//
+//
+//    }
 
     public InspectionPhoto(long id, String path, Context context) {
         this.id = id;

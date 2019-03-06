@@ -29,6 +29,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.SelectTransformerDialog;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalPhotoListAdapter;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformatorInspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
@@ -46,7 +47,7 @@ import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 
-import static ru.drsk.progserega.inspectionsheet.ui.activities.AddDefect.DEFFECT_NAME;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
 public class InspectTransformer extends AppCompatActivity implements
@@ -226,7 +227,7 @@ public class InspectTransformer extends AppCompatActivity implements
             application.setCurrentDeffect(inspectionItemResult);
             // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
 
-            Intent intent = new Intent(this, AddDefect.class);
+            Intent intent = new Intent(this, AddTransformerDefect.class);
             intent.putExtra(DEFFECT_NAME, inspectionItem.getName());
             startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
         }
@@ -324,7 +325,15 @@ public class InspectTransformer extends AppCompatActivity implements
         // Toast.makeText(this, "TAP ON PHOTO  "+ photo.getPath(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
-        application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
+        //application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
+        application.getPhotoFullscreenManager().setPhotos(inspectionItem.getResult().getPhotos());
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                transformatorInspectionAdapter.notifyDataSetChanged();
+            }
+        });
         startActivity(intent);
     }
 
@@ -441,7 +450,16 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
     public void commonPhotoItemClick(int position, List<InspectionPhoto> photos) {
-        application.setPhotosForFullscreen(photos);
+        application.getPhotoFullscreenManager().setPhotos(photos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.TRANSFORMER_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                commonPhotoListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        //application.setPhotosForFullscreen(photos);
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
         startActivity(intent);

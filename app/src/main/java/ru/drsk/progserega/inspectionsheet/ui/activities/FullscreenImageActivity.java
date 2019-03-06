@@ -19,9 +19,22 @@ import ru.drsk.progserega.inspectionsheet.ui.adapters.FullScreenImageAdapter;
 
 public class FullscreenImageActivity extends Activity {
 
-    public static final String IMAGE_IDX= "image_idx";
+//    public interface DeletePhotoListener {
+//        void deletePhoto(int position);
+//    }
+
+    public static final String IMAGE_IDX = "image_idx";
 
     private InspectionSheetApplication application;
+
+    private ViewPager pager;
+    private FullScreenImageAdapter fullScreenImageAdapter;
+
+//    private DeletePhotoListener deletePhotoListener;
+//
+//    public void setDeletePhotoListener(DeletePhotoListener deletePhotoListener) {
+//        this.deletePhotoListener = deletePhotoListener;
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +45,13 @@ public class FullscreenImageActivity extends Activity {
 
         setContentView(R.layout.activity_fullscreen_image);
 
-        FullScreenImageAdapter fullScreenImageAdapter = new FullScreenImageAdapter(this, application.getPhotosForFullscreen());
-        ViewPager pager =  findViewById(R.id.fullscreen_image_pager);
+        fullScreenImageAdapter = new FullScreenImageAdapter(this, application.getPhotoFullscreenManager().getPhotos(), new FullScreenImageAdapter.DeletePhotoListener() {
+            @Override
+            public void deletePhoto(int position) {
+                removePhotoAt(position);
+            }
+        });
+        pager = findViewById(R.id.fullscreen_image_pager);
         pager.setAdapter(fullScreenImageAdapter);
 
         Intent intent = getIntent();
@@ -41,5 +59,26 @@ public class FullscreenImageActivity extends Activity {
         pager.setCurrentItem(imageIdx);
     }
 
+    public void removePhotoAt(int position) {
+       // pager.setCurrentItem(position-1);
+       // application.getPhotosForFullscreen().remove(position);
+       // pager.removeViewAt(position);
 
+        //deletePhotoListener.deletePhoto(position);
+
+        application.getPhotoFullscreenManager().deletePhoto(position);
+
+        fullScreenImageAdapter.notifyDataSetChanged();
+
+        if(application.getPhotoFullscreenManager().getPhotos().size() == 0){
+            finish();
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+       // deletePhotoListener = null;
+    }
 }
