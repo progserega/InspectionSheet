@@ -4,19 +4,17 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.Query;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.Simple;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadObject;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 
 public interface IApiInspectionSheet {
 
     @POST("/api/inspection")
-    Call<Simple> uploadInspection(@Body Simple simple);
+    Call<UploadRes> uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);
 
     @Multipart
     @POST("/api/inspection/image")

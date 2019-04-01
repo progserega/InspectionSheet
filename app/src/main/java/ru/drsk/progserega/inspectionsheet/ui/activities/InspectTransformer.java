@@ -278,6 +278,7 @@ public class InspectTransformer extends AppCompatActivity implements
         TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
         inspection.getSubstation().setInspectionDate(new Date());
         inspection.getSubstation().setInspectionPercent(middlePercent);
+        inspectionStorage.updateSubstationInspectionInfo(inspection);
 
         transformerSpinnerAdapter.notifyDataSetChanged();
 

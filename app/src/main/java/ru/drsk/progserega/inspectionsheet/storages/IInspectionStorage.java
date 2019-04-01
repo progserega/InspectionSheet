@@ -8,5 +8,7 @@ public interface IInspectionStorage {
 
     void saveInspection(TransformerInspection inspection);
 
+    void updateSubstationInspectionInfo(TransformerInspection inspection);
+
     void loadInspections(TransformerInspection inspection);
 }

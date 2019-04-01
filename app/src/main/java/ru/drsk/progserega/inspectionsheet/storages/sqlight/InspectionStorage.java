@@ -88,7 +88,7 @@ public class InspectionStorage implements IInspectionStorage {
             }
         }
 
-        updateSubstationInspectionInfo(inspection);
+       // updateSubstationInspectionInfo(inspection);
 
         updateTransformerManufactureYear(inspection);
 
@@ -142,7 +142,8 @@ public class InspectionStorage implements IInspectionStorage {
         }
     }
 
-    private void updateSubstationInspectionInfo(TransformerInspection inspection) {
+    @Override
+    public void updateSubstationInspectionInfo(TransformerInspection inspection) {
         Equipment equipment = inspection.getSubstation();
         if (equipment.getType().equals(EquipmentType.TRANS_SUBSTATION)) {
             transformerSubstationDao.updateInspectionInfo(

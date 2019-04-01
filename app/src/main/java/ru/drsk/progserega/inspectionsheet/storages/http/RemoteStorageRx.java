@@ -22,10 +22,12 @@ import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTpTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.UploadTransformerInspectionResults;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
@@ -34,6 +36,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 public class RemoteStorageRx implements IRemoteStorage {
 
     private IApiSTE apiSTE;
+    private IApiInspectionSheet apiArmIs;
     private DBDataImporter dbDataImporter;
     private IProgressListener progressListener;
     private Context context;
@@ -44,6 +47,9 @@ public class RemoteStorageRx implements IRemoteStorage {
 
         RetrofitApiSTEServiceFactory apiSTEServiceFactory = new RetrofitApiSTEServiceFactory();
         apiSTE = apiSTEServiceFactory.create();
+
+        RetrofitApiArmISServiceFactory armISServiceFactory = new RetrofitApiArmISServiceFactory();
+        apiArmIs = armISServiceFactory.create();
 
     }
 
@@ -125,6 +131,37 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void uploadTransformersInspections(List<TransformerInspection> transformerInspections) {
+        Observable.create(new UploadTransformerInspectionResults(apiArmIs, transformerInspections ))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<UploadRes>() {
+                               private int cnt = 0;
+
+                               @Override
+                               public void onSubscribe(Disposable d) {
+
+                               }
+
+                               @Override
+                               public void onNext(UploadRes uploadRes) {
+
+//                                   dbDataImporter.loadSteTpModel(steTPResponse.getData());
+//                                   cnt += steTPResponse.getData().size();
+//                                   progressListener.progressUpdate((int) ((cnt / (float) steTPResponse.getTotalRecords()) * 100));
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   e.printStackTrace();
+                               }
+
+                               @Override
+                               public void onComplete() {
+                                   progressListener.progressComplete();
+                               }
+                           }
+
+                );
 
     }
 

@@ -4,5 +4,6 @@
         <domain includeSubdomains="true">api-ste.rs.int</domain>
         <domain includeSubdomains="true">api-geo.rs.int</domain>
         <domain includeSubdomains="true">172.21.168.71</domain>
+        <domain includeSubdomains="true">armis.ps</domain>
     </domain-config>
 </network-security-config>

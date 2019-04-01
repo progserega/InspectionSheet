@@ -43,8 +43,8 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
         for(TransformerInspection transformerInspection: transformerInspections){
 
 //            try {
-//                Response response = apiInspectionSheet.uploadInspection(new Simple("ИМЯ", "ЗНАЧЕНИЕ")).execute();
-//                Simple resp = (Simple) response.body();
+//                Response response = apiInspectionSheet.uploadInspection(new TransformerInspectionResult("ИМЯ", "ЗНАЧЕНИЕ")).execute();
+//                TransformerInspectionResult resp = (TransformerInspectionResult) response.body();
 //                int a = 0;
 //            } catch (IOException e) {
 //                e.printStackTrace();
