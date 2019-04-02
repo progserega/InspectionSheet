@@ -12,9 +12,15 @@ public class UploadRes {
     @Expose
     private String message;
 
-    public UploadRes(int status, String message) {
+    @SerializedName("id")
+    @Expose
+    private long id;
+
+
+    public UploadRes(int status, String message, long id) {
         this.status = status;
         this.message = message;
+        this.id = id;
     }
 
     public int getStatus() {
@@ -31,5 +37,13 @@ public class UploadRes {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.activities;
+package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -16,6 +16,8 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.activities.SelectTypeLine;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void exportInspections(View view) {
+        progressText.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         application.getRemoteStorage().setProgressListener(this);
 
         InspectionService inspectionService = application.getInspectionService();

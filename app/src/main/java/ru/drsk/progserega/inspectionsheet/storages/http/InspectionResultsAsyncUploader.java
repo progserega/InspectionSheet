@@ -15,7 +15,8 @@ import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadObject;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadImageInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 
 public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Void> {
 
@@ -151,7 +152,7 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
            return;
         }
 
-        UploadObject uploadObjectRes = (UploadObject) response.body();
-        Log.d("UPLOAD FILE:", "reult " + uploadObjectRes.getSuccess());
+        UploadRes uploadImageInfoRes = (UploadRes) response.body();
+        Log.d("UPLOAD FILE:", "reult " + uploadImageInfoRes.getStatus());
     }
 }

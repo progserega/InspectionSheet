@@ -13,6 +13,7 @@ public class InspectionItem {
 
     private InspectionItemResult result;
 
+    private long armId = 0;
 
     public long getId() {
         return id;
@@ -48,6 +49,14 @@ public class InspectionItem {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public long getArmId() {
+        return armId;
+    }
+
+    public void setArmId(long armId) {
+        this.armId = armId;
     }
 
     public InspectionItem(int id,

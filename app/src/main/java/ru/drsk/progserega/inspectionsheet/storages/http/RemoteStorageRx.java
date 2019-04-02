@@ -1,24 +1,17 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -27,7 +20,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTpTask;
-import ru.drsk.progserega.inspectionsheet.storages.http.tasks.UploadTransformerInspectionResults;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.UploadTransformerInspectionTask;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
@@ -131,7 +124,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void uploadTransformersInspections(List<TransformerInspection> transformerInspections) {
-        Observable.create(new UploadTransformerInspectionResults(apiArmIs, transformerInspections ))
+        Observable.create(new UploadTransformerInspectionTask(apiArmIs, transformerInspections ))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UploadRes>() {

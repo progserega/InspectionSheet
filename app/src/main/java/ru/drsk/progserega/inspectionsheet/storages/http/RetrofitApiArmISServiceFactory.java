@@ -12,8 +12,8 @@ public class RetrofitApiArmISServiceFactory {
 
     public RetrofitApiArmISServiceFactory() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                //.setLevel(HttpLoggingInterceptor.Level.BASIC);
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+                .setLevel(HttpLoggingInterceptor.Level.BASIC);
+                //.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
