@@ -402,7 +402,7 @@ public class InspectTransformer extends AppCompatActivity implements
         listView.requestLayout();
     }
 
-    void onManufactureYearClick(View view){
+    public void onManufactureYearClick(View view){
 
         FragmentManager fm = getSupportFragmentManager();
 
