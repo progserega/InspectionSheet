@@ -17,5 +17,9 @@ public interface IApiInspectionSheet {
 
     @Multipart
     @POST("/api/inspection/image")
-    Call<UploadRes> uploadFile(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
+    Call<UploadRes> uploadInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
+
+    @Multipart
+    @POST("/api/transformer/image")
+    Call<UploadRes> uploadTransformerImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
 }

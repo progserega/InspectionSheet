@@ -3,7 +3,7 @@ package ru.drsk.progserega.inspectionsheet.storages.http.api_is_models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UploadImageInfo {
+public class UploadInspectionImageInfo {
     @SerializedName("name")
     @Expose
     private String name;
@@ -12,7 +12,7 @@ public class UploadImageInfo {
     @Expose
     private long parentId;
 
-    public UploadImageInfo(String name, long parentId) {
+    public UploadInspectionImageInfo(String name, long parentId) {
         this.name = name;
         this.parentId = parentId;
     }

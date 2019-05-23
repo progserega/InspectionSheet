@@ -15,7 +15,6 @@ import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 
 public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Void> {
@@ -138,7 +137,7 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
             RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
 
-            response = apiInspectionSheet.uploadFile(fileToUpload, filename).execute();
+            response = apiInspectionSheet.uploadInspectionImage(fileToUpload, filename).execute();
         } catch (IOException e) {
             e.printStackTrace();
             return;

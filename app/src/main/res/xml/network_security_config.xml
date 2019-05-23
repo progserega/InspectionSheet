@@ -3,7 +3,8 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">api-ste.rs.int</domain>
         <domain includeSubdomains="true">api-geo.rs.int</domain>
-        <domain includeSubdomains="true">172.21.168.71</domain>
+        <domain includeSubdomains="true">10.75.168.40</domain>
         <domain includeSubdomains="true">armis.ps</domain>
+        <domain includeSubdomains="true">arm-is.prim.drsk.ru</domain>
     </domain-config>
 </network-security-config>

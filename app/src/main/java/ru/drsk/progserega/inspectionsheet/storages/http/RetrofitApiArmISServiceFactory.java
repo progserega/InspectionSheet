@@ -1,5 +1,9 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.security.cert.X509Certificate;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -16,14 +20,15 @@ public class RetrofitApiArmISServiceFactory {
                 //.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+                //.addInterceptor(interceptor)
+                .addInterceptor(new LogJsonInterceptor())
                 .build();
 
         retrofit = new Retrofit.Builder()
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-               // .baseUrl("http://armis.ps:3010") //Базовая часть адреса
-                .baseUrl("http://172.21.168.71:3010") //Базовая часть адреса
+                .baseUrl("http://10.75.168.40:3010") //Базовая часть адреса
+                //.baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
     }

@@ -20,8 +20,9 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadImageInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
 
 public class UploadTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
 
@@ -42,6 +43,15 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             long substationId = inspection.getSubstation().getId();
             int substationType = inspection.getSubstation().getType().getValue();
             long transformerId = inspection.getTransformator().getId();
+
+            //грузим общие фото
+            uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerId, substationType, unixTime);
+
+//            if(true) {
+//                emitter.onComplete();
+//                return;
+//            }
+            //грузим осмотры
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
                 TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
                         substationId,
@@ -68,7 +78,9 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
                 //upload photo
                 for (InspectionPhoto photo : inspectionRes.getResult().getPhotos()) {
 
-                    uploadPhoto(photo, inspectionRes.getArmId() );
+                    if (!uploadPhoto(photo, inspectionRes.getArmId())) {
+                        //return; //<--для отладки
+                    }
                 }
 
                 emitter.onNext(uploadRes);
@@ -79,10 +91,10 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
         }
     }
 
-    private void uploadPhoto(InspectionPhoto photo, long armInspectionId) {
+    private boolean uploadPhoto(InspectionPhoto photo, long armInspectionId) {
 
         File file = new File(photo.getPath());
-        Log.d("UPLOAD FILE:", "Filename " + file.getName());
+        Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
         Response response = null;
@@ -90,29 +102,85 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             //Не работает с кирилическими именами файлов
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
 
-            UploadImageInfo imageInfo = new UploadImageInfo(file.getName(), armInspectionId);
+            UploadInspectionImageInfo imageInfo = new UploadInspectionImageInfo(file.getName(), armInspectionId);
             Gson gson = new Gson();
             String fileInfoJson = gson.toJson(imageInfo);
             RequestBody fileInfo = RequestBody.create(MediaType.parse("text/plain"), fileInfoJson);
 
 
-            response = apiArmIS.uploadFile(fileToUpload, fileInfo).execute();
+            response = apiArmIS.uploadInspectionImage(fileToUpload, fileInfo).execute();
 
 
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            return false;
         }
 
         if (response.body() == null) {
-            return;
+            return false;
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
         Log.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
+        if (uploadRes.getStatus() != 200) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void uploadTransformersPhotos(List<InspectionPhoto> photos, long transformerId, int substationType, long date) {
+        if (photos == null || photos.isEmpty()) {
+            return;
+        }
+
+        for (InspectionPhoto photo : photos) {
+            uploadTransformerPhoto(photo, transformerId, substationType, date);
+        }
+    }
+
+    private boolean uploadTransformerPhoto(InspectionPhoto photo, long transformerId, int substationType, long date) {
+
+        File file = new File(photo.getPath());
+        Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
+        Response response = null;
+        try {
+            //Не работает с кирилическими именами файлов
+            MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
+
+            UploadTransformerImageInfo imageInfo = new UploadTransformerImageInfo(file.getName(), transformerId, substationType, date);
+            Gson gson = new Gson();
+            String fileInfoJson = gson.toJson(imageInfo);
+            RequestBody fileInfo = RequestBody.create(MediaType.parse("text/plain"), fileInfoJson);
+
+
+            response = apiArmIS.uploadTransformerImage(fileToUpload, fileInfo).execute();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        if (response.body() == null) {
+            return false;
+        }
+
+        UploadRes uploadRes = (UploadRes) response.body();
+        Log.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
+        if (uploadRes.getStatus() != 200) {
+            return false;
+        }
+
+        return true;
     }
 }
 
