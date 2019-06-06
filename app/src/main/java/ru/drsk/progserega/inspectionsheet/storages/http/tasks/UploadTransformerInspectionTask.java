@@ -23,6 +23,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.Transforme
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerInfo;
 
 public class UploadTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
 
@@ -44,13 +45,17 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             int substationType = inspection.getSubstation().getType().getValue();
             long transformerId = inspection.getTransformator().getId();
 
-            //грузим общие фото
-            uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerId, substationType, unixTime);
-
-//            if(true) {
+            //грузим инфу о трансформаторе
+            uploadTransformerInfo(inspection);
+//
+//            if (true) {
 //                emitter.onComplete();
 //                return;
 //            }
+
+            //грузим общие фото
+            uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerId, substationType, unixTime);
+
             //грузим осмотры
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
                 TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
@@ -88,6 +93,41 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 
 
             emitter.onComplete();
+        }
+    }
+
+    private void uploadTransformerInfo(TransformerInspection inspection) {
+
+        Log.d("UPLOAD:", "Upload transformer info....");
+        long inspectionDate = 0;
+        if (inspection.getDate() != null) {
+            inspectionDate = inspection.getDate().getTime() / 1000L;
+        }
+
+        UploadTransformerInfo info = new UploadTransformerInfo(
+                inspection.getSubstation().getId(),
+                inspection.getSubstation().getType().getValue(),
+                inspection.getTransformator().getId(),
+                inspection.getTransformator().getYear(),
+                inspection.calcInspectionPercent(),
+                inspectionDate
+                );
+
+        Response response = null;
+        try {
+            response = apiArmIS.uploadTransformerInfo(info).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (response.body() == null) {
+            return;
+        }
+
+        UploadRes uploadRes = (UploadRes) response.body();
+        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        if (uploadRes.getStatus() != 200) {
+            return;
         }
     }
 

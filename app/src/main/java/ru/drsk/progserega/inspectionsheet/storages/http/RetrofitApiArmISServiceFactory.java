@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.security.cert.X509Certificate;
@@ -16,19 +18,21 @@ public class RetrofitApiArmISServiceFactory {
 
     public RetrofitApiArmISServiceFactory() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BASIC);
-                //.setLevel(HttpLoggingInterceptor.Level.BODY);
+                //.setLevel(HttpLoggingInterceptor.Level.BASIC);
+                .setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 //.addInterceptor(interceptor)
                 .addInterceptor(new LogJsonInterceptor())
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
 
         retrofit = new Retrofit.Builder()
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://10.75.168.40:3010") //Базовая часть адреса
-                //.baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
+                //.baseUrl("http://10.75.168.40:3010") //Базовая часть адреса
+                .baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
     }
