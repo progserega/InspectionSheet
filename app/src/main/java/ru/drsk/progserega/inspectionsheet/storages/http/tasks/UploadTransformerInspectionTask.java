@@ -90,18 +90,17 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 
                 emitter.onNext(uploadRes);
             }
-
-
-            emitter.onComplete();
         }
+
+        emitter.onComplete();
     }
 
     private void uploadTransformerInfo(TransformerInspection inspection) {
 
         Log.d("UPLOAD:", "Upload transformer info....");
         long inspectionDate = 0;
-        if (inspection.getDate() != null) {
-            inspectionDate = inspection.getDate().getTime() / 1000L;
+        if (inspection.getTransformator().getInspectionDate() != null) {
+            inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
         }
 
         UploadTransformerInfo info = new UploadTransformerInfo(
@@ -135,6 +134,10 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        if(!file.exists()){
+            Log.d("UPLOAD FILE:", "File does not exist: " + file.getName());
+            return  false;
+        }
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
         Response response = null;
@@ -186,6 +189,11 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+
+        if(!file.exists()){
+            Log.d("UPLOAD FILE:", "File does not exist: " + file.getName());
+            return  false;
+        }
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
         Response response = null;

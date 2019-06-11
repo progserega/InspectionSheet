@@ -46,7 +46,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         InspectionPhotoModel.class,
         InspectionItemModel.class,
         EquipmentPhotoModel.class
-}, version = 2)
+}, version = 3)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -103,6 +103,18 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
             //Создаем таблицу equipment_photos для хранения фотографий оборудования подстанций и ТП
             database.execSQL("CREATE TABLE `equipment_photos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `equipment_id` INTEGER NOT NULL, `substation_type` INTEGER NOT NULL, `photo_path` TEXT)");
+        }
+    };
+
+    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            //добавляем поле дата осмотра трансформатора
+            database.execSQL("ALTER TABLE substation_equipments ADD COLUMN inspection_date INTEGER");
+
+            //добавляем поле дата осмотра трансформатора
+            database.execSQL("ALTER TABLE tp_transformers ADD COLUMN inspection_date INTEGER");
         }
     };
 }

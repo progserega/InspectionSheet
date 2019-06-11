@@ -266,8 +266,9 @@ public class InspectTransformer extends AppCompatActivity implements
         List<TransformerInspection> allInspections = substationInspection.getTransformerInspections();
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         float sum = 0;
+        Date inspectionDate = new Date();
         for (TransformerInspection transformerInspection : allInspections) {
-
+            transformerInspection.getTransformator().setInspectionDate(inspectionDate);
             inspectionStorage.saveInspection(transformerInspection);
             transformerInspection.setDone(true);
 
@@ -276,7 +277,7 @@ public class InspectTransformer extends AppCompatActivity implements
         float middlePercent = sum / allInspections.size();
 
         TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
-        inspection.getSubstation().setInspectionDate(new Date());
+        inspection.getSubstation().setInspectionDate(inspectionDate);
         inspection.getSubstation().setInspectionPercent(middlePercent);
         inspectionStorage.updateSubstationInspectionInfo(inspection);
 

@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(tableName = "tp_transformers")
 public class TransformerSubstationEuipmentModel {
 
@@ -23,15 +25,25 @@ public class TransformerSubstationEuipmentModel {
     @ColumnInfo(name = "manufacture_year")
     private int manufactureYear;
 
+    @ColumnInfo(name = "inspection_date")
+    private Date inspectionDate;
 
-
-    public TransformerSubstationEuipmentModel(long id, long tpId, long transformerId, int slot, int manufactureYear) {
+    public TransformerSubstationEuipmentModel(long id, long tpId, long transformerId, int slot, int manufactureYear, Date inspectionDate) {
         this.id = id;
         this.tpId = tpId;
         this.transformerId = transformerId;
         this.slot = slot;
         this.manufactureYear = manufactureYear;
+        this.inspectionDate = inspectionDate;
     }
+
+//    public TransformerSubstationEuipmentModel(long id, long tpId, long transformerId, int slot, int manufactureYear) {
+//        this.id = id;
+//        this.tpId = tpId;
+//        this.transformerId = transformerId;
+//        this.slot = slot;
+//        this.manufactureYear = manufactureYear;
+//    }
 
     public long getId() {
         return id;
@@ -71,5 +83,13 @@ public class TransformerSubstationEuipmentModel {
 
     public void setManufactureYear(int manufactureYear) {
         this.manufactureYear = manufactureYear;
+    }
+
+    public Date getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(Date inspectionDate) {
+        this.inspectionDate = inspectionDate;
     }
 }

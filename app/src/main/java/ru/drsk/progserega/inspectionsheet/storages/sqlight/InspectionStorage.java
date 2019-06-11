@@ -3,12 +3,14 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
@@ -90,7 +92,7 @@ public class InspectionStorage implements IInspectionStorage {
 
        // updateSubstationInspectionInfo(inspection);
 
-        updateTransformerManufactureYear(inspection);
+        updateTransformerEquipmentInfo(inspection);
 
         saveTransformerPhoto(inspection);
     }
@@ -161,14 +163,15 @@ public class InspectionStorage implements IInspectionStorage {
 
     }
 
-    private void updateTransformerManufactureYear(TransformerInspection inspection){
+    private void updateTransformerEquipmentInfo(TransformerInspection inspection){
         Equipment equipment = inspection.getSubstation();
+        TransformerInSlot transformerInSlot = inspection.getTransformator();
         if (equipment.getType().equals(EquipmentType.TRANS_SUBSTATION)) {
-            transformerSubstationEquipmentDao.updateTransformerManufYear(inspection.getTransformator().getYear(), inspection.getTransformator().getId());
+            transformerSubstationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate() , transformerInSlot.getId());
         }
 
         if (equipment.getType().equals(EquipmentType.SUBSTATION)) {
-            substationEquipmentDao.updateTransformerManufYear(inspection.getTransformator().getYear(), inspection.getTransformator().getId());
+            substationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate() , transformerInSlot.getId());
         }
     }
 

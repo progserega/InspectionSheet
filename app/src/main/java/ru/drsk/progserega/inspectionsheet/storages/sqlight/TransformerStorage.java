@@ -67,7 +67,8 @@ public class TransformerStorage implements ITransformerStorage {
                     transformerModel.getEquipmentId(),
                     transformerModel.getSlot(),
                     transformerType,
-                    transformerModel.getManufactureYear()
+                    transformerModel.getManufactureYear(),
+                    transformerModel.getInspectioDate()
             );
 
             List<EquipmentPhotoModel> equipmentPhotoModels = equipmentPhotoDao.getByEquipment( transformerModel.getEquipmentId(), equipmentType.getValue());
@@ -115,13 +116,13 @@ public class TransformerStorage implements ITransformerStorage {
     public long addToSubstation(long transformerTypeId, Equipment substation, int slot) {
 
         if(substation.getType().equals(EquipmentType.SUBSTATION)){
-            SubstationEquipmentModel equipment = new SubstationEquipmentModel(0,substation.getId(), transformerTypeId, slot, 0);
+            SubstationEquipmentModel equipment = new SubstationEquipmentModel(0,substation.getId(), transformerTypeId, slot, 0, null);
             return substationEquipmentDao.insert(equipment);
         }
 
 
         if(substation.getType().equals(EquipmentType.TRANS_SUBSTATION)){
-            TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getId(), transformerTypeId, slot, 0);
+            TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getId(), transformerTypeId, slot, 0, null);
             return transformerSubstationEquipmentDao.insert(euipmentModel);
         }
 

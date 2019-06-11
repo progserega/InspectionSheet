@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
@@ -11,21 +12,23 @@ public class TransformerInSlot {
     private TransformerType transformerType;
     private int year;
     private List<InspectionPhoto> photoList;
+    private Date inspectionDate;
 
     public TransformerInSlot(long id, int slot, TransformerType transformerType) {
         this.id = id;
         this.slot = slot;
         this.transformerType = transformerType;
         this.photoList = new ArrayList<>(); //!!
-
+        inspectionDate = null;
     }
 
-    public TransformerInSlot(long id, int slot, TransformerType transformerType, int year) {
+    public TransformerInSlot(long id, int slot, TransformerType transformerType, int year, Date inspectionDate) {
         this.id = id;
         this.slot = slot;
         this.transformerType = transformerType;
         this.year = year;
         this.photoList = new ArrayList<>();//!!
+        this.inspectionDate = inspectionDate;
     }
 
     public long getId() {
@@ -66,5 +69,13 @@ public class TransformerInSlot {
 
     public void setPhotoList(List<InspectionPhoto> photoList) {
         this.photoList = photoList;
+    }
+
+    public Date getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(Date inspectionDate) {
+        this.inspectionDate = inspectionDate;
     }
 }
