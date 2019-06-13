@@ -429,8 +429,8 @@ public class InspectTransformer extends AppCompatActivity implements
         }
 
     }
-
-    void onAddTransformerPhotoBtnClick(View view){
+//java.lang.IllegalStateException: Could not find method onAddTransformerPhotoBtnClick(View) in a parent or ancestor Context for android:onClick attribute defined on view class android.support.v7.widget.AppCompatImageButton with id 'add_transformer_photo_btn'
+    public void onAddTransformerPhotoBtnClick(View view){
         if(currentInspection == null){
             return;
         }
