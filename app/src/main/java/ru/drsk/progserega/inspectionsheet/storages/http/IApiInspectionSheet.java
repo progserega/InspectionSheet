@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
 public interface IApiInspectionSheet {
 
@@ -26,6 +26,6 @@ public interface IApiInspectionSheet {
 
 
     @POST("/api/transformer/info")
-    Call<UploadRes> uploadTransformerInfo(@Body UploadTransformerInfo transformerInspectionResult);
+    Call<UploadRes> uploadTransformerInfo(@Body TransformerInfo transformerInspectionResult);
 
 }

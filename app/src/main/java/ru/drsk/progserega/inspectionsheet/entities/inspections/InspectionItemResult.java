@@ -63,4 +63,13 @@ public class InspectionItemResult {
         subValues = new ArrayList<>();
         photos = new ArrayList<>();
     }
+
+    public boolean isEmpty(){
+
+        if (!comment.isEmpty() || !values.isEmpty() || !subValues.isEmpty() || !photos.isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
 }

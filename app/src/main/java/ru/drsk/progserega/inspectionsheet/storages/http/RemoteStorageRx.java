@@ -146,6 +146,7 @@ public class RemoteStorageRx implements IRemoteStorage {
                                @Override
                                public void onError(Throwable e) {
                                    e.printStackTrace();
+                                   progressListener.progressComplete();
                                }
 
                                @Override

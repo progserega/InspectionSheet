@@ -75,4 +75,12 @@ public class InspectionItem {
         this.result = new InspectionItemResult(values, subresultValues);
         this.parentId = parentId;
     }
+
+    public boolean isEmpty() {
+        if (type.equals(InspectionItemType.HEADER)) {
+            return true;
+        }
+
+        return result.isEmpty();
+    }
 }

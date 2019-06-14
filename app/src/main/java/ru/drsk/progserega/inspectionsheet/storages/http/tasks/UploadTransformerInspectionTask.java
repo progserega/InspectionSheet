@@ -23,7 +23,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.Transforme
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
 public class UploadTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
 
@@ -46,11 +46,15 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             long transformerId = inspection.getTransformator().getId();
 
             //грузим инфу о трансформаторе
-            uploadTransformerInfo(inspection);
+            transformerId = uploadTransformerInfo(inspection);
+            if(transformerId == 0){
+                continue;
+            }
 //
 //            if (true) {
-//                emitter.onComplete();
-//                return;
+//                continue;
+//                //emitter.onComplete();
+//                //return;
 //            }
 
             //грузим общие фото
@@ -58,6 +62,12 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 
             //грузим осмотры
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
+
+                //пропускаем не заполненные
+                if(inspectionRes.isEmpty()){
+                    continue;
+                }
+
                 TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
                         substationId,
                         substationType,
@@ -95,7 +105,7 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
         emitter.onComplete();
     }
 
-    private void uploadTransformerInfo(TransformerInspection inspection) {
+    private long uploadTransformerInfo(TransformerInspection inspection) {
 
         Log.d("UPLOAD:", "Upload transformer info....");
         long inspectionDate = 0;
@@ -103,13 +113,15 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
         }
 
-        UploadTransformerInfo info = new UploadTransformerInfo(
+        TransformerInfo info = new TransformerInfo(
                 inspection.getSubstation().getId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId(),
                 inspection.getTransformator().getYear(),
                 inspection.calcInspectionPercent(),
-                inspectionDate
+                inspectionDate,
+                inspection.getTransformator().getTransformerType().getId(),
+                inspection.getTransformator().getSlot()
                 );
 
         Response response = null;
@@ -117,17 +129,20 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
             response = apiArmIS.uploadTransformerInfo(info).execute();
         } catch (IOException e) {
             e.printStackTrace();
+            return 0;
         }
 
         if (response.body() == null) {
-            return;
+            return 0;
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
         Log.d("UPLOAD :", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
-            return;
+            return 0;
         }
+
+        return uploadRes.getId();
     }
 
     private boolean uploadPhoto(InspectionPhoto photo, long armInspectionId) {

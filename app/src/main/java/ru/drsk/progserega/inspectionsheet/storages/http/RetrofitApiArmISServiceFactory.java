@@ -22,7 +22,7 @@ public class RetrofitApiArmISServiceFactory {
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
-                //.addInterceptor(interceptor)
+               //.addInterceptor(interceptor)
                 .addInterceptor(new LogJsonInterceptor())
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
