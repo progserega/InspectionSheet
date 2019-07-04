@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SelectTypeLine">
+    tools:context=".ui.activities.SelectTypeLine">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,19 +24,19 @@
             android:onClick="defectInVl04"
             android:text="@string/vl04BtText" />
 
-        <Button
-            android:id="@+id/vl6_10_kv_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="defectInVl6_10"
-            android:text="@string/vl_6_10_kv_text" />
+        <!--<Button-->
+            <!--android:id="@+id/vl6_10_kv_button"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="defectInVl6_10"-->
+            <!--android:text="@string/vl_6_10_kv_text" />-->
 
-        <Button
-            android:id="@+id/vl35_110_kv_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="defectInVl35_110"
-            android:text="@string/vl_35_110_kv_text" />
+        <!--<Button-->
+            <!--android:id="@+id/vl35_110_kv_button"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="defectInVl35_110"-->
+            <!--android:text="@string/vl_35_110_kv_text" />-->
 
         <Button
             android:id="@+id/ps35_110_kv_button"

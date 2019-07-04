@@ -7,6 +7,8 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
  * Опора
  */
 public class Tower extends Equipment {
+
+    private long uniqId;
     private Point mapPoint;
 
     private Material material;
@@ -32,9 +34,10 @@ public class Tower extends Equipment {
         this.towerType = towerType;
     }
 
-    public Tower(long id, Point point, Material material, TowerType towerType ){
+    public Tower(long id, long uniqId, String name, Point point, Material material, TowerType towerType ){
         this.id = id;
-        this.name = "опора";
+        this.uniqId = uniqId;
+        this.name = name;
         this.type = EquipmentType.TOWER;
         this.mapPoint = point;
         this.material = material;

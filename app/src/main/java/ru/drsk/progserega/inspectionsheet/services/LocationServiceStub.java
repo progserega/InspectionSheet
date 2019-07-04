@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.services;
 
+import java.lang.ref.WeakReference;
+
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 
 public class LocationServiceStub implements ILocation {
@@ -35,7 +37,7 @@ public class LocationServiceStub implements ILocation {
     }
 
     @Override
-    public void setLocationChangeListener(ILocationChangeListener listener) {
+    public void setLocationChangeListener(WeakReference<ILocationChangeListener> listener) {
 
     }
 }

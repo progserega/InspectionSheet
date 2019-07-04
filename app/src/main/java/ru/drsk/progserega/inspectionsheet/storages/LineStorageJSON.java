@@ -12,6 +12,7 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
+import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineReader;
 

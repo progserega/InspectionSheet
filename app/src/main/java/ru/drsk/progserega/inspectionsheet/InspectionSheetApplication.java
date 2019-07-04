@@ -8,11 +8,10 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.EquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
@@ -22,6 +21,8 @@ import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineTowerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
@@ -29,11 +30,14 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
+import ru.drsk.progserega.inspectionsheet.storages.json.LineTowerDeffectTypesStorageJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
@@ -42,6 +46,7 @@ import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
 
 import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
 import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
+import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_3_4;
 
 public class InspectionSheetApplication extends Application {
 
@@ -58,11 +63,13 @@ public class InspectionSheetApplication extends Application {
     //Сервис для работы с sqlight
     private InspectionSheetDatabase db;
 
-    private TowersService towersService;
+    //private TowersService towersService;
+
+    private ITowerStorage towerStorage;
 
     private ICatalogStorage catalogStorage;
 
-    private EquipmentInspection equipmentInspection;
+    private LineInspection lineInspection;
 
     private ISubstationInspection currentSubstationInspection;
 
@@ -83,9 +90,9 @@ public class InspectionSheetApplication extends Application {
 
   //  List<InspectionPhoto> photosForFullscreen;
 
+    private ILineTowerDeffectTypesStorage lineTowerDeffectTypesStorage;
+
     private PhotoFullscreenManager photoFullscreenManager;
-
-
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -103,20 +110,20 @@ public class InspectionSheetApplication extends Application {
         return organizationService;
     }
 
-    public TowersService getTowersService() {
-        return towersService;
-    }
+//    public TowersService getTowersService() {
+//        return towersService;
+//    }
 
     public ICatalogStorage getCatalogStorage() {
         return catalogStorage;
     }
 
-    public EquipmentInspection getEquipmentInspection() {
-        return equipmentInspection;
+    public LineInspection getLineInspection() {
+        return lineInspection;
     }
 
-    public void setEquipmentInspection(EquipmentInspection equipmentInspection) {
-        this.equipmentInspection = equipmentInspection;
+    public void setLineInspection(LineInspection lineInspection) {
+        this.lineInspection = lineInspection;
     }
 
     public ISubstationInspection getCurrentSubstationInspection() {
@@ -187,6 +194,14 @@ public class InspectionSheetApplication extends Application {
         this.photoFullscreenManager = photoFullscreenManager;
     }
 
+    public ILineTowerDeffectTypesStorage getLineTowerDeffectTypesStorage() {
+        return lineTowerDeffectTypesStorage;
+    }
+
+    public ITowerStorage getTowerStorage() {
+        return towerStorage;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -196,7 +211,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                //.addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .build();
 
 
@@ -204,9 +219,9 @@ public class InspectionSheetApplication extends Application {
         LocationService location = new LocationService(getApplicationContext());
         locationService = (ILocation) location;
 
-        //ILineStorage lineStorage = new LineStorage();
-        LineStorageStub lineStorage = new LineStorageStub(locationService);
-        lineStorage.setLines(LineStorageStub.initLinesWithTowersStub());
+        ILineStorage lineStorage = new LineStorage(db, locationService);
+       // LineStorageStub lineStorage = new LineStorageStub(locationService);
+        //lineStorage.setLines(LineStorageStub.initLinesWithTowersStub());
         //linesService = new LinesService(lineStorage);
 
         //ILineStorage lineStorage = new LineStorageJSON();
@@ -218,9 +233,11 @@ public class InspectionSheetApplication extends Application {
         organizationService = new OrganizationService(organizationStorage);
 
 
-        ITowerStorage towerStorage = new TowerStorageStub();
+        towerStorage = new TowerStorage(db);
 
-        towersService = new TowersService(towerStorage, lineStorage);
+        //ITowerStorage towerStorage = new TowerStorageStub();
+
+       // towersService = new TowersService(towerStorage, lineStorage);
 
         transformerStorage = new TransformerStorage(db, getApplicationContext());
         ISubstationStorage substationStorage = new SubstationStorage(db, locationService);
@@ -244,6 +261,8 @@ public class InspectionSheetApplication extends Application {
         Fresco.initialize(getApplicationContext());
 
         photoFullscreenManager = new PhotoFullscreenManager(db);
+
+        lineTowerDeffectTypesStorage = new LineTowerDeffectTypesStorageJson(getApplicationContext());
     }
 
 }

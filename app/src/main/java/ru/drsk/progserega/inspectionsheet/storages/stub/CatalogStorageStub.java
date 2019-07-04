@@ -34,10 +34,10 @@ public class CatalogStorageStub implements ICatalogStorage {
     @Override
     public List<InspectionType> getInspectionTypes() {
         List<InspectionType> inspectionTypes = new ArrayList<>();
-        inspectionTypes.add(new InspectionType(1, "InspectionType 1"));
-        inspectionTypes.add(new InspectionType(2, "InspectionType 2"));
-        inspectionTypes.add(new InspectionType(3, "InspectionType 3"));
-        inspectionTypes.add(new InspectionType(4, "InspectionType 4"));
+        inspectionTypes.add(new InspectionType(1, "Периодический"));
+        inspectionTypes.add(new InspectionType(2, "Внеочередной"));
+        inspectionTypes.add(new InspectionType(3, "Выборочный персоналом ИТР"));
+        inspectionTypes.add(new InspectionType(4, "Верховой осмотр"));
         return inspectionTypes;
     }
 }

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Inspection Sheet</string>
     <string name="addDefectBtText">Осмотр оборудования</string>
-    <string name="vl04BtText">ВЛ 0,4 кВ</string>
+    <string name="vl04BtText">ВЛ</string>
     <string name="vl_6_10_kv_text">ВЛ 6-10 кВ</string>
     <string name="vl_35_110_kv_text">ВЛ 35-110 кВ</string>
     <string name="ps35_110_kv_text">ПС 35-110 кВ</string>
@@ -25,7 +25,7 @@
     <string name="towerTiltText">Наклон опоры</string>
     <string name="faundedDefectsText">Выявленные дефекты</string>
     <string name="syncBtText">Синхронизация данных</string>
-    <string name="defectCreate">Defect create</string>
+    <string name="defectCreate">Выбор объектов осмотра</string>
     <string name="defectBracesText">Ослабленные или повреждённые оттяжки</string>
     <string name="defectNestsText">Наличие гнёзд</string>
     <string name="defectFoundamentSqueezingText">Выдавливание фундамента</string>
@@ -54,5 +54,7 @@
     <string name="msg_no_camera">Камера не доступна!</string>
     <string name="camera_temp_file_error">Ошибка камеры</string>
     <string name="selector_permission_error">Отказано в доступе</string>
+    <string name="selectVoltageText">Напряжение:</string>
+    <string name="finish">Закончить</string>
     <!--для китайского плагина выбора фотографий  end! -->
 </resources>

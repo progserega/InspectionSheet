@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -19,6 +23,7 @@ public class LocationService implements ILocation, LocationListener {
 
     private ILocationChangeListener locationChangeListener;
 
+    private List<WeakReference<ILocationChangeListener>> listeners = new ArrayList<>();
     // flag for GPS status
     boolean isGPSEnabled = false;
 
@@ -41,8 +46,9 @@ public class LocationService implements ILocation, LocationListener {
     protected LocationManager locationManager;
 
     @Override
-    public void setLocationChangeListener(ILocationChangeListener locationChangeListener) {
-        this.locationChangeListener = locationChangeListener;
+    public void setLocationChangeListener(WeakReference<ILocationChangeListener> locationChangeListener) {
+        // this.locationChangeListener = locationChangeListener;
+        listeners.add(locationChangeListener);
     }
 
     public LocationService(Context context) {
@@ -53,8 +59,8 @@ public class LocationService implements ILocation, LocationListener {
     @Override
     public Point getUserPosition() {
         Location loc = getLocation();
-        if (loc == null){
-            return new Point(0,0);
+        if (loc == null) {
+            return new Point(0, 0);
         }
         return new Point(loc.getLatitude(), loc.getLongitude());
     }
@@ -160,8 +166,15 @@ public class LocationService implements ILocation, LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if (locationChangeListener != null && isGPSStarted) {
-            locationChangeListener.onLocationChange(new Point(location.getLatitude(), location.getLongitude()));
+
+        if (!isGPSStarted) {
+            return;
+        }
+
+        for (WeakReference<ILocationChangeListener> listener : listeners) {
+            if (listener.get() != null) {
+                listener.get().onLocationChange(new Point(location.getLatitude(), location.getLongitude()));
+            }
         }
     }
 

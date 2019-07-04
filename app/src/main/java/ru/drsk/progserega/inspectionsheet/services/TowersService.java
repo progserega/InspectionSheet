@@ -20,11 +20,11 @@ public class TowersService {
 
     }
 
-    public List<LineTower> getTowersByLine(long lineId){
-        Line line = lineStorage.getById(lineId);
-        if(line == null){
-            return new ArrayList<>();
-        }
-        return line.getTowers();
-    }
+//    public List<LineTower> getTowersByLine(long lineId){
+//        Line line = lineStorage.getById(lineId);
+//        if(line == null){
+//            return new ArrayList<>();
+//        }
+//        return line.getTowers();
+//    }
 }

@@ -4,15 +4,20 @@ import java.util.List;
 
 
 public class Line extends Equipment{
+
+    private long uniqId;
     private Voltage voltage;
-    private List<LineTower> towers;
+    private List<Tower> towers;
 
+    public long getUniqId() {
+        return uniqId;
+    }
 
-    public List<LineTower> getTowers() {
+    public List<Tower> getTowers() {
         return towers;
     }
 
-    public void setTowers(List<LineTower> towers) {
+    public void setTowers(List<Tower> towers) {
         this.towers = towers;
     }
 
@@ -20,8 +25,9 @@ public class Line extends Equipment{
         return voltage;
     }
 
-    public Line(long id, String name, Voltage type, List<LineTower> towers){
+    public Line(long id, long uniqId, String name, Voltage type, List<Tower> towers){
         this.id = id;
+        this.uniqId = uniqId;
         this.name = name;
         this.voltage = type;
         this.towers = towers;

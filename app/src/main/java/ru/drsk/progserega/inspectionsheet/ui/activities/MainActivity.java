@@ -1,6 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,22 +11,29 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
-import ru.drsk.progserega.inspectionsheet.activities.SelectTypeLine;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 
+/*
+http://wiki.rs.int/doku.php/osm:api#список_всех_линий
+http://wiki.rs.int/doku.php/osm:api#данные_линии_по_имени
+ */
 public class MainActivity extends AppCompatActivity implements IProgressListener {
 
     private InspectionSheetApplication application;
     private ProgressBar progressBar;
     private TextView progressText;
 
+    private static final boolean DEBUG_MODE = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     @Override
-    public void progressUpdate(int progress) {
-        Log.d("DOWNLOAD", "DOWNLOAD PERCENT " + String.valueOf(progress));
-        progressText.setText(String.valueOf(progress) + " %");
+    public void progressUpdate(String progress) {
+        Log.d("PROGRESS", "PROGRESS: " + progress);
+        progressText.setText(progress);
     }
 
     @Override
@@ -104,8 +110,14 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     @Override
     public void progressError(Exception ex) {
-
-        showError("Ошибка", ex.getMessage());
+        String s = ex.getLocalizedMessage();
+        if(DEBUG_MODE) {
+            Writer writer = new StringWriter();
+            ex.printStackTrace(new PrintWriter(writer));
+            s = writer.toString();
+        }
+        showError("Ошибка", s);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void showError(String title, String message) {

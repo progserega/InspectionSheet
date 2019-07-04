@@ -11,7 +11,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
-import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -107,7 +107,7 @@ public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Voi
 
     protected void onProgressUpdate(Integer... progress) {
         if (progressListener != null) {
-            progressListener.progressUpdate(progress[0]);
+            progressListener.progressUpdate(progress[0].toString());
         }
     }
 

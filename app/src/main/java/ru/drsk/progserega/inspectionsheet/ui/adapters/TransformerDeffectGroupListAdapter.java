@@ -18,10 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.DeffectValuesView;
-import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
-import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
+import ru.drsk.progserega.inspectionsheet.ui.activities.DeffectValuesView;
+import ru.drsk.progserega.inspectionsheet.ui.activities.ExpandableHeightGridView;
+import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;

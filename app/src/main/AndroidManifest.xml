@@ -30,13 +30,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SelectTypeLine" />
-        <activity android:name=".activities.SearchObject" />
+        <activity android:name=".ui.activities.SelectTypeLine" />
+        <activity android:name=".ui.activities.SearchObject" />
         <activity android:name=".activities.searchBySpRes" />
         <activity android:name=".activities.createInspection" />
         <activity android:name=".activities.FoundedDefects" />
         <activity android:name=".activities.EndInspection" />
-        <activity android:name=".ui.activities.InspectTower" />
+        <activity android:name=".activities.InspectTower" />
         <activity
             android:name=".ui.activities.AddTransformerDefect"
             android:windowSoftInputMode="adjustPan" />
@@ -61,11 +61,12 @@
         <activity
             android:name=".ui.activities.GroupAddTransfrmerDeffect"
             android:label="@string/title_activity_group_add_transfrmer_deffect"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
-            android:configChanges="orientation|screenSize"/>
-
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".ui.activities.InspectLine" />
+        <activity android:name=".ui.activities.InspectLineTower"></activity>
     </application>
 
 </manifest>

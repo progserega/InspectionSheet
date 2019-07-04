@@ -64,5 +64,7 @@
     <string name="msg_no_camera">Камера не доступна!</string>
     <string name="camera_temp_file_error">Ошибка камеры</string>
     <string name="selector_permission_error">Отказано в доступе</string>
+    <string name="selectVoltageText">Напряжение</string>
+    <string name="finish">Закончить</string>
     <!--для китайского плагина выбора фотографий  end! -->
 </resources>

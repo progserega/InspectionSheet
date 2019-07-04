@@ -7,6 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 
+import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
@@ -14,11 +15,15 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineTowerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
@@ -26,10 +31,14 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentPho
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineTowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
@@ -45,8 +54,12 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         InspectionModel.class,
         InspectionPhotoModel.class,
         InspectionItemModel.class,
-        EquipmentPhotoModel.class
-}, version = 3)
+        EquipmentPhotoModel.class,
+        LineModel.class,
+        LineTowerModel.class,
+        LineSectionModel.class,
+        TowerModel.class
+}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -75,6 +88,14 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract InspectionItemDao inspectionItemDao();
 
     public abstract EquipmentPhotoDao equipmentPhotoDao();
+
+    public abstract LineDao lineDao();
+
+    public abstract LineTowerDao lineTowerDao();
+
+    public abstract LineSectionDao lineSectionDao();
+
+    public abstract TowerDao towerDao();
 
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -115,6 +136,27 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
             //добавляем поле дата осмотра трансформатора
             database.execSQL("ALTER TABLE tp_transformers ADD COLUMN inspection_date INTEGER");
+        }
+    };
+
+    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE \"lines\" (\n" +
+                    "\t\"id\"\tINTEGER NOT NULL,\n" +
+                    "\t\"uniq_id\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+                    "\t\"name\"\tTEXT,\n" +
+                    "\t\"voltage\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+                    "\t\"start_exploitation_year\"\tINTEGER NOT NULL,\n" +
+                    "\t\"bbox_top_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
+                    "\t\"bbox_top_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+                    "\t\"bbox_bottom_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
+                    "\t\"bbox_botttom_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+                    "\tPRIMARY KEY(\"id\")\n" +
+                    ");");
+
+
+
         }
     };
 }

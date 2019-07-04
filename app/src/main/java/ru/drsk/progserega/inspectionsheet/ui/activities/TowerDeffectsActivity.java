@@ -15,7 +15,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
+import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;

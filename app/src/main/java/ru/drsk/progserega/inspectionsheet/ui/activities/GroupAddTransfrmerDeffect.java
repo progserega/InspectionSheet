@@ -13,8 +13,8 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
-import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
+import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
+import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;

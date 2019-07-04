@@ -13,13 +13,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
-import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTpTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadAllDataTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.UploadTransformerInspectionTask;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
@@ -30,6 +29,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     private IApiSTE apiSTE;
     private IApiInspectionSheet apiArmIs;
+    private IApiGeo apiGeo;
     private DBDataImporter dbDataImporter;
     private IProgressListener progressListener;
     private Context context;
@@ -44,49 +44,80 @@ public class RemoteStorageRx implements IRemoteStorage {
         RetrofitApiArmISServiceFactory armISServiceFactory = new RetrofitApiArmISServiceFactory();
         apiArmIs = armISServiceFactory.create();
 
+        RetrofitApiGeoServiceFactory apiGeoServiceFactory = new RetrofitApiGeoServiceFactory();
+        apiGeo = apiGeoServiceFactory.create();
     }
 
     @Override
     public void loadRemoteData() {
 
         dbDataImporter.ClearDB();
-        dbDataImporter.initEnterpriseCache();
 
-        Observable.create(new LoadTpTask(apiSTE))
+        Observable.create(new LoadAllDataTask(apiArmIs, apiSTE, apiGeo, dbDataImporter))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SteTPResponse>() {
-                               private int cnt = 0;
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                               @Override
-                               public void onSubscribe(Disposable d) {
+                    }
 
-                               }
+                    @Override
+                    public void onNext(String s) {
+                        progressListener.progressUpdate(s);
+                    }
 
-                               @Override
-                               public void onNext(SteTPResponse steTPResponse) {
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressListener.progressError((Exception) e);
 
-                                   dbDataImporter.loadSteTpModel(steTPResponse.getData());
-                                   cnt += steTPResponse.getData().size();
-                                   progressListener.progressUpdate((int) ((cnt / (float) steTPResponse.getTotalRecords()) * 100));
-                               }
+                    }
 
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                               }
+                    @Override
+                    public void onComplete() {
+                        progressListener.progressComplete();
+                    }
+                });
 
-                               @Override
-                               public void onComplete() {
-                                   loadSubstations();
-                                   loadSubstationTransformers();
-                                   progressListener.progressComplete();
-
-
-                               }
-                           }
-
-                );
+//        dbDataImporter.ClearDB();
+//        dbDataImporter.initEnterpriseCache();
+//
+//        Observable.create(new LoadTpTask(apiSTE))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<SteTPResponse>() {
+//                               private int cnt = 0;
+//
+//                               @Override
+//                               public void onSubscribe(Disposable d) {
+//
+//                               }
+//
+//                               @Override
+//                               public void onNext(SteTPResponse steTPResponse) {
+//
+//                                   dbDataImporter.loadSteTpModel(steTPResponse.getData());
+//                                   cnt += steTPResponse.getData().size();
+//                                   progressListener.progressUpdate((int) ((cnt / (float) steTPResponse.getTotalRecords()) * 100));
+//                               }
+//
+//                               @Override
+//                               public void onError(Throwable e) {
+//                                   e.printStackTrace();
+//                               }
+//
+//                               @Override
+//                               public void onComplete() {
+//                                   loadSubstations();
+//                                   loadSubstationTransformers();
+//                                   progressListener.progressComplete();
+//
+//
+//                               }
+//                           }
+//
+//                );
 
     }
 
@@ -97,7 +128,7 @@ public class RemoteStorageRx implements IRemoteStorage {
         try {
             GeoSubstationsResponse response = reader.readSubstations(context.getResources().openRawResource(R.raw.substations));
             List<GeoSubstation> list = new ArrayList<GeoSubstation>(response.getData().values());
-           // dataArrivedListener.GeoSubstationsArrived(list);
+            // dataArrivedListener.GeoSubstationsArrived(list);
             dbDataImporter.loadGeoSubstations(list);
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,12 +136,12 @@ public class RemoteStorageRx implements IRemoteStorage {
         }
     }
 
-    private void loadSubstationTransformers(){
+    private void loadSubstationTransformers() {
 
         SubstationTransformersReader reader = new SubstationTransformersReader();
         try {
             List<SubstationTransformerJson> transformersJson = reader.readSubstationTransformers(context.getResources().openRawResource(R.raw.substation_transformers));
-             dbDataImporter.loadSubstationTransformers(transformersJson);
+            dbDataImporter.loadSubstationTransformers(transformersJson);
         } catch (IOException e) {
             e.printStackTrace();
             progressListener.progressError(e);
@@ -124,7 +155,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void uploadTransformersInspections(List<TransformerInspection> transformerInspections) {
-        Observable.create(new UploadTransformerInspectionTask(apiArmIs, transformerInspections ))
+        Observable.create(new UploadTransformerInspectionTask(apiArmIs, transformerInspections))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UploadRes>() {

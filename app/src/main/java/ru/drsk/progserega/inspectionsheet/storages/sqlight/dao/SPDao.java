@@ -24,4 +24,7 @@ public interface SPDao {
     @Delete
     void delete(SP enterprise);
 
+    @Query("DELETE FROM SP")
+    void delete();
+
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import ru.drsk.progserega.inspectionsheet.R;
 
+@Deprecated
 public class searchBySpRes extends AppCompatActivity {
 
     @Override

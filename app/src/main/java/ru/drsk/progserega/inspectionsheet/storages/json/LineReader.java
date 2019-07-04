@@ -66,7 +66,7 @@ public class LineReader {
             }
         }
         reader.endObject();
-        return new Line(id, lineName, voltage, null);
+        return new Line(id, id, lineName, voltage, null);
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;

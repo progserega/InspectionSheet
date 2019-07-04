@@ -27,13 +27,12 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.SelectTransformerDialog;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalPhotoListAdapter;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformatorInspectionAdapter;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.TransformerSpinnerAdapter;
-import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
-import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformerSpinnerAdapter;
+import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
+import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;

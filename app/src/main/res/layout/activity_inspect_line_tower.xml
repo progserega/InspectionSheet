@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inpect_line_tower_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.InspectLineTower">
+    
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/inspect_line_tower_bottomLA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_tower_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="№ опоры"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/inspect_line_tower_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:inputType="text|textNoSuggestions|textVisiblePassword"
+                    android:text=""
+                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_select_tower_btn"
+                    app:layout_constraintStart_toEndOf="@+id/text_tower_num"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <Switch
+                    android:id="@+id/inspect_line_tower_switch_gps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="GPS"
+                    android:textColor="@android:color/darker_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/inspect_line_select_tower_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/circlebackground"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_tower_switch_gps" />
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/inspect_line_tower_textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:text="Материал"
+                android:textColor="@android:color/black" />
+
+            <Spinner
+                android:id="@+id/materials_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/inspect_line_tower_textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:text="Тип опоры"
+                android:textColor="@android:color/black" />
+
+            <Spinner
+                android:id="@+id/tower_type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/inspection_line_tower_textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#e6dbba"
+                android:gravity="center_horizontal"
+                android:padding="4dp"
+                android:text="Выявленные деффекты"
+                android:textColor="@android:color/black" />
+
+
+
+
+            <ListView
+                android:id="@+id/inspect_line_tower_deffects_list"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:animationCache="false"
+                android:scrollingCache="false"
+                android:smoothScrollbar="true" />
+
+            <TextView
+                android:id="@+id/inspection_line_tower_textcomment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                android:text="Прочие замечания, комментарий"
+                android:textColor="@android:color/black" />
+
+            <EditText
+                android:id="@+id/inspect_line_tower_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="8dp"
+                android:inputType="text|textMultiLine"
+                android:text="" />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Фотографии деффектов:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/add_line_tower_deffect_photo_btn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:onClick="onAddTowerPhotoBtnClick"
+                    android:scaleType="fitXY"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/transformer_photos"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/add_transformer_photo_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--Bottom tolbar -->
+    <LinearLayout
+        android:id="@+id/inspect_line_tower_bottomLA"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="4dp"
+        >
+
+
+        <LinearLayout
+            android:id="@+id/next_btn_layout"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:onClick="onNextBtnClick"
+            android:orientation="vertical"
+            android:background="#097c09"
+            >
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/inpsect_line_tower_next_btn"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:onClick="onNextBtnClick" />-->
+
+            <TextView
+                android:id="@+id/inpsect_line_textViewNB"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/next"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/finish_btn_layout"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:onClick="onFinishBtnClick"
+            android:orientation="vertical"
+            android:layout_marginLeft="100dp"
+            android:background="#b42c11"
+            >
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/inpsect_line_tower_finish_btn"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:onClick="onFinishBtnClick" />-->
+
+            <TextView
+                android:id="@+id/inpsect_line_textViewFB"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/finish"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

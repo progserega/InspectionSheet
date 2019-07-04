@@ -13,4 +13,19 @@ public class TowerStorageStub implements ITowerStorage {
 
         return null;
     }
+
+    @Override
+    public List<Tower> getByLineUniqId(long id) {
+        return null;
+    }
+
+    @Override
+    public Tower getFirstInLine(long lineUniqId) {
+        return null;
+    }
+
+    @Override
+    public Tower getByNumberInLine(String number, long lineUniqId) {
+        return null;
+    }
 }

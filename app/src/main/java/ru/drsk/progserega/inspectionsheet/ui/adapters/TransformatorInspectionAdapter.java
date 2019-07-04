@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;

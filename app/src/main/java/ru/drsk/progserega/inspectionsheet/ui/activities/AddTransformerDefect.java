@@ -16,12 +16,10 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.DeffectValuesView;
-import ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView;
-import ru.drsk.progserega.inspectionsheet.activities.adapters.ImageAdapter;
-import ru.drsk.progserega.inspectionsheet.activities.utility.ButtonUtils;
-import ru.drsk.progserega.inspectionsheet.activities.utility.MetricsUtils;
-import ru.drsk.progserega.inspectionsheet.activities.utility.PhotoUtility;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.ImageAdapter;
+import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
+import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
+import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;

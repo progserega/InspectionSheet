@@ -1,5 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -23,11 +26,15 @@ public class RetrofitApiSTEServiceFactory {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         retrofit = new Retrofit.Builder()
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("http://api-ste.rs.int") //Базовая часть адреса
-                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
+                .addConverterFactory(GsonConverterFactory.create(gson)) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
     }
 

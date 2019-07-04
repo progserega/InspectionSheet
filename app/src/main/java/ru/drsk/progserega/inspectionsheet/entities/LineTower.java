@@ -1,5 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Опора пренадлежащая линии
  */
@@ -10,6 +13,9 @@ public class LineTower {
     private long towerId;
     private Tower tower;    //ссылка на опору
     private String number;  //номер опоры в линии
+
+    private LineTower prevTower;
+    private List<LineTower> nextTowers;
 
     public Line getLine() {
         return line;
@@ -31,6 +37,14 @@ public class LineTower {
         this.tower = tower;
     }
 
+    public void setPrevTower(LineTower prevTower) {
+        this.prevTower = prevTower;
+    }
+
+    public void addNextTower(LineTower nextTower){
+        nextTowers.add(nextTower);
+    }
+
     public LineTower(Line line, Tower tower, String number) {
         this.line = line;
         this.lineId = line.getId();
@@ -38,6 +52,10 @@ public class LineTower {
         this.tower = tower;
         this.towerId = tower.getId();
         this.number = number;
+
+        this.prevTower = null;
+        this.nextTowers = new ArrayList<>();
+
     }
 
     public LineTower(long lineId, long towerId, String number) {
@@ -46,5 +64,9 @@ public class LineTower {
         this.number = number;
         this.line = null;
         this.tower = null;
+
+        this.prevTower = null;
+        this.nextTowers = new ArrayList<>();
+
     }
 }

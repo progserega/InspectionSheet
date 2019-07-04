@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Line;
+import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 
 public interface ILineStorage {

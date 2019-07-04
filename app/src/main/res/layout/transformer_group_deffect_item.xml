@@ -92,7 +92,7 @@
 
     <view
         android:id="@+id/add_defect_photos"
-        class="ru.drsk.progserega.inspectionsheet.activities.ExpandableHeightGridView"
+        class="ru.drsk.progserega.inspectionsheet.ui.activities.ExpandableHeightGridView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.activities.IProgressListener;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
@@ -151,7 +151,7 @@ public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
 
     protected void onProgressUpdate(Integer... progress) {
         if (progressListener != null) {
-            progressListener.progressUpdate(progress[0]);
+            progressListener.progressUpdate(progress[0].toString());
         }
     }
 

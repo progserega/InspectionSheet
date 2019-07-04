@@ -24,4 +24,6 @@ public interface ResDao {
     @Delete
     void delete(Res area);
 
+    @Query("DELETE FROM res")
+    void delete();
 }
