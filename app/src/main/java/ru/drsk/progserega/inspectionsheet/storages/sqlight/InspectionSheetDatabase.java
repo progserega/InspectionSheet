@@ -10,6 +10,7 @@ import android.arch.persistence.room.migration.Migration;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
@@ -24,6 +25,9 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDeffectDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerInspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerInspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
@@ -38,6 +42,9 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerInspectionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerInspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
@@ -58,7 +65,10 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         LineModel.class,
         LineTowerModel.class,
         LineSectionModel.class,
-        TowerModel.class
+        TowerModel.class,
+        TowerDeffectModel.class,
+        TowerInspectionModel.class,
+        TowerInspectionPhotoModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
@@ -96,6 +106,12 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract LineSectionDao lineSectionDao();
 
     public abstract TowerDao towerDao();
+
+    public abstract TowerDeffectDao towerDeffectDao();
+
+    public abstract TowerInspectionDao towerInspectionDao();
+
+    public abstract TowerInspectionPhotoDao towerInspectionPhotoDao();
 
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {

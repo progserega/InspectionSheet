@@ -6,5 +6,8 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.LineTowerDeffectT
 
 public interface ILineTowerDeffectTypesStorage {
 
-    public List<LineTowerDeffectType> load();
+    List<LineTowerDeffectType> load();
+
+    LineTowerDeffectType getById(long id);
+
 }

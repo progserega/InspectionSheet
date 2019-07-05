@@ -4,11 +4,12 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineTowerInspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
 public class InspectLineTowerContract {
     public interface View{
 
-        void setInpectionList(List<LineTowerInspectionItem> inspectionItemList);
+        void setDeffectsList(List<TowerDeffect> towerDeffects);
 
         void showSelectTowerDialog(List<Tower> towers);
 
@@ -27,6 +28,12 @@ public class InspectLineTowerContract {
 
         void onGPSLocationChange();
 
+        void onDeffectSelectionChange(int pos, boolean isSelected);
+
+        void nextButtonPressed();
+
         void onDestroy();
+
+
     }
 }

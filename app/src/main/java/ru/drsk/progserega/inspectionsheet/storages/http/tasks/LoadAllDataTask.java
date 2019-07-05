@@ -59,17 +59,21 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
             int cnt = 1;
             GeoLineDetail lineDetail = null;
             for (GeoLine line : lines) {
+
                 try {
                     int percent = (int) ((cnt / (float) lines.size()) * 100);
-                    emitter.onNext("Загружаем данные для линии\n" + line.getName()+"\n"+String.valueOf(percent)+"% ("+String.valueOf(cnt)+")");
+                    emitter.onNext("Загружаем данные для линии\n" + line.getName() + "\n" + String.valueOf(percent) + "% (" + String.valueOf(cnt) + ")");
                     lineDetail = loadGeoLineDetails(emitter, line.getName());
                 } catch (Exception ex) {
                     continue;
                 }
+
                 if (lineDetail != null) {
                     dbDataImporter.loadLineDetail(line, lineDetail);
                 }
-                if(cnt>=200){
+
+               // if(true)break;
+                if (cnt >= 50) {
                     break;
                 }
                 cnt++;

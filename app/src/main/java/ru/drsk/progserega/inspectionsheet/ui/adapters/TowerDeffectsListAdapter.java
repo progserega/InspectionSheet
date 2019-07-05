@@ -9,6 +9,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
+@Deprecated
 public class TowerDeffectsListAdapter extends BaseAdapter {
 
     public interface AddPhotoBtnListener{

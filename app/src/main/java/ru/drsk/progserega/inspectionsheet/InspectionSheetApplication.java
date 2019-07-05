@@ -21,6 +21,7 @@ import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineTowerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
@@ -34,6 +35,7 @@ import ru.drsk.progserega.inspectionsheet.storages.json.LineTowerDeffectTypesSto
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
@@ -93,6 +95,8 @@ public class InspectionSheetApplication extends Application {
     private ILineTowerDeffectTypesStorage lineTowerDeffectTypesStorage;
 
     private PhotoFullscreenManager photoFullscreenManager;
+
+    private ILineInspectionStorage lineInspectionStorage;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -202,6 +206,10 @@ public class InspectionSheetApplication extends Application {
         return towerStorage;
     }
 
+    public ILineInspectionStorage getLineInspectionStorage() {
+        return lineInspectionStorage;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -263,6 +271,8 @@ public class InspectionSheetApplication extends Application {
         photoFullscreenManager = new PhotoFullscreenManager(db);
 
         lineTowerDeffectTypesStorage = new LineTowerDeffectTypesStorageJson(getApplicationContext());
+
+        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineTowerDeffectTypesStorage);
     }
 
 }

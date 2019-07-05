@@ -13,19 +13,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineTowerInspectionItem;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
-import ru.drsk.progserega.inspectionsheet.ui.adapters.LineTowerInspectionItemsAdapter;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.LineTowerDeffectsListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineTowerContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectLineTowerPresenter;
 
@@ -36,7 +36,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     private InspectionSheetApplication application;
     private InspectLineTowerContract.Presenter presenter;
 
-    private LineTowerInspectionItemsAdapter inspectionAdapter;
+    private LineTowerDeffectsListAdapter deffectsListAdapter;
     private ListView inspectionList;
 
     private SelectTowerDialog selectTowerDialog;
@@ -105,9 +105,15 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initInspectionItemsList() {
-        inspectionAdapter = new LineTowerInspectionItemsAdapter(this, new ArrayList<LineTowerInspectionItem>());
+        deffectsListAdapter = new LineTowerDeffectsListAdapter(this);
         inspectionList = (ListView) findViewById(R.id.inspect_line_tower_deffects_list);
-        inspectionList.setAdapter(inspectionAdapter);
+        inspectionList.setAdapter(deffectsListAdapter);
+        deffectsListAdapter.setSelectionListener(new LineTowerDeffectsListAdapter.IDeffectSelectionListener() {
+            @Override
+            public void onDeffectSelectionChange(int position, boolean isSelect) {
+                presenter.onDeffectSelectionChange(position, isSelect);
+            }
+        });
     }
 
     private void initSelectTowerBtn() {
@@ -150,9 +156,9 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setInpectionList(List<LineTowerInspectionItem> inspectionItemList) {
-        inspectionAdapter.setDeffects(inspectionItemList);
-        inspectionAdapter.notifyDataSetChanged();
+    public void setDeffectsList(List<TowerDeffect> towerDeffects) {
+        deffectsListAdapter.setDeffects(towerDeffects);
+        deffectsListAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(inspectionList, this);
     }
 
@@ -180,6 +186,8 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     public void onNextBtnClick(View view) {
+        presenter.nextButtonPressed();
+        Toast.makeText(this, "Данные сохранены!", Toast.LENGTH_SHORT).show();
     }
 
     public void onFinishBtnClick(View view) {
@@ -191,7 +199,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     //TODO работает криво если высота динамическая
     public static void justifyListViewHeightBasedOnChildren(ListView listView, Context context) {
 
-        LineTowerInspectionItemsAdapter adapter = (LineTowerInspectionItemsAdapter) listView.getAdapter();
+        LineTowerDeffectsListAdapter adapter = (LineTowerDeffectsListAdapter) listView.getAdapter();
 
         if (adapter == null) {
             return;

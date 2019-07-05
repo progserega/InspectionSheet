@@ -1,5 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
+/**
+ * информация о осмотре опоры
+ */
 public class LineTowerInspectionItem {
     private long id;
     private LineTowerDeffectType type;

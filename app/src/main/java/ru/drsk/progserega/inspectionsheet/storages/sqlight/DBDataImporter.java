@@ -390,13 +390,12 @@ public class DBDataImporter {
         List<TowerModel> towers = new ArrayList<TowerModel>(towersMap.values());
         List<LineTowerModel> lineTowerModels = new ArrayList<>();
 
+        int cnt = 1;
         for (TowerModel tower : towers) {
-            lineTowerModels.add(new LineTowerModel(0, lineUniqId, tower.getUniqId(), 0));
+            lineTowerModels.add(new LineTowerModel(0, lineUniqId, tower.getUniqId(), cnt));
+            cnt++;
         }
 
-        if (!lineTowerModels.isEmpty()) {
-            lineTowerModels.get(0).setStart(1);
-        }
         this.db.lineTowerDao().insertAll(lineTowerModels);
         this.db.towerDao().insertAll(towers);
         this.db.lineSectionDao().insertAll(sectionModels);

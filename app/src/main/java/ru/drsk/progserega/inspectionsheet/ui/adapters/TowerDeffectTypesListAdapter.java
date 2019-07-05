@@ -12,6 +12,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 
+@Deprecated
 public class TowerDeffectTypesListAdapter extends BaseAdapter {
 
 

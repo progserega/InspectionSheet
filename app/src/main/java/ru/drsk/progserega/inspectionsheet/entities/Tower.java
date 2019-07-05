@@ -34,6 +34,10 @@ public class Tower extends Equipment {
         this.towerType = towerType;
     }
 
+    public long getUniqId() {
+        return uniqId;
+    }
+
     public Tower(long id, long uniqId, String name, Point point, Material material, TowerType towerType ){
         this.id = id;
         this.uniqId = uniqId;

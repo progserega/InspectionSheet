@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.entities.catalogs;
 
+@Deprecated
 public class TowerDeffectType {
 
     private int typeId;

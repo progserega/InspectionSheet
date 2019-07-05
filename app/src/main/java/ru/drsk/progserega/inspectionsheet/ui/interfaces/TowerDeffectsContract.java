@@ -5,6 +5,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
+@Deprecated
 public class TowerDeffectsContract {
     public interface View{
         void showSelectDeffectDialog(List<TowerDeffectType> types);

@@ -5,36 +5,53 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 
+/**
+ * Деффект у опоры
+ */
 public class TowerDeffect {
     private long id;
     private long towerId;
-    private TowerDeffectType deffectType;
-    private List<InspectionPhoto> photos;
+    private LineTowerDeffectType deffectType;
+    private int Value;
+    //private List<InspectionPhoto> photos;
 
-    public TowerDeffect(long id, long towerId, TowerDeffectType deffectType) {
+
+    public TowerDeffect(long id, long towerId, LineTowerDeffectType deffectType, int value) {
         this.id = id;
         this.towerId = towerId;
         this.deffectType = deffectType;
-        this.photos = new ArrayList<>();
+        Value = value;
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getTowerId() {
         return towerId;
     }
 
-    public TowerDeffectType getDeffectType() {
+    public void setTowerId(long towerId) {
+        this.towerId = towerId;
+    }
+
+    public LineTowerDeffectType getDeffectType() {
         return deffectType;
     }
 
-    public List<InspectionPhoto> getPhotos() {
-        return photos;
+    public void setDeffectType(LineTowerDeffectType deffectType) {
+        this.deffectType = deffectType;
     }
 
-    public void addPhoto(InspectionPhoto photo) {
-        photos.add(photo);
+    public int getValue() {
+        return Value;
+    }
+
+    public void setValue(int value) {
+        Value = value;
     }
 }

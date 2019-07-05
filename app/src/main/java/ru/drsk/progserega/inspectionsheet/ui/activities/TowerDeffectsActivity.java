@@ -23,6 +23,7 @@ import ru.drsk.progserega.inspectionsheet.ui.adapters.TowerDeffectsListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.TowerDeffectsContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.TowerDefectsPresenter;
 
+@Deprecated
 public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDeffectsContract.View,
         SelectTowerDeffectDialog.AddTowerDeffectListener,
         TowerDeffectsListAdapter.AddPhotoBtnListener,
@@ -123,7 +124,7 @@ public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDe
 
     @Override
     public void onImageTaken(String photoPath) {
-        currentDeffect.addPhoto(new InspectionPhoto(0, photoPath, this));
+      //  currentDeffect.addPhoto(new InspectionPhoto(0, photoPath, this));
         deffectsListAdapter.notifyDataSetChanged();
     }
 

@@ -26,7 +26,7 @@ public interface TowerDao {
             "LEFT JOIN line_towers l\n" +
             "on l.tower_uniq_id = tw.uniq_id\n" +
             "where l.line_uniq_id = :lineUniqId \n" +
-            "Order by l.start desc, tw.name ASC")
+            "Order by l.start ASC")
     List<TowerModel> getByLineUniqId(long lineUniqId);
 
     @Query("select tw.* from towers tw\n"+

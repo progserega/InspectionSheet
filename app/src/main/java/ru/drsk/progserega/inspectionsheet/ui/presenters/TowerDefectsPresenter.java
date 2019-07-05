@@ -8,6 +8,7 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.TowerDeffectsContract;
 
+@Deprecated
 public class TowerDefectsPresenter implements TowerDeffectsContract.Presenter {
 
     private TowerDeffectsContract.View view;
@@ -34,7 +35,7 @@ public class TowerDefectsPresenter implements TowerDeffectsContract.Presenter {
 
     @Override
     public void addDeffect(TowerDeffectType deffectType) {
-        deffectList.add(new TowerDeffect(0, 1, deffectType));
+       // deffectList.add(new TowerDeffect(0, 1, deffectType));
 
         view.updateDeffectsList(deffectList);
     }
