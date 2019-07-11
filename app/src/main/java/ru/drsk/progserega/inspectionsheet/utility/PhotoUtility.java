@@ -38,7 +38,7 @@ public class PhotoUtility {
     }
 
 
-    public static final int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    public static final int REQUEST_CAMERA = 100, SELECT_FILE = 101;
 
     private String userChooseTask;
     private String mCurrentPhotoPath;

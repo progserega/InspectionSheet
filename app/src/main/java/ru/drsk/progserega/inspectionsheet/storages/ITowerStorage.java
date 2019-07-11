@@ -13,4 +13,6 @@ public interface ITowerStorage {
     Tower getFirstInLine(long lineUniqId);
 
     Tower getByNumberInLine(String number, long lineUniqId);
+
+    void update(Tower tower);
 }

@@ -19,11 +19,19 @@ public class LineSectionModel {
     @ColumnInfo(name = "to_tower_uniq_id")
     private long toTowerUniqId;
 
-    public LineSectionModel(long id, long lineUniqId, long fromTowerUniqId, long toTowerUniqId) {
+    @ColumnInfo(name = "name")
+    private String name;
+
+    @ColumnInfo(name = "material")
+    private int material;
+
+    public LineSectionModel(long id, long lineUniqId, long fromTowerUniqId, long toTowerUniqId, String name, int material) {
         this.id = id;
         this.lineUniqId = lineUniqId;
         this.fromTowerUniqId = fromTowerUniqId;
         this.toTowerUniqId = toTowerUniqId;
+        this.name = name;
+        this.material = material;
     }
 
     public long getId() {
@@ -56,5 +64,21 @@ public class LineSectionModel {
 
     public void setToTowerUniqId(long toTowerUniqId) {
         this.toTowerUniqId = toTowerUniqId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(int material) {
+        this.material = material;
     }
 }

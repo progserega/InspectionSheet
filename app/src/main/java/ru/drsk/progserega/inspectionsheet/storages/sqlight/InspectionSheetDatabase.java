@@ -10,6 +10,7 @@ import android.arch.persistence.room.migration.Migration;
 import ru.drsk.progserega.inspectionsheet.entities.LineTower;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -18,6 +19,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDeffectDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineTowerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
@@ -36,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionIt
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionDeffectModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineTowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
@@ -68,7 +71,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         TowerModel.class,
         TowerDeffectModel.class,
         TowerInspectionModel.class,
-        TowerInspectionPhotoModel.class
+        TowerInspectionPhotoModel.class,
+        LineSectionDeffectModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
@@ -112,6 +116,8 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract TowerInspectionDao towerInspectionDao();
 
     public abstract TowerInspectionPhotoDao towerInspectionPhotoDao();
+
+    public abstract LineSectionDeffectDao lineSectionDeffectDao();
 
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {

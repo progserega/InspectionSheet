@@ -12,7 +12,6 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
-import ru.drsk.progserega.inspectionsheet.storages.LineStorageJSON;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineReader;
 
 import static org.junit.Assert.assertEquals;

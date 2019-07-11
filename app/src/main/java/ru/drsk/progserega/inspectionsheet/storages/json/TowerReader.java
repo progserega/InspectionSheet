@@ -82,6 +82,6 @@ public class TowerReader {
             }
         }
         reader.endObject();
-        return new Point(lat, lon);
+        return new Point(lat, lon, 0);
     }
 }

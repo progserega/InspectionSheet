@@ -10,6 +10,15 @@ public abstract class Equipment {
     protected Date inspectionDate = new Date(0);
     protected float inspectionPercent = 0;
 
+    public Equipment() {
+    }
+
+    public Equipment(long id, String name, EquipmentType type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
+
     public long getId() {
         return id;
     }

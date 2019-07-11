@@ -8,10 +8,19 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
 
 public interface ICatalogStorage {
 
-    public List<Material> getMaterials();
+    List<Material> getMaterials();
 
-    public List<TowerType> getTowerTypes();
+    List<Material> getLineSectionMaterials();
 
-    public List<InspectionType> getInspectionTypes();
+    Material getMaterialById(long id);
+
+    Material getLineSectionMaterialById(long id);
+
+    TowerType getTowerTypeById(long id);
+
+    List<TowerType> getTowerTypes();
+
+    List<InspectionType> getInspectionTypes();
+
 
 }

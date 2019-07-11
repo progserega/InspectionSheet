@@ -2,13 +2,13 @@ package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
 
 
-public class LineTowerDeffectType {
+public class LineDeffectType {
 
     private long id;
     private int order;
     private String name;
 
-    public LineTowerDeffectType(long id, int order, String name) {
+    public LineDeffectType(long id, int order, String name) {
         this.id = id;
         this.order = order;
         this.name = name;

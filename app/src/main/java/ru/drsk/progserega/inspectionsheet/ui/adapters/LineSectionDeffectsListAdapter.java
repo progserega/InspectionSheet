@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
-public class LineTowerDeffectsListAdapter extends BaseAdapter {
+public class LineSectionDeffectsListAdapter extends BaseAdapter {
 
     public interface IDeffectSelectionListener {
         void onDeffectSelectionChange(int position, boolean isSelect);
@@ -25,9 +26,9 @@ public class LineTowerDeffectsListAdapter extends BaseAdapter {
 
     private Context context;
 
-    private List<TowerDeffect> deffects;
+    private List<LineSectionDeffect> deffects;
 
-    public LineTowerDeffectsListAdapter(Context context) {
+    public LineSectionDeffectsListAdapter(Context context) {
         this.context = context;
         this.deffects = new ArrayList<>();
     }
@@ -36,7 +37,7 @@ public class LineTowerDeffectsListAdapter extends BaseAdapter {
         this.selectionListener = selectionListener;
     }
 
-    public void setDeffects(List<TowerDeffect> deffects) {
+    public void setDeffects(List<LineSectionDeffect> deffects) {
         this.deffects = deffects;
     }
 
@@ -60,13 +61,13 @@ public class LineTowerDeffectsListAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.tower_deffect_item, parent, false);
 
-        final TowerDeffect towerDeffect = deffects.get(position);
+        final LineSectionDeffect sectionDeffect = deffects.get(position);
 
         TextView headerTextView = (TextView) rowView.findViewById(R.id.line_tower_deffect_item_title);
-        headerTextView.setText(towerDeffect.getDeffectType().getName());
+        headerTextView.setText(sectionDeffect.getDeffectType().getName());
 
         CheckBox checkBox = (CheckBox) rowView.findViewById(R.id.line_tower_deffect_item_checkbox);
-        checkBox.setChecked(towerDeffect.getValue() == 1);
+        checkBox.setChecked(sectionDeffect.getValue() == 1);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

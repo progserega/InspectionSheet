@@ -18,12 +18,12 @@ import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
-import ru.drsk.progserega.inspectionsheet.services.TowersService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
-import ru.drsk.progserega.inspectionsheet.storages.ILineTowerDeffectTypesStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
@@ -31,11 +31,12 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
-import ru.drsk.progserega.inspectionsheet.storages.json.LineTowerDeffectTypesStorageJson;
+import ru.drsk.progserega.inspectionsheet.storages.json.LineDeffectTypesStorageJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
@@ -43,12 +44,6 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
-import ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub;
-import ru.drsk.progserega.inspectionsheet.storages.stub.TowerStorageStub;
-
-import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
-import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
-import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_3_4;
 
 public class InspectionSheetApplication extends Application {
 
@@ -90,9 +85,11 @@ public class InspectionSheetApplication extends Application {
     InspectionItem currentInspectionItem;
     List<InspectionItem> inspectionItemsGroup;
 
+    ILineSectionStorage lineSectionStorage;
+
   //  List<InspectionPhoto> photosForFullscreen;
 
-    private ILineTowerDeffectTypesStorage lineTowerDeffectTypesStorage;
+    private ILineDeffectTypesStorage lineDeffectTypesStorage;
 
     private PhotoFullscreenManager photoFullscreenManager;
 
@@ -198,8 +195,8 @@ public class InspectionSheetApplication extends Application {
         this.photoFullscreenManager = photoFullscreenManager;
     }
 
-    public ILineTowerDeffectTypesStorage getLineTowerDeffectTypesStorage() {
-        return lineTowerDeffectTypesStorage;
+    public ILineDeffectTypesStorage getLineDeffectTypesStorage() {
+        return lineDeffectTypesStorage;
     }
 
     public ITowerStorage getTowerStorage() {
@@ -208,6 +205,10 @@ public class InspectionSheetApplication extends Application {
 
     public ILineInspectionStorage getLineInspectionStorage() {
         return lineInspectionStorage;
+    }
+
+    public ILineSectionStorage getLineSectionStorage() {
+        return lineSectionStorage;
     }
 
     @Override
@@ -241,7 +242,7 @@ public class InspectionSheetApplication extends Application {
         organizationService = new OrganizationService(organizationStorage);
 
 
-        towerStorage = new TowerStorage(db);
+        towerStorage = new TowerStorage(db, catalogStorage);
 
         //ITowerStorage towerStorage = new TowerStorageStub();
 
@@ -270,9 +271,11 @@ public class InspectionSheetApplication extends Application {
 
         photoFullscreenManager = new PhotoFullscreenManager(db);
 
-        lineTowerDeffectTypesStorage = new LineTowerDeffectTypesStorageJson(getApplicationContext());
+        lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
 
-        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineTowerDeffectTypesStorage);
+        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage);
+
+        lineSectionStorage = new LineSectionStorage(db, getApplicationContext(), catalogStorage);
     }
 
 }

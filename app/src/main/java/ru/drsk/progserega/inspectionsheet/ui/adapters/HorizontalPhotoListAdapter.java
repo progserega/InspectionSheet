@@ -25,6 +25,10 @@ public class HorizontalPhotoListAdapter extends RecyclerView.Adapter<HorizontalP
         this.items = items;
     }
 
+    public List<InspectionPhoto> getItems() {
+        return items;
+    }
+
     public HorizontalPhotoListAdapter(List<InspectionPhoto> photos, OnItemClickListener listener) {
 
         this.items = photos;

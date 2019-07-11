@@ -16,9 +16,6 @@ public class TowerModel {
     @ColumnInfo(name = "name")
     private String name;
 
-    @ColumnInfo(name = "voltage")
-    private int voltage;
-
     @ColumnInfo(name = "material")
     private int material;
 
@@ -35,11 +32,10 @@ public class TowerModel {
     private double lon;
 
 
-    public TowerModel(long id, long uniqId, String name, int voltage, int material, int type, double ele, double lat, double lon) {
+    public TowerModel(long id, long uniqId, String name,  int material, int type, double ele, double lat, double lon) {
         this.id = id;
         this.uniqId = uniqId;
         this.name = name;
-        this.voltage = voltage;
         this.material = material;
         this.type = type;
         this.ele = ele;
@@ -69,14 +65,6 @@ public class TowerModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getVoltage() {
-        return voltage;
-    }
-
-    public void setVoltage(int voltage) {
-        this.voltage = voltage;
     }
 
     public int getMaterial() {

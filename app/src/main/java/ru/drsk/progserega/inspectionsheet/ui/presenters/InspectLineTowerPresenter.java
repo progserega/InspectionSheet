@@ -1,8 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
-import android.widget.Toast;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +10,14 @@ import java.util.Set;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
+import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineTowerDeffectType;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineTowerContract;
 
@@ -28,6 +32,10 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     private List<Tower> towers;
     private List<TowerDeffect> deffects;
     private Set<Integer> changedDeffects;
+
+    private TowerInspection inspection;
+
+    private List<LineSection> nextSections = null;
 
     private static final int SEARCH_RADIUS = 100; //радиус поиска опоры в метрах
 
@@ -45,6 +53,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
         line = application.getLineInspection().getLine();
         towers = line.getTowers();
+        nextSections = null;
 
         if (nextTower.isEmpty()) {
             currentTower = application.getTowerStorage().getFirstInLine(line.getUniqId());
@@ -59,12 +68,23 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     private void setViewData() {
-        view.setTowerNumber(currentTower.getName().isEmpty() ? "не задан" : currentTower.getName());
+        view.setTowerNumber(currentTower.getName());
+
+        view.setMaterialsSpinnerData(getMaterials(), currentTower.getMaterial() != null ? currentTower.getMaterial().getId() : 0);
+        view.setTowerTypesSpinnerData(getTowerTypes(), currentTower.getTowerType() != null ? currentTower.getTowerType().getId() : 0);
 
         deffects = readDeffects();
         view.setDeffectsList(deffects);
         changedDeffects.clear();
 
+        inspection = application.getLineInspectionStorage().getTowerInspection(currentTower.getUniqId());
+        if (inspection == null) {
+            inspection = new TowerInspection(0, currentTower.getUniqId(), "", new Date());
+        }
+
+        view.setComment(inspection.getComment());
+
+        view.setTowerPhotos(inspection.getPhotos());
     }
 
     @Override
@@ -110,7 +130,83 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     @Override
     public void nextButtonPressed() {
+        if (currentTower == null) {
+            return;
+        }
+
+        //сохраняем выявленные деффекты
         saveDeffects();
+
+        //сохраняем материал и тип опоры
+        application.getTowerStorage().update(currentTower);
+
+        //сохраняем комментарии и фотографии
+        String comment = view.getComment();
+        inspection.setComment(comment);
+        inspection.setInspectionDate(new Date());
+        application.getLineInspectionStorage().saveInspection(inspection);
+
+        //определяем пролет
+        nextSections = getNextSections();
+
+        if (nextSections == null || nextSections.isEmpty()) {
+            view.showEndOfLineDialog();
+            return;
+        }
+
+        if (nextSections.size() > 1) {
+            String[] sectionNames = new String[nextSections.size()];
+            int i = 0;
+            for (LineSection section : nextSections) {
+                sectionNames[i] = section.getName();
+                i++;
+            }
+            view.showNextSectionSelectorDialog(sectionNames);
+        } else {
+            view.gotoSectionInspection(nextSections.get(0).getId());
+        }
+    }
+
+    @Override
+    public void onNextSectionSelected(int pos) {
+        if (nextSections == null || nextSections.isEmpty()) {
+            return;
+        }
+        view.gotoSectionInspection(nextSections.get(pos).getId());
+    }
+
+    @Override
+    public void onMaterialSelected(int pos) {
+        currentTower.setMaterial(application.getCatalogStorage().getMaterials().get(pos));
+    }
+
+    @Override
+    public void onTowerTypeSelected(int pos) {
+        currentTower.setTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
+    }
+
+    @Override
+    public void onImageTaken(String photoPath) {
+        inspection.getPhotos().add(new InspectionPhoto(0, photoPath, application.getApplicationContext()));
+    }
+
+    private List<String> getMaterials() {
+        List<Material> materialList = application.getCatalogStorage().getMaterials();
+
+        List<String> materialsStr = new ArrayList<>();
+        for (Material material : materialList) {
+            materialsStr.add(material.getName());
+        }
+        return materialsStr;
+    }
+
+    private List<String> getTowerTypes() {
+        List<TowerType> types = application.getCatalogStorage().getTowerTypes();
+        List<String> typesNames = new ArrayList<>();
+        for (TowerType type : types) {
+            typesNames.add(type.getType());
+        }
+        return typesNames;
     }
 
     private void filterTowersByUserLocation() {
@@ -136,11 +232,11 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
 
         //Получаем список возможных вариантов
-        List<LineTowerDeffectType> deffectTypes = application.getLineTowerDeffectTypesStorage().load();
+        List<LineDeffectType> deffectTypes = application.getLineDeffectTypesStorage().loadTowerDeffects();
 
         //Формируем список всех деффектов с учетом ранее заполненных
         List<TowerDeffect> allDeffects = new ArrayList<>();
-        for (LineTowerDeffectType deffectType : deffectTypes) {
+        for (LineDeffectType deffectType : deffectTypes) {
             TowerDeffect savedDeffect = towerDeffectsMap.get(deffectType.getId());
 
             if (savedDeffect != null) {
@@ -168,8 +264,15 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
                 application.getLineInspectionStorage().updateTowerDeffect(deffect);
             }
         }
+    }
 
+    private List<LineSection> getNextSections() {
+        if (currentTower == null) {
+            return new ArrayList<>();
+        }
+        List<LineSection> sectionModels = application.getLineSectionStorage().getByLineStartWithTower(line.getUniqId(), currentTower.getUniqId());
 
+        return sectionModels;
     }
 
     @Override

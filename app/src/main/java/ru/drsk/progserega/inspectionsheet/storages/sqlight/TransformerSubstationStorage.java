@@ -88,7 +88,7 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
 
         for (TransformerSubstationModel tp : sourceTP) {
 
-            if (locationService.distanceBetween(new Point(tp.getLat(), tp.getLon()), center) <= radius) {
+            if (locationService.distanceBetween(new Point(tp.getLat(), tp.getLon(), 0), center) <= radius) {
                 substationModels.add(tp);
             }
         }

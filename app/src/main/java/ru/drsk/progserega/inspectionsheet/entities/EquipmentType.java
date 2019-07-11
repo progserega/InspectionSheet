@@ -5,7 +5,8 @@ public enum EquipmentType {
     SUBSTATION(1),
     TRANS_SUBSTATION(2),
     TOWER(3),
-    TRANSFORMER(4);
+    TRANSFORMER(4),
+    LINE_SECTION(5);
 
     private final int value;
     private EquipmentType(int value) {

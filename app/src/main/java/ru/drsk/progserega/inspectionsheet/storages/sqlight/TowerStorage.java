@@ -5,15 +5,18 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
+import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
 
 public class TowerStorage implements ITowerStorage {
 
     private InspectionSheetDatabase db;
+    private ICatalogStorage catalogStorage;
 
-    public TowerStorage(InspectionSheetDatabase db) {
+    public TowerStorage(InspectionSheetDatabase db, ICatalogStorage catalogStorage) {
         this.db = db;
+        this.catalogStorage = catalogStorage;
     }
 
     @Override
@@ -49,7 +52,32 @@ public class TowerStorage implements ITowerStorage {
         return null;
     }
 
+    @Override
+    public void update(Tower tower) {
+        if(tower == null){
+            return;
+        }
+        TowerModel towerModel = new TowerModel(
+                tower.getId(),
+                tower.getUniqId(),
+                tower.getName(),
+                tower.getMaterial().getId(),
+                tower.getTowerType().getId(),
+                tower.getMapPoint().getEle(),
+                tower.getMapPoint().getLat(),
+                tower.getMapPoint().getLon());
+
+        db.towerDao().update(towerModel);
+    }
+
     private Tower dbModelToEntity(TowerModel towerModel){
-        return new Tower(towerModel.getId(), towerModel.getUniqId(), towerModel.getName(), new Point(towerModel.getLat(), towerModel.getLon()), null, null);
+        return new Tower(
+                towerModel.getId(),
+                towerModel.getUniqId(),
+                towerModel.getName(),
+                new Point(towerModel.getLat(), towerModel.getLon(), towerModel.getEle()),
+                catalogStorage.getMaterialById(towerModel.getMaterial()),
+                catalogStorage.getTowerTypeById(towerModel.getMaterial())
+        );
     }
 }

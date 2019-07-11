@@ -14,7 +14,7 @@ public class LocationServiceStub implements ILocation {
 
     @Override
     public Point getUserPosition() {
-        return new Point(1.0d, 1.0d);
+        return new Point(1.0d, 1.0d, 0);
     }
 
     /**

@@ -17,6 +17,8 @@ public class PhotoFullscreenManager {
 
     public static final int TRANSFORMER_PHOTO = 1;
     public static final int INSPECTION_ITEM_PHOTO = 2;
+    public static final int TOWER_INSPECTION_PHOTO = 3;
+
 
     private List<InspectionPhoto> photos;
     private int photoOwner;
@@ -90,5 +92,10 @@ public class PhotoFullscreenManager {
         if(photoOwner == INSPECTION_ITEM_PHOTO){
             inspectionPhotoDao.deleteById(photo.getId());
         }
+
+        if(photoOwner == TOWER_INSPECTION_PHOTO){
+            db.towerInspectionPhotoDao().deleteById(photo.getId());
+        }
+
     }
 }

@@ -1,19 +1,17 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
 /**
- * Деффект у опоры
+ * Деффект у пролета
  */
-public class TowerDeffect {
+public class LineSectionDeffect {
     private long id;
-    private long towerUniqId;
+    private long sectionId;
     private LineDeffectType deffectType;
     private int Value;
-    //private List<InspectionPhoto> photos;
 
-
-    public TowerDeffect(long id, long towerUniqId, LineDeffectType deffectType, int value) {
+    public LineSectionDeffect(long id, long sectionId, LineDeffectType deffectType, int value) {
         this.id = id;
-        this.towerUniqId = towerUniqId;
+        this.sectionId = sectionId;
         this.deffectType = deffectType;
         Value = value;
     }
@@ -24,14 +22,6 @@ public class TowerDeffect {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getTowerUniqId() {
-        return towerUniqId;
-    }
-
-    public void setTowerUniqId(long towerUniqId) {
-        this.towerUniqId = towerUniqId;
     }
 
     public LineDeffectType getDeffectType() {
@@ -48,5 +38,13 @@ public class TowerDeffect {
 
     public void setValue(int value) {
         Value = value;
+    }
+
+    public long getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(long sectionId) {
+        this.sectionId = sectionId;
     }
 }

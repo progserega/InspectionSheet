@@ -1,26 +1,22 @@
 package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 
 import java.util.List;
-import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
-public class InspectLineTowerContract {
+public class InspectLineSectionContract {
     public interface View{
 
-        void setDeffectsList(List<TowerDeffect> towerDeffects);
+        void setDeffectsList(List<LineSectionDeffect> sectionDeffects);
 
-        void showSelectTowerDialog(List<Tower> towers);
-
-        void setTowerNumber(String number);
+        void setSectionNumber(String number);
 
         void gotoSectionInspection(long nextSectionId);
 
         void setMaterialsSpinnerData(List<String> materials, int sel);
-
-        void setTowerTypesSpinnerData(List<String> towerTypes, int sel);
 
         void setComment(String comment);
 
@@ -35,15 +31,7 @@ public class InspectLineTowerContract {
 
     public interface Presenter{
 
-        void onViewCreated(String nextTower);
-
-        void onSelectTowerBtnClick();
-
-        void onTowerSelected(int pos);
-
-        void onGPSSwitchChange(boolean isOn);
-
-        void onGPSLocationChange();
+        void onViewCreated(long  sectionId);
 
         void onDeffectSelectionChange(int pos, boolean isSelected);
 
@@ -51,13 +39,10 @@ public class InspectLineTowerContract {
 
         void onMaterialSelected(int pos);
 
-        void onTowerTypeSelected(int pos);
-
         void onImageTaken(String photoPath);
 
         void onDestroy();
 
-        void onNextSectionSelected(int pos);
 
     }
 }

@@ -10,9 +10,17 @@ import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 
 public class CatalogStorageStub implements ICatalogStorage {
 
+    private List<Material> materials = null;
+    private List<Material> lineSectionMaterials = null;
+    private List<TowerType> towerTypes = null;
+
     @Override
     public List<Material> getMaterials() {
-        List<Material> materials = new ArrayList<>();
+        if(materials != null){
+            return materials;
+        }
+        materials = new ArrayList<>();
+        materials.add(new Material(0, "Не задан"));
         materials.add(new Material(1, "Бетон"));
         materials.add(new Material(2, "Дерево"));
         materials.add(new Material(3, "Металл"));
@@ -22,8 +30,26 @@ public class CatalogStorageStub implements ICatalogStorage {
     }
 
     @Override
+    public List<Material> getLineSectionMaterials() {
+        if(lineSectionMaterials != null){
+            return lineSectionMaterials;
+        }
+        lineSectionMaterials = new ArrayList<>();
+        lineSectionMaterials.add(new Material(0, "Не задан"));
+        lineSectionMaterials.add(new Material(1, "Провод АС"));
+        lineSectionMaterials.add(new Material(2, "СИП"));
+        lineSectionMaterials.add(new Material(3, "Кабель"));
+
+        return lineSectionMaterials;
+    }
+
+    @Override
     public List<TowerType> getTowerTypes() {
-        List<TowerType> towerTypes = new ArrayList<>();
+        if(towerTypes != null){
+            return towerTypes;
+        }
+        towerTypes = new ArrayList<>();
+        towerTypes.add(new TowerType(0, "Не задан"));
         towerTypes.add(new TowerType(1, "Тип 1"));
         towerTypes.add(new TowerType(2, "Тип 2"));
         towerTypes.add(new TowerType(3, "Тип 3"));
@@ -39,6 +65,40 @@ public class CatalogStorageStub implements ICatalogStorage {
         inspectionTypes.add(new InspectionType(3, "Выборочный персоналом ИТР"));
         inspectionTypes.add(new InspectionType(4, "Верховой осмотр"));
         return inspectionTypes;
+    }
+
+    @Override
+    public Material getMaterialById(long id) {
+
+        List<Material> materials = getMaterials();
+        for(Material material: materials){
+            if(material.getId() == id){
+                return material;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public TowerType getTowerTypeById(long id) {
+        List<TowerType> towerTypes = getTowerTypes();
+        for(TowerType type: towerTypes){
+            if(type.getId() == id){
+                return type;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Material getLineSectionMaterialById(long id) {
+        List<Material> materials = getLineSectionMaterials();
+        for(Material material: materials){
+            if(material.getId() == id){
+                return material;
+            }
+        }
+        return null;
     }
 }
 

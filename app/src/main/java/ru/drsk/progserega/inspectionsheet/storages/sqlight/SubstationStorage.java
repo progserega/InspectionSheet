@@ -103,7 +103,7 @@ public class SubstationStorage implements ISubstationStorage {
 
         for (SubstationModel substation : substationModelList) {
 
-            if (locationService.distanceBetween(new Point(substation.getLat(), substation.getLon()), center) <= radius) {
+            if (locationService.distanceBetween(new Point(substation.getLat(), substation.getLon(), 0), center) <= radius) {
                 substationModels.add(substation);
             }
         }

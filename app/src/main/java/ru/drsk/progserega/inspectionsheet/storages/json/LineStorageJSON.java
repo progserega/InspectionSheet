@@ -1,4 +1,4 @@
-package ru.drsk.progserega.inspectionsheet.storages;
+package ru.drsk.progserega.inspectionsheet.storages.json;
 
 import android.content.Context;
 import android.util.JsonReader;
@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
+import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineReader;
 
 public class LineStorageJSON implements ILineStorage {

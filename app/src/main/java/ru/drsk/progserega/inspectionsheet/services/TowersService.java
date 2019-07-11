@@ -21,7 +21,7 @@ public class TowersService {
     }
 
 //    public List<LineTower> getTowersByLine(long lineId){
-//        Line line = lineStorage.getById(lineId);
+//        Line line = lineStorage.getTowerDeffectById(lineId);
 //        if(line == null){
 //            return new ArrayList<>();
 //        }

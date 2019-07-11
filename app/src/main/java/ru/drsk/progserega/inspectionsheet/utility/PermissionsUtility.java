@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 
 public class PermissionsUtility {
 
-    public static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 0;
     public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
 
 
@@ -63,31 +62,31 @@ public class PermissionsUtility {
             showExplanation(
                     "Необходимо разрешение",
                     "Для доступа к фотографиям необходимо разрешение",
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE} ,
                     REQUEST_CODE_WRITE_EXTERNAL_STORAGE,
                     activity);
 
         } else {
-            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_WRITE_EXTERNAL_STORAGE, activity);
+            requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_EXTERNAL_STORAGE, activity);
         }
     }
 
 
 
-    private static void showExplanation(String title, String message, final String permission, final int permissionRequestCode, final Activity activity) {
+    private static void showExplanation(String title, String message, final String[] permissions, final int permissionRequestCode, final Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        requestPermission(permission, permissionRequestCode, activity);
+                        requestPermission(permissions, permissionRequestCode, activity);
                     }
                 });
         builder.create().show();
     }
 
-    private static void requestPermission(String permissionName, int permissionRequestCode, Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{permissionName}, permissionRequestCode);
+    private static void requestPermission(String[] permissionNames, int permissionRequestCode, Activity activity) {
+        ActivityCompat.requestPermissions(activity, permissionNames, permissionRequestCode);
     }
 
     /* Checks if external storage is available for read and write */

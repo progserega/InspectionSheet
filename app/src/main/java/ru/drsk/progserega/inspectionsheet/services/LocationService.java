@@ -60,9 +60,9 @@ public class LocationService implements ILocation, LocationListener {
     public Point getUserPosition() {
         Location loc = getLocation();
         if (loc == null) {
-            return new Point(0, 0);
+            return new Point(0, 0, 0);
         }
-        return new Point(loc.getLatitude(), loc.getLongitude());
+        return new Point(loc.getLatitude(), loc.getLongitude(), loc.getAltitude());
     }
 
     /**
@@ -173,7 +173,7 @@ public class LocationService implements ILocation, LocationListener {
 
         for (WeakReference<ILocationChangeListener> listener : listeners) {
             if (listener.get() != null) {
-                listener.get().onLocationChange(new Point(location.getLatitude(), location.getLongitude()));
+                listener.get().onLocationChange(new Point(location.getLatitude(), location.getLongitude(), location.getAltitude()));
             }
         }
     }

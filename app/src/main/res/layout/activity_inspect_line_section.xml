@@ -2,16 +2,16 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/inpect_line_tower_layout"
+    android:id="@+id/inpect_line_section_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.InspectLineTower">
-    
+    tools:context=".ui.activities.InspectLineSection">
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/inspect_line_tower_bottomLA"
+        app:layout_constraintBottom_toTopOf="@+id/inspect_line_section_bottomLA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,60 +34,32 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="№ опоры"
+                    android:text="№ пролета"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/inspect_line_tower_number"
+                    android:id="@+id/inspect_line_section_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
 
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:inputType="text|textNoSuggestions|textVisiblePassword"
+                    android:layout_marginEnd="8dp"
+                    android:inputType="none"
+                    android:focusable="false"
                     android:text=""
-                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_select_tower_btn"
+
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/text_tower_num"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <Switch
-                    android:id="@+id/inspect_line_tower_switch_gps"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="GPS"
-                    android:textColor="@android:color/darker_gray"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/inspect_line_select_tower_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-
-
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/circlebackground"
-                    android:gravity="center"
-                    android:text="+"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_tower_switch_gps" />
             </android.support.constraint.ConstraintLayout>
 
             <TextView
-                android:id="@+id/inspect_line_tower_textView5"
+                android:id="@+id/inspect_line_section_textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -96,26 +68,12 @@
                 />
 
             <Spinner
-                android:id="@+id/materials_spinner"
+                android:id="@+id/inspection_line_section_materials_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/inspect_line_tower_textView6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
-                android:text="Тип опоры"
-                />
-
-            <Spinner
-                android:id="@+id/tower_type_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/inspection_line_tower_textView7"
+                android:id="@+id/inspection_line_section_textView7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -127,7 +85,7 @@
 
 
             <ru.drsk.progserega.inspectionsheet.ui.activities.NestedListView
-                android:id="@+id/inspect_line_tower_deffects_list"
+                android:id="@+id/inspect_line_section_deffects_list"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -136,7 +94,7 @@
                 android:smoothScrollbar="true" />
 
             <TextView
-                android:id="@+id/inspection_line_tower_textcomment"
+                android:id="@+id/inspection_line_section_textcomment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -145,7 +103,7 @@
                 android:textColor="@android:color/black" />
 
             <EditText
-                android:id="@+id/inspect_line_tower_comment"
+                android:id="@+id/inspect_line_section_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -157,7 +115,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/inspection_line_section_textView10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
@@ -169,31 +127,30 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/add_line_tower_deffect_photo_btn"
+                    android:id="@+id/add_line_section_deffect_photo_btn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@null"
-                    android:onClick="onAddTowerPhotoBtnClick"
+                    android:onClick="onAddLineSectionPhotoBtnClick"
                     android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintTop_toBottomOf="@+id/inspection_line_section_textView10" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/transformer_photos"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/add_line_tower_deffect_photo_btn"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintStart_toEndOf="@+id/add_line_section_deffect_photo_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/inspection_line_section_textView10" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -202,7 +159,7 @@
 
     <!--Bottom tolbar -->
     <LinearLayout
-        android:id="@+id/inspect_line_tower_bottomLA"
+        android:id="@+id/inspect_line_section_bottomLA"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
@@ -225,12 +182,12 @@
             >
 
             <!--<ImageButton-->
-                <!--android:id="@+id/inpsect_line_tower_next_btn"-->
-                <!--android:layout_width="30dp"-->
-                <!--android:layout_height="30dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@null"-->
-                <!--android:onClick="onNextBtnClick" />-->
+            <!--android:id="@+id/inpsect_line_section_next_btn"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="@null"-->
+            <!--android:onClick="onNextBtnClick" />-->
 
             <TextView
                 android:id="@+id/inpsect_line_textViewNB"
@@ -254,15 +211,15 @@
             >
 
             <!--<ImageButton-->
-                <!--android:id="@+id/inpsect_line_tower_finish_btn"-->
-                <!--android:layout_width="30dp"-->
-                <!--android:layout_height="30dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@null"-->
-                <!--android:onClick="onFinishBtnClick" />-->
+            <!--android:id="@+id/inpsect_line_section_finish_btn"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="@null"-->
+            <!--android:onClick="onFinishBtnClick" />-->
 
             <TextView
-                android:id="@+id/inpsect_line_textViewFB"
+                android:id="@+id/inpsect_line_section_textViewFB"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
                 android:gravity="center"

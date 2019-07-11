@@ -19,16 +19,16 @@ public class TowerInspectionModel {
     private long towerUniqId;
 
     @ColumnInfo(name = "comment")
-    private long deffectTypeId;
+    private String comment;
 
     @ColumnInfo(name = "inspection_date")
     private Date inspectionDate;
 
-    public TowerInspectionModel(long id, long lineUniqId, long towerUniqId, long deffectTypeId, Date inspectionDate) {
+    public TowerInspectionModel(long id, long lineUniqId, long towerUniqId, String comment, Date inspectionDate) {
         this.id = id;
         this.lineUniqId = lineUniqId;
         this.towerUniqId = towerUniqId;
-        this.deffectTypeId = deffectTypeId;
+        this.comment = comment;
         this.inspectionDate = inspectionDate;
     }
 
@@ -56,12 +56,12 @@ public class TowerInspectionModel {
         this.towerUniqId = towerUniqId;
     }
 
-    public long getDeffectTypeId() {
-        return deffectTypeId;
+    public String getComment() {
+        return comment;
     }
 
-    public void setDeffectTypeId(long deffectTypeId) {
-        this.deffectTypeId = deffectTypeId;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Date getInspectionDate() {

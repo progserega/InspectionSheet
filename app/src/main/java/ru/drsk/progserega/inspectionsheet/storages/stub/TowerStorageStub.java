@@ -28,4 +28,9 @@ public class TowerStorageStub implements ITowerStorage {
     public Tower getByNumberInLine(String number, long lineUniqId) {
         return null;
     }
+
+    @Override
+    public void update(Tower tower) {
+
+    }
 }

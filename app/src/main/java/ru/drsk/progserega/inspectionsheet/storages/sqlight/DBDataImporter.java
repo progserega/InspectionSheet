@@ -411,7 +411,6 @@ public class DBDataImporter {
                     towerNode.getNodeId(),
                     towerNode.getNodeId(),
                     towerNode.getName(),
-                    towerNode.getVoltage(),
                     0,
                     0,
                     towerNode.getEle(),
@@ -422,7 +421,7 @@ public class DBDataImporter {
 
             if (tower.getProlet() != null) {
                 GeoLineProlet prolet = tower.getProlet();
-                LineSectionModel sectionModel = new LineSectionModel(0, lineUniqId, prolet.getTower1().getNodeId(), prolet.getTower2().getNodeId());
+                LineSectionModel sectionModel = new LineSectionModel(0, lineUniqId, prolet.getTower1().getNodeId(), prolet.getTower2().getNodeId(), prolet.getName(), 0);
                 sectionModels.add(sectionModel);
             }
 
