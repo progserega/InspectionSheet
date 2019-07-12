@@ -135,17 +135,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
             return;
         }
 
-        //сохраняем выявленные деффекты
-        saveDeffects();
-
-        //сохраняем материал и тип опоры
-        application.getTowerStorage().update(currentTower);
-
-        //сохраняем комментарии и фотографии
-        String comment = view.getComment();
-        inspection.setComment(comment);
-        inspection.setInspectionDate(new Date());
-        application.getLineInspectionStorage().saveInspection(inspection);
+        saveCurrentTower();
 
         //определяем пролет
         nextSections = getNextSections();
@@ -168,12 +158,31 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
     }
 
+    private void saveCurrentTower(){
+        //сохраняем выявленные деффекты
+        saveDeffects();
+
+        //сохраняем материал и тип опоры
+        application.getTowerStorage().update(currentTower);
+
+        //сохраняем комментарии и фотографии
+        String comment = view.getComment();
+        inspection.setComment(comment);
+        inspection.setInspectionDate(new Date());
+        application.getLineInspectionStorage().saveInspection(inspection);
+    }
+
     @Override
     public void onNextSectionSelected(int pos) {
         if (nextSections == null || nextSections.isEmpty()) {
             return;
         }
         view.gotoSectionInspection(nextSections.get(pos).getId());
+    }
+
+    @Override
+    public void finishButtonPressed() {
+        saveCurrentTower();
     }
 
     @Override

@@ -155,6 +155,8 @@ public class InspectLineSection extends AppCompatActivity implements
 
     public void onFinishBtnClick(View view) {
 
+        presenter.finishButtonPressed();
+
         Intent intent = new Intent(this, InspectLineFinish.class);
         startActivity(intent);
 

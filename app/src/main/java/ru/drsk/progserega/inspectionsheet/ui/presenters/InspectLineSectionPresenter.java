@@ -92,6 +92,15 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             return;
         }
 
+        saveCurrentSection();
+
+        //определяем следующую опору
+        long nextTowerUniqId = currentSection.getTowerToUniqId();
+
+        view.gotoNextTowerInspection(nextTowerUniqId);
+    }
+
+    private void saveCurrentSection(){
         //сохраняем выявленные деффекты
         saveDeffects();
 
@@ -104,12 +113,12 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         inspection.setInspectionDate(new Date());
         application.getLineInspectionStorage().saveSectionInspection(inspection);
 
-        //определяем следующую опору
-        long nextTowerUniqId = currentSection.getTowerToUniqId();
-
-        view.gotoNextTowerInspection(nextTowerUniqId);
     }
 
+    @Override
+    public void finishButtonPressed() {
+        saveCurrentSection();
+    }
 
     @Override
     public void onMaterialSelected(int pos) {

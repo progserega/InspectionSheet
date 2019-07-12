@@ -40,6 +40,7 @@ public class InspectLineSectionContract {
 
         void onDestroy();
 
+        void finishButtonPressed();
 
     }
 }

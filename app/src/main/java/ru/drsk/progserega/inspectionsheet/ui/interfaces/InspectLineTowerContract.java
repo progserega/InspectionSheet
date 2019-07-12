@@ -59,5 +59,7 @@ public class InspectLineTowerContract {
 
         void onNextSectionSelected(int pos);
 
+        void finishButtonPressed();
+
     }
 }
