@@ -90,7 +90,7 @@ public class InspectLine extends AppCompatActivity  implements InspectLineContra
 
     public void onNextBtnClick(View view) {
         Intent intent = new Intent(this, InspectLineTower.class);
-        intent.putExtra(NEXT_TOWER, "");
+        intent.putExtra(NEXT_TOWER, 0l);
         startActivity(intent);
     }
 

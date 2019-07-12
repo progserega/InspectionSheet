@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,8 +16,7 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineSectionContract;
 
 public class InspectLineSectionPresenter implements InspectLineSectionContract.Presenter {
@@ -31,7 +31,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
     private List<LineSectionDeffect> deffects;
     private Set<Integer> changedDeffects;
 
-    private TowerInspection inspection;
+    private LineSectionInspection inspection;
 
 
 
@@ -69,14 +69,14 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         view.setDeffectsList(deffects);
         changedDeffects.clear();
 
-//        inspection = application.getLineInspectionStorage().getTowerInspection(currentTower.getUniqId());
-//        if (inspection == null) {
-//            inspection = new TowerInspection(0, currentTower.getUniqId(), "", new Date());
-//        }
-//
-//        view.setComment(inspection.getComment());
-//
-//        view.setTowerPhotos(inspection.getPhotos());
+        inspection = application.getLineInspectionStorage().getSectionInspection(currentSection.getId());
+        if (inspection == null) {
+            inspection = new LineSectionInspection(0, currentSection.getId(), "", new Date());
+        }
+
+        view.setComment(inspection.getComment());
+
+        view.setInspectionPhotos(inspection.getPhotos());
     }
 
 
@@ -97,38 +97,23 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
 
         //сохраняем материал
         application.getLineSectionStorage().update(currentSection);
-//
-//        //сохраняем комментарии и фотографии
-//        String comment = view.getComment();
-//        inspection.setComment(comment);
-//        inspection.setInspectionDate(new Date());
-//        application.getLineInspectionStorage().saveInspection(inspection);
-//
-//        //определяем пролет
-//        nextSections = getNextSections();
-//
-//        if (nextSections == null || nextSections.isEmpty()) {
-//            view.showEndOfLineDialog();
-//            return;
-//        }
-//
-//        if (nextSections.size() > 1) {
-//            String[] sectionNames = new String[nextSections.size()];
-//            int i = 0;
-//            for (LineSectionModel sectionModel : nextSections) {
-//                sectionNames[i] = sectionModel.getName();
-//                i++;
-//            }
-//            view.showNextSectionSelectorDialog(sectionNames);
-//        } else {
-//            view.gotoSectionInspection(nextSections.get(0).getId());
-//        }
+
+        //сохраняем комментарии и фотографии
+        String comment = view.getComment();
+        inspection.setComment(comment);
+        inspection.setInspectionDate(new Date());
+        application.getLineInspectionStorage().saveSectionInspection(inspection);
+
+        //определяем следующую опору
+        long nextTowerUniqId = currentSection.getTowerToUniqId();
+
+        view.gotoNextTowerInspection(nextTowerUniqId);
     }
 
 
     @Override
     public void onMaterialSelected(int pos) {
-        currentSection.setMaterial(application.getCatalogStorage().getMaterials().get(pos));
+        currentSection.setMaterial(application.getCatalogStorage().getLineSectionMaterials().get(pos));
     }
 
     @Override
@@ -198,7 +183,6 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             }
         }
     }
-
 
     @Override
     public void onDestroy() {

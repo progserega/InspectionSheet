@@ -14,5 +14,7 @@ public interface ITowerStorage {
 
     Tower getByNumberInLine(String number, long lineUniqId);
 
+    Tower getByUniqId( long uniqId);
+
     void update(Tower tower);
 }

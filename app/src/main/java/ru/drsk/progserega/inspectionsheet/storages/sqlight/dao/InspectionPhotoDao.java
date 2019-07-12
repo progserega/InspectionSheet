@@ -13,8 +13,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPh
 @Dao
 public interface InspectionPhotoDao {
 
-    @Query("SELECT * FROM inspections_photos WHERE inspection_id = :inspectionId")
-    List<InspectionPhotoModel> getByInspection(long inspectionId);
+    @Query("SELECT * FROM inspections_photos WHERE inspection_id = :inspectionId AND type = :type")
+    List<InspectionPhotoModel> getByInspection(long inspectionId, String type);
 
     @Insert
     long insert(InspectionPhotoModel photoModel);
@@ -31,6 +31,6 @@ public interface InspectionPhotoDao {
     @Query("DELETE FROM inspections_photos")
     void deleteAll();
 
-    @Query("DELETE FROM inspections_photos WHERE inspection_id = :inspectionId")
-    void deleteByInspection(long inspectionId);
+    @Query("DELETE FROM inspections_photos WHERE inspection_id = :inspectionId AND type = :type")
+    void deleteByInspection(long inspectionId, String type);
 }

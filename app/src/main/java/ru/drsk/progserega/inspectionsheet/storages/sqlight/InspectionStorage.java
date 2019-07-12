@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.PhotoSubject;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -83,7 +84,7 @@ public class InspectionStorage implements IInspectionStorage {
             for (InspectionPhoto photo : inspectionItem.getResult().getPhotos()) {
 
                 if (photo.getId() == 0) {
-                    InspectionPhotoModel photoModel = new InspectionPhotoModel(0, inspectionItem.getId(), photo.getPath());
+                    InspectionPhotoModel photoModel = new InspectionPhotoModel(0, inspectionItem.getId(), photo.getPath(), PhotoSubject.TRANSFORMER.getType());
                     long photoId = inspectionPhotoDao.insert(photoModel);
                     photo.setId(photoId);
                 }
@@ -137,7 +138,7 @@ public class InspectionStorage implements IInspectionStorage {
             }
 
             //Load photos
-            List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId());
+            List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId(), PhotoSubject.TRANSFORMER.getType());
             for (InspectionPhotoModel photoModel : photoModels) {
                 inspectionItem.getResult().getPhotos().add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
             }

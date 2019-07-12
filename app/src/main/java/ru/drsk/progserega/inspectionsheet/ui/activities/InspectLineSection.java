@@ -1,40 +1,40 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
-import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.LineSectionDeffectsListAdapter;
-import ru.drsk.progserega.inspectionsheet.ui.adapters.LineTowerDeffectsListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineSectionContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectLineSectionPresenter;
-import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectLineTowerPresenter;
-import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 
+import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectLineTower.NEXT_TOWER;
+
 public class InspectLineSection extends AppCompatActivity implements
-        InspectLineSectionContract.View,   PhotoUtility.ChoosedListener
-{
+        InspectLineSectionContract.View, PhotoUtility.ChoosedListener {
     private InspectionSheetApplication application;
     private InspectLineSectionContract.Presenter presenter;
     private PhotoUtility photoUtility;
@@ -44,6 +44,7 @@ public class InspectLineSection extends AppCompatActivity implements
 
     private ListView inspectionList;
     private LineSectionDeffectsListAdapter deffectsListAdapter;
+    private HorizontalPhotoListAdapter deffectsPhotoListAdapter;
 
     public static final String NEXT_SECTION = "next_section";
 
@@ -62,7 +63,8 @@ public class InspectLineSection extends AppCompatActivity implements
 
         initMaterialSpinner();
         initInspectionItemsList();
-
+        initAddPhotoBtnImg();
+        initPhotoList();
 
         photoUtility = new PhotoUtility(this, this);
 
@@ -107,6 +109,28 @@ public class InspectLineSection extends AppCompatActivity implements
         });
     }
 
+    private void initPhotoList() {
+        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(InspectionPhoto photo, int position) {
+                deffectsPhotoItemClick(position, deffectsPhotoListAdapter.getItems());
+            }
+        });
+        list.setAdapter(deffectsPhotoListAdapter);
+    }
+
+    private void initAddPhotoBtnImg() {
+        ImageButton addPhotoBtn = (ImageButton) findViewById(R.id.add_line_section_deffect_photo_btn);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            addPhotoBtn.setImageResource(R.drawable.ic_baseline_photo_camera_24px);
+        } else {
+            /* старые версии не поддерживают векторные рисунки */
+            addPhotoBtn.setImageResource(R.drawable.ic_camera_png);
+        }
+        addPhotoBtn.invalidate();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // получим идентификатор выбранного пункта меню
@@ -125,22 +149,22 @@ public class InspectLineSection extends AppCompatActivity implements
 
     }
 
-
-    public void onAddLineSectionPhotoBtnClick(View view) {
-    }
-
     public void onNextBtnClick(View view) {
         presenter.nextButtonPressed();
     }
 
     public void onFinishBtnClick(View view) {
+
+        Intent intent = new Intent(this, InspectLineFinish.class);
+        startActivity(intent);
+
     }
 
     @Override
     public void setDeffectsList(List<LineSectionDeffect> sectionDeffects) {
         deffectsListAdapter.setDeffects(sectionDeffects);
         deffectsListAdapter.notifyDataSetChanged();
-       // justifyListViewHeightBasedOnChildren(inspectionList, this);
+        // justifyListViewHeightBasedOnChildren(inspectionList, this);
     }
 
     @Override
@@ -150,8 +174,10 @@ public class InspectLineSection extends AppCompatActivity implements
     }
 
     @Override
-    public void gotoSectionInspection(long nextSectionId) {
-
+    public void gotoNextTowerInspection(long nextTowerUniqId) {
+        Intent intent = new Intent(this, InspectLineTower.class);
+        intent.putExtra(NEXT_TOWER, nextTowerUniqId);
+        startActivity(intent);
     }
 
     @Override
@@ -164,33 +190,69 @@ public class InspectLineSection extends AppCompatActivity implements
 
     @Override
     public void setComment(String comment) {
-
+        EditText commentView = (EditText) findViewById(R.id.inspect_line_section_comment);
+        commentView.setText(comment);
     }
 
     @Override
     public String getComment() {
-        return null;
-    }
-
-    @Override
-    public void setTowerPhotos(List<InspectionPhoto> photos) {
+        EditText commentView = (EditText) findViewById(R.id.inspect_line_section_comment);
+        return commentView.getText().toString();
 
     }
 
     @Override
-    public void showNextSectionSelectorDialog(String[] selectionItems) {
+    public void setInspectionPhotos(List<InspectionPhoto> photos) {
+        deffectsPhotoListAdapter.setItems(photos);
+        deffectsPhotoListAdapter.notifyDataSetChanged();
+    }
 
+    public void onAddLineSectionPhotoBtnClick(View view) {
+        photoUtility.showPhotoDialog();
     }
 
     @Override
-    public void showEndOfLineDialog() {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
+            photoUtility.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        photoUtility.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
     public void onImageTaken(String photoPath) {
-
+        //  Toast.makeText(this, "выбрана фотография\n" + photoPath, Toast.LENGTH_SHORT).show();
+        presenter.onImageTaken(photoPath);
+        deffectsPhotoListAdapter.notifyDataSetChanged();
     }
+
+    public void deffectsPhotoItemClick(int position, List<InspectionPhoto> photos) {
+        application.getPhotoFullscreenManager().setPhotos(photos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                deffectsPhotoListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        //application.setPhotosForFullscreen(photos);
+        Intent intent = new Intent(this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -198,29 +260,4 @@ public class InspectLineSection extends AppCompatActivity implements
         super.onDestroy();
     }
 
-//    private  void justifyListViewHeightBasedOnChildren(ListView listView, Context context) {
-//
-//        LineSectionDeffectsListAdapter adapter = (LineSectionDeffectsListAdapter) listView.getAdapter();
-//
-//        if (adapter == null) {
-//            return;
-//        }
-//        ViewGroup vg = listView;
-//        int totalHeight = 0;
-//
-//        int width = MetricsUtils.getDisplayWidthDp(context);
-//
-//        for (int i = 0; i < adapter.getCount(); i++) {
-//            View listItem = adapter.getView(i, null, vg);
-//            listItem.measure(0, 0);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams par = listView.getLayoutParams();
-//        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-//        listView.setLayoutParams(par);
-//        listView.requestLayout();
-//
-//
-//    }
 }

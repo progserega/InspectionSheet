@@ -53,6 +53,15 @@ public class TowerStorage implements ITowerStorage {
     }
 
     @Override
+    public Tower getByUniqId(long uniqId) {
+        TowerModel towerModel = db.towerDao().getByUniqId(uniqId);
+        if (towerModel != null) {
+            return dbModelToEntity(towerModel);
+        }
+        return null;
+    }
+
+    @Override
     public void update(Tower tower) {
         if(tower == null){
             return;
@@ -77,7 +86,7 @@ public class TowerStorage implements ITowerStorage {
                 towerModel.getName(),
                 new Point(towerModel.getLat(), towerModel.getLon(), towerModel.getEle()),
                 catalogStorage.getMaterialById(towerModel.getMaterial()),
-                catalogStorage.getTowerTypeById(towerModel.getMaterial())
+                catalogStorage.getTowerTypeById(towerModel.getType())
         );
     }
 }

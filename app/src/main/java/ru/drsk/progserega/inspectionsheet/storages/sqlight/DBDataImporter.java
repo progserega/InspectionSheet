@@ -219,7 +219,7 @@ public class DBDataImporter {
 //            String descr = String.format("%s %s MBA, %s кВ, РПН: %s, наличие ПВБ: %s, защита масла: %s",
 //                    transformerJson.getType(),
 //                    transformerJson.getPower(),
-//                    transformerJson.getVoltage(),
+//                    transformerJson.getType(),
 //                    transformerJson.getRpnType(),
 //                    transformerJson.getIsPVB(),
 //                    transformerJson.getOilDefenceType());

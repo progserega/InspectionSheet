@@ -49,16 +49,16 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     @Override
-    public void onViewCreated(String nextTower) {
+    public void onViewCreated(long nextTowerUniqId) {
 
         line = application.getLineInspection().getLine();
         towers = line.getTowers();
         nextSections = null;
 
-        if (nextTower.isEmpty()) {
+        if (nextTowerUniqId == 0) {
             currentTower = application.getTowerStorage().getFirstInLine(line.getUniqId());
         } else {
-            currentTower = application.getTowerStorage().getByNumberInLine(nextTower, line.getUniqId());
+            currentTower = application.getTowerStorage().getByUniqId(nextTowerUniqId);
         }
         if (currentTower == null) {
             return;
@@ -100,7 +100,8 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
             return;
         }
 
-        currentTower = towers.get(pos);
+        long towerUniqId = towers.get(pos).getUniqId();
+        currentTower = application.getTowerStorage().getByUniqId(towerUniqId);
         setViewData();
     }
 

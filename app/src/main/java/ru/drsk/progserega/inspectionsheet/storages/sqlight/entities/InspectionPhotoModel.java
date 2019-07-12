@@ -17,11 +17,14 @@ public class InspectionPhotoModel {
     @ColumnInfo(name = "photo_path")
     private String photoPath;
 
+    @ColumnInfo(name = "type")
+    private String type;
 
-    public InspectionPhotoModel(long id, long inspectionId, String photoPath) {
+    public InspectionPhotoModel(long id, long inspectionId, String photoPath, String type) {
         this.id = id;
         this.inspectionId = inspectionId;
         this.photoPath = photoPath;
+        this.type = type;
     }
 
     public long getId() {
@@ -46,5 +49,13 @@ public class InspectionPhotoModel {
 
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

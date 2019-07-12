@@ -35,7 +35,7 @@ public class InspectLineTowerContract {
 
     public interface Presenter{
 
-        void onViewCreated(String nextTower);
+        void onViewCreated(long nextTowerUniqId);
 
         void onSelectTowerBtnClick();
 

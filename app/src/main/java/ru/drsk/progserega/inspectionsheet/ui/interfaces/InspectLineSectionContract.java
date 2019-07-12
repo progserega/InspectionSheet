@@ -14,7 +14,7 @@ public class InspectLineSectionContract {
 
         void setSectionNumber(String number);
 
-        void gotoSectionInspection(long nextSectionId);
+        void gotoNextTowerInspection(long nextTowerUniqId);
 
         void setMaterialsSpinnerData(List<String> materials, int sel);
 
@@ -22,11 +22,8 @@ public class InspectLineSectionContract {
 
         String getComment();
 
-        void setTowerPhotos(List<InspectionPhoto> photos);
+        void setInspectionPhotos(List<InspectionPhoto> photos);
 
-        void showNextSectionSelectorDialog(String[] selectionItems);
-
-        void showEndOfLineDialog();
     }
 
     public interface Presenter{

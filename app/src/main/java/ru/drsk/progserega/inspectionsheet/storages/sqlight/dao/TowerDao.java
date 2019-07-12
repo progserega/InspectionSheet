@@ -20,6 +20,9 @@ public interface TowerDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(TowerModel lineTowerModel);
 
+    @Query("SELECT * FROM towers WHERE uniq_id = :uniqId")
+    TowerModel getByUniqId(long uniqId);
+
 
     @Update
     void update(TowerModel tower);

@@ -130,7 +130,7 @@ public class LineStorageStub implements ILineStorage {
 //
 //        ArrayList<Line> result = new ArrayList<>();
 //        for (Line line : lines) {
-//            if (line.getVoltage().equals(voltage)) {
+//            if (line.getType().equals(voltage)) {
 //                result.add(line);
 //            }
 //        }
@@ -143,7 +143,7 @@ public class LineStorageStub implements ILineStorage {
 //
 //        ArrayList<Line> result = new ArrayList<>();
 //        for (Line line : lines) {
-//            if (line.getVoltage().equals(voltage) && line.getInspection().toLowerCase().contains(name.toLowerCase())) {
+//            if (line.getType().equals(voltage) && line.getInspection().toLowerCase().contains(name.toLowerCase())) {
 //                result.add(line);
 //            }
 //        }

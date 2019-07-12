@@ -1,22 +1,16 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -26,11 +20,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +33,6 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
-import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
@@ -106,9 +97,9 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
         Intent intent = getIntent();
 
-        String nextTower = "";
+        Long nextTower = 0l;
         if (intent.hasExtra(NEXT_TOWER)) {
-            nextTower = (String) intent.getSerializableExtra(NEXT_TOWER);
+            nextTower = (Long) intent.getSerializableExtra(NEXT_TOWER);
         }
 
         presenter.onViewCreated(nextTower);
@@ -379,6 +370,8 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     public void onFinishBtnClick(View view) {
+        Intent intent = new Intent(this, InspectLineFinish.class);
+        startActivity(intent);
     }
 
     public void onAddTowerPhotoBtnClick(View view) {
@@ -413,7 +406,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
     public void deffectsPhotoItemClick(int position, List<InspectionPhoto> photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
-        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.TOWER_INSPECTION_PHOTO);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
             public void onPhotoDeleted() {
@@ -427,7 +420,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         startActivity(intent);
     }
 
-    //TODO работает криво если высота динамическая
+    // работает криво если высота динамическая
 //    public static void justifyListViewHeightBasedOnChildren(ListView listView, Context context) {
 //
 //        LineTowerDeffectsListAdapter adapter = (LineTowerDeffectsListAdapter) listView.getAdapter();

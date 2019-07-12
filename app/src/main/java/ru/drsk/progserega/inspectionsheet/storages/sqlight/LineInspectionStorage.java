@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.PhotoSubject;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionDeffectModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionInspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerInspectionModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerInspectionPhotoModel;
 
 public class LineInspectionStorage implements ILineInspectionStorage {
 
@@ -63,9 +66,9 @@ public class LineInspectionStorage implements ILineInspectionStorage {
             return null;
         }
 
-        List<TowerInspectionPhotoModel> photoModels = db.towerInspectionPhotoDao().getByInspection(inspectionModel.getId());
+        List<InspectionPhotoModel> photoModels = db.inspectionPhotoDao().getByInspection(inspectionModel.getId(), PhotoSubject.TOWER.getType());
         List<InspectionPhoto> photos = new ArrayList<>();
-        for(TowerInspectionPhotoModel photoModel: photoModels){
+        for(InspectionPhotoModel photoModel: photoModels){
             photos.add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
         }
 
@@ -103,12 +106,13 @@ public class LineInspectionStorage implements ILineInspectionStorage {
         for (InspectionPhoto photo : inspection.getPhotos()) {
 
             if (photo.getId() == 0) {
-                TowerInspectionPhotoModel photoModel = new TowerInspectionPhotoModel(
+                InspectionPhotoModel photoModel = new InspectionPhotoModel(
                         0,
                         inspection.getId(),
-                        photo.getPath()
+                        photo.getPath(),
+                        PhotoSubject.TOWER.getType()
                 );
-                long photoId = db.towerInspectionPhotoDao().insert(photoModel);
+                long photoId = db.inspectionPhotoDao().insert(photoModel);
                 photo.setId(photoId);
             }
         }
@@ -147,5 +151,64 @@ public class LineInspectionStorage implements ILineInspectionStorage {
                 deffect.getSectionId(),
                 deffect.getDeffectType().getId(), deffect.getValue());
         db.lineSectionDeffectDao().updateDeffect(sectionDeffectModel);
+    }
+
+    @Override
+    public LineSectionInspection getSectionInspection(long sectionId) {
+        LineSectionInspectionModel inspectionModel = db.lineSectionInspectionDao().getBySectionId(sectionId);
+        if(inspectionModel == null){
+            return null;
+        }
+
+        List<InspectionPhotoModel> photoModels = db.inspectionPhotoDao().getByInspection(inspectionModel.getId(), PhotoSubject.SECTION.getType());
+        List<InspectionPhoto> photos = new ArrayList<>();
+        for(InspectionPhotoModel photoModel: photoModels){
+            photos.add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
+        }
+
+        LineSectionInspection sectionInspection = new LineSectionInspection(
+                inspectionModel.getId(),
+                inspectionModel.getSectionId(),
+                inspectionModel.getComment(),
+                inspectionModel.getInspectionDate()
+        );
+
+        sectionInspection.setPhotos(photos);
+        return sectionInspection;
+    }
+
+    @Override
+    public void saveSectionInspection(LineSectionInspection inspection) {
+        LineSectionInspectionModel inspectionModel = new LineSectionInspectionModel(
+                inspection.getId(),
+                inspection.getSectionId(),
+                inspection.getComment(),
+                inspection.getInspectionDate()
+        );
+
+        if (inspection.getId() == 0) {
+            long id = db.lineSectionInspectionDao().addInspection(inspectionModel);
+            inspection.setId(id);
+        } else {
+            db.lineSectionInspectionDao().updateInspection(inspectionModel);
+        }
+
+        saveSectionInspectionPhotos(inspection);
+    }
+
+    private void saveSectionInspectionPhotos(LineSectionInspection inspection) {
+        for (InspectionPhoto photo : inspection.getPhotos()) {
+
+            if (photo.getId() == 0) {
+                InspectionPhotoModel photoModel = new InspectionPhotoModel(
+                        0,
+                        inspection.getId(),
+                        photo.getPath(),
+                        PhotoSubject.SECTION.getType()
+                );
+                long photoId = db.inspectionPhotoDao().insert(photoModel);
+                photo.setId(photoId);
+            }
+        }
     }
 }
