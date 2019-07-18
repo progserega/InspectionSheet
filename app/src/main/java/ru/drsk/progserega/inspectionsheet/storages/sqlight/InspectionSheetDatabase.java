@@ -13,6 +13,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineInspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDeffectDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionInspectionDao;
@@ -32,6 +33,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentPho
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineInspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionDeffectModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionInspectionModel;
@@ -67,7 +69,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         TowerDeffectModel.class,
         TowerInspectionModel.class,
         LineSectionDeffectModel.class,
-        LineSectionInspectionModel.class
+        LineSectionInspectionModel.class,
+        LineInspectionModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
@@ -113,6 +116,8 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract LineSectionDeffectDao lineSectionDeffectDao();
 
     public abstract LineSectionInspectionDao lineSectionInspectionDao();
+
+    public abstract LineInspectionDao lineInspectionDao();
 
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {

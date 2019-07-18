@@ -63,7 +63,7 @@ public class SelectYearDialog extends DialogFragment {
 
 
         nopicker.setMaxValue(maxYear);
-        nopicker.setMinValue(maxYear - 70);
+        nopicker.setMinValue(maxYear - 100);
         nopicker.setWrapSelectorWheel(false);
         nopicker.setValue(year);
         nopicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);

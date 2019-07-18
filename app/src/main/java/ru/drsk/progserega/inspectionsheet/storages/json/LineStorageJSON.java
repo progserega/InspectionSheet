@@ -17,6 +17,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineReader;
 
+@Deprecated
 public class LineStorageJSON implements ILineStorage {
 
     private List<Line> lines;
@@ -50,7 +51,8 @@ public class LineStorageJSON implements ILineStorage {
         return null;
     }
 
+    @Override
+    public void updateStartExploitationYear(long lineId, int year) {
 
-
-
+    }
 }

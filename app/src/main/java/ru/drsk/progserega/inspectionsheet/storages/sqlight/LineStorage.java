@@ -31,19 +31,19 @@ public class LineStorage implements ILineStorage {
     }
 
     @Override
-    public List<Line> getByFilters(Map<String, Object> filters) {
+    public List< Line > getByFilters(Map< String, Object > filters) {
 
         if (filters == null || filters.isEmpty() || (filters.size() == 1 && filters.containsKey(EquipmentService.FILTER_TYPE))) {
 
-            List<LineModel> substationModels = lineDao.loadAll();
+            List< LineModel > substationModels = lineDao.loadAll();
             return dbModelToEntity(substationModels);
         }
 
         //---- формируем запрос в зависимости от установленных фильтров ---------
         String queryStr = "SELECT * FROM lines ";
-        List<String> filtersParts = new ArrayList<>();
-        List<Object> filtersValues = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+        List< String > filtersParts = new ArrayList<>();
+        List< Object > filtersValues = new ArrayList<>();
+        for (Map.Entry< String, Object > entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -57,7 +57,7 @@ public class LineStorage implements ILineStorage {
 
             if (key.equals(EquipmentService.FILTER_VOLTAGE)) {
                 filtersParts.add("voltage = ? ");
-                filtersValues.add(((Voltage)value).getValueVolt());
+                filtersValues.add(((Voltage) value).getValueVolt());
             }
 
             if (key.equals(EquipmentService.FILTER_POSITION)) {
@@ -89,7 +89,7 @@ public class LineStorage implements ILineStorage {
             queryStr = queryStr + " WHERE " + TextUtils.join(" AND ", filtersParts);
         }
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr, filtersValues.toArray(new Object[filtersValues.size()]));
-        List<LineModel> lineModelList = lineDao.getByFilters(query);
+        List< LineModel > lineModelList = lineDao.getByFilters(query);
 
         //если есть фильтрация по локации, то уже выбранные данные фильтруем по локации
 //        Point center = (Point) filters.get(EquipmentService.FILTER_POSITION);
@@ -107,16 +107,28 @@ public class LineStorage implements ILineStorage {
     @Override
     public Line getById(long id) {
         LineModel line = db.lineDao().getById(id);
-        return new Line(line.getId(), line.getUniqId(), line.getName(), Voltage.fromVolt(line.getVoltage()), new ArrayList<Tower>());
+        return new Line(line.getId(), line.getUniqId(), line.getName(), Voltage.fromVolt(line.getVoltage()), line.getStartExploitationYear(), new ArrayList< Tower >());
     }
 
-    private List<Line> dbModelToEntity(List<LineModel> lineModels) {
-        List<Line> lines = new ArrayList<>();
+    private List< Line > dbModelToEntity(List< LineModel > lineModels) {
+        List< Line > lines = new ArrayList<>();
         for (LineModel lineModel : lineModels) {
-            lines.add(new Line(lineModel.getId(), lineModel.getUniqId(), lineModel.getName(), Voltage.fromVolt(lineModel.getVoltage()), new ArrayList<Tower>()));
+            lines.add(new Line(
+                    lineModel.getId(),
+                    lineModel.getUniqId(),
+                    lineModel.getName(),
+                    Voltage.fromVolt(lineModel.getVoltage()),
+                    lineModel.getStartExploitationYear(),
+                    new ArrayList< Tower >())
+            );
         }
 
         return lines;
+    }
+
+    @Override
+    public void updateStartExploitationYear(long lineId, int year) {
+        db.lineDao().updateStartExploitationYesr(lineId, year);
     }
 
     //    @Override

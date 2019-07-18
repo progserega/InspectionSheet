@@ -10,8 +10,9 @@ import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 
 public interface ILineStorage {
 
-    public List<Line> getByFilters(Map<String, Object> filters);
+    List<Line> getByFilters(Map<String, Object> filters);
 
-    public Line getById(long id);
+    Line getById(long id);
 
+    void updateStartExploitationYear(long lineId, int year);
 }

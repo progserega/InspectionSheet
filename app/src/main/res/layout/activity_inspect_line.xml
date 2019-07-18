@@ -68,7 +68,7 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:onClick="onStartExploitationYearClick"
-            android:text="1997"
+            android:text=""
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 

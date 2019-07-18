@@ -3,6 +3,7 @@ package ru.drsk.progserega.inspectionsheet.storages;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
@@ -11,7 +12,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffect
 
 public interface ILineInspectionStorage {
 
-    List<TowerDeffect> getTowerDeffects(long towerUniqId);
+    List< TowerDeffect > getTowerDeffects(long towerUniqId);
 
     TowerInspection getTowerInspection(long towerUniqId);
 
@@ -19,9 +20,9 @@ public interface ILineInspectionStorage {
 
     void updateTowerDeffect(TowerDeffect deffect);
 
-    void saveInspection(TowerInspection inspection);
+    void saveToweInspection(TowerInspection inspection);
 
-    List<LineSectionDeffect> getSectionDeffects(long id);
+    List< LineSectionDeffect > getSectionDeffects(long id);
 
     Long addSectionDeffect(LineSectionDeffect deffect);
 
@@ -30,4 +31,9 @@ public interface ILineInspectionStorage {
     LineSectionInspection getSectionInspection(long sectionId);
 
     void saveSectionInspection(LineSectionInspection inspection);
+
+    LineInspection getLineInspection(long lineId);
+
+    long saveLineInspection(LineInspection inspection);
+
 }

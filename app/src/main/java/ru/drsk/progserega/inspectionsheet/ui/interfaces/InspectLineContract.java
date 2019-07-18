@@ -14,6 +14,12 @@ public class InspectLineContract {
         void setResName(String resName);
 
         void setInspectionTypesSpinnerData(List<InspectionType> types, int selected);
+
+        void setStartExploitationYear(int year);
+
+        void showNoInspectionTypeAlert();
+
+        void gotoInpectLineTowerActivity(long towerUniqId);
     }
 
     public interface Presenter{
@@ -24,6 +30,8 @@ public class InspectLineContract {
 
         void onDestroy();
 
+        void onStartExploitationYearSelect(int year);
 
+        void onNextButtonClick();
     }
 }

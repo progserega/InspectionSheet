@@ -50,10 +50,10 @@ public class CatalogStorageStub implements ICatalogStorage {
         }
         towerTypes = new ArrayList<>();
         towerTypes.add(new TowerType(0, "Не задан"));
-        towerTypes.add(new TowerType(1, "Тип 1"));
-        towerTypes.add(new TowerType(2, "Тип 2"));
-        towerTypes.add(new TowerType(3, "Тип 3"));
-        towerTypes.add(new TowerType(4, "Тип 4"));
+        towerTypes.add(new TowerType(1, "Промежуточная"));
+        towerTypes.add(new TowerType(2, "Анкерная"));
+        towerTypes.add(new TowerType(3, "Анкерно-угловая"));
+        towerTypes.add(new TowerType(4, "П-образная"));
         return towerTypes;
     }
 
@@ -96,6 +96,17 @@ public class CatalogStorageStub implements ICatalogStorage {
         for(Material material: materials){
             if(material.getId() == id){
                 return material;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public InspectionType getInspectionTypeById(long id) {
+        List<InspectionType> inspectionTypes = getInspectionTypes();
+        for(InspectionType type: inspectionTypes){
+            if(type.getId() == id){
+                return type;
             }
         }
         return null;

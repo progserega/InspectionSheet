@@ -66,7 +66,9 @@ public class InspectionSheetApplication extends Application {
 
     private ICatalogStorage catalogStorage;
 
-    private LineInspection lineInspection;
+    private ILineStorage lineStorage;
+
+    private LineInspection currentLineInspection;
 
     private ISubstationInspection currentSubstationInspection;
 
@@ -119,12 +121,12 @@ public class InspectionSheetApplication extends Application {
         return catalogStorage;
     }
 
-    public LineInspection getLineInspection() {
-        return lineInspection;
+    public LineInspection getCurrentLineInspection() {
+        return currentLineInspection;
     }
 
-    public void setLineInspection(LineInspection lineInspection) {
-        this.lineInspection = lineInspection;
+    public void setCurrentLineInspection(LineInspection currentLineInspection) {
+        this.currentLineInspection = currentLineInspection;
     }
 
     public ISubstationInspection getCurrentSubstationInspection() {
@@ -211,6 +213,10 @@ public class InspectionSheetApplication extends Application {
         return lineSectionStorage;
     }
 
+    public ILineStorage getLineStorage() {
+        return lineStorage;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -228,7 +234,7 @@ public class InspectionSheetApplication extends Application {
         LocationService location = new LocationService(getApplicationContext());
         locationService = (ILocation) location;
 
-        ILineStorage lineStorage = new LineStorage(db, locationService);
+        lineStorage = new LineStorage(db, locationService);
        // LineStorageStub lineStorage = new LineStorageStub(locationService);
         //lineStorage.setLines(LineStorageStub.initLinesWithTowersStub());
         //linesService = new LinesService(lineStorage);
@@ -273,7 +279,7 @@ public class InspectionSheetApplication extends Application {
 
         lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
 
-        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage);
+        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage, catalogStorage, lineStorage );
 
         lineSectionStorage = new LineSectionStorage(db, getApplicationContext(), catalogStorage);
     }

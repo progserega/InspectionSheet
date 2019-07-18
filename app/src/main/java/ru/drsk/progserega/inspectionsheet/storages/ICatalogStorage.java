@@ -22,5 +22,6 @@ public interface ICatalogStorage {
 
     List<InspectionType> getInspectionTypes();
 
+    InspectionType getInspectionTypeById(long id);
 
 }

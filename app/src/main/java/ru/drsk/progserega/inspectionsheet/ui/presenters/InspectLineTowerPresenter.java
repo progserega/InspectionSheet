@@ -51,7 +51,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onViewCreated(long nextTowerUniqId) {
 
-        line = application.getLineInspection().getLine();
+        line = application.getCurrentLineInspection().getLine();
         towers = line.getTowers();
         nextSections = null;
 
@@ -169,7 +169,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         String comment = view.getComment();
         inspection.setComment(comment);
         inspection.setInspectionDate(new Date());
-        application.getLineInspectionStorage().saveInspection(inspection);
+        application.getLineInspectionStorage().saveToweInspection(inspection);
     }
 
     @Override

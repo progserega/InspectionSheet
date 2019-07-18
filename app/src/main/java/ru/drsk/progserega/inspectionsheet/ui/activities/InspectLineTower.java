@@ -318,8 +318,9 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     public void showEndOfLineDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("Конец линии или отпайки\nВыберите другую опору или завершите осмотр")
+        builder.setMessage("Выберите другую опору или завершите осмотр")
                 .setTitle("Конец линии");
+        builder.setPositiveButton("OK", null  );
 
         AlertDialog dialog = builder.create();
         dialog.show();

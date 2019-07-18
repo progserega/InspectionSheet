@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 
+@Deprecated
 public class LineStorageStub implements ILineStorage {
 
     private ILocation locationService;
@@ -236,5 +237,10 @@ public class LineStorageStub implements ILineStorage {
             }
         }
         return null;
+    }
+
+    @Override
+    public void updateStartExploitationYear(long lineId, int year) {
+
     }
 }

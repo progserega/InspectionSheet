@@ -30,6 +30,8 @@ public interface LineDao {
     @Query("update lines set bbox_top_lat = :topLat, bbox_top_lon = :topLon, bbox_bottom_lat = :bottomLat, bbox_botttom_lon =:bottomLon WHERE uniq_id = :uniqId")
     void updateBoundingBox(double topLat, double topLon, double bottomLat, double bottomLon, long uniqId);
 
+    @Query("update lines set start_exploitation_year = :year WHERE id = :lineId")
+    void updateStartExploitationYesr(long lineId, int year);
 
     @Insert
     long insert(LineModel line);

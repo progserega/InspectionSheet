@@ -195,9 +195,13 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
         Intent intent = null;
         if (equipment.getType() == EquipmentType.LINE) {
-            LineInspection lineInspection = new LineInspection(equipmentService.getLineById(equipment.getId()));
+            //LineInspection lineInspection = new LineInspection(equipmentService.getLineById(equipment.getId()));
+            LineInspection lineInspection = application.getLineInspectionStorage().getLineInspection(equipment.getId());
+            if(lineInspection == null){
+                return;
+            }
             intent = new Intent(this, InspectLine.class);
-            application.setLineInspection(lineInspection);
+            application.setCurrentLineInspection(lineInspection);
         }
 
         if (equipment.getType() == EquipmentType.SUBSTATION) {
