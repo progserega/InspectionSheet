@@ -14,7 +14,7 @@ public class LineSection extends Equipment {
 
 
     public LineSection(long id, String name, long lineUniqId, long towerFromUniqId, long towerToUniqId, Material material) {
-        super(id, name, EquipmentType.LINE_SECTION);
+        super(id, id, name, EquipmentType.LINE_SECTION);
         this.lineUniqId = lineUniqId;
         this.towerFromUniqId = towerFromUniqId;
         this.towerToUniqId = towerToUniqId;

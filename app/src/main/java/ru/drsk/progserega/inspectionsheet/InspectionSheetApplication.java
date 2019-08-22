@@ -72,7 +72,7 @@ public class InspectionSheetApplication extends Application {
 
     private ISubstationInspection currentSubstationInspection;
 
-    private List<ISubstationInspection> substationInspections;
+    private List< ISubstationInspection > substationInspections;
 
     private InspectionItemResult currentDeffect;
 
@@ -85,11 +85,11 @@ public class InspectionSheetApplication extends Application {
     InspectionService inspectionService;
 
     InspectionItem currentInspectionItem;
-    List<InspectionItem> inspectionItemsGroup;
+    List< InspectionItem > inspectionItemsGroup;
 
     ILineSectionStorage lineSectionStorage;
 
-  //  List<InspectionPhoto> photosForFullscreen;
+    //  List<InspectionPhoto> photosForFullscreen;
 
     private ILineDeffectTypesStorage lineDeffectTypesStorage;
 
@@ -137,7 +137,7 @@ public class InspectionSheetApplication extends Application {
         this.currentSubstationInspection = currentSubstationInspection;
     }
 
-    public List<ISubstationInspection> getSubstationInspections() {
+    public List< ISubstationInspection > getSubstationInspections() {
         return substationInspections;
     }
 
@@ -173,11 +173,11 @@ public class InspectionSheetApplication extends Application {
         this.currentInspectionItem = currentInspectionItem;
     }
 
-    public List<InspectionItem> getInspectionItemsGroup() {
+    public List< InspectionItem > getInspectionItemsGroup() {
         return inspectionItemsGroup;
     }
 
-    public void setInspectionItemsGroup(List<InspectionItem> inspectionItemsGroup) {
+    public void setInspectionItemsGroup(List< InspectionItem > inspectionItemsGroup) {
         this.inspectionItemsGroup = inspectionItemsGroup;
     }
 
@@ -235,7 +235,7 @@ public class InspectionSheetApplication extends Application {
         locationService = (ILocation) location;
 
         lineStorage = new LineStorage(db, locationService);
-       // LineStorageStub lineStorage = new LineStorageStub(locationService);
+        // LineStorageStub lineStorage = new LineStorageStub(locationService);
         //lineStorage.setLines(LineStorageStub.initLinesWithTowersStub());
         //linesService = new LinesService(lineStorage);
 
@@ -252,7 +252,7 @@ public class InspectionSheetApplication extends Application {
 
         //ITowerStorage towerStorage = new TowerStorageStub();
 
-       // towersService = new TowersService(towerStorage, lineStorage);
+        // towersService = new TowersService(towerStorage, lineStorage);
 
         transformerStorage = new TransformerStorage(db, getApplicationContext());
         ISubstationStorage substationStorage = new SubstationStorage(db, locationService);
@@ -263,15 +263,12 @@ public class InspectionSheetApplication extends Application {
 
 
         DBDataImporter dbDataImporter = new DBDataImporter(db);
-       // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
+        // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
         remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext());
 
         substationInspections = new ArrayList<>();
 
         inspectionStorage = new InspectionStorage(db, getApplicationContext());
-
-        inspectionService = new InspectionService(db, transformerStorage, inspectionStorage, getApplicationContext());
-
 
         Fresco.initialize(getApplicationContext());
 
@@ -279,9 +276,18 @@ public class InspectionSheetApplication extends Application {
 
         lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
 
-        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage, catalogStorage, lineStorage );
+        lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage, catalogStorage, lineStorage);
 
         lineSectionStorage = new LineSectionStorage(db, getApplicationContext(), catalogStorage);
+
+        inspectionService = new InspectionService(
+                db,
+                getApplicationContext(),
+                transformerStorage,
+                inspectionStorage,
+                towerStorage,
+                lineInspectionStorage,
+                lineSectionStorage);
     }
 
 }

@@ -8,7 +8,7 @@ import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
  */
 public class Tower extends Equipment {
 
-    private long uniqId;
+   // private long uniqId;
     private Point mapPoint;
 
     private Material material;

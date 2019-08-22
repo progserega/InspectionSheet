@@ -18,6 +18,9 @@ public interface LineSectionDao {
     @Query("SELECT * FROM line_section")
     List<LineSectionModel> loadAll();
 
+    @Query("SELECT * FROM line_section WHERE id IN(:ids) ")
+    List<LineSectionModel> getByIds(Long[] ids);
+
     @Query("SELECT * FROM line_section WHERE line_uniq_id = :lineUniqId AND from_tower_uniq_id = :towerUniqId")
     List<LineSectionModel> getByLineTower(long lineUniqId, long towerUniqId);
 

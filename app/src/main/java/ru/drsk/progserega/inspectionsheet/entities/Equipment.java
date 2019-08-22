@@ -4,6 +4,7 @@ import java.util.Date;
 
 public abstract class Equipment {
     protected long id;
+    protected long uniqId;
     protected String name;
     protected EquipmentType type;
 
@@ -13,8 +14,10 @@ public abstract class Equipment {
     public Equipment() {
     }
 
-    public Equipment(long id, String name, EquipmentType type) {
+    public Equipment(long id,long uniqId, String name, EquipmentType type) {
+
         this.id = id;
+        this.uniqId = uniqId;
         this.name = name;
         this.type = type;
     }
@@ -25,6 +28,14 @@ public abstract class Equipment {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUniqId() {
+        return uniqId;
+    }
+
+    public void setUniqId(long uniqId) {
+        this.uniqId = uniqId;
     }
 
     public String getName() {

@@ -38,4 +38,9 @@ public class TowerStorageStub implements ITowerStorage {
     public Tower getByUniqId(long uniqId) {
         return null;
     }
+
+    @Override
+    public List< Tower > getByUniqIds(Long[] uniqIds) {
+        return null;
+    }
 }

@@ -16,5 +16,7 @@ public interface ITowerStorage {
 
     Tower getByUniqId( long uniqId);
 
+    List<Tower> getByUniqIds(Long[] uniqIds);
+
     void update(Tower tower);
 }

@@ -20,11 +20,11 @@ public class SubstationStorageStub implements ISubstationStorage {
     private List<Substation> initSubstations(){
         List<Substation> substations = new ArrayList<>();
 
-        substations.add(new Substation(1, "Подстанция 1", new Date(0), 0));
-        substations.add(new Substation(2, "Подстанция 2",  new Date(0), 0));
-        substations.add(new Substation(3, "Подстанция 3",  new Date(0), 0));
-        substations.add(new Substation(4, "Подстанция 4",  new Date(0), 0));
-        substations.add(new Substation(5, "Подстанция 5",  new Date(0), 0));
+        substations.add(new Substation(1,0, "Подстанция 1", new Date(0), 0));
+        substations.add(new Substation(2,0, "Подстанция 2",  new Date(0), 0));
+        substations.add(new Substation(3,0, "Подстанция 3",  new Date(0), 0));
+        substations.add(new Substation(4,0, "Подстанция 4",  new Date(0), 0));
+        substations.add(new Substation(5,0, "Подстанция 5",  new Date(0), 0));
 
         return substations;
 

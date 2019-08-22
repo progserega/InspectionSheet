@@ -16,8 +16,9 @@ public class Substation extends Equipment {
         this.transformerTypes = transformerTypes;
     }
 
-    public Substation(long id, String name , Date inspectionDate, float inspectionPercent){
+    public Substation(long id, long uniqId, String name , Date inspectionDate, float inspectionPercent){
         this.id = id;
+        this.uniqId = uniqId;
         this.name = name;
         this.type = EquipmentType.SUBSTATION;
 

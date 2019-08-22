@@ -13,8 +13,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionMo
 @Dao
 public interface InspectionDao {
 
-    @Query("select * FROM inspections WHERE substation_id = :substationId AND substation_type = :substationType AND equipment_id = :equipmentId")
-    List<InspectionModel> getByEquipment(long substationId, int substationType, long equipmentId);
+    @Query("select * FROM inspections WHERE substation_id = :substationUniqId AND substation_type = :substationType AND equipment_id = :equipmentId")
+    List<InspectionModel> getByEquipment(long substationUniqId, int substationType, long equipmentId);
 
 //    @Query("select * FROM inspections WHERE substation_id IN(:substationIds) AND substation_type = :substationType ORDER BY substation_id")
 //    List<InspectionModel> getBySubstations(List<Long> substationIds, int substationType);

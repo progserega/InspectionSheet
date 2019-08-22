@@ -23,6 +23,9 @@ public interface TowerDao {
     @Query("SELECT * FROM towers WHERE uniq_id = :uniqId")
     TowerModel getByUniqId(long uniqId);
 
+    @Query("SELECT * FROM towers WHERE uniq_id IN(:uniqIds)")
+    List<TowerModel> getByUniqIds(Long[] uniqIds);
+
 
     @Update
     void update(TowerModel tower);

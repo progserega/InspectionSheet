@@ -62,6 +62,16 @@ public class TowerStorage implements ITowerStorage {
     }
 
     @Override
+    public List< Tower > getByUniqIds(Long[] uniqIds) {
+        List<TowerModel> towerModels = db.towerDao().getByUniqIds(uniqIds);
+        List<Tower> towers = new ArrayList<>();
+        for (TowerModel towerModel : towerModels) {
+            towers.add(dbModelToEntity(towerModel));
+        }
+        return towers;
+    }
+
+    @Override
     public void update(Tower tower) {
         if(tower == null){
             return;

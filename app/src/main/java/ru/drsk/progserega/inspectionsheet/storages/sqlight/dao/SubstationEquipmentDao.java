@@ -20,8 +20,8 @@ public interface SubstationEquipmentDao {
     @Query("select tr.* from substation_equipments se LEFT JOIN transformers tr ON se.transformer_id = tr.id WHERE se.substation_id = :tpId")
     List<TransformerModel> getByTPId(long tpId);
 
-    @Query("select se.id as equipment_id, tr.*, se.slot, se.manufacture_year, se.inspection_date from substation_equipments se LEFT JOIN transformers tr ON se.transformer_id = tr.id WHERE se.substation_id = :substationId ORDER BY slot")
-    List<TransformerInsideSubstaionModel> getBySubstation(long substationId);
+    @Query("select se.id as equipment_id, tr.*, se.slot, se.manufacture_year, se.inspection_date from substation_equipments se LEFT JOIN transformers tr ON se.transformer_id = tr.id WHERE se.substation_id = :substationUniqId ORDER BY slot")
+    List<TransformerInsideSubstaionModel> getBySubstation(long substationUniqId);
 
     @Insert
     long insert(SubstationEquipmentModel transformer);

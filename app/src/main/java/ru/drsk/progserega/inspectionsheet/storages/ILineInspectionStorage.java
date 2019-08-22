@@ -10,11 +10,15 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
 
+//TODO отрефакторить. разбить на отдельные интерфейсы
 public interface ILineInspectionStorage {
 
     List< TowerDeffect > getTowerDeffects(long towerUniqId);
 
     TowerInspection getTowerInspection(long towerUniqId);
+
+    List<TowerInspection> getTowerInspectionByLine(long lineUniqId);
+
 
     Long addTowerDeffect(TowerDeffect deffect);
 
@@ -32,7 +36,11 @@ public interface ILineInspectionStorage {
 
     void saveSectionInspection(LineSectionInspection inspection);
 
+    List<LineSectionInspection> getSectionInspectionByLine(long lineUniqId);
+
     LineInspection getLineInspection(long lineId);
+
+    List<LineInspection> getAllLineInspections();
 
     long saveLineInspection(LineInspection inspection);
 

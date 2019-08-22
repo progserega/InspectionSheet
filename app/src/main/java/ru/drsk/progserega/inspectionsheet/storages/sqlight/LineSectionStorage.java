@@ -23,9 +23,9 @@ public class LineSectionStorage implements ILineSectionStorage {
     }
 
     @Override
-    public List<LineSection> getByLineStartWithTower(long lineUniqId, long towerUniqId) {
-        List<LineSectionModel> sectionModels = db.lineSectionDao().getByLineTower(lineUniqId, towerUniqId);
-        List<LineSection> sections = new ArrayList<>();
+    public List< LineSection > getByLineStartWithTower(long lineUniqId, long towerUniqId) {
+        List< LineSectionModel > sectionModels = db.lineSectionDao().getByLineTower(lineUniqId, towerUniqId);
+        List< LineSection > sections = new ArrayList<>();
         for (LineSectionModel sectionModel : sectionModels) {
             sections.add(ModelToEntity(sectionModel));
         }
@@ -36,6 +36,16 @@ public class LineSectionStorage implements ILineSectionStorage {
     public LineSection getById(long id) {
         LineSectionModel sectionModel = db.lineSectionDao().getById(id);
         return ModelToEntity(sectionModel);
+    }
+
+    @Override
+    public List< LineSection > getByIds(Long[] ids) {
+        List< LineSectionModel > sectionModels = db.lineSectionDao().getByIds(ids);
+        List< LineSection > sections = new ArrayList<>();
+        for (LineSectionModel sectionModel : sectionModels) {
+            sections.add(ModelToEntity(sectionModel));
+        }
+        return sections;
     }
 
     private LineSection ModelToEntity(LineSectionModel sectionModel) {
@@ -54,7 +64,7 @@ public class LineSectionStorage implements ILineSectionStorage {
 
     @Override
     public void update(LineSection lineSection) {
-        if(lineSection == null){
+        if (lineSection == null) {
             return;
         }
         LineSectionModel sectionModel = new LineSectionModel(

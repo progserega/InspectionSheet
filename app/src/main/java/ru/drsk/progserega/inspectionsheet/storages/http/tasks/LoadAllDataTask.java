@@ -12,6 +12,8 @@ import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetailResponse;
@@ -19,7 +21,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLinesRespo
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
-public class LoadAllDataTask implements ObservableOnSubscribe<String> {
+public class LoadAllDataTask implements ObservableOnSubscribe< String > {
     private static final int PAGE_SIZE = 200;
     private static final int ATTEMPT_COUNT = 5;
     private IApiInspectionSheet apiInspectionSheet;
@@ -37,47 +39,31 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
     }
 
     @Override
-    public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+    public void subscribe(ObservableEmitter< String > emitter) throws Exception {
 
         try {
             emitter.onNext("Загружаем список СП");
-            //loadSp(emitter);
+            loadSp(emitter);
 
             emitter.onNext("Загружаем список РЭС");
-            //loadRes(emitter);
+            loadRes(emitter);
 
             //dbDataImporter.initEnterpriseCache();
 
-            emitter.onNext("Загружаем список ТП");
-            //  loadTP(emitter);
-
+//            emitter.onNext("Загружаем список типов трансформаторов для подстанций");
+//            loadSubstationTransformersTypes(emitter);
+//
+//            emitter.onNext("Загружаем Подстанции");
+//            loadSubstations(emitter);
+//
+//            emitter.onNext("Загружаем список ТП");
+//            //  loadTP(emitter);
 
             emitter.onNext("Загружаем список ВЛ");
-            List<GeoLine> lines = loadGeoLines(emitter);
+            List< GeoLine > lines = loadGeoLines(emitter);
             dbDataImporter.loadLines(lines);
 
-            int cnt = 1;
-            GeoLineDetail lineDetail = null;
-            for (GeoLine line : lines) {
-
-                try {
-                    int percent = (int) ((cnt / (float) lines.size()) * 100);
-                    emitter.onNext("Загружаем данные для линии\n" + line.getName() + "\n" + String.valueOf(percent) + "% (" + String.valueOf(cnt) + ")");
-                    lineDetail = loadGeoLineDetails(emitter, line.getName());
-                } catch (Exception ex) {
-                    continue;
-                }
-
-                if (lineDetail != null) {
-                    dbDataImporter.loadLineDetail(line, lineDetail);
-                }
-
-               // if(true)break;
-                if (cnt >= 50) {
-                    break;
-                }
-                cnt++;
-            }
+            loadGeoLinesData(lines, emitter);
 
         } catch (IOException e) {
 
@@ -88,13 +74,13 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
         emitter.onComplete();
     }
 
-    private void loadSp(ObservableEmitter<String> emitter) throws IOException {
+    private void loadSp(ObservableEmitter< String > emitter) throws IOException {
         Response response = apiInspectionSheet.getAllSp().execute();
         if (response.body() == null) {
             throw new IOException("Данные по СП не получены. response.body is null");
         }
 
-        List<SpModel> spModels = (List<SpModel>) response.body();
+        List< SpModel > spModels = (List< SpModel >) response.body();
 
         if (spModels == null || spModels.isEmpty()) {
             throw new IOException("Данные по СП не получены");
@@ -107,13 +93,13 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
         }
     }
 
-    private void loadRes(ObservableEmitter<String> emitter) throws IOException {
+    private void loadRes(ObservableEmitter< String > emitter) throws IOException {
         Response response = apiInspectionSheet.getAllRes().execute();
         if (response.body() == null) {
             throw new IOException("Данные по РЭС не получены. response.body is null");
         }
 
-        List<ResModel> resModels = (List<ResModel>) response.body();
+        List< ResModel > resModels = (List< ResModel >) response.body();
 
         if (resModels == null || resModels.isEmpty()) {
             throw new IOException("Данные по РЭС не получены. response.body is null");
@@ -126,7 +112,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
         }
     }
 
-    private void loadTP(ObservableEmitter<String> emitter) throws IOException {
+    private void loadTP(ObservableEmitter< String > emitter) throws IOException {
         int page = 0;
         int total = 0;
         int offset = 0;
@@ -177,7 +163,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
 
     }
 
-    private List<GeoLine> loadGeoLines(ObservableEmitter<String> emitter) throws IOException {
+    private List< GeoLine > loadGeoLines(ObservableEmitter< String > emitter) throws IOException {
         Response response = null;
 
         response = apiGeo.getAllLines("api/get-all-lines").execute();
@@ -196,7 +182,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
 //            for(GeoLine line: linesResponse.getData()){
 //                emitter.onNext("Загрузка Линии " + line.getName() );
 //            }
-        List<GeoLine> lines = linesResponse.getData();
+        List< GeoLine > lines = linesResponse.getData();
         long cnt = 1l;
         for (GeoLine line : lines) {
             line.setUniqId(cnt);
@@ -205,7 +191,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
         return lines;
     }
 
-    private GeoLineDetail loadGeoLineDetails(ObservableEmitter<String> emitter, String name) throws IOException {
+    private GeoLineDetail loadGeoLineDetails(ObservableEmitter< String > emitter, String name) throws IOException {
         Response response = null;
 
         response = apiGeo.getLineDetails("api/get-line-by-name", name).execute();
@@ -222,7 +208,95 @@ public class LoadAllDataTask implements ObservableOnSubscribe<String> {
 
 
         return linesResponse.getData();
+    }
 
+    private void loadGeoLinesData(List< GeoLine > lines, ObservableEmitter< String > emitter) {
+        int cnt = 1;
+        GeoLineDetail lineDetail = null;
+        for (GeoLine line : lines) {
+
+            try {
+                int percent = (int) ((cnt / (float) lines.size()) * 100);
+                emitter.onNext("Загружаем данные для линии\n" + line.getName() + "\n" + String.valueOf(percent) + "% (" + String.valueOf(cnt) + ")");
+                lineDetail = loadGeoLineDetails(emitter, line.getName());
+            } catch (Exception ex) {
+                continue;
+            }
+
+            if (lineDetail != null) {
+                dbDataImporter.loadLineDetail(line, lineDetail);
+            }
+
+            // if(true)break;
+            if (cnt >= 50) {
+                break;
+            }
+            cnt++;
+        }
+    }
+
+    private void loadSubstationTransformersTypes(ObservableEmitter< String > emitter) throws IOException {
+        Response response = apiInspectionSheet.getSubstationTransformersTypes().execute();
+        if (response.body() == null) {
+            throw new IOException("Данные по Типам трансформаторов не получены. response.body is null");
+        }
+
+        List< TransformerType > types = (List< TransformerType >) response.body();
+
+        if (types == null || types.isEmpty()) {
+            throw new IOException("Данные по СП не получены");
+        }
+        dbDataImporter.loadSubstationTransformers(types);
+    }
+
+    private void loadSubstations(ObservableEmitter< String > emitter) throws IOException {
+        int page = 0;
+        int total = 0;
+        int offset = 0;
+        int cnt = 0;
+        do {
+            offset = page * PAGE_SIZE;
+            SubstationsResponse substationsResponse = null;
+
+            Response response = null;
+            int attempt = 1;
+            while (attempt < ATTEMPT_COUNT) {
+                try {
+                    response = apiInspectionSheet.getSubstations( offset, PAGE_SIZE).execute();
+                    break;
+                } catch (java.net.ProtocolException ex) {
+                    if (attempt == ATTEMPT_COUNT - 1) {
+                        throw ex;
+                    }
+                } catch (Exception ex) {
+                    if (attempt == ATTEMPT_COUNT - 1) {
+                        throw ex;
+                    }
+                }
+                emitter.onNext("Ошибка при загрузке Подстанций. Попытка " +attempt);
+                attempt++;
+
+            }
+            if (response == null || response.body() == null) {
+                break;
+            }
+
+            substationsResponse = (SubstationsResponse) response.body();
+            total = substationsResponse.getTotal();
+
+            if (substationsResponse.getData() != null && !substationsResponse.getData().isEmpty()) {
+                //передаем данные на обработку
+                cnt += substationsResponse.getData().size();
+                int percent = (int) ((cnt / (float) substationsResponse.getTotal()) * 100);
+                dbDataImporter.loadSubstations(substationsResponse.getData());
+                emitter.onNext("Загрузка Подстанций " + percent + "%");
+            }
+
+
+            page++;
+
+
+        } while ((offset + PAGE_SIZE) < total);
 
     }
 }

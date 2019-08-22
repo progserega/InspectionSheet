@@ -94,6 +94,63 @@ public class LineInspectionStorage implements ILineInspectionStorage {
     }
 
     @Override
+    public List< TowerInspection > getTowerInspectionByLine(long lineUniqId) {
+        List< TowerInspection > inspections = new ArrayList<>();
+        List< TowerInspectionModel > inspectionModels = db.towerInspectionDao().getByLine(lineUniqId);
+        if (inspectionModels.isEmpty()) {
+            return inspections;
+        }
+
+        for (TowerInspectionModel inspectionModel : inspectionModels) {
+
+            List< InspectionPhotoModel > photoModels = db.inspectionPhotoDao().getByInspection(inspectionModel.getId(), PhotoSubject.TOWER.getType());
+            List< InspectionPhoto > photos = new ArrayList<>();
+            for (InspectionPhotoModel photoModel : photoModels) {
+                photos.add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
+            }
+
+            inspections.add(new TowerInspection(
+                    inspectionModel.getId(),
+                    inspectionModel.getTowerUniqId(),
+                    inspectionModel.getComment(),
+                    photos,
+                    inspectionModel.getInspectionDate()
+            ));
+        }
+
+        return inspections;
+    }
+
+    @Override
+    public List< LineSectionInspection > getSectionInspectionByLine(long lineUniqId) {
+
+        List< LineSectionInspection > inspections = new ArrayList<>();
+        List< LineSectionInspectionModel > inspectionModels = db.lineSectionInspectionDao().getByLine(lineUniqId);
+        if (inspectionModels.isEmpty()) {
+            return inspections;
+        }
+
+        for (LineSectionInspectionModel inspectionModel : inspectionModels) {
+
+            List< InspectionPhotoModel > photoModels = db.inspectionPhotoDao().getByInspection(inspectionModel.getId(), PhotoSubject.SECTION.getType());
+            List< InspectionPhoto > photos = new ArrayList<>();
+            for (InspectionPhotoModel photoModel : photoModels) {
+                photos.add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
+            }
+
+            inspections.add(new LineSectionInspection(
+                    inspectionModel.getId(),
+                    inspectionModel.getSectionId(),
+                    inspectionModel.getComment(),
+                    photos,
+                    inspectionModel.getInspectionDate()
+            ));
+        }
+
+        return inspections;
+    }
+
+    @Override
     public void saveToweInspection(TowerInspection inspection) {
 
         TowerInspectionModel inspectionModel = new TowerInspectionModel(
@@ -256,11 +313,10 @@ public class LineInspectionStorage implements ILineInspectionStorage {
                 inspection.getInspectionDate()
         );
 
-        if(model.getId() == 0) {
+        if (model.getId() == 0) {
             long id = db.lineInspectionDao().addInspection(model);
             inspection.setId(id);
-        }
-        else {
+        } else {
             db.lineInspectionDao().updateInspection(model);
         }
         return inspection.getId();
@@ -277,4 +333,30 @@ public class LineInspectionStorage implements ILineInspectionStorage {
 //        );
 //        db.lineInspectionDao().updateInspection(model);
 //    }
+
+
+    @Override
+    public List< LineInspection > getAllLineInspections() {
+        List< LineInspectionModel > allInspections = db.lineInspectionDao().loadAll();
+
+        List< LineInspection > inspections = new ArrayList<>();
+
+        for (LineInspectionModel inspectionModel : allInspections) {
+            Line line = lineStorage.getByUniqId(inspectionModel.getLineUniqId());
+            if (line == null) {
+                continue;
+            }
+            LineInspection lineInspection = new LineInspection(
+                    inspectionModel.getId(),
+                    line,
+                    catalogStorage.getInspectionTypeById(inspectionModel.getInspectionType()),
+                    inspectionModel.getInspectorName(),
+                    inspectionModel.getInspectionDate()
+            );
+
+            inspections.add(lineInspection);
+        }
+
+        return inspections;
+    }
 }

@@ -15,7 +15,10 @@ import java.util.Map;
 import java.util.Set;
 
 import ru.drsk.progserega.inspectionsheet.R;
+
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineProlet;
@@ -45,6 +48,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineTowerMod
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
@@ -65,10 +69,10 @@ public class DBDataImporter {
     private InspectionPhotoDao inspectionPhotoDao;
     private InspectionItemDao inspectionItemDao;
 
-    private Map<String, Long> spCache;
-    private Map<String, Long> resCache;
-    private Map<String, Long> resAltCache;
-    private Set<Long> transfCache;
+    private Map< String, Long > spCache;
+    private Map< String, Long > resCache;
+    private Map< String, Long > resAltCache;
+    private Set< Long > transfCache;
 
 
     public DBDataImporter(InspectionSheetDatabase db) {
@@ -95,22 +99,23 @@ public class DBDataImporter {
     }
 
     public void ClearDB() {
-        spDao.delete();
-        resDao.delete();
-        transformerDao.delete();
-        transformerSubstationDao.delete();
-        transformerSubstationEquipmentDao.delete();
-        substationDao.delete();
-        substationEquipmentDao.delete();
-        inspectionDao.deleteAll();
-        inspectionPhotoDao.deleteAll();
-        db.lineDao().deleteAll();
-        db.lineTowerDao().deleteAll();
-        db.towerDao().deleteAll();
-        db.lineSectionDao().deleteAll();
+        db.clearAllTables();
+//        spDao.delete();
+//        resDao.delete();
+//        transformerDao.delete();
+//        transformerSubstationDao.delete();
+//        transformerSubstationEquipmentDao.delete();
+//        substationDao.delete();
+//        substationEquipmentDao.delete();
+//        inspectionDao.deleteAll();
+//        inspectionPhotoDao.deleteAll();
+//        db.lineDao().deleteAll();
+//        db.lineTowerDao().deleteAll();
+//        db.towerDao().deleteAll();
+//        db.lineSectionDao().deleteAll();
     }
 
-    public void loadSteTpModel(List<SteTPModel> tpModels) {
+    public void loadSteTpModel(List< SteTPModel > tpModels) {
 
         for (SteTPModel tpModel : tpModels) {
 
@@ -128,10 +133,10 @@ public class DBDataImporter {
                     tpModel.getLon());
 
 
-            long tpId = transformerSubstationDao.insert(substationModel);
+            long tpId = db.transformerSubstationDao().insert(substationModel);
 
 
-            List<SteTransformator> steTransformators = new ArrayList<>();
+            List< SteTransformator > steTransformators = new ArrayList<>();
             if (tpModel.getT1() != null && tpModel.getT1().getDesc() != null) {
                 steTransformators.add(tpModel.getT1());
             }
@@ -167,10 +172,10 @@ public class DBDataImporter {
 
     }
 
-    public void loadGeoSubstations(List<GeoSubstation> substations) {
+    public void loadGeoSubstations(List< GeoSubstation > substations) {
 
-        Set<String> spNames = spCache.keySet();
-        Set<String> resNames = resCache.keySet();
+        Set< String > spNames = spCache.keySet();
+        Set< String > resNames = resCache.keySet();
 
         for (GeoSubstation substation : substations) {
 
@@ -197,13 +202,16 @@ public class DBDataImporter {
 
             SubstationModel substationModel = new SubstationModel(
                     0,
+                    0,
                     substation.getName(),
                     substation.getVoltage(),
                     substation.getObjectType(),
                     spId,
                     resId,
                     substation.getLat(),
-                    substation.getLon()
+                    substation.getLon(),
+                    null,
+                    0
             );
 
             long substationId = substationDao.insert(substationModel);
@@ -211,32 +219,55 @@ public class DBDataImporter {
 
     }
 
-    public void loadSubstationTransformers(List<SubstationTransformerJson> transformers) {
+    public void loadSubstationTransformers(List< TransformerType > transformers) {
 
-        long maxId = transformerDao.getMaxId();
-        for (SubstationTransformerJson transformerJson : transformers) {
 
-//            String descr = String.format("%s %s MBA, %s кВ, РПН: %s, наличие ПВБ: %s, защита масла: %s",
-//                    transformerJson.getType(),
-//                    transformerJson.getPower(),
-//                    transformerJson.getType(),
-//                    transformerJson.getRpnType(),
-//                    transformerJson.getIsPVB(),
-//                    transformerJson.getOilDefenceType());
-
-            String descr = String.format("%s", transformerJson.getType());
-
-            maxId++;
+        for (TransformerType type : transformers) {
             TransformerModel transformerModel = new TransformerModel(
-                    maxId,
-                    transformerJson.getType(),
-                    descr,
+                    type.getId(),
+                    type.getName(),
+                    type.getDescription(),
                     "substation");
 
             transformerDao.insert(transformerModel);
         }
     }
 
+    public void loadSubstations(List< ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel > substations) {
+
+        for (ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel substation : substations) {
+            SubstationModel substationModel = new SubstationModel(
+                    substation.getId(),
+                    substation.getUniqId() ,
+                    substation.getName(),
+                    null,
+                    "substation",
+                    substation.getSpId(),
+                    substation.getResId(),
+                    substation.getLat(),
+                    substation.getLon(),
+                    null,
+                    0
+            );
+
+            long substationId = substationDao.insert(substationModel);
+
+            if(substation.getEquipmnents() == null){
+                continue;
+            }
+            for (SubstationTransformerModel transformer : substation.getEquipmnents()) {
+                SubstationEquipmentModel equipmentModel = new SubstationEquipmentModel(
+                        0,
+                        substation.getUniqId(),
+                        transformer.getTransformerTypeid(),
+                        transformer.getSlot(),
+                        transformer.getManufactureYear(),
+                        null
+                );
+                substationEquipmentDao.insert(equipmentModel);
+            }
+        }
+    }
 
     public void addSp(long id, String name) {
         SP sp = new SP(id, name, name);
@@ -261,7 +292,7 @@ public class DBDataImporter {
     private long getResFromCache(String resName, long spId) {
         Long resId = resCache.get(resName);
         if (resId == null) {
-            Set<String> keys = resAltCache.keySet();
+            Set< String > keys = resAltCache.keySet();
             for (String key : keys) {
                 if (key.contains((resName))) {
                     resId = resAltCache.get(key);
@@ -276,7 +307,7 @@ public class DBDataImporter {
 
 
     public void initEnterpriseCache() {
-        List<SpWithRes> spWithRes = spWithResDao.loadEnterprises();
+        List< SpWithRes > spWithRes = spWithResDao.loadEnterprises();
         for (SpWithRes sp_res : spWithRes) {
 
             spCache.put(sp_res.getSp().getName(), sp_res.getSp().getId());
@@ -288,7 +319,7 @@ public class DBDataImporter {
 
     }
 
-    private long findSpIdInCache(Set<String> spNames, String spName) {
+    private long findSpIdInCache(Set< String > spNames, String spName) {
         spName = spName.replace("СП П", "");
         long spId = 0;
         for (String savedSpName : spNames) {
@@ -300,7 +331,7 @@ public class DBDataImporter {
         return spId;
     }
 
-    private long findResIdInCache(Set<String> ResNames, String ResName) {
+    private long findResIdInCache(Set< String > ResNames, String ResName) {
 
         long resId = 0;
         for (String savedResName : ResNames) {
@@ -330,7 +361,7 @@ public class DBDataImporter {
         inspectionItemDao.deleteAll();
 
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
-        List<InspectionItem> inspectionItems = null;
+        List< InspectionItem > inspectionItems = null;
         try {
             inspectionItems = inspectionListReader.readInspections(
                     appContext.getResources().openRawResource(R.raw.transormator_inspection_list)
@@ -360,9 +391,9 @@ public class DBDataImporter {
     }
 
 
-    public void loadLines(List<GeoLine> geoLines) {
+    public void loadLines(List< GeoLine > geoLines) {
 
-        List<LineModel> sqlLines = new ArrayList<>();
+        List< LineModel > sqlLines = new ArrayList<>();
         int id = 1;
         for (GeoLine geoLine : geoLines) {
             sqlLines.add(new LineModel(
@@ -382,13 +413,13 @@ public class DBDataImporter {
 
         long lineUniqId = line.getUniqId();
 
-        Map<Long, TowerModel> towersMap = new LinkedHashMap<>();
-        List<LineSectionModel> sectionModels = new ArrayList<>();
+        Map< Long, TowerModel > towersMap = new LinkedHashMap<>();
+        List< LineSectionModel > sectionModels = new ArrayList<>();
 
         buildLineDetailsModels(lineDetail.getWays(), towersMap, sectionModels, lineUniqId);
 
-        List<TowerModel> towers = new ArrayList<TowerModel>(towersMap.values());
-        List<LineTowerModel> lineTowerModels = new ArrayList<>();
+        List< TowerModel > towers = new ArrayList< TowerModel >(towersMap.values());
+        List< LineTowerModel > lineTowerModels = new ArrayList<>();
 
         int cnt = 1;
         for (TowerModel tower : towers) {
@@ -403,8 +434,8 @@ public class DBDataImporter {
         updateLineBoundingBox(towers, lineUniqId);
     }
 
-    private void buildLineDetailsModels(GeoLineTowers geoLineTowers, Map<Long, TowerModel> towersMap, List<LineSectionModel> sectionModels, long lineUniqId) {
-        List<GeoLineTower> towers = new ArrayList<GeoLineTower>(geoLineTowers.getTowers().values());
+    private void buildLineDetailsModels(GeoLineTowers geoLineTowers, Map< Long, TowerModel > towersMap, List< LineSectionModel > sectionModels, long lineUniqId) {
+        List< GeoLineTower > towers = new ArrayList< GeoLineTower >(geoLineTowers.getTowers().values());
         for (GeoLineTower tower : towers) {
             GeoLineTowerNode towerNode = tower.getNode();
             TowerModel towerModel = new TowerModel(
@@ -426,7 +457,7 @@ public class DBDataImporter {
             }
 
             if (tower.getOtpaiki() != null) {
-                List<GeoLineTowers> otpaikiList = new ArrayList<GeoLineTowers>(tower.getOtpaiki().values());
+                List< GeoLineTowers > otpaikiList = new ArrayList< GeoLineTowers >(tower.getOtpaiki().values());
 
                 for (GeoLineTowers otpaika : otpaikiList) {
                     buildLineDetailsModels(otpaika, towersMap, sectionModels, lineUniqId);
@@ -435,17 +466,17 @@ public class DBDataImporter {
         }
     }
 
-    private void updateLineBoundingBox(List<TowerModel> towers, long lineUniqId){
-        if(towers.isEmpty()){
+    private void updateLineBoundingBox(List< TowerModel > towers, long lineUniqId) {
+        if (towers.isEmpty()) {
             return;
         }
         double latMin = towers.get(0).getLat();
         double latMax = towers.get(0).getLat();
 
         double lonMin = towers.get(0).getLon();
-        double lonMax  = towers.get(0).getLon();
+        double lonMax = towers.get(0).getLon();
 
-        for(TowerModel tower: towers){
+        for (TowerModel tower : towers) {
             latMin = Math.min(latMin, tower.getLat());
             latMax = Math.max(latMax, tower.getLat());
 

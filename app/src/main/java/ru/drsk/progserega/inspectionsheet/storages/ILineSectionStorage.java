@@ -11,5 +11,7 @@ public interface ILineSectionStorage {
 
     LineSection getById(long id);
 
+    List<LineSection> getByIds(Long[] ids);
+
     void update(LineSection lineSection);
 }

@@ -14,5 +14,7 @@ public interface ILineStorage {
 
     Line getById(long id);
 
+    Line getByUniqId(long uniqId);
+
     void updateStartExploitationYear(long lineId, int year);
 }

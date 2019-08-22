@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity(tableName = "substations")
 public class SubstationModel {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
     private long id;
 
@@ -43,8 +43,9 @@ public class SubstationModel {
     @ColumnInfo(name = "inspection_percent")
     private float inspectionPercent;
 
-    public SubstationModel(long id, String name, String voltage, String objectType, long spId, long resId, double lat, double lon) {
+    public SubstationModel(long id, long uniqId, String name, String voltage, String objectType, long spId, long resId, double lat, double lon, Date inspectionDate, float inspectionPercent) {
         this.id = id;
+        this.uniqId = uniqId;
         this.name = name;
         this.voltage = voltage;
         this.objectType = objectType;
@@ -52,10 +53,23 @@ public class SubstationModel {
         this.resId = resId;
         this.lat = lat;
         this.lon = lon;
-
-        this.inspectionDate = new Date(0);
-        this.inspectionPercent = 0;
+        this.inspectionDate = inspectionDate;
+        this.inspectionPercent = inspectionPercent;
     }
+
+    //    public SubstationModel(long id, String name, String voltage, String objectType, long spId, long resId, double lat, double lon) {
+//        this.id = id;
+//        this.name = name;
+//        this.voltage = voltage;
+//        this.objectType = objectType;
+//        this.spId = spId;
+//        this.resId = resId;
+//        this.lat = lat;
+//        this.lon = lon;
+//
+//        this.inspectionDate = new Date(0);
+//        this.inspectionPercent = 0;
+//    }
 
     public long getId() {
         return id;

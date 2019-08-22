@@ -67,7 +67,7 @@ public class InspectionStorage implements IInspectionStorage {
             }
 
             InspectionModel inspectionModel = new InspectionModel(
-                    inspection.getSubstation().getId(),
+                    inspection.getSubstation().getUniqId(),
                     inspection.getSubstation().getType().getValue(),
                     inspection.getTransformator().getId(),
                     inspectionItem
@@ -105,7 +105,7 @@ public class InspectionStorage implements IInspectionStorage {
         }
 
         List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
-                inspection.getSubstation().getId(),
+                inspection.getSubstation().getUniqId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId());
 

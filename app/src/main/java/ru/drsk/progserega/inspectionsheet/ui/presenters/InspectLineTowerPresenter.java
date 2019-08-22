@@ -159,6 +159,10 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     private void saveCurrentTower(){
+        if(currentTower == null){
+            return;
+        }
+
         //сохраняем выявленные деффекты
         saveDeffects();
 

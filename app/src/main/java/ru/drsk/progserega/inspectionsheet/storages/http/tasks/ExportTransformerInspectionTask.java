@@ -25,12 +25,12 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
-public class UploadTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
+public class ExportTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
 
     private IApiInspectionSheet apiArmIS;
     private List<TransformerInspection> transformerInspections;
 
-    public UploadTransformerInspectionTask(IApiInspectionSheet apiArmIS, List<TransformerInspection> transformerInspections) {
+    public ExportTransformerInspectionTask(IApiInspectionSheet apiArmIS, List<TransformerInspection> transformerInspections) {
         this.apiArmIS = apiArmIS;
         this.transformerInspections = transformerInspections;
     }
@@ -41,13 +41,13 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
         long unixTime = System.currentTimeMillis() / 1000L;
         for (TransformerInspection inspection : transformerInspections) {
 
-            long substationId = inspection.getSubstation().getId();
+            long substationId = inspection.getSubstation().getUniqId();
             int substationType = inspection.getSubstation().getType().getValue();
-            long transformerId = inspection.getTransformator().getId();
+           // long transformerId = inspection.getTransformator().getId();
 
             //грузим инфу о трансформаторе
-            transformerId = uploadTransformerInfo(inspection);
-            if(transformerId == 0){
+            long transformerIdInArm = uploadTransformerInfo(inspection);
+            if(transformerIdInArm == 0){
                 continue;
             }
 //
@@ -58,7 +58,7 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
 //            }
 
             //грузим общие фото
-            uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerId, substationType, unixTime);
+            uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerIdInArm, substationType, unixTime);
 
             //грузим осмотры
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
@@ -71,7 +71,7 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
                 TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
                         substationId,
                         substationType,
-                        transformerId,
+                        transformerIdInArm,
                         inspectionRes.getValueId(),
                         TextUtils.join(",", inspectionRes.getResult().getValues()),
                         TextUtils.join(",", inspectionRes.getResult().getSubValues()),
@@ -114,7 +114,7 @@ public class UploadTransformerInspectionTask implements ObservableOnSubscribe<Up
         }
 
         TransformerInfo info = new TransformerInfo(
-                inspection.getSubstation().getId(),
+                inspection.getSubstation().getUniqId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId(),
                 inspection.getTransformator().getYear(),

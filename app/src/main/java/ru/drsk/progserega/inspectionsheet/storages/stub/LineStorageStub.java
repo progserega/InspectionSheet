@@ -243,4 +243,9 @@ public class LineStorageStub implements ILineStorage {
     public void updateStartExploitationYear(long lineId, int year) {
 
     }
+
+    @Override
+    public Line getByUniqId(long uniqId) {
+        return null;
+    }
 }

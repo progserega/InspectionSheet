@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Line extends Equipment{
 
-    private long uniqId;
+   // private long uniqId;
     private Voltage voltage;
     private List<Tower> towers;
     private int startExploitationYear;

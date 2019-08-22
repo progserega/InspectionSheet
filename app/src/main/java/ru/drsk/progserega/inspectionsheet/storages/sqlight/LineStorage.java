@@ -110,6 +110,12 @@ public class LineStorage implements ILineStorage {
         return new Line(line.getId(), line.getUniqId(), line.getName(), Voltage.fromVolt(line.getVoltage()), line.getStartExploitationYear(), new ArrayList< Tower >());
     }
 
+    @Override
+    public Line getByUniqId(long uniqId) {
+        LineModel line = db.lineDao().getByUniqId(uniqId);
+        return new Line(line.getId(), line.getUniqId(), line.getName(), Voltage.fromVolt(line.getVoltage()), line.getStartExploitationYear(), new ArrayList< Tower >());
+    }
+
     private List< Line > dbModelToEntity(List< LineModel > lineModels) {
         List< Line > lines = new ArrayList<>();
         for (LineModel lineModel : lineModels) {

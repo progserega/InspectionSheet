@@ -14,11 +14,15 @@ import android.widget.TextView;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private static final boolean DEBUG_MODE = true;
 
+    private static final String EXPORT_TRANSFORMERS = "export_transformers";
+    private static final String EXPORT_LINES = "export_lines";
+
+    private Queue< String > networkTasksQueue = new LinkedList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,23 +54,15 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         progressBar = (ProgressBar) findViewById(R.id.loading_progress);
         progressText = (TextView) findViewById(R.id.loading_progress_text);
+
+        application.getRemoteStorage().setProgressListener(this);
+        networkTasksQueue.clear();
     }
 
-    /**
-     * Called when the user clicks the Send button
-     */
-    public void addDefect(View view) {
-        Log.d("addDefect()", "1");
 
-        // Do something in response to button
-        //Intent intent = new Intent(this, addStationBug.class);
+    public void addDefect(View view) {
         Intent intent = new Intent(this, SelectTypeLine.class);
-            /*EditText editText = (EditText) findViewById(R.id.edit_message);
-            String message = editText.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, message);*/
-        Log.d("addDefect()", "2");
         startActivity(intent);
-        Log.d("addDefect()", "3");
     }
 
     public void syncData(View view) {
@@ -87,10 +89,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
 
     private void loadData() {
-        progressText.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        application.getRemoteStorage().setProgressListener(this);
-
+        showProgress();
 
         application.getRemoteStorage().loadRemoteData();
 
@@ -104,14 +103,27 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     @Override
     public void progressComplete() {
+        hideProgress();
+
+        networkTasksQueue.poll();
+        nextTask();
+    }
+
+    private void showProgress() {
+        progressText.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress() {
         progressText.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     @Override
     public void progressError(Exception ex) {
         String s = ex.getLocalizedMessage();
-        if(DEBUG_MODE) {
+        if (DEBUG_MODE) {
             Writer writer = new StringWriter();
             ex.printStackTrace(new PrintWriter(writer));
             s = writer.toString();
@@ -133,13 +145,46 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void exportInspections(View view) {
-        progressText.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        application.getRemoteStorage().setProgressListener(this);
 
+        //networkTasksQueue.add(EXPORT_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_LINES);
+
+
+
+        nextTask();
+    }
+
+    private void nextTask() {
+        showProgress();
+
+        String task = networkTasksQueue.peek();
+        if (task == null) {
+            hideProgress();
+            return;
+        }
+
+        Log.d("EXPORT ", "EXPORT: " + task);
+
+        switch (task) {
+            case EXPORT_TRANSFORMERS:
+                exportTransformers();
+                return;
+            case EXPORT_LINES:
+                exportLines();
+                return;
+        }
+    }
+
+    private void exportTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List<TransformerInspection> inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
+        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
 
-        application.getRemoteStorage().uploadTransformersInspections(inspections);
+        application.getRemoteStorage().exportTransformersInspections(inspections);
+    }
+
+    private void exportLines(){
+
+        List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
+        application.getRemoteStorage().exportLinesInspections(inspectedLines);
     }
 }
