@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 
 import io.reactivex.Observable;
@@ -16,6 +17,8 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspectionTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -55,37 +58,43 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
     @Override
-    public void loadRemoteData() {
+    public void clearStorage() {
 
-        dbDataImporter.ClearDB();
+        Observable.fromCallable(new Callable< String >() {
+                    @Override
+                    public String call() throws Exception {
+                        dbDataImporter.ClearDB();
+                        return "БД Очищена";
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResultObserver());
+    }
+
+    @Override
+    public void loadOrganization() {
+        Observable.create(new LoadOrganizationTask(apiArmIs, dbDataImporter))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResultObserver());
+    }
+
+    @Override
+    public void loadLines(long resId) {
+        Observable.create(new LoadLinesTask(apiArmIs, dbDataImporter, resId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResultObserver());
+    }
+
+    @Override
+    public void loadRemoteData() {
 
         Observable.create(new LoadAllDataTask(apiArmIs, apiSTE, apiGeo, dbDataImporter))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer< String >() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        progressListener.progressUpdate(s);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        progressListener.progressError((Exception) e);
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        progressListener.progressComplete();
-                    }
-                });
-
+                .subscribe(new ResultObserver());
 
     }
 
@@ -128,36 +137,37 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
     @Override
-    public void exportLinesInspections( List< InspectedLine > inspectedLines){
+    public void exportLinesInspections(List< InspectedLine > inspectedLines) {
 
         Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer< String >() {
-                               @Override
-                               public void onSubscribe(Disposable d) {
+                .subscribe(new ResultObserver() );
 
-                               }
+    }
 
-                               @Override
-                               public void onNext(String s) {
-                                   progressListener.progressUpdate(s);
-                               }
+    private class ResultObserver implements Observer< String > {
 
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                //   progressListener.progressComplete();
-                                   progressListener.progressError((Exception) e);
-                               }
+        @Override
+        public void onSubscribe(Disposable d) {
 
-                               @Override
-                               public void onComplete() {
-                                   progressListener.progressComplete();
-                               }
-                           }
+        }
 
-                );
+        @Override
+        public void onNext(String s) {
+            progressListener.progressUpdate(s);
+        }
 
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+            progressListener.progressError((Exception) e);
+
+        }
+
+        @Override
+        public void onComplete() {
+            progressListener.progressComplete();
+        }
     }
 }

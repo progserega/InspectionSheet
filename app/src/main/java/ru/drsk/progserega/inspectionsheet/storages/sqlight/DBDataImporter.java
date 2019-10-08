@@ -17,7 +17,10 @@ import java.util.Set;
 import ru.drsk.progserega.inspectionsheet.R;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
@@ -238,7 +241,7 @@ public class DBDataImporter {
         for (ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel substation : substations) {
             SubstationModel substationModel = new SubstationModel(
                     substation.getId(),
-                    substation.getUniqId() ,
+                    substation.getUniqId(),
                     substation.getName(),
                     null,
                     "substation",
@@ -252,7 +255,7 @@ public class DBDataImporter {
 
             long substationId = substationDao.insert(substationModel);
 
-            if(substation.getEquipmnents() == null){
+            if (substation.getEquipmnents() == null) {
                 continue;
             }
             for (SubstationTransformerModel transformer : substation.getEquipmnents()) {
@@ -409,6 +412,60 @@ public class DBDataImporter {
         db.lineDao().insertAll(sqlLines);
     }
 
+    public void loadISLines(List< LineData > lines) {
+
+
+        for (LineData line : lines) {
+
+            LineModel lineModel = new LineModel(
+                    line.getLineInfo().getId(),
+                    line.getLineInfo().getUniqId(),
+                    line.getLineInfo().getName(),
+                    line.getLineInfo().getVoltage(),
+                    0,
+                    0, 0, 0, 0
+            );
+
+            db.lineDao().insert(lineModel);
+
+            List<TowerModel> towerModels = new ArrayList<>();
+            List< LineTowerModel > lineTowerModels = new ArrayList<>();
+
+            int cnt = 1;
+            for(TowerJson towerJson: line.getTowers()) {
+                towerModels.add(new TowerModel(
+                        towerJson.getUniqId(),
+                        towerJson.getUniqId(),
+                        towerJson.getName(),
+                        towerJson.getMaterial(),
+                        towerJson.getType(),
+                        towerJson.getEle(),
+                        towerJson.getLat(),
+                        towerJson.getLon()));
+
+                lineTowerModels.add(new LineTowerModel(0, line.getLineInfo().getUniqId(), towerJson.getUniqId(), cnt));
+                cnt++;
+            }
+            this.db.lineTowerDao().insertAll(lineTowerModels);
+            this.db.towerDao().insertAll(towerModels);
+            updateLineBoundingBox(towerModels, line.getLineInfo().getUniqId());
+
+            List< LineSectionModel > sectionModels = new ArrayList<>();
+            for(SectionJson sectionJson: line.getSections()){
+                sectionModels.add(new LineSectionModel(
+                        0,
+                        sectionJson.getLineUniqId(),
+                        sectionJson.getFromTowerUniqId(),
+                        sectionJson.getToTowerUniqId(),
+                        sectionJson.getName(),
+                        sectionJson.getMaterial()
+                        ));
+            }
+            this.db.lineSectionDao().insertAll(sectionModels);
+
+        }
+    }
+
     public void loadLineDetail(GeoLine line, GeoLineDetail lineDetail) {
 
         long lineUniqId = line.getUniqId();
@@ -483,7 +540,6 @@ public class DBDataImporter {
             lonMin = Math.min(lonMin, tower.getLon());
             lonMax = Math.max(lonMax, tower.getLon());
         }
-
-        this.db.lineDao().updateBoundingBox(latMax, lonMin, latMin, lonMax, lineUniqId);
+        this.db.lineDao().updateBoundingBox(latMax + 0.000150, lonMin - 0.000150, latMin - 0.000150, lonMax + 0.000150, lineUniqId); //Немного расширим прямоугольник
     }
 }

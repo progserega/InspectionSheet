@@ -16,6 +16,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
@@ -24,11 +25,16 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectsJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
@@ -85,6 +91,17 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
                 emitter.onNext("Обновление данных пролета: " + inspectedSection.getSection().getName());
                 exportSectionInfo(emitter, inspectedSection.getSection());
 
+                emitter.onNext("Экспорт данных осмотра пролета: " + inspectedSection.getSection().getName());
+                long sectionInspectionId = exportSectionInspection(inspectionId, inspectedSection);
+                if (sectionInspectionId == 0) {
+                    continue; //что-то пошло не так
+                }
+
+                emitter.onNext("Экспорт деффектов пролета: " + inspectedSection.getSection().getName());
+                exportSectionDeffects(inspectedSection.getSection(), inspectedSection.getDeffects(), sectionInspectionId);
+
+                emitter.onNext("Экспорт фотографий деффектов пролета: " + inspectedSection.getSection().getName());
+                exportSectionDeffectsPhotos(inspectedSection.getInspection().getPhotos(), sectionInspectionId);
 
 
             }
@@ -151,6 +168,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
         TowerJson towerJson = new TowerJson(
                 tower.getUniqId(),
+                tower.getName(),
                 (tower.getMaterial() != null) ? tower.getMaterial().getId() : 0,
                 (tower.getTowerType() != null) ? tower.getTowerType().getId() : 0,
                 tower.getMapPoint().getLat(),
@@ -214,13 +232,13 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         }
 
         for (InspectionPhoto photo : photos) {
-            uploadPhoto(photo, towerInspectionId);
+            uploadPhoto(photo, towerInspectionId, EquipmentType.TOWER);
         }
 
         return 0;
     }
 
-    private boolean uploadPhoto(InspectionPhoto photo, long towerInspectionId) {
+    private boolean uploadPhoto(InspectionPhoto photo, long inspectionId, EquipmentType equipmentType) {
 
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
@@ -235,13 +253,18 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
             //Не работает с кирилическими именами файлов
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
 
-            UploadInspectionImageInfo imageInfo = new UploadInspectionImageInfo(file.getName(), towerInspectionId);
+            UploadInspectionImageInfo imageInfo = new UploadInspectionImageInfo(file.getName(), inspectionId);
             Gson gson = new Gson();
             String fileInfoJson = gson.toJson(imageInfo);
             RequestBody fileInfo = RequestBody.create(MediaType.parse("text/plain"), fileInfoJson);
 
+            if (equipmentType.equals(EquipmentType.TOWER)) {
+                response = apiArmIS.uploadTowerInspectionImage(fileToUpload, fileInfo).execute();
+            }
 
-            response = apiArmIS.uploadTowerInspectionImage(fileToUpload, fileInfo).execute();
+            if (equipmentType.equals(EquipmentType.LINE_SECTION)) {
+                response = apiArmIS.uploadSectionInspectionImage(fileToUpload, fileInfo).execute();
+            }
 
 
         } catch (IOException e) {
@@ -313,6 +336,70 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
+    private long exportSectionInspection(long lineInspectionId, InspectedSection inspectedSection) {
 
+        long timestamp = 0;
+        if (inspectedSection.getInspection().getInspectionDate() != null) {
+            timestamp = inspectedSection.getInspection().getInspectionDate().getTime() / 1000L;
+        }
+
+        SectionInspectionJson inspectionJson = new SectionInspectionJson(
+                lineInspectionId,
+                inspectedSection.getSection().getLineUniqId(),
+                inspectedSection.getSection().getTowerFromUniqId(),
+                inspectedSection.getSection().getTowerToUniqId(),
+                inspectedSection.getInspection().getComment(),
+                timestamp
+        );
+
+        Response response = null;
+        try {
+            response = apiArmIS.uploadLineSectionInspection(inspectionJson).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        return processResult(response);
+    }
+
+    private long exportSectionDeffects(LineSection section, List< LineSectionDeffect > deffectList, long sectionInspectionId) {
+
+        List< SectionDeffectJson > deffectsJsonList = new ArrayList<>();
+        for (LineSectionDeffect deffect : deffectList) {
+            deffectsJsonList.add(new SectionDeffectJson(
+                    section.getLineUniqId(),
+                    section.getTowerFromUniqId(),
+                    section.getTowerToUniqId(),
+                    (int) deffect.getDeffectType().getId(),
+                    deffect.getValue()
+            ));
+        }
+
+        SectionDeffectsJson deffectsJson = new SectionDeffectsJson(sectionInspectionId, deffectsJsonList);
+
+        Response response = null;
+        try {
+            response = apiArmIS.uploadLineSectionDeffects(deffectsJson).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        return processResult(response);
+
+    }
+
+    private void exportSectionDeffectsPhotos( List< InspectionPhoto > photos, long sectionInspectionId) {
+        if (photos == null || photos.size() == 0) {
+            return;
+        }
+
+        for (InspectionPhoto photo : photos) {
+            uploadPhoto(photo, sectionInspectionId, EquipmentType.LINE_SECTION);
+        }
+
+        return;
+    }
 }
 

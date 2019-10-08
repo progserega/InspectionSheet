@@ -42,11 +42,11 @@ public class LoadAllDataTask implements ObservableOnSubscribe< String > {
     public void subscribe(ObservableEmitter< String > emitter) throws Exception {
 
         try {
-            emitter.onNext("Загружаем список СП");
-            loadSp(emitter);
-
-            emitter.onNext("Загружаем список РЭС");
-            loadRes(emitter);
+//            emitter.onNext("Загружаем список СП");
+//            loadSp(emitter);
+//
+//            emitter.onNext("Загружаем список РЭС");
+//            loadRes(emitter);
 
             //dbDataImporter.initEnterpriseCache();
 
@@ -72,44 +72,6 @@ public class LoadAllDataTask implements ObservableOnSubscribe< String > {
         }
 
         emitter.onComplete();
-    }
-
-    private void loadSp(ObservableEmitter< String > emitter) throws IOException {
-        Response response = apiInspectionSheet.getAllSp().execute();
-        if (response.body() == null) {
-            throw new IOException("Данные по СП не получены. response.body is null");
-        }
-
-        List< SpModel > spModels = (List< SpModel >) response.body();
-
-        if (spModels == null || spModels.isEmpty()) {
-            throw new IOException("Данные по СП не получены");
-        }
-
-        for (SpModel sp : spModels) {
-            //android.os.SystemClock.sleep(2000);
-            dbDataImporter.addSp(sp.getId(), sp.getName());
-            emitter.onNext(sp.getName());
-        }
-    }
-
-    private void loadRes(ObservableEmitter< String > emitter) throws IOException {
-        Response response = apiInspectionSheet.getAllRes().execute();
-        if (response.body() == null) {
-            throw new IOException("Данные по РЭС не получены. response.body is null");
-        }
-
-        List< ResModel > resModels = (List< ResModel >) response.body();
-
-        if (resModels == null || resModels.isEmpty()) {
-            throw new IOException("Данные по РЭС не получены. response.body is null");
-        }
-
-        for (ResModel res : resModels) {
-            //android.os.SystemClock.sleep(500);
-            dbDataImporter.addRes(res.getId(), res.getSpId(), res.getName(), res.getAlterName());
-            emitter.onNext(res.getName() + " " + res.getAlterName());
-        }
     }
 
     private void loadTP(ObservableEmitter< String > emitter) throws IOException {

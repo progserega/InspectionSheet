@@ -292,20 +292,21 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
                 {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        selectedPos.put(0, i);
+                        //selectedPos.put(0, i);
+                        presenter.onNextSectionSelected(i);
                     }
                 });
 
         // Set the alert dialog positive button
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int pos = selectedPos.get(0);
-                if (pos != -1) {
-                    presenter.onNextSectionSelected(pos);
-                }
-            }
-        });
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                int pos = selectedPos.get(0);
+//                if (pos != -1) {
+//                    presenter.onNextSectionSelected(pos);
+//                }
+//            }
+//        });
 
         // Create the alert dialog
         AlertDialog dialog = builder.create();

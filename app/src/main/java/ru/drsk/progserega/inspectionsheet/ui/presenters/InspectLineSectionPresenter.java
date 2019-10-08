@@ -63,7 +63,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
 
         view.setSectionNumber(currentSection.getName());
 
-        view.setMaterialsSpinnerData(getMaterials(), currentSection.getMaterial() != null ? currentSection.getMaterial().getId() : 0);
+        view.setMaterialsSpinnerData(getMaterials(), getMaterialIdx());
 
         deffects = readDeffects();
         view.setDeffectsList(deffects);
@@ -79,6 +79,18 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         view.setInspectionPhotos(inspection.getPhotos());
     }
 
+    private int getMaterialIdx() {
+
+        if (currentSection.getMaterial() != null && currentSection.getMaterial().getId() != 0) {
+            return currentSection.getMaterial().getId();
+        }
+
+        if (line.getCachedSectionMaterial() != null) {
+            return line.getCachedSectionMaterial().getId();
+        }
+
+        return 0;
+    }
 
     @Override
     public void onDeffectSelectionChange(int pos, boolean isSelected) {
@@ -123,6 +135,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
     @Override
     public void onMaterialSelected(int pos) {
         currentSection.setMaterial(application.getCatalogStorage().getLineSectionMaterials().get(pos));
+        line.setCachedSectionMaterial(application.getCatalogStorage().getLineSectionMaterials().get(pos));
     }
 
     @Override
@@ -138,15 +151,6 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             materialsStr.add(material.getName());
         }
         return materialsStr;
-    }
-
-    private List<String> getTowerTypes() {
-        List<TowerType> types = application.getCatalogStorage().getTowerTypes();
-        List<String> typesNames = new ArrayList<>();
-        for (TowerType type : types) {
-            typesNames.add(type.getType());
-        }
-        return typesNames;
     }
 
     private List<LineSectionDeffect> readDeffects() {

@@ -9,6 +9,12 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspec
 
 public interface IRemoteStorage {
 
+    void clearStorage();
+
+    void loadOrganization();
+
+    void loadLines(long resId);
+
     void loadRemoteData();
 
     void setProgressListener(IProgressListener progressListener);

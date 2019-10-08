@@ -14,7 +14,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectsJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
@@ -80,5 +83,20 @@ public interface IApiInspectionSheet {
 
     @POST("/api/line/section")
     Call< UploadRes > uploadLineSectionInfo(@Body SectionJson sectionJson);
+
+    @POST("/api/line/section/inspection")
+    Call< UploadRes > uploadLineSectionInspection(@Body SectionInspectionJson sectionInspectionJson);
+
+    @POST("/api/line/section/deffects")
+    Call< UploadRes > uploadLineSectionDeffects(@Body SectionDeffectsJson sectionDeffectsJson);
+
+    @Multipart
+    @POST("/api/line/section/inspection/image")
+    Call< UploadRes > uploadSectionInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
+
+
+    @GET("/api/lines")
+    Call< LinesResponseJson > getLines(@Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
+
 
 }

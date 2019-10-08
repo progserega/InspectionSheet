@@ -5,9 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class TowerJson {
 
-    @SerializedName("tower_uniq_id")
+    @SerializedName("uniq_id")
     @Expose
-    private long towerUniqId;
+    private long uniqId;
+
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     @SerializedName("material")
     @Expose
@@ -29,8 +33,9 @@ public class TowerJson {
     @Expose
     private double ele;
 
-    public TowerJson(long towerUniqId, int material, int type, double lat, double lon, double ele) {
-        this.towerUniqId = towerUniqId;
+    public TowerJson(long uniqId, String name, int material, int type, double lat, double lon, double ele) {
+        this.uniqId = uniqId;
+        this.name = name;
         this.material = material;
         this.type = type;
         this.lat = lat;
@@ -38,12 +43,20 @@ public class TowerJson {
         this.ele = ele;
     }
 
-    public long getTowerUniqId() {
-        return towerUniqId;
+    public long getUniqId() {
+        return uniqId;
     }
 
-    public void setTowerUniqId(long towerUniqId) {
-        this.towerUniqId = towerUniqId;
+    public void setUniqId(long uniqId) {
+        this.uniqId = uniqId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getMaterial() {

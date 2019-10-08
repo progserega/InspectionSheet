@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.content.DialogInterface;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,6 +26,7 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 
@@ -31,16 +34,25 @@ import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 http://wiki.rs.int/doku.php/osm:api#список_всех_линий
 http://wiki.rs.int/doku.php/osm:api#данные_линии_по_имени
  */
-public class MainActivity extends AppCompatActivity implements IProgressListener {
+public class MainActivity extends AppCompatActivity implements IProgressListener, SelectOrganizationDialogFragment.ISelectOrganizationListener {
 
     private InspectionSheetApplication application;
     private ProgressBar progressBar;
     private TextView progressText;
+    private SelectOrganizationDialogFragment selectOrganizationDlog;
+    private long enterpriseId = 0;
+    private long areaId = 0;
 
     private static final boolean DEBUG_MODE = true;
 
+
     private static final String EXPORT_TRANSFORMERS = "export_transformers";
     private static final String EXPORT_LINES = "export_lines";
+    private static final String CLEAR_DB = "clear_db";
+    private static final String LOAD_ORGANIZATION = "load_organization";
+    private static final String SELECT_RES = "select_res";
+    private static final String LOAD_LINES = "load_lines";
+    private static final String LOAD_DATA = "load_data";
 
     private Queue< String > networkTasksQueue = new LinkedList<>();
 
@@ -89,10 +101,18 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
 
     private void loadData() {
+
         showProgress();
 
-        application.getRemoteStorage().loadRemoteData();
+        networkTasksQueue.clear();
 
+        networkTasksQueue.add(CLEAR_DB);
+        networkTasksQueue.add(LOAD_ORGANIZATION);
+        networkTasksQueue.add(SELECT_RES);
+        networkTasksQueue.add(LOAD_LINES);
+       // networkTasksQueue.add(LOAD_DATA);
+
+        nextTask();
     }
 
     @Override
@@ -150,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.add(EXPORT_LINES);
 
 
-
         nextTask();
     }
 
@@ -163,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             return;
         }
 
-        Log.d("EXPORT ", "EXPORT: " + task);
+        Log.d("NETWORK_TASK ", "TASK IS: " + task);
 
         switch (task) {
             case EXPORT_TRANSFORMERS:
@@ -172,6 +191,22 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case EXPORT_LINES:
                 exportLines();
                 return;
+            case CLEAR_DB:
+                application.getRemoteStorage().clearStorage();
+                return;
+            case LOAD_ORGANIZATION:
+                application.getRemoteStorage().loadOrganization();
+                return;
+            case SELECT_RES:
+                selectOrganization();
+                return;
+            case LOAD_DATA:
+                application.getRemoteStorage().loadRemoteData();
+                return;
+            case LOAD_LINES:
+                application.getRemoteStorage().loadLines(this.areaId);
+                return;
+
         }
     }
 
@@ -182,9 +217,36 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
-    private void exportLines(){
+    private void exportLines() {
 
         List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
         application.getRemoteStorage().exportLinesInspections(inspectedLines);
+    }
+
+
+    public void selectOrganization() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (selectOrganizationDlog == null) {
+            selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(this.application.getOrganizationService());
+        }
+        selectOrganizationDlog.Show(fm, enterpriseId, areaId);
+
+    }
+
+    @Override
+    public void onSelectOrganization(long enterpriseId, long areaId) {
+
+        this.enterpriseId = enterpriseId;
+        this.areaId = areaId;
+
+        //Toast.makeText(this, "Enterprise is =" + enterpriseId + " RES ID = " + areaId, Toast.LENGTH_LONG).show();
+
+        if (this.areaId == 0) {
+            showError("Ошибка", "Не выбран РЭС");
+            return;
+        }
+
+        networkTasksQueue.poll();
+        nextTask();
     }
 }

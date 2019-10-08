@@ -29,13 +29,13 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     private Line line;
     private Tower currentTower;
-    private List<Tower> towers;
-    private List<TowerDeffect> deffects;
-    private Set<Integer> changedDeffects;
+    private List< Tower > towers;
+    private List< TowerDeffect > deffects;
+    private Set< Integer > changedDeffects;
 
     private TowerInspection inspection;
 
-    private List<LineSection> nextSections = null;
+    private List< LineSection > nextSections = null;
 
     private static final int SEARCH_RADIUS = 100; //радиус поиска опоры в метрах
 
@@ -70,8 +70,8 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     private void setViewData() {
         view.setTowerNumber(currentTower.getName());
 
-        view.setMaterialsSpinnerData(getMaterials(), currentTower.getMaterial() != null ? currentTower.getMaterial().getId() : 0);
-        view.setTowerTypesSpinnerData(getTowerTypes(), currentTower.getTowerType() != null ? currentTower.getTowerType().getId() : 0);
+        view.setMaterialsSpinnerData(getMaterials(), getMaterialIdx());
+        view.setTowerTypesSpinnerData(getTowerTypes(), getTowerTypeIdx());
 
         deffects = readDeffects();
         view.setDeffectsList(deffects);
@@ -85,6 +85,31 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         view.setComment(inspection.getComment());
 
         view.setTowerPhotos(inspection.getPhotos());
+    }
+
+    private int getMaterialIdx() {
+
+        if (currentTower.getMaterial() != null && currentTower.getMaterial().getId() != 0) {
+            return currentTower.getMaterial().getId();
+        }
+
+        if (line.getCachedTowerMaterial() != null) {
+            return line.getCachedTowerMaterial().getId();
+        }
+
+        return 0;
+    }
+
+    private int getTowerTypeIdx() {
+        if (currentTower.getTowerType() != null && currentTower.getTowerType().getId() != 0) {
+            return currentTower.getTowerType().getId();
+        }
+
+        if (line.getCachedTowerType() != null) {
+            return line.getCachedTowerType().getId();
+        }
+
+        return 0;
     }
 
     @Override
@@ -158,8 +183,8 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
     }
 
-    private void saveCurrentTower(){
-        if(currentTower == null){
+    private void saveCurrentTower() {
+        if (currentTower == null) {
             return;
         }
 
@@ -192,11 +217,13 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onMaterialSelected(int pos) {
         currentTower.setMaterial(application.getCatalogStorage().getMaterials().get(pos));
+        line.setCachedTowerMaterial(application.getCatalogStorage().getMaterials().get(pos));
     }
 
     @Override
     public void onTowerTypeSelected(int pos) {
         currentTower.setTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
+        line.setCachedTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
     }
 
     @Override
@@ -204,19 +231,19 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         inspection.getPhotos().add(new InspectionPhoto(0, photoPath, application.getApplicationContext()));
     }
 
-    private List<String> getMaterials() {
-        List<Material> materialList = application.getCatalogStorage().getMaterials();
+    private List< String > getMaterials() {
+        List< Material > materialList = application.getCatalogStorage().getMaterials();
 
-        List<String> materialsStr = new ArrayList<>();
+        List< String > materialsStr = new ArrayList<>();
         for (Material material : materialList) {
             materialsStr.add(material.getName());
         }
         return materialsStr;
     }
 
-    private List<String> getTowerTypes() {
-        List<TowerType> types = application.getCatalogStorage().getTowerTypes();
-        List<String> typesNames = new ArrayList<>();
+    private List< String > getTowerTypes() {
+        List< TowerType > types = application.getCatalogStorage().getTowerTypes();
+        List< String > typesNames = new ArrayList<>();
         for (TowerType type : types) {
             typesNames.add(type.getType());
         }
@@ -225,7 +252,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     private void filterTowersByUserLocation() {
 
-        List<Tower> filteredTowers = new ArrayList<>();
+        List< Tower > filteredTowers = new ArrayList<>();
         ILocation locationService = application.getLocationService();
         for (Tower tower : towers) {
             double distance = locationService.distanceBetween(tower.getMapPoint(), locationService.getUserPosition());
@@ -236,20 +263,20 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         this.towers = filteredTowers;
     }
 
-    private List<TowerDeffect> readDeffects() {
+    private List< TowerDeffect > readDeffects() {
         //получаем сохраненные деффекты
-        List<TowerDeffect> towerDeffects = application.getLineInspectionStorage().getTowerDeffects(currentTower.getUniqId());
+        List< TowerDeffect > towerDeffects = application.getLineInspectionStorage().getTowerDeffects(currentTower.getUniqId());
         //конвертнем в хэшмап для быстрого поиска
-        Map<Long, TowerDeffect> towerDeffectsMap = new HashMap<>();
+        Map< Long, TowerDeffect > towerDeffectsMap = new HashMap<>();
         for (TowerDeffect towerDeffect : towerDeffects) {
             towerDeffectsMap.put(towerDeffect.getDeffectType().getId(), towerDeffect);
         }
 
         //Получаем список возможных вариантов
-        List<LineDeffectType> deffectTypes = application.getLineDeffectTypesStorage().loadTowerDeffects();
+        List< LineDeffectType > deffectTypes = application.getLineDeffectTypesStorage().loadTowerDeffects();
 
         //Формируем список всех деффектов с учетом ранее заполненных
-        List<TowerDeffect> allDeffects = new ArrayList<>();
+        List< TowerDeffect > allDeffects = new ArrayList<>();
         for (LineDeffectType deffectType : deffectTypes) {
             TowerDeffect savedDeffect = towerDeffectsMap.get(deffectType.getId());
 
@@ -280,11 +307,11 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
     }
 
-    private List<LineSection> getNextSections() {
+    private List< LineSection > getNextSections() {
         if (currentTower == null) {
             return new ArrayList<>();
         }
-        List<LineSection> sectionModels = application.getLineSectionStorage().getByLineStartWithTower(line.getUniqId(), currentTower.getUniqId());
+        List< LineSection > sectionModels = application.getLineSectionStorage().getByLineStartWithTower(line.getUniqId(), currentTower.getUniqId());
 
         return sectionModels;
     }
