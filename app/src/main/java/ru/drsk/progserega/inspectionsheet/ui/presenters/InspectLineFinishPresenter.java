@@ -27,7 +27,12 @@ public class InspectLineFinishPresenter implements InspectLineFinishContract.Pre
 
         view.setDateInspection(lineInspection.getInspectionDate());
 
-        view.setInspectorName(lineInspection.getInspectorName());
+        String inspectorName = lineInspection.getInspectorName();
+        if(inspectorName == null || inspectorName.isEmpty()){
+            inspectorName = application.getSettingsStorage().loadSettings().getFio();
+        }
+
+        view.setInspectorName(inspectorName);
     }
 
     @Override
