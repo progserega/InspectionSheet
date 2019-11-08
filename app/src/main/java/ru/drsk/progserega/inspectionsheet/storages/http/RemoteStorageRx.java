@@ -61,12 +61,12 @@ public class RemoteStorageRx implements IRemoteStorage {
     public void clearStorage() {
 
         Observable.fromCallable(new Callable< String >() {
-                    @Override
-                    public String call() throws Exception {
-                        dbDataImporter.ClearDB();
-                        return "БД Очищена";
-                    }
-                })
+            @Override
+            public String call() throws Exception {
+                dbDataImporter.ClearDB();
+                return "БД Очищена";
+            }
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());
@@ -142,7 +142,7 @@ public class RemoteStorageRx implements IRemoteStorage {
         Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ResultObserver() );
+                .subscribe(new ResultObserver());
 
     }
 
@@ -155,19 +155,25 @@ public class RemoteStorageRx implements IRemoteStorage {
 
         @Override
         public void onNext(String s) {
-            progressListener.progressUpdate(s);
+            if (progressListener != null) {
+                progressListener.progressUpdate(s);
+            }
         }
 
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            progressListener.progressError((Exception) e);
+            if (progressListener != null) {
+                progressListener.progressError((Exception) e);
+            }
 
         }
 
         @Override
         public void onComplete() {
-            progressListener.progressComplete();
+            if (progressListener != null) {
+                progressListener.progressComplete();
+            }
         }
     }
 }

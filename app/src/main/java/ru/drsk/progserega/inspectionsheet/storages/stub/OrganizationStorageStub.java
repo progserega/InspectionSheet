@@ -52,4 +52,14 @@ public class OrganizationStorageStub implements IOrganizationStorage {
         return enterprises;
 
     }
+
+    @Override
+    public ElectricNetworkArea getResById(long id) {
+        return null;
+    }
+
+    @Override
+    public void ClearOrganizations() {
+
+    }
 }

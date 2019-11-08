@@ -1,17 +1,17 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.content.DialogInterface;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,10 +23,9 @@ import java.util.Queue;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
-import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 
@@ -63,12 +62,41 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         setContentView(R.layout.activity_main);
 
         this.application = (InspectionSheetApplication) this.getApplication();
+        setTitle("Листы осмотров");
+
 
         progressBar = (ProgressBar) findViewById(R.id.loading_progress);
         progressText = (TextView) findViewById(R.id.loading_progress_text);
 
-        application.getRemoteStorage().setProgressListener(this);
+        //application.getRemoteStorage().setProgressListener(this);
         networkTasksQueue.clear();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // получим идентификатор выбранного пункта меню
+        int id = item.getItemId();
+        // Операции для выбранного пункта меню
+        switch (id) {
+            case R.id.menu_settings:
+                // Toast.makeText(this, "SettingsActivity", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.menu_about:
+                //   Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
 
@@ -104,13 +132,15 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         showProgress();
 
+        application.getRemoteStorage().setProgressListener(this);
+
         networkTasksQueue.clear();
 
-        networkTasksQueue.add(CLEAR_DB);
-        networkTasksQueue.add(LOAD_ORGANIZATION);
         networkTasksQueue.add(SELECT_RES);
+        networkTasksQueue.add(CLEAR_DB);
+        // networkTasksQueue.add(LOAD_ORGANIZATION);
         networkTasksQueue.add(LOAD_LINES);
-       // networkTasksQueue.add(LOAD_DATA);
+        // networkTasksQueue.add(LOAD_DATA);
 
         nextTask();
     }
@@ -225,12 +255,22 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
 
     public void selectOrganization() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (selectOrganizationDlog == null) {
-            selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(this.application.getOrganizationService());
+        Settings settings = application.getSettingsStorage().loadSettings();
+       // settings.setResId(0);
+        if (settings.getResId() == 0) {
+            hideProgress();
+            showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
+            return;
         }
-        selectOrganizationDlog.Show(fm, enterpriseId, areaId);
 
+        this.areaId = settings.getResId();
+        networkTasksQueue.poll();
+        nextTask();
+//        FragmentManager fm = getSupportFragmentManager();
+//        if (selectOrganizationDlog == null) {
+//            selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(this.application.getOrganizationService());
+//        }
+//        selectOrganizationDlog.Show(fm, enterpriseId, areaId);
     }
 
     @Override

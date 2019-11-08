@@ -6,6 +6,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.entities.organization.NetworkEnterprise;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 
+@Deprecated
 public class OrganizationService {
 
     private IOrganizationStorage organizationStorage;

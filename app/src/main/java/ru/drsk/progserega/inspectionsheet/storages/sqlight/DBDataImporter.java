@@ -101,21 +101,32 @@ public class DBDataImporter {
 
     }
 
+
+
     public void ClearDB() {
-        db.clearAllTables();
+       // db.clearAllTables();
 //        spDao.delete();
 //        resDao.delete();
-//        transformerDao.delete();
-//        transformerSubstationDao.delete();
-//        transformerSubstationEquipmentDao.delete();
-//        substationDao.delete();
-//        substationEquipmentDao.delete();
-//        inspectionDao.deleteAll();
-//        inspectionPhotoDao.deleteAll();
-//        db.lineDao().deleteAll();
-//        db.lineTowerDao().deleteAll();
-//        db.towerDao().deleteAll();
-//        db.lineSectionDao().deleteAll();
+        transformerDao.delete();
+        transformerSubstationDao.delete();
+        transformerSubstationEquipmentDao.delete();
+        substationDao.delete();
+        substationEquipmentDao.delete();
+        inspectionDao.deleteAll();
+        inspectionPhotoDao.deleteAll();
+
+        db.lineDao().deleteAll();
+        db.lineTowerDao().deleteAll();
+        db.towerDao().deleteAll();
+        db.lineSectionDao().deleteAll();
+
+        db.lineInspectionDao().deleteAll();
+
+        db.lineSectionDeffectDao().deleteAll();
+        db.lineSectionInspectionDao().deleteAll();
+
+        db.towerDeffectDao().deleteAll();
+        db.towerInspectionDao().deleteAll();
     }
 
     public void loadSteTpModel(List< SteTPModel > tpModels) {

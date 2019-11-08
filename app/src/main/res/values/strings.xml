@@ -41,6 +41,7 @@
     <string name="title_activity_test2">Test2</string>
     <string name="save">Save</string>
     <string name="inspection">inspection</string>
+    <string name="settings">settings</string>
     <string name="export_results">export</string>
     <string name="add_transformer_t1">Add transformerType 1</string>
     <string name="add_transformer_t2">Add transformerType 2</string>
@@ -52,6 +53,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_group_add_transfrmer_deffect">GroupAddTransfrmerDeffect</string>
     <string name="switch_inspections">Поменять местами осмотры</string>
+    <string name="about">About</string>
 
     <!--для китайского плагина выбора фотографий -->
     <string name="selector_folder_all">Все фотографии</string>
@@ -67,4 +69,7 @@
     <string name="selectVoltageText">Напряжение</string>
     <string name="finish">Закончить</string>
     <!--для китайского плагина выбора фотографий  end! -->
+
+
+    <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
 </resources>

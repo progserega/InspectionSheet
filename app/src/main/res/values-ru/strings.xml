@@ -42,6 +42,9 @@
     <string name="add_transformer_t2">Добавить трансформатор 2</string>
     <string name="add_transformer_t3">Добавить трансформатор 3</string>
     <string name="switch_inspections">Поменять местами осмотры</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О программе</string>
+
 
     <!--для китайского плагина выбора фотографий -->
     <string name="selector_folder_all">Все фотографии</string>

@@ -25,6 +25,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
@@ -32,6 +33,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
 import ru.drsk.progserega.inspectionsheet.storages.json.LineDeffectTypesStorageJson;
+import ru.drsk.progserega.inspectionsheet.storages.shared_preferences.SettingsStorageImpl;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
@@ -97,6 +99,12 @@ public class InspectionSheetApplication extends Application {
 
     private ILineInspectionStorage lineInspectionStorage;
 
+
+    private ISettingsStorage settingsStorage;
+
+    private IOrganizationStorage organizationStorage;
+
+
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
     }
@@ -113,7 +121,11 @@ public class InspectionSheetApplication extends Application {
         return organizationService;
     }
 
-//    public TowersService getTowersService() {
+    public IOrganizationStorage getOrganizationStorage() {
+        return organizationStorage;
+    }
+
+    //    public TowersService getTowersService() {
 //        return towersService;
 //    }
 
@@ -217,6 +229,10 @@ public class InspectionSheetApplication extends Application {
         return lineStorage;
     }
 
+    public ISettingsStorage getSettingsStorage() {
+        return settingsStorage;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -244,7 +260,7 @@ public class InspectionSheetApplication extends Application {
 
         catalogStorage = new CatalogStorageStub();
 
-        IOrganizationStorage organizationStorage = new OrganizationStorage(db);
+        organizationStorage = new OrganizationStorage(db);
         organizationService = new OrganizationService(organizationStorage);
 
 
@@ -288,6 +304,8 @@ public class InspectionSheetApplication extends Application {
                 towerStorage,
                 lineInspectionStorage,
                 lineSectionStorage);
+
+        settingsStorage = new SettingsStorageImpl(getApplicationContext());
     }
 
 }

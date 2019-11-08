@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.entities.organization.NetworkEnterpris
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
 
 public class OrganizationStorage implements IOrganizationStorage {
@@ -45,5 +46,25 @@ public class OrganizationStorage implements IOrganizationStorage {
         }
 
         return enterprises;
+    }
+
+    @Override
+    public ElectricNetworkArea getResById(long id) {
+        Res res = db.resDao().getById(id);
+        if(res == null){
+            return null;
+        }
+
+        SP sp = db.spDao().getById(res.getEnterpriseId());
+        if(sp == null){
+            return  null;
+        }
+
+        return new ElectricNetworkArea(res.getId(), res.getName(), new NetworkEnterprise(sp.getId(), sp.getName()));
+    }
+
+    public void ClearOrganizations(){
+        db.spDao().delete();
+        db.resDao().delete();
     }
 }

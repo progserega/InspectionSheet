@@ -15,6 +15,9 @@ public interface ResDao {
     @Query("SELECT * FROM Res")
     List<Res> getAll();
 
+    @Query("SELECT * FROM res WHERE id = :id ")
+    Res getById(long id);
+
     @Insert
     void insertAll(Res... areas);
 
