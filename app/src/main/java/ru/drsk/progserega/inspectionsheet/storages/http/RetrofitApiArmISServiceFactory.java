@@ -31,8 +31,8 @@ public class RetrofitApiArmISServiceFactory {
         retrofit = new Retrofit.Builder()
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://10.75.168.40:3010") //Базовая часть адреса
-                //.baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
+                //.baseUrl("http://10.75.168.40:3010") //Базовая часть адреса
+                .baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
     }

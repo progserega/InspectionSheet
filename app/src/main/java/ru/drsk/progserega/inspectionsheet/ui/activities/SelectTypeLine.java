@@ -30,22 +30,22 @@ public class SelectTypeLine extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void defectInVl6_10(View view) {
-
-        Intent intent = new Intent(this, SearchObject.class);
-        intent.putExtra(OBJECT_TYPE, EquipmentType.LINE);
-        intent.putExtra(LINE_TYPE, Voltage.V_6_10KV);
-
-
-        startActivity(intent);
-    }
-    public void defectInVl35_110(View view) {
-        Intent intent = new Intent(this, SearchObject.class);
-        intent.putExtra(OBJECT_TYPE, EquipmentType.LINE);
-        intent.putExtra(LINE_TYPE, Voltage.V_35_110KV);
-
-        startActivity(intent);
-    }
+//    public void defectInVl6_10(View view) {
+//
+//        Intent intent = new Intent(this, SearchObject.class);
+//        intent.putExtra(OBJECT_TYPE, EquipmentType.LINE);
+//        intent.putExtra(LINE_TYPE, Voltage.V_6_10KV);
+//
+//
+//        startActivity(intent);
+//    }
+//    public void defectInVl35_110(View view) {
+//        Intent intent = new Intent(this, SearchObject.class);
+//        intent.putExtra(OBJECT_TYPE, EquipmentType.LINE);
+//        intent.putExtra(LINE_TYPE, Voltage.V_35_110KV);
+//
+//        startActivity(intent);
+//    }
 
     public void defectInPs35_110(View view) {
 
