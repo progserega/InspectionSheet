@@ -127,6 +127,19 @@ public class InspectionService {
         for(LineInspection lineInspection : lineInspections){
             List<InspectedTower> inspectedTowers = getInspectedTowersByLine(lineInspection.getLine());
             List<InspectedSection> inspectedSections = getInspectedSectionsByLine(lineInspection.getLine());
+
+            List< Tower > towers = towerStorage.getByLineUniqId(lineInspection.getLine().getUniqId());
+            List< LineSection > sections = sectionStorage.getByLine(lineInspection.getLine().getUniqId());
+
+            int totalCnt = towers.size() + sections.size();
+            int inspectedCnt = inspectedTowers.size() + inspectedSections.size();
+            float pecent = 0;
+            if (totalCnt != 0) {
+                pecent = inspectedCnt * 100.0f / totalCnt;
+            }
+
+            lineInspection.setInspectionPercent(pecent);
+
             inspectedLines.add(new InspectedLine(lineInspection, inspectedTowers, inspectedSections));
 
         }

@@ -18,6 +18,8 @@ public class LineInspection {
 
     private Date inspectionDate;
 
+    private float inspectionPercent = 0.0f;
+
     public LineInspection(long id, Line line) {
         this.id = id;
         this.line = line;
@@ -70,5 +72,13 @@ public class LineInspection {
 
     public void setInspectionDate(Date inspectionDate) {
         this.inspectionDate = inspectionDate;
+    }
+
+    public float getInspectionPercent() {
+        return inspectionPercent;
+    }
+
+    public void setInspectionPercent(float inspectionPercent) {
+        this.inspectionPercent = inspectionPercent;
     }
 }

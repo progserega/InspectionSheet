@@ -127,7 +127,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
                 inspection.getInspectorName(),
                 inspection.getInspectionType().getId(),
                 timestamp,
-                0.0f,
+                inspection.getInspectionPercent(),
                 resId
         );
 

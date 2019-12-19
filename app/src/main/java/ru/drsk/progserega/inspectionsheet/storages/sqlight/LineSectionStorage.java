@@ -23,6 +23,16 @@ public class LineSectionStorage implements ILineSectionStorage {
     }
 
     @Override
+    public List< LineSection > getByLine(long lineUniqId) {
+        List< LineSectionModel > sectionModels = db.lineSectionDao().getByLine(lineUniqId);
+        List< LineSection > sections = new ArrayList<>();
+        for (LineSectionModel sectionModel : sectionModels) {
+            sections.add(ModelToEntity(sectionModel));
+        }
+        return sections;
+    }
+
+    @Override
     public List< LineSection > getByLineStartWithTower(long lineUniqId, long towerUniqId) {
         List< LineSectionModel > sectionModels = db.lineSectionDao().getByLineTower(lineUniqId, towerUniqId);
         List< LineSection > sections = new ArrayList<>();

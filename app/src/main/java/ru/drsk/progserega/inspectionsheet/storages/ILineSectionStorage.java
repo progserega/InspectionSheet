@@ -7,6 +7,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionM
 
 public interface ILineSectionStorage {
 
+    List<LineSection> getByLine(long lineUniqId);
+
     List<LineSection> getByLineStartWithTower(long lineUniqId, long towerUniqId);
 
     LineSection getById(long id);
