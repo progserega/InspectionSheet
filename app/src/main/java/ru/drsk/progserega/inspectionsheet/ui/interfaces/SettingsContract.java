@@ -11,10 +11,12 @@ public class SettingsContract {
 
         String getFio();
         String getUserPosition();
+        String getServerUrl();
 
         void setFio(String fio);
         void setUserPosition(String position);
         void setSpResName(String spResName);
+        void setServerUrl(String serverUrl);
 
 
         void showSelectOrganizationDialog(long enterpriseId, long areaId);

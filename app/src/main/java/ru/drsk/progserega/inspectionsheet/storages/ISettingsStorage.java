@@ -8,4 +8,5 @@ public interface ISettingsStorage {
 
     void saveSettings(Settings settings);
 
+
 }

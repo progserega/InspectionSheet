@@ -55,22 +55,24 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         view.setUserPosition(settings.getPosition());
         this.resId = settings.getResId();
 
+        view.setSpResName("Не выбран (нажмите для выбора)");
         if (resId != 0) {
-
             ElectricNetworkArea res = organizationStorage.getResById(resId);
-            view.setSpResName(res.getNetworkEnterprise().getName() + " / " + res.getName());
-        } else {
-            view.setSpResName("Не выбран (нажмите для выбора)");
+            if (res != null) {
+                view.setSpResName(res.getNetworkEnterprise().getName() + " / " + res.getName());
+            }
         }
 
+        view.setServerUrl(settings.getServerUrl());
     }
 
     @Override
     public void SaveBtnPressed() {
         String fio = view.getFio();
         String position = view.getUserPosition();
+        String serverUrl = view.getServerUrl();
 
-        settingsStorage.saveSettings(new Settings(fio, position, (int) resId));
+        settingsStorage.saveSettings(new Settings(fio, position, (int) resId, serverUrl));
 
         view.finishView();
     }
@@ -79,8 +81,8 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     public void SelectResBtnPressed() {
         List< NetworkEnterprise > allEnt = organizationStorage.getAllEnterprices();
         if (allEnt == null || allEnt.size() == 0) {
-        //if(true){
-           view.showError("Список СП/РЭС пуст", "Нажмите кнопку обновить!");
+            //if(true){
+            view.showError("Список СП/РЭС пуст", "Нажмите кнопку обновить!");
         } else {
             view.showSelectOrganizationDialog(0, 0);
         }
@@ -98,6 +100,8 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     public void RefreshOrganizationsBtnPressed() {
         view.ShowProgressBar();
         organizationStorage.ClearOrganizations();
+
+        application.getRemoteStorage().setServerUrl(view.getServerUrl());
         application.getRemoteStorage().setProgressListener(this);
         application.getRemoteStorage().loadOrganization();
     }
@@ -109,13 +113,14 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
 
     @Override
     public void progressComplete() {
-      //  view.showSelectOrganizationDialog(0, 0);
+        //  view.showSelectOrganizationDialog(0, 0);
         view.HideProgressBar();
     }
 
     @Override
     public void progressError(Exception ex) {
         view.HideProgressBar();
+        view.showError("Ошибка загрузки данных", ex.getMessage());
     }
 
     @Override

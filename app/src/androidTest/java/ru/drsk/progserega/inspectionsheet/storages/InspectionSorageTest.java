@@ -57,13 +57,13 @@ public class InspectionSorageTest {
         TransformerInSlot transformer = new TransformerInSlot(1, 1, new TransformerType( 1, "Transformerr name"));
         TransformerInspection transformerInspection = new TransformerInspection(substation, transformer);
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
-        transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.transormator_inspection_list)));
+        transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.substation_transormer_deffect_types)));
 
         storage.saveInspection(transformerInspection);
         assertTrue(transformerInspection.getInspectionItems().get(1).getId() > 0);
 
         //загружаем новый список -- эмулируем новый запуск программы
-        transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.transormator_inspection_list)));
+        transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.substation_transormer_deffect_types)));
         assertTrue(transformerInspection.getInspectionItems().get(1).getId() == 0);
 
         //загружаем из БД

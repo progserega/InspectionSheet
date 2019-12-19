@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +51,12 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     private IApiInspectionSheet apiArmIS;
     private List< InspectedLine > inspectedLines;
+    private long resId;
 
-    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List< InspectedLine > inspectedLines) {
+    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List< InspectedLine > inspectedLines, long resId) {
         this.apiArmIS = apiArmIS;
         this.inspectedLines = inspectedLines;
+        this.resId = resId;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         for (InspectedLine line : inspectedLines) {
 
             emitter.onNext("Экспорт данных линии: " + line.getLineInspection().getLine().getName());
-            long inspectionId = exportInspection(line.getLineInspection());
+            long inspectionId = exportInspection(line.getLineInspection(), resId);
             if (inspectionId == 0) {
                 continue;//что-то пошло не так
             }
@@ -112,7 +115,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         emitter.onComplete();
     }
 
-    private long exportInspection(LineInspection inspection) {
+    private long exportInspection(LineInspection inspection, long resId) throws ConnectException {
 
         long timestamp = 0;
         if (inspection.getInspectionDate() != null) {
@@ -124,12 +127,15 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
                 inspection.getInspectorName(),
                 inspection.getInspectionType().getId(),
                 timestamp,
-                0.0f
+                0.0f,
+                resId
         );
 
         Response response = null;
         try {
             response = apiArmIS.uploadLineInspection(inspectionJson).execute();
+        } catch (java.net.ConnectException e) {
+            throw new ConnectException("Ошибка соединения\n" + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -390,7 +396,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
-    private void exportSectionDeffectsPhotos( List< InspectionPhoto > photos, long sectionInspectionId) {
+    private void exportSectionDeffectsPhotos(List< InspectionPhoto > photos, long sectionInspectionId) {
         if (photos == null || photos.size() == 0) {
             return;
         }

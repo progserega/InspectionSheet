@@ -236,6 +236,7 @@ public class InspectionSheetApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        settingsStorage = new SettingsStorageImpl(getApplicationContext());
 
         db = Room.databaseBuilder(
                 getApplicationContext(),
@@ -280,7 +281,7 @@ public class InspectionSheetApplication extends Application {
 
         DBDataImporter dbDataImporter = new DBDataImporter(db);
         // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
-        remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext());
+        remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext(), settingsStorage);
 
         substationInspections = new ArrayList<>();
 
@@ -305,7 +306,7 @@ public class InspectionSheetApplication extends Application {
                 lineInspectionStorage,
                 lineSectionStorage);
 
-        settingsStorage = new SettingsStorageImpl(getApplicationContext());
+
     }
 
 }

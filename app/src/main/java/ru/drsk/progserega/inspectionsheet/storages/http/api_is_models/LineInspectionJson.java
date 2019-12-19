@@ -25,12 +25,18 @@ public class LineInspectionJson {
     @Expose
     private float inspectionPercent;
 
-    public LineInspectionJson(long lineUniqId, String inspectorName, int inspectionType, long inspectionDate, float inspectionPercent) {
+    @SerializedName("res_id")
+    @Expose
+    private long resId;
+
+
+    public LineInspectionJson(long lineUniqId, String inspectorName, int inspectionType, long inspectionDate, float inspectionPercent, long resId) {
         this.lineUniqId = lineUniqId;
         this.inspectorName = inspectorName;
         this.inspectionType = inspectionType;
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
+        this.resId = resId;
     }
 
     public long getLineUniqId() {
@@ -71,5 +77,13 @@ public class LineInspectionJson {
 
     public void setInspectionPercent(float inspectionPercent) {
         this.inspectionPercent = inspectionPercent;
+    }
+
+    public long getResId() {
+        return resId;
+    }
+
+    public void setResId(long resId) {
+        this.resId = resId;
     }
 }

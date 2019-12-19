@@ -22,7 +22,7 @@ public class LogJsonInterceptor implements Interceptor {
 
         Response response = chain.proceed(request);
         String rawJson = response.body().string();
-        //Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));
+       // Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));
 
         try {
             Object object = new JSONTokener(rawJson).nextValue();
@@ -31,7 +31,10 @@ public class LogJsonInterceptor implements Interceptor {
                     : ((JSONArray) object).toString(4);
             Log.d("jsonLog", jsonLog);
         } catch (JSONException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));
+        }catch (java.lang.ClassCastException e){
+            Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));
         }
 
         // Re-create the response before returning it because body can be read only once

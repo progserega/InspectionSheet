@@ -265,7 +265,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     private List< TowerDeffect > readDeffects() {
         //получаем сохраненные деффекты
-        List< TowerDeffect > towerDeffects = application.getLineInspectionStorage().getTowerDeffects(currentTower.getUniqId());
+        List< TowerDeffect > towerDeffects = application.getLineInspectionStorage().getTowerDeffects(currentTower.getUniqId(), line);
         //конвертнем в хэшмап для быстрого поиска
         Map< Long, TowerDeffect > towerDeffectsMap = new HashMap<>();
         for (TowerDeffect towerDeffect : towerDeffects) {
@@ -273,7 +273,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
 
         //Получаем список возможных вариантов
-        List< LineDeffectType > deffectTypes = application.getLineDeffectTypesStorage().loadTowerDeffects();
+        List< LineDeffectType > deffectTypes = application.getLineDeffectTypesStorage().loadTowerDeffects(line.getVoltage().getValueVolt());
 
         //Формируем список всех деффектов с учетом ранее заполненных
         List< TowerDeffect > allDeffects = new ArrayList<>();

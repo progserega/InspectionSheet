@@ -21,5 +21,7 @@ public interface IRemoteStorage {
 
     void exportTransformersInspections(List<TransformerInspection> transformerInspections);
 
-    void exportLinesInspections( List< InspectedLine > inspectedLines);
+    void exportLinesInspections( List< InspectedLine > inspectedLines, long resId);
+
+    void setServerUrl(String serverUrl);
 }

@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import io.reactivex.schedulers.Schedulers;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspectionTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
@@ -38,18 +40,26 @@ public class RemoteStorageRx implements IRemoteStorage {
     private IProgressListener progressListener;
     private Context context;
 
-    public RemoteStorageRx(DBDataImporter dbDataImporter, Context context) {
+    private  RetrofitApiArmISServiceFactory armISServiceFactory;
+
+    public RemoteStorageRx(DBDataImporter dbDataImporter, Context context, ISettingsStorage settingsStorage) {
         this.dbDataImporter = dbDataImporter;
         this.context = context;
 
         RetrofitApiSTEServiceFactory apiSTEServiceFactory = new RetrofitApiSTEServiceFactory();
         apiSTE = apiSTEServiceFactory.create();
 
-        RetrofitApiArmISServiceFactory armISServiceFactory = new RetrofitApiArmISServiceFactory();
+        armISServiceFactory = new RetrofitApiArmISServiceFactory(settingsStorage);
         apiArmIs = armISServiceFactory.create();
 
         RetrofitApiGeoServiceFactory apiGeoServiceFactory = new RetrofitApiGeoServiceFactory();
         apiGeo = apiGeoServiceFactory.create();
+    }
+
+    @Override
+    public void setServerUrl(String serverUrl) {
+        armISServiceFactory.setBaseUrl(serverUrl);
+        apiArmIs = armISServiceFactory.create();
     }
 
     @Override
@@ -137,9 +147,10 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
     @Override
-    public void exportLinesInspections(List< InspectedLine > inspectedLines) {
+    public void exportLinesInspections(List< InspectedLine > inspectedLines, long resId) {
 
-        Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines))
+        Log.d("EXPORT", "Start export lines inspection");
+        Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines, resId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());

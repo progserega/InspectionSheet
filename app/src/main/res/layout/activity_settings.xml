@@ -6,6 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.SettingsActivity">
 
+    <EditText
+        android:id="@+id/settings_position"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView17"
+        android:autofillHints="" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Должность"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_fio" />
+
     <include
         android:id="@+id/settingss_progress_bar"
         android:visibility="gone"
@@ -40,13 +66,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Должность"
+        android:layout_marginTop="64dp"
+        android:text="сервер"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_fio" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_RES" />
 
     <EditText
-        android:id="@+id/settings_position"
+        android:id="@+id/settings_server_url"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -56,6 +82,7 @@
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
@@ -75,12 +102,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:onClick="onSelectResClick"
         android:text="Не выбран (нажмите для выбора)"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/settings_refresh_organization_btn"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
@@ -127,11 +155,9 @@
         android:id="@+id/settings_refresh_organization_btn"
         android:layout_width="59dp"
         android:layout_height="51dp"
-        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_position"
-        app:srcCompat="@drawable/ic_baseline_sync_24px"
         android:onClick="onRefreshOrganizationClick"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView16"
+        app:srcCompat="@drawable/ic_baseline_sync_24px" />
 </android.support.constraint.ConstraintLayout>

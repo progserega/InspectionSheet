@@ -7,6 +7,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse;
 
+@Deprecated
 public interface IApiSTE {
 
    // @Headers("Accept-Encoding: identity")

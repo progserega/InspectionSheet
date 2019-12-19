@@ -1,7 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -32,7 +31,6 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
-import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
@@ -378,7 +376,7 @@ public class DBDataImporter {
         List< InspectionItem > inspectionItems = null;
         try {
             inspectionItems = inspectionListReader.readInspections(
-                    appContext.getResources().openRawResource(R.raw.transormator_inspection_list)
+                    appContext.getResources().openRawResource(R.raw.substation_transormer_deffect_types)
             );
         } catch (IOException e) {
             e.printStackTrace();

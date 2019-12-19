@@ -17,6 +17,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 
+@Deprecated
 public class InspectionResultsAsyncUploader extends AsyncTask<Void, Integer, Void> {
 
 

@@ -44,14 +44,14 @@ public class LineInspectionStorage implements ILineInspectionStorage {
     }
 
     @Override
-    public List< TowerDeffect > getTowerDeffects(long towerUniqId) {
+    public List< TowerDeffect > getTowerDeffects(long towerUniqId, Line line) {
         List< TowerDeffectModel > towerDeffectModels = db.towerDeffectDao().getTowerDeffects(towerUniqId);
         List< TowerDeffect > deffects = new ArrayList<>();
         for (TowerDeffectModel deffectModel : towerDeffectModels) {
             deffects.add(new TowerDeffect(
                     deffectModel.getId(),
                     towerUniqId,
-                    deffectTypesStorage.getTowerDeffectById(deffectModel.getDeffectTypeId()),
+                    deffectTypesStorage.getTowerDeffectById(deffectModel.getDeffectTypeId(), line.getVoltage().getValueVolt()),
                     deffectModel.getDeffectValue()
             ));
         }
@@ -188,7 +188,7 @@ public class LineInspectionStorage implements ILineInspectionStorage {
     }
 
     @Override
-    public List< LineSectionDeffect > getSectionDeffects(long sectionId) {
+    public List< LineSectionDeffect > getSectionDeffects(long sectionId,  Line line) {
 
         List< LineSectionDeffectModel > lineSectionDeffects = db.lineSectionDeffectDao().getLineSectionDeffects(sectionId);
 
@@ -197,7 +197,7 @@ public class LineInspectionStorage implements ILineInspectionStorage {
             deffects.add(new LineSectionDeffect(
                     deffectModel.getId(),
                     sectionId,
-                    deffectTypesStorage.getSectionDeffectById(deffectModel.getDeffectTypeId()),
+                    deffectTypesStorage.getSectionDeffectById(deffectModel.getDeffectTypeId(), line.getVoltage().getValueVolt()),
                     deffectModel.getDeffectValue()
             ));
         }

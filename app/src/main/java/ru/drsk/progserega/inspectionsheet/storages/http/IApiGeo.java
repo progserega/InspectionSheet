@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
  * http://wiki.rs.int/doku.php/osm:api#данные_линии_по_имени
  *
  */
+@Deprecated
 public interface IApiGeo {
     @GET("/index.php")
     Call<GeoSubstationsResponse> getAllSubstations(@Query("r") String apiMethod);

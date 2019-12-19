@@ -311,7 +311,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
         //Создаем новый объект для осмотра
         TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformerInSlot);
-        inspection.setInspectionItems(inspectionService.loadInspectionTemplates());
+        inspection.setInspectionItems(inspectionService.loadInspectionTemplates(substationInspection.getEquipment().getType()));
 
         //Добавляем к списку осмотров
         substationInspection.getTransformerInspections().add(inspection);

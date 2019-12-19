@@ -18,6 +18,7 @@ import ru.drsk.progserega.inspectionsheet.storages.json.SubstationReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.SubstationTransformersReader;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 
+@Deprecated
 public class SteAsyncLoader extends AsyncTask<Void, Integer, Void> {
 
 

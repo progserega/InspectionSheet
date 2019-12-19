@@ -155,7 +155,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
 
     private List<LineSectionDeffect> readDeffects() {
         //получаем сохраненные деффекты
-        List<LineSectionDeffect> sectionDeffects = application.getLineInspectionStorage().getSectionDeffects(currentSection.getId());
+        List<LineSectionDeffect> sectionDeffects = application.getLineInspectionStorage().getSectionDeffects(currentSection.getId(), line);
         //конвертнем в хэшмап для быстрого поиска
         Map<Long, LineSectionDeffect> lineSectionDeffectMap = new HashMap<>();
         for (LineSectionDeffect sectionDeffect : sectionDeffects) {
@@ -163,7 +163,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         }
 
         //Получаем список возможных вариантов
-        List<LineDeffectType> deffectTypes = application.getLineDeffectTypesStorage().loadSectionDeffects();
+        List<LineDeffectType> deffectTypes = application.getLineDeffectTypesStorage().loadSectionDeffects(line.getVoltage().getValueVolt());
 
         //Формируем список всех деффектов с учетом ранее заполненных
         List<LineSectionDeffect> allDeffects = new ArrayList<>();

@@ -25,7 +25,7 @@ public class InspectionItemsJSONReaderTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         TransfInspectionListReader reader = new TransfInspectionListReader();
-        List<InspectionItem> response = reader.readInspections(appContext.getResources().openRawResource(R.raw.transormator_inspection_list));
+        List<InspectionItem> response = reader.readInspections(appContext.getResources().openRawResource(R.raw.substation_transormer_deffect_types));
 
 
         assertNotNull(response);

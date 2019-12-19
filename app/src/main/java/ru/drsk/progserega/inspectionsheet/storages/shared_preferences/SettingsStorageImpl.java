@@ -10,6 +10,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 public class SettingsStorageImpl implements ISettingsStorage {
     private Context context;
     SharedPreferences sharedPref;
+
     public SettingsStorageImpl(Context context) {
         this.context = context;
 
@@ -23,7 +24,9 @@ public class SettingsStorageImpl implements ISettingsStorage {
         String position = sharedPref.getString(Settings.POSITION, "");
         int resId = sharedPref.getInt(Settings.RES_ID, 0);
 
-        return new Settings(fio, position, resId);
+        String serverUrl = sharedPref.getString(Settings.SERVER_URL, Settings.SERVER_URL_VALUE);
+
+        return new Settings(fio, position, resId, serverUrl);
     }
 
 
@@ -35,7 +38,16 @@ public class SettingsStorageImpl implements ISettingsStorage {
         editor.putString(Settings.FIO, settings.getFio());
         editor.putString(Settings.POSITION, settings.getPosition());
         editor.putInt(Settings.RES_ID, settings.getResId());
+        editor.putString(Settings.SERVER_URL, settings.getServerUrl());
 
         editor.commit();
     }
+
+//    @Override
+//    public void saveServerUrl(String serverUrl) {
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putString(Settings.SERVER_URL,serverUrl);
+//
+//        editor.commit();
+//    }
 }

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private long enterpriseId = 0;
     private long areaId = 0;
 
-    private static final boolean DEBUG_MODE = true;
+    private static final boolean DEBUG_MODE = false;
 
 
     private static final String EXPORT_TRANSFORMERS = "export_transformers";
@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     public void exportInspections(View view) {
 
+        application.getRemoteStorage().setProgressListener(this);
+
         //networkTasksQueue.add(EXPORT_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_LINES);
 
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private void exportLines() {
 
         List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
-        application.getRemoteStorage().exportLinesInspections(inspectedLines);
+        application.getRemoteStorage().exportLinesInspections(inspectedLines, application.getSettingsStorage().loadSettings().getResId());
     }
 
 

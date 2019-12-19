@@ -95,6 +95,19 @@ public class SettingsActivity extends AppCompatActivity implements SettingsContr
         textView.setText(spResName);
     }
 
+    @Override
+    public void setServerUrl(String serverUrl) {
+        EditText textView = (EditText) findViewById(R.id.settings_server_url);
+//        textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        textView.setText(serverUrl);
+    }
+
+    @Override
+    public String getServerUrl() {
+        EditText textView = (EditText) findViewById(R.id.settings_server_url);
+        return textView.getText().toString();
+    }
+
     public void onSaveBtnPress(View view) {
         presenter.SaveBtnPressed();
         Toast.makeText(this, "Сохранено!", Toast.LENGTH_LONG).show();
