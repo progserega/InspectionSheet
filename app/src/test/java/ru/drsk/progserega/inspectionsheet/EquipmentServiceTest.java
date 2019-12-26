@@ -25,59 +25,6 @@ import static ru.drsk.progserega.inspectionsheet.storages.stub.LineStorageStub.i
 public class EquipmentServiceTest {
 
 
-    @Test
-    public void shouldFindLinesByTowersCoordinatesInsideRadius() {
-
-        ILocation loc = new LocationServiceStub();
-        LineStorageStub lineStorage = new LineStorageStub(loc);
-        lineStorage.setLines(initLinesWithTowersStub());
-
-        EquipmentService equipmentService = new EquipmentService(lineStorage, null, null);
-        equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
-        equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_04KV);
-
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION, new Point(1, 1));
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION_RADIUS, 0.5f);
-        List<Equipment> equipments = equipmentService.getEquipments();
-        assertNotNull(equipments);
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 1);
-
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION, new Point(1, 1));
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION_RADIUS, 1f);
-        equipments = equipmentService.getEquipments();
-
-        assertNotNull(equipments);
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 3);
-
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION, new Point(10, 10));
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION_RADIUS, 1f);
-        equipments = equipmentService.getEquipments();
-
-        assertNotNull(equipments);
-        assertTrue(equipments.isEmpty());
-
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION, new Point(2, 6));
-        equipments = equipmentService.getEquipments();
-        assertNotNull(equipments);
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 1);
-        assertEquals(equipments.get(0).getName(), "line 3");
-
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION, new Point(2, 6));
-        equipmentService.addFilter(EquipmentService.FILTER_POSITION_RADIUS, 3f);
-        equipments = equipmentService.getEquipments();
-
-        assertNotNull(equipments);
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 2);
-        assertEquals(equipments.get(0).getName(), "line 2");
-        assertEquals(equipments.get(1).getName(), "line 3");
-
-    }
-
-
 
     @Test
     public void shouldContainFilters() {
@@ -113,66 +60,13 @@ public class EquipmentServiceTest {
         assertTrue(equipmentService.getFilters().isEmpty());
     }
 
-    @Test
-    public void shouldAcceptFiltersType() {
-        ILocation loc = new LocationServiceStub();
-        LineStorageStub lineStorage = new LineStorageStub(loc);
 
-        EquipmentService equipmentService = new EquipmentService(lineStorage, null, null);
 
-        equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
-        List<Equipment> equipments = equipmentService.getEquipments();
-        assertFalse(equipments.isEmpty());
-    }
 
-    @Test
-    public void shouldAcceptFiltersTypeVoltage() {
-        ILocation loc = new LocationServiceStub();
-        LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage, null, null);
 
-        equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
-        equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_6_10KV);
-        List<Equipment> equipments = equipmentService.getEquipments();
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 6);
 
-    }
 
-    @Test
-    public void shouldAcceptFiltersTypeVoltageName() {
-        ILocation loc = new LocationServiceStub();
-        LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage, null, null);
 
-        equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
-        equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.VL_04KV);
-        equipmentService.addFilter(EquipmentService.FILTER_NAME, "olo");
-        List<Equipment> equipments = equipmentService.getEquipments();
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 6);
-
-    }
-
-    @Test
-    public void shouldAcceptFiltersTypeName() {
-        ILocation loc = new LocationServiceStub();
-        LineStorageStub lineStorage = new LineStorageStub(loc);
-        EquipmentService equipmentService = new EquipmentService(lineStorage, null, null);
-
-        equipmentService.addFilter(EquipmentService.FILTER_TYPE, EquipmentType.LINE);
-
-        equipmentService.addFilter(EquipmentService.FILTER_NAME, "olo");
-        List<Equipment> equipments = equipmentService.getEquipments();
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 6);
-
-        equipmentService.addFilter(EquipmentService.FILTER_NAME, "test");
-        equipments = equipmentService.getEquipments();
-        assertFalse(equipments.isEmpty());
-        assertEquals(equipments.size(), 18);
-
-    }
 
 
 }

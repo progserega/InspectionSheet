@@ -37,6 +37,7 @@ import ru.drsk.progserega.inspectionsheet.storages.shared_preferences.SettingsSt
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
@@ -46,6 +47,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
+
+import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
 
 public class InspectionSheetApplication extends Application {
 
@@ -243,7 +246,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
-                //.addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_1_2)
                 .build();
 
 
@@ -291,7 +294,8 @@ public class InspectionSheetApplication extends Application {
 
         photoFullscreenManager = new PhotoFullscreenManager(db);
 
-        lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
+        //lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
+        lineDeffectTypesStorage = new LineDeffectTypesStorage(db);
 
         lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage, catalogStorage, lineStorage);
 

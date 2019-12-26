@@ -7,6 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 
+import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerDeffectType;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
@@ -19,13 +20,16 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionDeffec
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineSectionInspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineTowerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SectionDeffectTypesDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDeffectDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDeffectTypesDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerInspectionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDeffectTypesDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
@@ -41,11 +45,14 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionM
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineTowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerInspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
@@ -60,7 +67,6 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         SubstationEquipmentModel.class,
         InspectionModel.class,
         InspectionPhotoModel.class,
-        InspectionItemModel.class,
         EquipmentPhotoModel.class,
         LineModel.class,
         LineTowerModel.class,
@@ -70,8 +76,11 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         TowerInspectionModel.class,
         LineSectionDeffectModel.class,
         LineSectionInspectionModel.class,
-        LineInspectionModel.class
-}, version = 1)
+        LineInspectionModel.class,
+        TransformerDeffectTypesModel.class,
+        TowerDeffectTypesModel.class,
+        SectionDeffectTypesModel.class
+}, version = 2)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -97,7 +106,7 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     public abstract InspectionPhotoDao inspectionPhotoDao();
 
-    public abstract InspectionItemDao inspectionItemDao();
+    //public abstract InspectionItemDao inspectionItemDao();
 
     public abstract EquipmentPhotoDao equipmentPhotoDao();
 
@@ -119,66 +128,85 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     public abstract LineInspectionDao lineInspectionDao();
 
+    public abstract TowerDeffectTypesDao towerDeffectTypesDao();
+
+    public abstract SectionDeffectTypesDao sectionDeffectTypesDao();
+
+    public abstract TransformerDeffectTypesDao transformerDeffectTypesDao();
+
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             // Since we didn't alter the table, there's nothing else to do here.
 
-            //добавляем таблицу inspection_items
-            database.execSQL("CREATE TABLE \"inspection_items\" (\n" +
+            //добавляем таблицу transformer_deffect_types
+            database.execSQL("CREATE TABLE \"transformer_deffect_types\" (\n" +
                     "\t\"id\"\tINTEGER NOT NULL,\n" +
-                    "\t\"parent_id\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
                     "\t\"number\"\tTEXT,\n" +
                     "\t\"name\"\tTEXT,\n" +
                     "\t\"type\"\tINTEGER NOT NULL,\n" +
                     "\t\"result\"\tTEXT,\n" +
                     "\t\"sub_result\"\tTEXT,\n" +
+                    "\t\"equipment_type\"\tTEXT,\n" +
                     "\tPRIMARY KEY(\"id\")\n" +
                     ");");
 
-
-            //добавляем поле год производства трансформатора для оборудования ТП
-            database.execSQL("ALTER TABLE tp_transformers ADD COLUMN manufacture_year INTEGER NOT NULL DEFAULT 0;");
-
-            //добавляем поле год производства трансформатора для оборудования Подстанций
-            database.execSQL("ALTER TABLE substation_equipments ADD COLUMN manufacture_year INTEGER NOT NULL DEFAULT 0;");
-
-            //Создаем таблицу equipment_photos для хранения фотографий оборудования подстанций и ТП
-            database.execSQL("CREATE TABLE `equipment_photos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `equipment_id` INTEGER NOT NULL, `substation_type` INTEGER NOT NULL, `photo_path` TEXT)");
-        }
-    };
-
-    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-
-            //добавляем поле дата осмотра трансформатора
-            database.execSQL("ALTER TABLE substation_equipments ADD COLUMN inspection_date INTEGER");
-
-            //добавляем поле дата осмотра трансформатора
-            database.execSQL("ALTER TABLE tp_transformers ADD COLUMN inspection_date INTEGER");
-        }
-    };
-
-    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("CREATE TABLE \"lines\" (\n" +
+            //добавляем таблицу tower_deffect_types
+            database.execSQL("CREATE TABLE \"tower_deffect_types\" (\n" +
                     "\t\"id\"\tINTEGER NOT NULL,\n" +
-                    "\t\"uniq_id\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
                     "\t\"name\"\tTEXT,\n" +
-                    "\t\"voltage\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
-                    "\t\"start_exploitation_year\"\tINTEGER NOT NULL,\n" +
-                    "\t\"bbox_top_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
-                    "\t\"bbox_top_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
-                    "\t\"bbox_bottom_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
-                    "\t\"bbox_botttom_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+                    "\t\"voltage\"\tTEXT,\n" +
+                    "\tPRIMARY KEY(\"id\")\n" +
+                    ");");
+
+            //добавляем таблицу section_deffect_types
+            database.execSQL("CREATE TABLE \"section_deffect_types\" (\n" +
+                    "\t\"id\"\tINTEGER NOT NULL,\n" +
+                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+                    "\t\"name\"\tTEXT,\n" +
+                    "\t\"voltage\"\tTEXT,\n" +
                     "\tPRIMARY KEY(\"id\")\n" +
                     ");");
 
 
-
+            //удаляем inspection_items
+            database.execSQL("DROP TABLE IF EXISTS inspection_items;");
         }
     };
+
+//    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+//        @Override
+//        public void migrate(SupportSQLiteDatabase database) {
+//
+//            //добавляем поле дата осмотра трансформатора
+//            database.execSQL("ALTER TABLE substation_equipments ADD COLUMN inspection_date INTEGER");
+//
+//            //добавляем поле дата осмотра трансформатора
+//            database.execSQL("ALTER TABLE tp_transformers ADD COLUMN inspection_date INTEGER");
+//        }
+//    };
+//
+//    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+//        @Override
+//        public void migrate(SupportSQLiteDatabase database) {
+//            database.execSQL("CREATE TABLE \"lines\" (\n" +
+//                    "\t\"id\"\tINTEGER NOT NULL,\n" +
+//                    "\t\"uniq_id\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"name\"\tTEXT,\n" +
+//                    "\t\"voltage\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"start_exploitation_year\"\tINTEGER NOT NULL,\n" +
+//                    "\t\"bbox_top_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"bbox_top_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"bbox_bottom_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"bbox_botttom_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+//                    "\tPRIMARY KEY(\"id\")\n" +
+//                    ");");
+//
+//
+//
+//        }
+//    };
 }

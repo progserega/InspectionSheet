@@ -16,14 +16,17 @@ import retrofit2.http.Query;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -45,6 +48,20 @@ public interface IApiInspectionSheet {
 
     @GET("/api/substations/transformers/types")
     Call< List< TransformerType > > getSubstationTransformersTypes();
+
+
+    //------------- справочники типов деффектов ------------------------
+    @GET("/api/deffects/towers")
+    Call< List< TowerDeffectTypesJson > > getTowerDeffectsTypes();
+
+    @GET("/api/deffects/sections")
+    Call< List< SectionDeffectTypesJson > > getSectionDeffectsTypes();
+
+    @GET("/api/deffects/transformers")
+    Call< List< TransformerDeffectTypesJson > > getTransformersDeffectsTypes();
+
+
+
 
     @GET("/api/substations")
     Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);

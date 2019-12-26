@@ -24,4 +24,6 @@ public interface IRemoteStorage {
     void exportLinesInspections( List< InspectedLine > inspectedLines, long resId);
 
     void setServerUrl(String serverUrl);
+
+    void loadDeffectTypes();
 }

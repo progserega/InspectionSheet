@@ -36,6 +36,6 @@ public interface LineSectionDao {
     @Insert
     void insertAll(List<LineSectionModel> sections);
 
-    @Query("DELETE FROM lines")
+    @Query("DELETE FROM line_section")
     void deleteAll();
 }

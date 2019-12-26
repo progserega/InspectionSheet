@@ -19,6 +19,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspectionTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadDeffectTypesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
@@ -93,6 +94,14 @@ public class RemoteStorageRx implements IRemoteStorage {
     @Override
     public void loadLines(long resId) {
         Observable.create(new LoadLinesTask(apiArmIs, dbDataImporter, resId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResultObserver());
+    }
+
+    @Override
+    public void loadDeffectTypes() {
+        Observable.create(new LoadDeffectTypesTask(apiArmIs, dbDataImporter))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());

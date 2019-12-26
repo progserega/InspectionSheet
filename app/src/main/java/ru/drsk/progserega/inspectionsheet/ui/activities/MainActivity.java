@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private static final String SELECT_RES = "select_res";
     private static final String LOAD_LINES = "load_lines";
     private static final String LOAD_DATA = "load_data";
+    private static final String LOAD_DEFFECT_TYPES = "load_deffect_types";
 
     private Queue< String > networkTasksQueue = new LinkedList<>();
 
@@ -136,11 +137,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.clear();
 
-        networkTasksQueue.add(SELECT_RES);
+        //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
-        // networkTasksQueue.add(LOAD_ORGANIZATION);
+        networkTasksQueue.add(LOAD_DEFFECT_TYPES);
         networkTasksQueue.add(LOAD_LINES);
-        // networkTasksQueue.add(LOAD_DATA);
+        //networkTasksQueue.add(LOAD_DATA);
 
         nextTask();
     }
@@ -236,9 +237,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 application.getRemoteStorage().loadRemoteData();
                 return;
             case LOAD_LINES:
-                application.getRemoteStorage().loadLines(this.areaId);
+                loadLines();
                 return;
-
+            case  LOAD_DEFFECT_TYPES:
+                application.getRemoteStorage().loadDeffectTypes();
+                return;
         }
     }
 
@@ -273,6 +276,15 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 //            selectOrganizationDlog = SelectOrganizationDialogFragment.newInstance(this.application.getOrganizationService());
 //        }
 //        selectOrganizationDlog.Show(fm, enterpriseId, areaId);
+    }
+
+    private void loadLines(){
+        long resId = application.getSettingsStorage().loadSettings().getResId();
+        if(resId == 0){
+            showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
+            return;
+        }
+        application.getRemoteStorage().loadLines( resId);
     }
 
     @Override

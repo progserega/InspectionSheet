@@ -4,22 +4,18 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
-
-import com.google.gson.Gson;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 
-@Deprecated
-@Entity(tableName = "inspection_items")
-public class InspectionItemModel {
+@Entity(tableName = "transformer_deffect_types")
+public class TransformerDeffectTypesModel {
 
     @PrimaryKey
     @ColumnInfo(name = "id")
     private long id;
 
-    @ColumnInfo(name = "parent_id")
-    private long parentId = 0;
+    @ColumnInfo(name = "order")
+    private int order ;
 
     @ColumnInfo(name = "number")
     private String number;
@@ -36,6 +32,20 @@ public class InspectionItemModel {
     @ColumnInfo(name = "sub_result")
     private String subResult;
 
+    @ColumnInfo(name = "equipment_type")
+    private String equipmentType;
+
+    public TransformerDeffectTypesModel(long id, int order, String number, String name, int type, String result, String subResult, String equipmentType) {
+        this.id = id;
+        this.order = order;
+        this.number = number;
+        this.name = name;
+        this.type = type;
+        this.result = result;
+        this.subResult = subResult;
+        this.equipmentType = equipmentType;
+    }
+
     public long getId() {
         return id;
     }
@@ -44,12 +54,12 @@ public class InspectionItemModel {
         this.id = id;
     }
 
-    public long getParentId() {
-        return parentId;
+    public int getOrder() {
+        return order;
     }
 
-    public void setParentId(long parentId) {
-        this.parentId = parentId;
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public String getNumber() {
@@ -92,24 +102,11 @@ public class InspectionItemModel {
         this.subResult = subResult;
     }
 
-    public InspectionItemModel(long id, long parentId, String number, String name, int type, String result, String subResult) {
-        this.id = id;
-        this.parentId = parentId;
-        this.number = number;
-        this.name = name;
-        this.type = type;
-        this.result = result;
-        this.subResult = subResult;
+    public String getEquipmentType() {
+        return equipmentType;
     }
 
-    public InspectionItemModel(InspectionItem inspectionItem, String result, String subResult){
-        id = inspectionItem.getValueId();
-        number = inspectionItem.getNumber();
-        name = inspectionItem.getName();
-        type = inspectionItem.getType().getValue();
-
-        this.result = result;
-        this.subResult = subResult;
-
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
     }
 }

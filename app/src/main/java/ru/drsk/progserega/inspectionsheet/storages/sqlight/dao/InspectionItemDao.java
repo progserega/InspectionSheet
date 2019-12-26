@@ -10,6 +10,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 
+@Deprecated
 @Dao
 public interface InspectionItemDao {
 

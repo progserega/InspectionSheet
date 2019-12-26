@@ -17,9 +17,12 @@ import ru.drsk.progserega.inspectionsheet.R;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
@@ -48,10 +51,13 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionM
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineTowerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationEuipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
@@ -100,9 +106,8 @@ public class DBDataImporter {
     }
 
 
-
     public void ClearDB() {
-       // db.clearAllTables();
+        // db.clearAllTables();
 //        spDao.delete();
 //        resDao.delete();
         transformerDao.delete();
@@ -125,6 +130,10 @@ public class DBDataImporter {
 
         db.towerDeffectDao().deleteAll();
         db.towerInspectionDao().deleteAll();
+
+        db.towerDeffectTypesDao().deleteAll();
+        db.sectionDeffectTypesDao().deleteAll();
+        db.transformerDeffectTypesDao().deleteAll();
     }
 
     public void loadSteTpModel(List< SteTPModel > tpModels) {
@@ -368,7 +377,6 @@ public class DBDataImporter {
         return resId;
     }
 
-
     public void loadInspectionItems(Context appContext) {
         inspectionItemDao.deleteAll();
 
@@ -401,7 +409,6 @@ public class DBDataImporter {
 
         int a = 0;
     }
-
 
     public void loadLines(List< GeoLine > geoLines) {
 
@@ -437,11 +444,11 @@ public class DBDataImporter {
 
             db.lineDao().insert(lineModel);
 
-            List<TowerModel> towerModels = new ArrayList<>();
+            List< TowerModel > towerModels = new ArrayList<>();
             List< LineTowerModel > lineTowerModels = new ArrayList<>();
 
             int cnt = 1;
-            for(TowerJson towerJson: line.getTowers()) {
+            for (TowerJson towerJson : line.getTowers()) {
                 towerModels.add(new TowerModel(
                         towerJson.getUniqId(),
                         towerJson.getUniqId(),
@@ -460,7 +467,7 @@ public class DBDataImporter {
             updateLineBoundingBox(towerModels, line.getLineInfo().getUniqId());
 
             List< LineSectionModel > sectionModels = new ArrayList<>();
-            for(SectionJson sectionJson: line.getSections()){
+            for (SectionJson sectionJson : line.getSections()) {
                 sectionModels.add(new LineSectionModel(
                         0,
                         sectionJson.getLineUniqId(),
@@ -468,7 +475,7 @@ public class DBDataImporter {
                         sectionJson.getToTowerUniqId(),
                         sectionJson.getName(),
                         sectionJson.getMaterial()
-                        ));
+                ));
             }
             this.db.lineSectionDao().insertAll(sectionModels);
 
@@ -550,5 +557,57 @@ public class DBDataImporter {
             lonMax = Math.max(lonMax, tower.getLon());
         }
         this.db.lineDao().updateBoundingBox(latMax + 0.000150, lonMin - 0.000150, latMin - 0.000150, lonMax + 0.000150, lineUniqId); //Немного расширим прямоугольник
+    }
+
+    public void loadTowerDeffectTypes(List< TowerDeffectTypesJson > deffectTypes) {
+
+        List< TowerDeffectTypesModel > deffectTypesModels = new ArrayList<>();
+        for (TowerDeffectTypesJson deffectType : deffectTypes) {
+
+            deffectTypesModels.add(new TowerDeffectTypesModel(
+                    deffectType.getId(),
+                    deffectType.getOrder(),
+                    deffectType.getName(),
+                    deffectType.getVoltage()
+            ));
+        }
+
+        db.towerDeffectTypesDao().insertAll(deffectTypesModels);
+    }
+
+    public void loadSectionDeffectTypes(List< SectionDeffectTypesJson > deffectTypes) {
+
+        List< SectionDeffectTypesModel > deffectTypesModels = new ArrayList<>();
+        for (SectionDeffectTypesJson deffectType : deffectTypes) {
+
+            deffectTypesModels.add(new SectionDeffectTypesModel(
+                    deffectType.getId(),
+                    deffectType.getOrder(),
+                    deffectType.getName(),
+                    deffectType.getVoltage()
+            ));
+        }
+
+        db.sectionDeffectTypesDao().insertAll(deffectTypesModels);
+    }
+
+    public void loadTransformersDeffectTypes(List< TransformerDeffectTypesJson > deffectTypes) {
+
+        List< TransformerDeffectTypesModel > deffectTypesModels = new ArrayList<>();
+        for (TransformerDeffectTypesJson deffectType : deffectTypes) {
+
+            deffectTypesModels.add(new TransformerDeffectTypesModel(
+                    deffectType.getId(),
+                    deffectType.getOrder(),
+                    deffectType.getNumber(),
+                    deffectType.getName(),
+                    deffectType.getType(),
+                    deffectType.getResult(),
+                    deffectType.getSubResult(),
+                    deffectType.getEquipmentType()
+            ));
+        }
+
+        db.transformerDeffectTypesDao().insertAll(deffectTypesModels);
     }
 }

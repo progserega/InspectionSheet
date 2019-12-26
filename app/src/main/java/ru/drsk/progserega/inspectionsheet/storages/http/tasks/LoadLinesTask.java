@@ -34,6 +34,7 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
     @Override
     public void subscribe(ObservableEmitter< String > emitter) throws Exception {
 
+        emitter.onNext("Загрузка Линий... ");
         try {
 
             int page = 0;

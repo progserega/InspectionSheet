@@ -6,6 +6,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.InspectionType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.entities.organization.ElectricNetworkArea;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineContract;
 
 public class InspectLinePresenter implements InspectLineContract.Presenter {
@@ -27,9 +28,11 @@ public class InspectLinePresenter implements InspectLineContract.Presenter {
 
         view.setLineName(line.getName());
 
-        //TODO определить СП и РЭС
-        view.setSPName("не задан");
-        view.setResName("не задан");
+        long resId = application.getSettingsStorage().loadSettings().getResId();
+        ElectricNetworkArea res = application.getOrganizationStorage().getResById(resId);
+        //берем СП и РЭС из настроек приложения
+        view.setSPName(res.getNetworkEnterprise().getName());
+        view.setResName(res.getName());
 
         view.setInspectionTypesSpinnerData(application.getCatalogStorage().getInspectionTypes(),
                 lineInspection.getInspectionType() != null ? lineInspection.getInspectionType().getId() : 0);
