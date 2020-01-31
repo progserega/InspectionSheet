@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -45,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private static final boolean DEBUG_MODE = false;
 
 
-    private static final String EXPORT_TRANSFORMERS = "export_transformers";
+    private static final String EXPORT_SUBST_TRANSFORMERS = "export_substations_transformers";
+    private static final String EXPORT_TP_TRANSFORMERS = "export_tp_transformers";
+   // private static final String EXPORT_SUBST_TRANSFORMERS = "export_transformers";
     private static final String EXPORT_LINES = "export_lines";
     private static final String CLEAR_DB = "clear_db";
     private static final String LOAD_ORGANIZATION = "load_organization";
@@ -71,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         //application.getRemoteStorage().setProgressListener(this);
         networkTasksQueue.clear();
+
+        //DEBUG
+        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+        exportBtn.setVisibility(View.GONE);
     }
 
 
@@ -92,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 startActivity(intent);
                 return true;
             case R.id.menu_about:
+                Intent intentAbout = new Intent(this, About.class);
+                startActivity(intentAbout);
                 //   Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
             default:
@@ -107,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void syncData(View view) {
-        showQuestion("Загрузить данные с сервера?", "Важно! Все предыдущие данные будут очищены");
+        showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
     }
 
     private void showQuestion(String title, String message) {
@@ -137,11 +146,15 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.clear();
 
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_LINES);
+
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
         networkTasksQueue.add(LOAD_LINES);
-        //networkTasksQueue.add(LOAD_DATA);
+        networkTasksQueue.add(LOAD_DATA);
 
         nextTask();
     }
@@ -199,8 +212,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        //networkTasksQueue.add(EXPORT_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_LINES);
+        //networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+       // networkTasksQueue.add(EXPORT_LINES);
 
 
         nextTask();
@@ -218,8 +232,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         Log.d("NETWORK_TASK ", "TASK IS: " + task);
 
         switch (task) {
-            case EXPORT_TRANSFORMERS:
-                exportTransformers();
+            case EXPORT_SUBST_TRANSFORMERS:
+                exportSubstationTransformers();
+                return;
+            case EXPORT_TP_TRANSFORMERS:
+                exportTPTransformers();
                 return;
             case EXPORT_LINES:
                 exportLines();
@@ -245,10 +262,19 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         }
     }
 
-    private void exportTransformers() {
+    private void exportSubstationTransformers() {
         InspectionService inspectionService = application.getInspectionService();
         List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
 
+
+        application.getRemoteStorage().exportTransformersInspections(inspections);
+    }
+
+    private void exportTPTransformers() {
+        InspectionService inspectionService = application.getInspectionService();
+        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TRANS_SUBSTATION);
+
+        //int a = 0;
         application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 

@@ -11,6 +11,7 @@ import android.arch.persistence.room.Update;
 import java.util.Date;
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
 @Dao
@@ -28,6 +29,9 @@ public interface TransformerSubstationDao {
 
     @Query("SELECT * FROM tp WHERE uniq_id = :unqId ")
     TransformerSubstationModel getByUniqId(long unqId);
+
+    @Query("SELECT * FROM tp WHERE inspection_percent > 0")
+    List< TransformerSubstationModel > loadInspected();
 
     @Insert
     long insert(TransformerSubstationModel tp);

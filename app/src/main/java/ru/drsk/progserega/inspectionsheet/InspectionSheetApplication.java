@@ -28,6 +28,7 @@ import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
@@ -44,6 +45,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
@@ -106,6 +108,8 @@ public class InspectionSheetApplication extends Application {
     private ISettingsStorage settingsStorage;
 
     private IOrganizationStorage organizationStorage;
+
+    private ITransformerDeffectTypesStorage transformerDeffectTypesStorage;
 
 
     public ITransformerStorage getTransformerStorage() {
@@ -236,6 +240,10 @@ public class InspectionSheetApplication extends Application {
         return settingsStorage;
     }
 
+    public ITransformerDeffectTypesStorage getTransformerDeffectTypesStorage() {
+        return transformerDeffectTypesStorage;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -301,6 +309,8 @@ public class InspectionSheetApplication extends Application {
 
         lineSectionStorage = new LineSectionStorage(db, getApplicationContext(), catalogStorage);
 
+        transformerDeffectTypesStorage = new TransformerDeffectTypesStorage(db);
+
         inspectionService = new InspectionService(
                 db,
                 getApplicationContext(),
@@ -308,7 +318,9 @@ public class InspectionSheetApplication extends Application {
                 inspectionStorage,
                 towerStorage,
                 lineInspectionStorage,
-                lineSectionStorage);
+                lineSectionStorage,
+                transformerDeffectTypesStorage);
+
 
 
     }

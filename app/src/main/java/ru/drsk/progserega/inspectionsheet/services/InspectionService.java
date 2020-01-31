@@ -17,10 +17,12 @@ import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
@@ -31,11 +33,14 @@ import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerDeffectTypesModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
 public class InspectionService {
 
@@ -46,7 +51,9 @@ public class InspectionService {
     private ITowerStorage towerStorage;
     private ILineInspectionStorage lineInspectionStorage;
     private ILineSectionStorage sectionStorage;
-   // private List< InspectionItem > inspectionItemsTemplate = null;
+    private ITransformerDeffectTypesStorage transformerDeffectTypesStorage;
+
+    // private List< InspectionItem > inspectionItemsTemplate = null;
 
     public InspectionService(InspectionSheetDatabase db,
                              Context context,
@@ -54,7 +61,8 @@ public class InspectionService {
                              IInspectionStorage inspectionStorage,
                              ITowerStorage towerStorage,
                              ILineInspectionStorage lineInspectionStorage,
-                             ILineSectionStorage sectionStorage) {
+                             ILineSectionStorage sectionStorage,
+                             ITransformerDeffectTypesStorage transformerDeffectTypesStorage) {
 
         this.db = db;
         this.context = context;
@@ -63,6 +71,7 @@ public class InspectionService {
         this.towerStorage = towerStorage;
         this.lineInspectionStorage = lineInspectionStorage;
         this.sectionStorage = sectionStorage;
+        this.transformerDeffectTypesStorage = transformerDeffectTypesStorage;
     }
 
     //    public InspectionService(InspectionSheetDatabase db, ITransformerStorage transformerStorage, IInspectionStorage inspectionStorage, Context context) {
@@ -82,6 +91,10 @@ public class InspectionService {
             return getSubstationInspections();
         }
 
+        if (equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
+            return getTPInspections();
+        }
+
         return null;
     }
 
@@ -99,7 +112,26 @@ public class InspectionService {
 
     }
 
+    private List< TransformerInspection > getTPInspections() {
+
+
+        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
+
+        List< TransformerInspection > inspectionList = new ArrayList<>();
+        for (TransformerSubstationModel substationModel : substationModels) {
+            Equipment substation = new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
+            inspectionList.addAll(getTPTransformersWithInspections(substation));
+        }
+        return inspectionList;
+
+    }
+
     public List< TransformerInspection > getSubstationTransformersWithInspections(Equipment substation) {
+        List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
+        return buildInspectionsList(substation, transformers);
+    }
+
+    public List< TransformerInspection > getTPTransformersWithInspections(Equipment substation) {
         List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
         return buildInspectionsList(substation, transformers);
     }
@@ -120,13 +152,13 @@ public class InspectionService {
         return inspectionList;
     }
 
-    public List< InspectedLine > getInspectedLines(){
+    public List< InspectedLine > getInspectedLines() {
         List< LineInspection > lineInspections = lineInspectionStorage.getAllLineInspections();
 
-        List<InspectedLine> inspectedLines = new ArrayList<>();
-        for(LineInspection lineInspection : lineInspections){
-            List<InspectedTower> inspectedTowers = getInspectedTowersByLine(lineInspection.getLine());
-            List<InspectedSection> inspectedSections = getInspectedSectionsByLine(lineInspection.getLine());
+        List< InspectedLine > inspectedLines = new ArrayList<>();
+        for (LineInspection lineInspection : lineInspections) {
+            List< InspectedTower > inspectedTowers = getInspectedTowersByLine(lineInspection.getLine());
+            List< InspectedSection > inspectedSections = getInspectedSectionsByLine(lineInspection.getLine());
 
             List< Tower > towers = towerStorage.getByLineUniqId(lineInspection.getLine().getUniqId());
             List< LineSection > sections = sectionStorage.getByLine(lineInspection.getLine().getUniqId());
@@ -149,21 +181,21 @@ public class InspectionService {
 
     public List< InspectedTower > getInspectedTowersByLine(Line line) {
 
-        List<TowerInspection> towerInspections =  lineInspectionStorage.getTowerInspectionByLine(line.getUniqId());
-        Map<Long, TowerInspection > inspectionMap = new HashMap<>();
+        List< TowerInspection > towerInspections = lineInspectionStorage.getTowerInspectionByLine(line.getUniqId());
+        Map< Long, TowerInspection > inspectionMap = new HashMap<>();
 
-        for(TowerInspection towerInspection: towerInspections){
-            inspectionMap.put(towerInspection.getTowerUniqId(), towerInspection );
+        for (TowerInspection towerInspection : towerInspections) {
+            inspectionMap.put(towerInspection.getTowerUniqId(), towerInspection);
         }
 
-        Set<Long> towersUniqIdsSet = inspectionMap.keySet();
+        Set< Long > towersUniqIdsSet = inspectionMap.keySet();
         Long[] towersUniqIds = towersUniqIdsSet.toArray(new Long[towersUniqIdsSet.size()]);
 
-        List< Tower> towers = towerStorage.getByUniqIds(towersUniqIds);
+        List< Tower > towers = towerStorage.getByUniqIds(towersUniqIds);
 
-        List<InspectedTower> inspectedTowers = new ArrayList<>();
+        List< InspectedTower > inspectedTowers = new ArrayList<>();
 
-        for(Tower tower: towers){
+        for (Tower tower : towers) {
             List< TowerDeffect > deffects = lineInspectionStorage.getTowerDeffects(tower.getUniqId(), line);
             inspectedTowers.add(new InspectedTower(
                     tower,
@@ -177,21 +209,21 @@ public class InspectionService {
 
     public List< InspectedSection > getInspectedSectionsByLine(Line line) {
 
-        List< LineSectionInspection > sectionInspectionByLine =  lineInspectionStorage.getSectionInspectionByLine(line.getUniqId());
-        Map<Long, LineSectionInspection > inspectionMap = new HashMap<>();
+        List< LineSectionInspection > sectionInspectionByLine = lineInspectionStorage.getSectionInspectionByLine(line.getUniqId());
+        Map< Long, LineSectionInspection > inspectionMap = new HashMap<>();
 
-        for(LineSectionInspection sectionInspection: sectionInspectionByLine){
-            inspectionMap.put(sectionInspection.getSectionId(), sectionInspection );
+        for (LineSectionInspection sectionInspection : sectionInspectionByLine) {
+            inspectionMap.put(sectionInspection.getSectionId(), sectionInspection);
         }
 
-        Set<Long> sectionsIdsSet = inspectionMap.keySet();
+        Set< Long > sectionsIdsSet = inspectionMap.keySet();
         Long[] sectionIds = sectionsIdsSet.toArray(new Long[sectionsIdsSet.size()]);
 
         List< LineSection > sections = sectionStorage.getByIds(sectionIds);
 
-        List<InspectedSection> inspectedSections = new ArrayList<>();
+        List< InspectedSection > inspectedSections = new ArrayList<>();
 
-        for(LineSection section: sections){
+        for (LineSection section : sections) {
             List< LineSectionDeffect > deffects = lineInspectionStorage.getSectionDeffects(section.getId(), line);
             inspectedSections.add(new InspectedSection(
                     section,
@@ -203,24 +235,17 @@ public class InspectionService {
 
     }
 
-
-    //TODO закэшировать значения чтобы не читать постоянно
     public List< InspectionItem > loadInspectionTemplates(EquipmentType substationType) {
         List< InspectionItem > template = new ArrayList<>();
-        try {
-            TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
 
-            if(substationType == EquipmentType.SUBSTATION) {
-                template = inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.substation_transormer_deffect_types));
-            }
-
-            if(substationType == EquipmentType.TRANS_SUBSTATION) {
-                template = inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.tp_transormer_deffect_types));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (substationType == EquipmentType.SUBSTATION) {
+            template = transformerDeffectTypesStorage.getSubstationDeffects();
         }
+
+        if (substationType == EquipmentType.TRANS_SUBSTATION) {
+            template = transformerDeffectTypesStorage.getTPDeffects();
+        }
+
         return template;
     }
 }

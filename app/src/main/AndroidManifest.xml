@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activities.SettingsActivity"></activity>
+        <activity android:name=".ui.activities.About"></activity>
+        <activity android:name=".ui.activities.SettingsActivity" />
         <activity android:name=".ui.activities.InspectLineFinish" />
         <activity android:name=".ui.activities.MainActivity">
             <intent-filter>

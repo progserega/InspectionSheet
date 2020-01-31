@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -81,6 +82,13 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
         Log.i("SearchObject", equipmentType.name());
 
+        Button searchBySP = (Button) findViewById(R.id.selectBySpBt);
+        if(equipmentType.equals(EquipmentType.LINE)){
+            searchBySP.setVisibility(View.GONE);
+        }
+        else{
+            searchBySP.setVisibility(View.VISIBLE);
+        }
 //        if (intent.hasExtra(LINE_TYPE)) {
 //            Voltage voltage = (Voltage) intent.getSerializableExtra(LINE_TYPE);
 //           // equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, voltage);

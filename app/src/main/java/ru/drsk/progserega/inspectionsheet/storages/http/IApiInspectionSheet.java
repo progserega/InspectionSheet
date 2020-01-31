@@ -49,6 +49,9 @@ public interface IApiInspectionSheet {
     @GET("/api/substations/transformers/types")
     Call< List< TransformerType > > getSubstationTransformersTypes();
 
+    @GET("/api/tp/transformers/types")
+    Call< List< TransformerType > > geTpTransformersTypes();
+
 
     //------------- справочники типов деффектов ------------------------
     @GET("/api/deffects/towers")
@@ -65,6 +68,9 @@ public interface IApiInspectionSheet {
 
     @GET("/api/substations")
     Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("/api/tp")
+    Call< SubstationsResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
 
     @POST("/api/inspection")
     Call< UploadRes > uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);

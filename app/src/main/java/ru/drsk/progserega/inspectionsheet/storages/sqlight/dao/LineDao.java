@@ -3,6 +3,7 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight.dao;
 import android.arch.persistence.db.SupportSQLiteQuery;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 
@@ -33,10 +34,10 @@ public interface LineDao {
     @Query("update lines set start_exploitation_year = :year WHERE id = :lineId")
     void updateStartExploitationYesr(long lineId, int year);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(LineModel line);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<LineModel> lines);
 
     @Query("DELETE FROM lines")

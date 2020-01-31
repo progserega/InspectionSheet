@@ -136,6 +136,9 @@ public class InspectionStorage implements IInspectionStorage {
                     inspectionItem.getResult().getSubValues().addAll(subValues);
                 }
             }
+            else{
+                inspectionItem.setId(0);
+            }
 
             //Load photos
             List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId(), PhotoSubject.TRANSFORMER.getType());

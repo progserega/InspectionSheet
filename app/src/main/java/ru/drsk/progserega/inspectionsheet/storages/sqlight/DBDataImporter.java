@@ -240,7 +240,7 @@ public class DBDataImporter {
 
     }
 
-    public void loadSubstationTransformers(List< TransformerType > transformers) {
+    public void loadSubstationTransformers(List< TransformerType > transformers, String installIn) {
 
 
         for (TransformerType type : transformers) {
@@ -248,7 +248,7 @@ public class DBDataImporter {
                     type.getId(),
                     type.getName(),
                     type.getDescription(),
-                    "substation");
+                    installIn);
 
             transformerDao.insert(transformerModel);
         }
@@ -286,6 +286,41 @@ public class DBDataImporter {
                         null
                 );
                 substationEquipmentDao.insert(equipmentModel);
+            }
+        }
+    }
+
+    public void loadTps(List< ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel > substations) {
+
+        for (ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel substation : substations) {
+            TransformerSubstationModel substationModel = new TransformerSubstationModel(
+                    substation.getId(),
+                    substation.getUniqId(),
+                    "",
+                    substation.getName(),
+                    substation.getSpId(),
+                    substation.getResId(),
+                    substation.getLat(),
+                    substation.getLon()
+
+            );
+
+            long substationId = transformerSubstationDao.insert(substationModel);
+
+            if (substation.getEquipmnents() == null) {
+                continue;
+            }
+
+            for (SubstationTransformerModel transformer : substation.getEquipmnents()) {
+                TransformerSubstationEuipmentModel equipmentModel = new TransformerSubstationEuipmentModel(
+                        0,
+                        substation.getUniqId(),
+                        transformer.getTransformerTypeid(),
+                        transformer.getSlot(),
+                        transformer.getManufactureYear(),
+                        null
+                );
+                transformerSubstationEquipmentDao.insert(equipmentModel);
             }
         }
     }

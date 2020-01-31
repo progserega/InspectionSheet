@@ -20,6 +20,8 @@ public class LogJsonInterceptor implements Interceptor {
 
         Request request = chain.request();
 
+        Log.d("REUEST_URL", request.url().toString());
+
         Response response = chain.proceed(request);
         String rawJson = response.body().string();
        // Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));

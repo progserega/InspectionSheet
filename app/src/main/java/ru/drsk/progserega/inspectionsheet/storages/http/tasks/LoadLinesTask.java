@@ -16,7 +16,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class LoadLinesTask implements ObservableOnSubscribe< String > {
-    private static final int PAGE_SIZE = 50;
+    private static final int PAGE_SIZE = 20;
     private static final int ATTEMPT_COUNT = 5;
     private IApiInspectionSheet apiInspectionSheet;
 

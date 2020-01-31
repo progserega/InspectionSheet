@@ -10,7 +10,7 @@
     <string name="search_near_text">Искать среди ближайших</string>
     <string name="selectBySpBtText">Выберите по СП и РЭС</string>
     <string name="selectTaskText">Выберите задачу</string>
-    <string name="selectNameText">Или выберите по имени</string>
+    <string name="selectNameText">Выбор по имени</string>
     <string name="searchByNameBt">Поиск по имени</string>
     <string name="selectSpText">Выберите СП</string>
     <string name="selectResText">Выберите РЭС</string>
@@ -60,4 +60,28 @@
     <string name="selectVoltageText">Напряжение:</string>
     <string name="finish">Закончить</string>
     <!--для китайского плагина выбора фотографий  end! -->
+
+
+    <string name="text_about" ><![CDATA[
+            <h2>Программный комплекс фиксации неполадок в электросетевом хозяйстве.</h2>
+            <br/>
+            <br/>
+            Разработка АО "ДРСК" "Приморские электрические сети"
+            <br/>
+            <br/>
+            <br/>
+            Разработчики:
+            <br/>
+            <br/>
+            Назаров А.Г. Nazarov_AG@zes.prim.drsk.ru СП "Приморские западные электрические сети"
+            <br/>
+            <br/>
+            Семёнов С.В. semenov@prim.drsk.ru "Аппарат управления"
+            <br/>
+            <br/>
+            Кучеренко И.С. kucherenko@prim.drsk.ru "Аппарат управления"
+            <br/>
+]]></string>
+    <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
+
 </resources>

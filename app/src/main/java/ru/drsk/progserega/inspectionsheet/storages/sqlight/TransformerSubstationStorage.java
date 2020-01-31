@@ -98,7 +98,7 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     private List<TransformerSubstation> dbModelToEntity(List<TransformerSubstationModel> substationModels) {
         List<TransformerSubstation> substations = new ArrayList<>();
         for (TransformerSubstationModel substationModel : substationModels) {
-            substations.add(new TransformerSubstation(substationModel.getId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
+            substations.add(new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
         }
 
         return substations;
@@ -107,6 +107,6 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     @Override
     public TransformerSubstation getById(long id) {
         TransformerSubstationModel substationModel = transformerSubstationDao.getById(id);
-        return new TransformerSubstation(substationModel.getId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
+        return new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
     }
 }
