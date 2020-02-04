@@ -86,6 +86,9 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         if(equipmentType.equals(EquipmentType.LINE)){
             searchBySP.setVisibility(View.GONE);
         }
+        else if(equipmentType.equals(EquipmentType.SUBSTATION)){
+            searchBySP.setVisibility(View.GONE);
+        }
         else{
             searchBySP.setVisibility(View.VISIBLE);
         }

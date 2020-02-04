@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
         networkTasksQueue.add(LOAD_LINES);
         networkTasksQueue.add(LOAD_DATA);
-
+//
         nextTask();
     }
 
@@ -212,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        //networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        //networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
        // networkTasksQueue.add(EXPORT_LINES);
 
 

@@ -16,7 +16,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class LoadLinesTask implements ObservableOnSubscribe< String > {
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 1;
     private static final int ATTEMPT_COUNT = 5;
     private IApiInspectionSheet apiInspectionSheet;
 
@@ -52,15 +52,15 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
                         response = apiInspectionSheet.getLines(resId, offset, PAGE_SIZE).execute();
                         break;
                     } catch (java.net.ProtocolException ex) {
-                        if (attempt == ATTEMPT_COUNT - 1) {
+                        if (attempt == ATTEMPT_COUNT-1 ) {
                             throw ex;
                         }
                     } catch (Exception ex) {
-                        if (attempt == ATTEMPT_COUNT - 1) {
+                        if (attempt == ATTEMPT_COUNT -1) {
                             throw ex;
                         }
                     }
-                    emitter.onNext("Ошибка при загрузке Линий. Попытка " + String.valueOf(attempt));
+                    emitter.onNext("Ошибка при загрузке Линий. Попытка " + String.valueOf(attempt+1));
                     attempt++;
 
                 }
@@ -82,9 +82,9 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
 
                 page++;
 
-                if(page == 5){
-                    break;
-                }
+//                if(page == 5){
+//                    break;
+//                }
 
             } while ((offset + PAGE_SIZE) < total);
             emitter.onComplete();
