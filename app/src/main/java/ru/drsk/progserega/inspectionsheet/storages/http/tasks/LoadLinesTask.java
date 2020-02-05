@@ -16,7 +16,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPResponse
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class LoadLinesTask implements ObservableOnSubscribe< String > {
-    private static final int PAGE_SIZE = 1;
+    private static final int PAGE_SIZE = 10;
     private static final int ATTEMPT_COUNT = 5;
     private IApiInspectionSheet apiInspectionSheet;
 
@@ -75,7 +75,7 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
                     //передаем данные на обработку
                     cnt += linesResponse.getData().size();
                     int percent = (int) ((cnt / (float) total) * 100);
-                    dbDataImporter.loadISLines(linesResponse.getData());
+                   // dbDataImporter.loadISLines(linesResponse.getData());
                     emitter.onNext("Загрузка Линий " + String.valueOf(percent) + "%");
                 }
 

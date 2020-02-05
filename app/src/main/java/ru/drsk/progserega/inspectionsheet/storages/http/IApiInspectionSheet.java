@@ -9,6 +9,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -117,7 +118,7 @@ public interface IApiInspectionSheet {
     @POST("/api/line/section/inspection/image")
     Call< UploadRes > uploadSectionInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
 
-
+    //@Headers("Accept-Encoding: gzip")
     @GET("/api/lines")
     Call< LinesResponseJson > getLines(@Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 

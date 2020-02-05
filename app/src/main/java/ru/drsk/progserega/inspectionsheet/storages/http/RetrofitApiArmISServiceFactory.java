@@ -20,17 +20,26 @@ public class RetrofitApiArmISServiceFactory {
     private OkHttpClient client;
 
     private  HttpLoggingInterceptor interceptor;
+
+    private ChunkedInterceptor chunkedInterceptor;
+    private ChunkedInterceptor2 chunkedInterceptor2;
+
     public RetrofitApiArmISServiceFactory(ISettingsStorage settingsStorage) {
         interceptor = new HttpLoggingInterceptor()
                //.setLevel(HttpLoggingInterceptor.Level.BASIC);
                 .setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        chunkedInterceptor = new ChunkedInterceptor();
+        chunkedInterceptor2 = new ChunkedInterceptor2();
+
         client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
+                .addInterceptor(chunkedInterceptor)
+
                 //.addInterceptor(new LogJsonInterceptor())
                 .readTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(120, TimeUnit.SECONDS)
-                .cache(null)
+                .retryOnConnectionFailure(true)
                 .build();
 
 //        retrofit = new Retrofit.Builder()

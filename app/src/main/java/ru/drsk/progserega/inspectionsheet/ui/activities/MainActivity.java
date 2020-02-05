@@ -154,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 //        networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
-        networkTasksQueue.add(CLEAR_DB);
-        networkTasksQueue.add(LOAD_DEFFECT_TYPES);
-//        networkTasksQueue.add(LOAD_LINES);
-       networkTasksQueue.add(LOAD_SUBSTATIONS);
-        networkTasksQueue.add(LOAD_TP);
+        //networkTasksQueue.add(CLEAR_DB);
+        //networkTasksQueue.add(LOAD_DEFFECT_TYPES);
+        networkTasksQueue.add(LOAD_LINES);
+      // networkTasksQueue.add(LOAD_SUBSTATIONS);
+        //networkTasksQueue.add(LOAD_TP);
 //
         nextTask();
     }
