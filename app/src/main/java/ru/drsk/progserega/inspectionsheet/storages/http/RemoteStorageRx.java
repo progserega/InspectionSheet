@@ -22,6 +22,8 @@ import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspecti
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadDeffectTypesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadSubstationsTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTPTask;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -107,10 +109,22 @@ public class RemoteStorageRx implements IRemoteStorage {
                 .subscribe(new ResultObserver());
     }
 
-    @Override
-    public void loadRemoteData() {
 
-        Observable.create(new LoadAllDataTask(apiArmIs, apiSTE, apiGeo, dbDataImporter))
+
+    @Override
+    public void loadTP() {
+
+        Observable.create(new LoadTPTask(apiArmIs,  dbDataImporter))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResultObserver());
+
+    }
+
+    @Override
+    public void loadSubstations() {
+
+        Observable.create(new LoadSubstationsTask(apiArmIs, dbDataImporter))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());

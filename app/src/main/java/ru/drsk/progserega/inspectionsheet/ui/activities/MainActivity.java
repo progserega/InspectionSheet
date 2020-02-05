@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private static final String SELECT_RES = "select_res";
     private static final String LOAD_LINES = "load_lines";
     private static final String LOAD_DATA = "load_data";
+    private static final String LOAD_TP = "load_tp";
+    private static final String LOAD_SUBSTATIONS = "load_substations";
     private static final String LOAD_DEFFECT_TYPES = "load_deffect_types";
 
     private Queue< String > networkTasksQueue = new LinkedList<>();
@@ -76,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.clear();
 
         //DEBUG
-        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
-        exportBtn.setVisibility(View.GONE);
+       // Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+       // exportBtn.setVisibility(View.GONE);
     }
 
 
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void syncData(View view) {
+
         showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
     }
 
@@ -146,15 +149,16 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.clear();
 
-        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_LINES);
+//        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+//        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+//        networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
-        networkTasksQueue.add(LOAD_LINES);
-        networkTasksQueue.add(LOAD_DATA);
+//        networkTasksQueue.add(LOAD_LINES);
+       networkTasksQueue.add(LOAD_SUBSTATIONS);
+        networkTasksQueue.add(LOAD_TP);
 //
         nextTask();
     }
@@ -250,8 +254,14 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case SELECT_RES:
                 selectOrganization();
                 return;
-            case LOAD_DATA:
-                application.getRemoteStorage().loadRemoteData();
+//            case LOAD_DATA:
+//                application.getRemoteStorage().loadRemoteData();
+//                return;
+            case LOAD_TP:
+                application.getRemoteStorage().loadTP();
+                return;
+            case LOAD_SUBSTATIONS:
+                application.getRemoteStorage().loadSubstations();
                 return;
             case LOAD_LINES:
                 loadLines();
