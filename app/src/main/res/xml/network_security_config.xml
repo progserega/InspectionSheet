@@ -6,5 +6,6 @@
         <domain includeSubdomains="true">10.75.168.40</domain>
         <domain includeSubdomains="true">armis.ps</domain>
         <domain includeSubdomains="true">arm-is.prim.drsk.ru</domain>
+        <domain includeSubdomains="true">172.21.251.98</domain>
     </domain-config>
 </network-security-config>
