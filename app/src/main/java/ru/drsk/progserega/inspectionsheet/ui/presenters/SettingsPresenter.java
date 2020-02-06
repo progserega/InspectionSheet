@@ -91,6 +91,10 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     @Override
     public void OrganizationSelected(long spId, long resId) {
         ElectricNetworkArea res = organizationStorage.getResById(resId);
+        if(res == null) {
+            view.showError("Ошибка!", "Не выбран РЭС");
+            return;
+        }
         view.setSpResName(res.getNetworkEnterprise().getName() + " / " + res.getName());
         this.resId = res.getId();
 
