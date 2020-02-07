@@ -75,7 +75,7 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
                     //передаем данные на обработку
                     cnt += linesResponse.getData().size();
                     int percent = (int) ((cnt / (float) total) * 100);
-                   // dbDataImporter.loadISLines(linesResponse.getData());
+                    dbDataImporter.loadISLines(linesResponse.getData());
                     emitter.onNext("Загрузка Линий " + String.valueOf(percent) + "%");
                 }
 

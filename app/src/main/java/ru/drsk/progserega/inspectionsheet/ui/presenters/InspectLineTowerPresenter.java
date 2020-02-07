@@ -1,6 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +40,10 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     private List< LineSection > nextSections = null;
 
     private static final int SEARCH_RADIUS = 100; //радиус поиска опоры в метрах
+
+    private static final int NEAREST_TOWERS_CNT = 20;
+
+    private boolean useGPS = false;
 
     public InspectLineTowerPresenter(InspectLineTowerContract.View view, InspectionSheetApplication application) {
         this.view = view;
@@ -115,6 +121,11 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onSelectTowerBtnClick() {
 
+        if (useGPS) {
+            towers = filterTowersByUserLocation();
+        } else {
+            towers = getNearestTowerFromCurrent(NEAREST_TOWERS_CNT);
+        }
         view.showSelectTowerDialog(towers);
     }
 
@@ -133,19 +144,15 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onGPSSwitchChange(boolean isOn) {
 
-        towers = line.getTowers();
-        if (!isOn) {
-            return;
-        }
-        filterTowersByUserLocation();
-
+        useGPS = isOn;
     }
 
     @Override
     public void onGPSLocationChange() {
 
-        towers = line.getTowers();
-        filterTowersByUserLocation();
+        if (useGPS) {
+            towers = filterTowersByUserLocation();
+        }
     }
 
     @Override
@@ -250,17 +257,19 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         return typesNames;
     }
 
-    private void filterTowersByUserLocation() {
+    private List< Tower > filterTowersByUserLocation() {
+
 
         List< Tower > filteredTowers = new ArrayList<>();
         ILocation locationService = application.getLocationService();
-        for (Tower tower : towers) {
+        for (Tower tower : line.getTowers()) {
             double distance = locationService.distanceBetween(tower.getMapPoint(), locationService.getUserPosition());
             if (distance <= SEARCH_RADIUS) {
                 filteredTowers.add(tower);
             }
         }
-        this.towers = filteredTowers;
+
+        return filteredTowers;
     }
 
     private List< TowerDeffect > readDeffects() {
@@ -314,6 +323,45 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         List< LineSection > sectionModels = application.getLineSectionStorage().getByLineStartWithTower(line.getUniqId(), currentTower.getUniqId());
 
         return sectionModels;
+    }
+
+    private List< Tower > getNearestTowerFromCurrent(int max) {
+
+        List< Tower > sorted = new ArrayList<>();
+        sorted.addAll(line.getTowers());
+
+        final long MUL = 10000000L;
+        Collections.sort(sorted, new Comparator< Tower >() {
+            @Override
+            public int compare(Tower tower, Tower t1) {
+
+                double currentX = currentTower.getMapPoint().getLat() * MUL;
+                double currentY = currentTower.getMapPoint().getLon() * MUL;
+
+                double towerX = tower.getMapPoint().getLat() * MUL;
+                double towerY = tower.getMapPoint().getLon() * MUL;
+
+                double dist1 = (currentX - towerX) * (currentX - towerX) + (currentY - towerY) * (currentY - towerY);
+
+                double tower1X = t1.getMapPoint().getLat() * MUL;
+                double tower1Y = t1.getMapPoint().getLon() * MUL;
+
+                double dist2 = (currentX - tower1X) * (currentX - tower1X) + (currentY - tower1Y) * (currentY - tower1Y);
+
+                return (int) (dist1 - dist2);
+            }
+        });
+
+        if (sorted.size() <= max) {
+            return sorted;
+        }
+        List< Tower > nearest = new ArrayList<>();
+
+        for (int i = 0; i < max; i++) {
+            nearest.add(sorted.get(i));
+        }
+
+        return nearest;
     }
 
     @Override
