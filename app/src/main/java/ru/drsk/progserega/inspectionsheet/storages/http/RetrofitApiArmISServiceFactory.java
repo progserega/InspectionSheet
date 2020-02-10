@@ -21,20 +21,17 @@ public class RetrofitApiArmISServiceFactory {
 
     private  HttpLoggingInterceptor interceptor;
 
-    private ChunkedInterceptor chunkedInterceptor;
-    private ChunkedInterceptor2 chunkedInterceptor2;
+
 
     public RetrofitApiArmISServiceFactory(ISettingsStorage settingsStorage) {
         interceptor = new HttpLoggingInterceptor()
-               //.setLevel(HttpLoggingInterceptor.Level.BASIC);
-                .setLevel(HttpLoggingInterceptor.Level.BODY);
+               .setLevel(HttpLoggingInterceptor.Level.BASIC);
+               // .setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        chunkedInterceptor = new ChunkedInterceptor();
-        chunkedInterceptor2 = new ChunkedInterceptor2();
 
         client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .addInterceptor(chunkedInterceptor)
+                //.addInterceptor(chunkedInterceptor)
 
                 //.addInterceptor(new LogJsonInterceptor())
                 .readTimeout(120, TimeUnit.SECONDS)
@@ -42,14 +39,7 @@ public class RetrofitApiArmISServiceFactory {
                 .retryOnConnectionFailure(true)
                 .build();
 
-//        retrofit = new Retrofit.Builder()
-//                .client(client)
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//                .baseUrl(settingsStorage.loadSettings().getServerUrl()) //Базовая часть адреса
-//                //"http://10.75.168.40
-//                //.baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
-//                .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
-//                .build();
+
 
         retrofit = build(settingsStorage.loadSettings().getServerUrl());
     }
@@ -59,8 +49,6 @@ public class RetrofitApiArmISServiceFactory {
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(serverUrl) //Базовая часть адреса
-                //"http://10.75.168.40
-                //.baseUrl("http://arm-is.prim.drsk.ru") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
     }

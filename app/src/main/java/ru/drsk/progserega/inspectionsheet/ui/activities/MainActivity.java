@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private static final String EXPORT_SUBST_TRANSFORMERS = "export_substations_transformers";
     private static final String EXPORT_TP_TRANSFORMERS = "export_tp_transformers";
-   // private static final String EXPORT_SUBST_TRANSFORMERS = "export_transformers";
+    // private static final String EXPORT_SUBST_TRANSFORMERS = "export_transformers";
     private static final String EXPORT_LINES = "export_lines";
     private static final String CLEAR_DB = "clear_db";
     private static final String LOAD_ORGANIZATION = "load_organization";
@@ -77,9 +77,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         //application.getRemoteStorage().setProgressListener(this);
         networkTasksQueue.clear();
 
-        //DEBUG
-       // Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
-       // exportBtn.setVisibility(View.GONE);
+        //comment for DEBUG
+        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+        exportBtn.setVisibility(View.GONE);
     }
 
 
@@ -118,7 +118,10 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     public void syncData(View view) {
-
+        if (networkTasksQueue.size() != 0) {
+            showError("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
+            return;
+        }
         showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
     }
 
@@ -149,16 +152,16 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.clear();
 
-//        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-//        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-//        networkTasksQueue.add(EXPORT_LINES);
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
-        //networkTasksQueue.add(CLEAR_DB);
-        //networkTasksQueue.add(LOAD_DEFFECT_TYPES);
+        networkTasksQueue.add(CLEAR_DB);
+        networkTasksQueue.add(LOAD_DEFFECT_TYPES);
         networkTasksQueue.add(LOAD_LINES);
-      // networkTasksQueue.add(LOAD_SUBSTATIONS);
-        //networkTasksQueue.add(LOAD_TP);
+        networkTasksQueue.add(LOAD_SUBSTATIONS);
+        networkTasksQueue.add(LOAD_TP);
 //
         nextTask();
     }
@@ -198,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         }
         showError("Ошибка", s);
         progressBar.setVisibility(View.INVISIBLE);
+        networkTasksQueue.clear();
     }
 
     private void showError(String title, String message) {
@@ -218,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         //networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-       // networkTasksQueue.add(EXPORT_LINES);
+        // networkTasksQueue.add(EXPORT_LINES);
 
 
         nextTask();
@@ -266,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case LOAD_LINES:
                 loadLines();
                 return;
-            case  LOAD_DEFFECT_TYPES:
+            case LOAD_DEFFECT_TYPES:
                 application.getRemoteStorage().loadDeffectTypes();
                 return;
         }
@@ -297,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     public void selectOrganization() {
         Settings settings = application.getSettingsStorage().loadSettings();
-       // settings.setResId(0);
+        // settings.setResId(0);
         if (settings.getResId() == 0) {
             hideProgress();
             showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
@@ -314,13 +318,13 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 //        selectOrganizationDlog.Show(fm, enterpriseId, areaId);
     }
 
-    private void loadLines(){
+    private void loadLines() {
         long resId = application.getSettingsStorage().loadSettings().getResId();
-        if(resId == 0){
+        if (resId == 0) {
             showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
             return;
         }
-        application.getRemoteStorage().loadLines( resId);
+        application.getRemoteStorage().loadLines(resId);
     }
 
     @Override

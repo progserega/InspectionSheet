@@ -17,7 +17,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class LoadLinesTask implements ObservableOnSubscribe< String > {
     private static final int PAGE_SIZE = 10;
-    private static final int ATTEMPT_COUNT = 5;
+    private static final int ATTEMPT_COUNT = 10;
     private IApiInspectionSheet apiInspectionSheet;
 
     private DBDataImporter dbDataImporter;
@@ -47,16 +47,16 @@ public class LoadLinesTask implements ObservableOnSubscribe< String > {
                 Response response = null;
 
                 int attempt = 1;
-                while (attempt < ATTEMPT_COUNT) {
+                while (attempt <= ATTEMPT_COUNT) {
                     try {
                         response = apiInspectionSheet.getLines(resId, offset, PAGE_SIZE).execute();
                         break;
                     } catch (java.net.ProtocolException ex) {
-                        if (attempt == ATTEMPT_COUNT-1 ) {
+                        if (attempt == ATTEMPT_COUNT ) {
                             throw ex;
                         }
                     } catch (Exception ex) {
-                        if (attempt == ATTEMPT_COUNT -1) {
+                        if (attempt == ATTEMPT_COUNT) {
                             throw ex;
                         }
                     }

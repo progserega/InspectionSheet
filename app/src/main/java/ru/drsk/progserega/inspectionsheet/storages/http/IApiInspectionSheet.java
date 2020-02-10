@@ -118,7 +118,7 @@ public interface IApiInspectionSheet {
     @POST("/api/line/section/inspection/image")
     Call< UploadRes > uploadSectionInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
 
-    //@Headers("Accept-Encoding: gzip")
+   // @Headers("Accept-Encoding: identity")
     @GET("/api/lines")
     Call< LinesResponseJson > getLines(@Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 
