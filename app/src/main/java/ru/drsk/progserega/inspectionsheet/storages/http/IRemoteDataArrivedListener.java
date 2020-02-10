@@ -6,6 +6,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
 import ru.drsk.progserega.inspectionsheet.storages.json.models.SubstationTransformerJson;
 
+@Deprecated
 public interface IRemoteDataArrivedListener {
     void SteTPModelsArrived(List<SteTPModel> tpModels);
 

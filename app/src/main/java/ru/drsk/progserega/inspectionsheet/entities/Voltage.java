@@ -11,7 +11,9 @@ public enum Voltage {
     V_6KV("6кВ"),
     V_10KV("10кВ"),
     V_35KV("35кВ"),
-    V_110KV("110кВ");
+    V_110KV("110кВ"),
+    V_220KV("220кВ"),
+    V_500KV("500кВ");
 
     private String voltage;
 
@@ -64,6 +66,10 @@ public enum Voltage {
                 return Voltage.V_35KV;
             case 110000:
                 return Voltage.V_110KV;
+            case 220000:
+                return Voltage.V_220KV;
+            case 500000:
+                return Voltage.V_500KV;
         }
 
         return null;
@@ -81,6 +87,10 @@ public enum Voltage {
                 return 35000;
             case "110кВ":
                 return 110000;
+            case "220кВ":
+                return 220000;
+            case "500кВ":
+                return 500000;
         }
         return 0;
     }

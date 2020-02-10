@@ -73,7 +73,7 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         String serverUrl = view.getServerUrl();
 
         settingsStorage.saveSettings(new Settings(fio, position, (int) resId, serverUrl));
-
+        application.getRemoteStorage().setServerUrl(serverUrl);
         view.finishView();
     }
 
