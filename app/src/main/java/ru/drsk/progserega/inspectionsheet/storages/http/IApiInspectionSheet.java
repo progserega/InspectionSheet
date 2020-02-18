@@ -22,6 +22,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDef
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
@@ -87,6 +88,9 @@ public interface IApiInspectionSheet {
 
     @POST("/api/transformer/info")
     Call< UploadRes > uploadTransformerInfo(@Body TransformerInfo transformerInspectionResult);
+
+    @POST("/api/station/inspection")
+    Call< UploadRes > uploadStationInspection(@Body StationInspectionJson stationInspectionJson);
 
     //отправка результата осмотра линии
     @POST("/api/line/inspection")

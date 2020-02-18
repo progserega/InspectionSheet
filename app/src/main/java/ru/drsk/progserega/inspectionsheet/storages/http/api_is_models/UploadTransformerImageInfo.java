@@ -20,11 +20,17 @@ public class UploadTransformerImageInfo {
     @Expose
     private long uploadDate;
 
-    public UploadTransformerImageInfo(String name, long transformer_id, int sybstation_type, long uploadDate) {
+    @SerializedName("inspection_id")
+    @Expose
+    private long inspectionId;
+
+
+    public UploadTransformerImageInfo(String name, long transformer_id, int sybstation_type, long uploadDate, long inspectionId) {
         this.name = name;
         this.transformer_id = transformer_id;
         this.sybstation_type = sybstation_type;
         this.uploadDate = uploadDate;
+        this.inspectionId = inspectionId;
     }
 
     public String getName() {
@@ -57,5 +63,13 @@ public class UploadTransformerImageInfo {
 
     public void setUploadDate(long uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public long getInspectionId() {
+        return inspectionId;
+    }
+
+    public void setInspectionId(long inspectionId) {
+        this.inspectionId = inspectionId;
     }
 }

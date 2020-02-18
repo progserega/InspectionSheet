@@ -36,7 +36,11 @@ public class TransformerInspectionResult {
     @Expose
     private long uploadDate;
 
-    public TransformerInspectionResult(long substationId, int substationType, long equipmentId, int deffectId, String deffectValues, String deffectSubValues, String deffectComment, long uploadDate) {
+    @SerializedName("inspection_id")
+    @Expose
+    private long inspectionId;
+
+    public TransformerInspectionResult(long substationId, int substationType, long equipmentId, int deffectId, String deffectValues, String deffectSubValues, String deffectComment, long uploadDate, long inspectionId) {
         this.substationId = substationId;
         this.substationType = substationType;
         this.equipmentId = equipmentId;
@@ -45,6 +49,7 @@ public class TransformerInspectionResult {
         this.deffectSubValues = deffectSubValues;
         this.deffectComment = deffectComment;
         this.uploadDate = uploadDate;
+        this.inspectionId = inspectionId;
     }
 
     public long getSubstationId() {
@@ -109,5 +114,13 @@ public class TransformerInspectionResult {
 
     public void setUploadDate(long uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public long getInspectionId() {
+        return inspectionId;
+    }
+
+    public void setInspectionId(long inspectionId) {
+        this.inspectionId = inspectionId;
     }
 }
