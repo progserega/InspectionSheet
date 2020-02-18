@@ -14,6 +14,7 @@ public class TransformerInspection {
     private List<InspectionItem> inspectionItems;
     private Date date;
     private boolean done;
+    private String inspectorName = "";
 
     public Equipment getSubstation() {
         return substation;
@@ -79,5 +80,13 @@ public class TransformerInspection {
 
         int percent = (int) (inspected / (float) total * 100);
         return percent;
+    }
+
+    public String getInspectorName() {
+        return inspectorName;
+    }
+
+    public void setInspectorName(String inspectorName) {
+        this.inspectorName = inspectorName;
     }
 }
