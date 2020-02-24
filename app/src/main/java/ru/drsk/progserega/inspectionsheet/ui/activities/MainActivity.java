@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         setContentView(R.layout.activity_main);
 
         this.application = (InspectionSheetApplication) this.getApplication();
-        setTitle("Листы осмотров");
+        setTitle(R.string.app_name);
 
 
         progressBar = (ProgressBar) findViewById(R.id.loading_progress);
@@ -220,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        //networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         //networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-        // networkTasksQueue.add(EXPORT_LINES);
+         networkTasksQueue.add(EXPORT_LINES);
 
 
         nextTask();
