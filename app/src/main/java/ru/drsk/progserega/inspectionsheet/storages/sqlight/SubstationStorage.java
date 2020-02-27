@@ -30,18 +30,18 @@ public class SubstationStorage implements ISubstationStorage {
     }
 
     @Override
-    public List<Substation> getByFilters(Map<String, Object> filters) {
+    public List< Substation > getByFilters(Map< String, Object > filters) {
         if (filters == null || filters.isEmpty() || (filters.size() == 1 && filters.containsKey(EquipmentService.FILTER_TYPE))) {
 
-            List<SubstationModel> substationModels = substationDao.loadAll();
+            List< SubstationModel > substationModels = substationDao.loadAll();
             return dbModelToEntity(substationModels);
         }
 
         //---- формируем запрос в зависимости от установленных фильтров ---------
         String queryStr = "SELECT * FROM substations ";
-        List<String> filtersParts = new ArrayList<>();
-        List<Object> filtersValues = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+        List< String > filtersParts = new ArrayList<>();
+        List< Object > filtersValues = new ArrayList<>();
+        for (Map.Entry< String, Object > entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -68,7 +68,7 @@ public class SubstationStorage implements ISubstationStorage {
             queryStr = queryStr + " WHERE " + TextUtils.join(" AND ", filtersParts);
         }
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr, filtersValues.toArray(new Object[filtersValues.size()]));
-        List<SubstationModel> substationModels = substationDao.getByFilters(query);
+        List< SubstationModel > substationModels = substationDao.getByFilters(query);
 
         //если есть фильтрация по локации, то уже выбранные данные фильтруем по локации
         Point center = (Point) filters.get(EquipmentService.FILTER_POSITION);
@@ -86,20 +86,32 @@ public class SubstationStorage implements ISubstationStorage {
     @Override
     public Substation getById(long id) {
         SubstationModel substationModel = substationDao.getById(id);
-        return new Substation(substationModel.getId(), substationModel.getUniqId(), substationModel.getName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
+        return buildFromDB(substationModel);
     }
 
-    private List<Substation> dbModelToEntity(List<SubstationModel> substationModels) {
-        List<Substation> substations = new ArrayList<>();
+    private List< Substation > dbModelToEntity(List< SubstationModel > substationModels) {
+        List< Substation > substations = new ArrayList<>();
         for (SubstationModel substationModel : substationModels) {
-            substations.add(new Substation(substationModel.getId(), substationModel.getUniqId(), substationModel.getName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
+            substations.add(buildFromDB(substationModel));
         }
 
         return substations;
     }
 
-    private List<SubstationModel> filterByPoint(List<SubstationModel> substationModelList, Point center, float radius) {
-        List<SubstationModel> substationModels = new ArrayList<>();
+    private Substation buildFromDB(SubstationModel substationModel) {
+        return new Substation(
+                substationModel.getId(),
+                substationModel.getUniqId(),
+                substationModel.getName(),
+                substationModel.getInspectionDate(),
+                substationModel.getInspectionPercent(),
+                substationModel.getLat(),
+                substationModel.getLon()
+        );
+    }
+
+    private List< SubstationModel > filterByPoint(List< SubstationModel > substationModelList, Point center, float radius) {
+        List< SubstationModel > substationModels = new ArrayList<>();
 
         for (SubstationModel substation : substationModelList) {
 

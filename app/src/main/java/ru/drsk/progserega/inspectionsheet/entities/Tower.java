@@ -47,4 +47,9 @@ public class Tower extends Equipment {
         this.material = material;
         this.towerType = towerType;
     }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
 }

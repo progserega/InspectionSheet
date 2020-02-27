@@ -21,4 +21,9 @@ public class TransformerType extends Equipment{
         }
         return names;
     }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
 }

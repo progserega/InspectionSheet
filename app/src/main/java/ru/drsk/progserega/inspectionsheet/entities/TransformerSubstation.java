@@ -12,4 +12,9 @@ public class TransformerSubstation extends Equipment {
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
     }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
 }
