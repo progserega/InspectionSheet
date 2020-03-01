@@ -32,6 +32,7 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
+import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
@@ -272,12 +273,23 @@ public class SearchObject extends ActivityWithGPS implements
     protected void onListItemShowOnMapClick(int position) {
         Equipment equipment = (Equipment) listAdapter.getEquipments().get(position);
 
-        Point location = equipment.getLocation();
+        Point location = null;
+        if(equipment.getType().equals(EquipmentType.LINE)){
+            Tower firstTower = application.getTowerStorage().getFirstInLine(equipment.getUniqId());
+            if(firstTower!=null){
+                location = firstTower.getLocation();
+            }
+        }else{
+            location = equipment.getLocation();
+        }
+
         if(location == null){
             return;
         }
 
-        String uriStr = String.format("geo:%f,%f?z=19", location.getLat(),location.getLon());
+        String latStr = ""+location.getLat();
+        String lonStr = ""+location.getLon();
+        String uriStr = String.format("geo:%s,%s?z=19&q=%s,%s", latStr,lonStr,latStr,lonStr);
         showMap(Uri.parse(uriStr));
     }
 

@@ -50,6 +50,6 @@ public class Tower extends Equipment {
 
     @Override
     public Point getLocation() {
-        return null;
+        return mapPoint;
     }
 }

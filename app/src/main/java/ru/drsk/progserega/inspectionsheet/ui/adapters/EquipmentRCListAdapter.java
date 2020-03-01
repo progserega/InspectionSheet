@@ -12,6 +12,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 
 public class EquipmentRCListAdapter extends
         RecyclerView.Adapter< EquipmentRCListAdapter.ViewHolder > {
@@ -49,7 +50,7 @@ public class EquipmentRCListAdapter extends
         public TextView nameTextView;
         public TextView inspectionPercentTextView;
         public TextView inspectionDateTextView;
-
+        public TextView showOnMaplabel;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -76,7 +77,7 @@ public class EquipmentRCListAdapter extends
                 }
             });
 
-            TextView showOnMaplabel = (TextView)  itemView.findViewById(R.id.equipment_list_show_on_map);
+            showOnMaplabel = (TextView)  itemView.findViewById(R.id.equipment_list_show_on_map);
             showOnMaplabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -142,6 +143,13 @@ public class EquipmentRCListAdapter extends
 
         TextView inspectionDateTextView = viewHolder.inspectionDateTextView;
         inspectionDateTextView.setText(date);
+
+//        if(equipment.getType() == EquipmentType.LINE){
+//            viewHolder.showOnMaplabel.setVisibility(View.GONE);
+//        }
+//        else{
+//            viewHolder.showOnMaplabel.setVisibility(View.VISIBLE);
+//        }
     }
 
     // Returns the total count of items in the list

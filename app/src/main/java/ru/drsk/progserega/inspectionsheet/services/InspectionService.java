@@ -127,7 +127,15 @@ public class InspectionService {
 
         List< TransformerInspection > inspectionList = new ArrayList<>();
         for (TransformerSubstationModel substationModel : substationModels) {
-            Equipment substation = new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
+            Equipment substation = new TransformerSubstation(
+                    substationModel.getId(),
+                    substationModel.getUniqId(),
+                    substationModel.getDispName(),
+                    substationModel.getInspectionDate(),
+                    substationModel.getInspectionPercent(),
+                    substationModel.getLat(),
+                    substationModel.getLon()
+            );
             inspectionList.addAll(getTPTransformersWithInspections(substation));
         }
         return inspectionList;
