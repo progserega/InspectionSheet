@@ -61,4 +61,6 @@ public abstract class Equipment {
     public void setInspectionPercent(float inspectionPercent) {
         this.inspectionPercent = inspectionPercent;
     }
+
+    abstract public Point getLocation();
 }

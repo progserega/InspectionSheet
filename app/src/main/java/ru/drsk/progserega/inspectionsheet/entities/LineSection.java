@@ -52,4 +52,9 @@ public class LineSection extends Equipment {
     public void setMaterial(Material material) {
         this.material = material;
     }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
 }

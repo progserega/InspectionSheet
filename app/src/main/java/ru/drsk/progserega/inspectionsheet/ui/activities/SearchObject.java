@@ -2,9 +2,13 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +29,10 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.ui.adapters.EquipmentListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
+import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
@@ -39,22 +42,31 @@ import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.EquipmentRCListAdapter;
+import ru.drsk.progserega.inspectionsheet.ui.interfaces.SearchObjectsContract;
+import ru.drsk.progserega.inspectionsheet.ui.presenters.SearchObjectPresenter;
 
-public class SearchObject extends ActivityWithGPS implements SelectOrganizationDialogFragment.ISelectOrganizationListener, ILocationChangeListener {
+public class SearchObject extends ActivityWithGPS implements
+        SelectOrganizationDialogFragment.ISelectOrganizationListener,
+        ILocationChangeListener,
+        SearchObjectsContract.View {
 
-   // private static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 5;
+    // private static final int REQUEST_CODE_ACCESS_FINE_LOCATION = 5;
 
     public final static String OBJECT_TYPE = "object_type";
     public final static String LINE_TYPE = "line_type";
 
     private InspectionSheetApplication application;
-    private EquipmentListAdapter listAdapter;
+    //private EquipmentListAdapter listAdapter;
+    private EquipmentRCListAdapter listAdapter;
     private EquipmentService equipmentService;
     private OrganizationService organizationService;
     private ILocation locationService;
-    private  EquipmentType equipmentType;
+    private EquipmentType equipmentType;
 
     SelectOrganizationDialogFragment selectOrganizationDlog;
+
+    private SearchObjectsContract.Presenter presenter;
 
     private CheckBox gpsCheckbox;
     private boolean allowGPS = false;
@@ -70,6 +82,9 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
 
         this.application = (InspectionSheetApplication) this.getApplication();
+
+        this.presenter = new SearchObjectPresenter(this, this.application);
+
         this.equipmentService = this.application.getEquipmentService();
         this.locationService = this.application.getLocationService();
         this.organizationService = this.application.getOrganizationService();
@@ -83,13 +98,11 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         Log.i("SearchObject", equipmentType.name());
 
         Button searchBySP = (Button) findViewById(R.id.selectBySpBt);
-        if(equipmentType.equals(EquipmentType.LINE)){
+        if (equipmentType.equals(EquipmentType.LINE)) {
             searchBySP.setVisibility(View.GONE);
-        }
-        else if(equipmentType.equals(EquipmentType.SUBSTATION)){
+        } else if (equipmentType.equals(EquipmentType.SUBSTATION)) {
             searchBySP.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             searchBySP.setVisibility(View.VISIBLE);
         }
 //        if (intent.hasExtra(LINE_TYPE)) {
@@ -99,16 +112,28 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
         final SearchObject that = this;
 
-        listAdapter = new EquipmentListAdapter(this, new ArrayList<Equipment>());
-        ListView equipmentList = (ListView) findViewById(R.id.equipmentList);
+        listAdapter = new EquipmentRCListAdapter(new ArrayList< Equipment >());
+        RecyclerView equipmentList = (RecyclerView) findViewById(R.id.equipment_rc_list);
         equipmentList.setAdapter(listAdapter);
-        //Создание слушателя
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> list, View itemView, int position, long id) {
-                that.onListItemClick(list, itemView, position, id);
+        equipmentList.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        equipmentList.addItemDecoration(itemDecoration);
+
+        listAdapter.setOnItemClickListener(new EquipmentRCListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                onListItemClick(position);
             }
-        };
-        equipmentList.setOnItemClickListener(itemClickListener);
+        });
+
+        listAdapter.setMapClickListener(new EquipmentRCListAdapter.OnItemMapClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                // Toast.makeText(that, "MAP CLICK!!!", Toast.LENGTH_SHORT).show();
+                onListItemShowOnMapClick(position);
+            }
+        });
+
 
         ReloadListValues();
 
@@ -137,45 +162,43 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
         gpsCheckbox = (CheckBox) findViewById(R.id.searchNearestChb);
 
-        locationService.setLocationChangeListener(new WeakReference<ILocationChangeListener>(this));
+        locationService.setLocationChangeListener(new WeakReference< ILocationChangeListener >(this));
 
         Spinner selectVoltageSpinner = (Spinner) findViewById(R.id.voltage_spinner);
         TextView voltageText = (TextView) findViewById(R.id.selectVoltageText);
-        if(equipmentType.equals(EquipmentType.LINE)){
+        if (equipmentType.equals(EquipmentType.LINE)) {
             selectVoltageSpinner.setVisibility(View.VISIBLE);
             voltageText.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             selectVoltageSpinner.setVisibility(View.GONE);
             voltageText.setVisibility(View.GONE);
         }
 
 
-        final List<String> voltageSpinnerItems = Voltage.names();
-        voltageSpinnerItems.add(0,"ВСЕ");
+        final List< String > voltageSpinnerItems = Voltage.names();
+        voltageSpinnerItems.add(0, "ВСЕ");
 
 
-
-        ArrayAdapter<String> voltageListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, voltageSpinnerItems);
+        ArrayAdapter< String > voltageListAdapter = new ArrayAdapter< String >(this, android.R.layout.simple_spinner_item, voltageSpinnerItems);
         voltageListAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         selectVoltageSpinner.setAdapter(voltageListAdapter);
         // enterpriseSpinner.setSelection(enterpriseSpinnerSelection);
 
         selectVoltageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String voltageSelected  = voltageSpinnerItems.get(position);
-                if(voltageSelected.equals("ВСЕ")){
+            public void onItemSelected(AdapterView< ? > parentView, View selectedItemView, int position, long id) {
+                String voltageSelected = voltageSpinnerItems.get(position);
+                if (voltageSelected.equals("ВСЕ")) {
                     that.equipmentService.removeFilter(EquipmentService.FILTER_VOLTAGE);
                     that.ReloadListValues();
-                }
-                else{
-                    that.equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE,  Voltage.get(voltageSelected));
+                } else {
+                    that.equipmentService.addFilter(EquipmentService.FILTER_VOLTAGE, Voltage.get(voltageSelected));
                     that.ReloadListValues();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
+            public void onNothingSelected(AdapterView< ? > parentView) {
                 // your code here
             }
 
@@ -200,15 +223,16 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
     }
 
-    protected void onListItemClick(AdapterView<?> list, View v, int position, long id) {
-        Equipment equipment = (Equipment) listAdapter.getItem(position);
+    //protected void onListItemClick(AdapterView< ? > list, View v, int position, long id) {
+    protected void onListItemClick(int position) {
+        Equipment equipment = (Equipment) listAdapter.getEquipments().get(position);
 
 
         Intent intent = null;
         if (equipment.getType() == EquipmentType.LINE) {
 
             LineInspection lineInspection = application.getLineInspectionStorage().getLineInspection(equipment.getId());
-            if(lineInspection == null){
+            if (lineInspection == null) {
                 return;
             }
             intent = new Intent(this, InspectLine.class);
@@ -218,9 +242,9 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         if (equipment.getType() == EquipmentType.SUBSTATION) {
 
             ISubstationInspection substationInspection = getInspection(equipment);
-            if(substationInspection == null){
-                 substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
-                 application.getSubstationInspections().add(substationInspection);
+            if (substationInspection == null) {
+                substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
+                application.getSubstationInspections().add(substationInspection);
             }
 
             application.setCurrentSubstationInspection(substationInspection);
@@ -231,8 +255,8 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
 
             ISubstationInspection substationInspection = getInspection(equipment);
-            if(substationInspection == null){
-                substationInspection = new TransformerSubstationInspection( equipmentService.getTransformerSubstationById(equipment.getId()) );
+            if (substationInspection == null) {
+                substationInspection = new TransformerSubstationInspection(equipmentService.getTransformerSubstationById(equipment.getId()));
                 application.getSubstationInspections().add(substationInspection);
             }
             application.setCurrentSubstationInspection(substationInspection);
@@ -246,8 +270,41 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         locationService.stopUsingGPS();
     }
 
+    protected void onListItemShowOnMapClick(int position) {
+        Equipment equipment = (Equipment) listAdapter.getEquipments().get(position);
+
+        Point location = null;
+        if(equipment.getType().equals(EquipmentType.LINE)){
+            Tower firstTower = application.getTowerStorage().getFirstInLine(equipment.getUniqId());
+            if(firstTower!=null){
+                location = firstTower.getLocation();
+            }
+        }else{
+            location = equipment.getLocation();
+        }
+
+        if(location == null){
+            return;
+        }
+
+        String latStr = ""+location.getLat();
+        String lonStr = ""+location.getLon();
+        String uriStr = String.format("geo:%s,%s?z=19&q=%s,%s", latStr,lonStr,latStr,lonStr);
+        showMap(Uri.parse(uriStr));
+    }
+
+    public void showMap(Uri geoLocation) {
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        mapIntent.setData(geoLocation);
+        // Make the Intent explicit by setting the Google Maps package
+        //mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
+    }
+
     private void ReloadListValues() {
-        List<Equipment> equipments = equipmentService.getEquipments();
+        List< Equipment > equipments = equipmentService.getEquipments();
 
         // update data in our listAdapter
         listAdapter.getEquipments().clear();
@@ -353,21 +410,21 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
 
     @Override
     public void onLocationChange(Point location) {
-        if(gpsCheckbox.isChecked()) {
+        if (gpsCheckbox.isChecked()) {
             filterByPosition(location);
             ReloadListValues();
         }
-       // Toast.makeText(this, "Позиция изменилась!!", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Позиция изменилась!!", Toast.LENGTH_SHORT).show();
     }
 
 
-    private ISubstationInspection getInspection(Equipment equipment){
-        List<ISubstationInspection> inspections = application.getSubstationInspections();
+    private ISubstationInspection getInspection(Equipment equipment) {
+        List< ISubstationInspection > inspections = application.getSubstationInspections();
 
-        for(ISubstationInspection substationInspection: inspections){
+        for (ISubstationInspection substationInspection : inspections) {
             Equipment substationInspectionEquipment = substationInspection.getEquipment();
-            if(substationInspectionEquipment.getType().equals(equipment.getType())
-                    && substationInspectionEquipment.getId() == equipment.getId()){
+            if (substationInspectionEquipment.getType().equals(equipment.getType())
+                    && substationInspectionEquipment.getId() == equipment.getId()) {
                 return substationInspection;
             }
         }
@@ -378,19 +435,19 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
     protected void onStart() {
         super.onStart();
 
-        if(equipmentType.equals(EquipmentType.SUBSTATION) || equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
+        if (equipmentType.equals(EquipmentType.SUBSTATION) || equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
             ISubstationInspection inspection = application.getCurrentSubstationInspection();
-            if(inspection == null){
+            if (inspection == null) {
                 return;
             }
 
             Equipment equipment = inspection.getEquipment();
-            if(equipment == null){
+            if (equipment == null) {
                 return;
             }
 
-            for(Equipment eq: listAdapter.getEquipments()){
-                if(eq.getId() == equipment.getId()){
+            for (Equipment eq : listAdapter.getEquipments()) {
+                if (eq.getId() == equipment.getId()) {
                     eq.setInspectionDate(equipment.getInspectionDate());
                     eq.setInspectionPercent(equipment.getInspectionPercent());
                     break;
@@ -408,5 +465,6 @@ public class SearchObject extends ActivityWithGPS implements SelectOrganizationD
         equipmentService.clearFilters();
         locationService.stopUsingGPS();
 
+        presenter.onDestroy();
     }
 }

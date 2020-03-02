@@ -81,4 +81,9 @@ public class Line extends Equipment{
         this.type = EquipmentType.LINE;
         this.startExploitationYear = startExploitationYear;
     }
+
+    @Override
+    public Point getLocation() {
+        return null;
+    }
 }
