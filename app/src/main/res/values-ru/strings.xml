@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Inspection Sheet</string>
+    <string name="app_name">Лист осмотра</string>
     <string name="addDefectBtText">Осмотр оборудования</string>
     <string name="vl04BtText">ВЛ</string>
     <string name="vl_6_10_kv_text">ВЛ 6-10 кВ</string>
@@ -83,5 +83,6 @@
             <br/>
 ]]></string>
     <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
+    <string name="show_on_map_text">на карте</string>
 
 </resources>

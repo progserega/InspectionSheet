@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/selectBySpBt"
@@ -50,11 +51,10 @@
                 android:id="@+id/selectVoltageText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/selectVoltageText"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="16dp"
-                 />
+                android:text="@string/selectVoltageText" />
 
             <Spinner
                 android:id="@+id/voltage_spinner"
@@ -65,12 +65,10 @@
                 />
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/equipmentList"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/equipment_rc_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

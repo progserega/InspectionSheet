@@ -74,22 +74,23 @@
     <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
     <string name="text_about"><![CDATA[
             <h2>Программный комплекс фиксации неполадок в электросетевом хозяйстве.</h2>
-            <br/>
-            <br/>
+            <br>
+            <br>
             Разработка АО "ДРСК" "Приморские электрические сети"
-            <br/>
-            <br/>
-            <br/>
+            <br>
+            <br>
+            <br>
             Разработчики:
-            <br/>
-            <br/>
+            <br>
+            <br>
             Назаров А.Г. Nazarov_AG@zes.prim.drsk.ru СП "Приморские западные электрические сети"
-            <br/>
-            <br/>
+            <br>
+            <br>
             Семёнов С.В. semenov@prim.drsk.ru "Аппарат управления"
-            <br/>
-            <br/>
+            <br>
+            <br>
             Кучеренко И.С. kucherenko@prim.drsk.ru "Аппарат управления"
-            <br/>
+            <br>
 ]]></string>
+    <string name="show_on_map_text">go to map</string>
 </resources>

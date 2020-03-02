@@ -44,6 +44,7 @@ public class RemoteStorageRx implements IRemoteStorage {
     private Context context;
 
     private  RetrofitApiArmISServiceFactory armISServiceFactory;
+    private ISettingsStorage settingsStorage;
 
     public RemoteStorageRx(DBDataImporter dbDataImporter, Context context, ISettingsStorage settingsStorage) {
         this.dbDataImporter = dbDataImporter;
@@ -52,6 +53,7 @@ public class RemoteStorageRx implements IRemoteStorage {
         RetrofitApiSTEServiceFactory apiSTEServiceFactory = new RetrofitApiSTEServiceFactory();
         apiSTE = apiSTEServiceFactory.create();
 
+        this.settingsStorage = settingsStorage;
         armISServiceFactory = new RetrofitApiArmISServiceFactory(settingsStorage);
         apiArmIs = armISServiceFactory.create();
 
@@ -134,7 +136,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void exportTransformersInspections(List< TransformerInspection > transformerInspections) {
-        Observable.create(new ExportTransformerInspectionTask(apiArmIs, transformerInspections))
+        Observable.create(new ExportTransformerInspectionTask(apiArmIs, transformerInspections, settingsStorage))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer< UploadRes >() {

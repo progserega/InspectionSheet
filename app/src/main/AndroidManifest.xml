@@ -34,7 +34,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.SelectTypeLine" />
-        <activity android:name=".ui.activities.SearchObject" />
+        <activity android:name=".ui.activities.SearchObject">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<data android:scheme="geo" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name=".activities.searchBySpRes" />
         <activity android:name=".activities.createInspection" />
         <activity android:name=".activities.FoundedDefects" />

@@ -29,19 +29,19 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     }
 
     @Override
-    public List<TransformerSubstation> getByFilters(Map<String, Object> filters) {
+    public List< TransformerSubstation > getByFilters(Map< String, Object > filters) {
 
         if (filters == null || filters.isEmpty() || (filters.size() == 1 && filters.containsKey(EquipmentService.FILTER_TYPE))) {
 
-            List<TransformerSubstationModel> substationModels = transformerSubstationDao.loadAllTp();
+            List< TransformerSubstationModel > substationModels = transformerSubstationDao.loadAllTp();
             return dbModelToEntity(substationModels);
         }
 
         //---- формируем запрос в зависимости от установленных фильтров ---------
         String queryStr = "SELECT * FROM tp ";
-        List<String> filtersParts = new ArrayList<>();
-        List<Object> filtersValues = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+        List< String > filtersParts = new ArrayList<>();
+        List< Object > filtersValues = new ArrayList<>();
+        for (Map.Entry< String, Object > entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -68,7 +68,7 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
             queryStr = queryStr + " WHERE " + TextUtils.join(" AND ", filtersParts);
         }
         SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryStr, filtersValues.toArray(new Object[filtersValues.size()]));
-        List<TransformerSubstationModel> substationModels = transformerSubstationDao.getByFilters(query);
+        List< TransformerSubstationModel > substationModels = transformerSubstationDao.getByFilters(query);
 
         //если есть фильтрация по локации, то уже выбранные данные фильтруем по локации
         Point center = (Point) filters.get(EquipmentService.FILTER_POSITION);
@@ -83,8 +83,8 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
         return dbModelToEntity(substationModels);
     }
 
-    private List<TransformerSubstationModel> filterByPoint(List<TransformerSubstationModel> sourceTP, Point center, float radius) {
-        List<TransformerSubstationModel> substationModels = new ArrayList<>();
+    private List< TransformerSubstationModel > filterByPoint(List< TransformerSubstationModel > sourceTP, Point center, float radius) {
+        List< TransformerSubstationModel > substationModels = new ArrayList<>();
 
         for (TransformerSubstationModel tp : sourceTP) {
 
@@ -95,10 +95,10 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
         return substationModels;
     }
 
-    private List<TransformerSubstation> dbModelToEntity(List<TransformerSubstationModel> substationModels) {
-        List<TransformerSubstation> substations = new ArrayList<>();
+    private List< TransformerSubstation > dbModelToEntity(List< TransformerSubstationModel > substationModels) {
+        List< TransformerSubstation > substations = new ArrayList<>();
         for (TransformerSubstationModel substationModel : substationModels) {
-            substations.add(new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent()));
+            substations.add(buildFromModel(substationModel));
         }
 
         return substations;
@@ -107,6 +107,18 @@ public class TransformerSubstationStorage implements ITransformerSubstationStora
     @Override
     public TransformerSubstation getById(long id) {
         TransformerSubstationModel substationModel = transformerSubstationDao.getById(id);
-        return new TransformerSubstation(substationModel.getId(), substationModel.getUniqId(), substationModel.getDispName(), substationModel.getInspectionDate(), substationModel.getInspectionPercent());
+        return buildFromModel(substationModel);
+    }
+
+    private TransformerSubstation buildFromModel(TransformerSubstationModel substationModel) {
+        return new TransformerSubstation(
+                substationModel.getId(),
+                substationModel.getUniqId(),
+                substationModel.getDispName(),
+                substationModel.getInspectionDate(),
+                substationModel.getInspectionPercent(),
+                substationModel.getLat(),
+                substationModel.getLon()
+        );
     }
 }
