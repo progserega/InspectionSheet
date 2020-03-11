@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="defectInPs35_110"
+            android:textAllCaps="false"
             android:text="@string/ps35_110_kv_text" />
 
         <Button
@@ -50,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="defectInTp6_10_04"
+            android:textAllCaps="false"
             android:text="@string/tp_6_10_04_kv_text" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
