@@ -2,11 +2,11 @@
 <resources>
     <string name="app_name">Лист осмотра</string>
     <string name="addDefectBtText">Осмотр оборудования</string>
-    <string name="vl04BtText">ВЛ</string>
-    <string name="vl_6_10_kv_text">ВЛ 6-10 кВ</string>
-    <string name="vl_35_110_kv_text">ВЛ 35-110 кВ</string>
-    <string name="ps35_110_kv_text">ПС 35-110 кВ</string>
-    <string name="tp_6_10_04_kv_text">ТП 6-10/0,4 кВ</string>
+    <string name="vl04BtText">ЛЭП</string>
+    <string name="vl_6_10_kv_text">ЛЭП 6-10 кВ</string>
+    <string name="vl_35_110_kv_text">ЛЭП 35-110 кВ</string>
+    <string name="ps35_110_kv_text">ПС 35-220 кВ</string>
+    <string name="tp_6_10_04_kv_text">ТП 6-10/0,4 кВ </string>
     <string name="search_near_text">Искать среди ближайших</string>
     <string name="selectBySpBtText">Выберите по СП и РЭС</string>
     <string name="selectTaskText">Выберите задачу</string>
