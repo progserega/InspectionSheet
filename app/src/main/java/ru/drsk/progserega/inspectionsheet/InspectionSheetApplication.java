@@ -1,7 +1,11 @@
 package ru.drsk.progserega.inspectionsheet;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.arch.persistence.room.Room;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -11,6 +15,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
@@ -323,6 +328,54 @@ public class InspectionSheetApplication extends Application {
 
 
 
+        this.LockOrientation();
     }
+
+    private void LockOrientation(){
+        // register to be informed of activities starting up
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+
+            @SuppressLint("SourceLockedOrientationActivity")
+            @Override
+            public void onActivityCreated(Activity activity,
+                                          Bundle savedInstanceState) {
+
+                // new activity created; force its orientation to portrait
+                activity.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+    }
+
 
 }

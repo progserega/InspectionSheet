@@ -142,6 +142,18 @@ public class GroupAddTransfrmerDeffect extends Activity implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("image_path_group", photoUtility.getmCurrentPhotoPath());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedState){
+        super.onRestoreInstanceState(savedState);
+        photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_group"));
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
