@@ -9,17 +9,22 @@ public class Settings {
     public static final String SERVER_URL = "server_url";
     public static final String SERVER_URL_VALUE = "http://arm-is.prim.drsk.ru";
 
+    public static final String SERVER_ALT_URL = "server_alt_url";
+    public static final String SERVER_ALT_URL_VALUE = "http://172.21.251.98";
+
     private String fio;
     private String position;
     private int resId;
     private String serverUrl;
+    private String serverAltUrl;
 
 
-    public Settings(String fio, String position, int resId, String serverUrl) {
+    public Settings(String fio, String position, int resId, String serverUrl, String serverAltUrl) {
         this.fio = fio;
         this.position = position;
         this.resId = resId;
         this.serverUrl = serverUrl;
+        this.serverAltUrl = serverAltUrl;
     }
 
     public String getFio() {
@@ -52,5 +57,13 @@ public class Settings {
 
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public String getServerAltUrl() {
+        return serverAltUrl;
+    }
+
+    public void setServerAltUrl(String serverAltUrl) {
+        this.serverAltUrl = serverAltUrl;
     }
 }
