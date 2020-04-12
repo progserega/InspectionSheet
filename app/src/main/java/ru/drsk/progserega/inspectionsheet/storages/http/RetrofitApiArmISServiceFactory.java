@@ -33,7 +33,7 @@ public class RetrofitApiArmISServiceFactory {
                 .addInterceptor(interceptor)
                 //.addInterceptor(chunkedInterceptor)
 
-                //.addInterceptor(new LogJsonInterceptor())
+                .addInterceptor(new LogJsonInterceptor())
                 .readTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
