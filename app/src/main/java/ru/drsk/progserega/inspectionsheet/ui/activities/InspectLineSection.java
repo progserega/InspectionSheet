@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -255,6 +256,17 @@ public class InspectLineSection extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("image_path_section", photoUtility.getmCurrentPhotoPath());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedState){
+        super.onRestoreInstanceState(savedState);
+        photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_section"));
+    }
 
     @Override
     protected void onDestroy() {

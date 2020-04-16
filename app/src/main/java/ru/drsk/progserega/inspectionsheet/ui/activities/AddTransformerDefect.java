@@ -2,6 +2,8 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -126,6 +128,8 @@ public class AddTransformerDefect extends AppCompatActivity
         for (InspectionPhoto photo : photos) {
             inspectionPhotos.add(photo);
         }
+
+        //inspectionPhotos =  photos;
     }
 
     public void onAddPhotoBtnClick(View view) {
@@ -147,6 +151,14 @@ public class AddTransformerDefect extends AppCompatActivity
 
     public void onSaveBtnPress(View view) {
 
+        saveData();
+
+        Intent returnIntent = getIntent();
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private  void saveData(){
         deffect.setPhotos(inspectionPhotos);
 
         deffect.setComment(deffectDescription.getText().toString());
@@ -162,9 +174,6 @@ public class AddTransformerDefect extends AppCompatActivity
             deffect.getSubValues().addAll(subValuesView.getResult());
         }
 
-        Intent returnIntent = getIntent();
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
     }
 
     private void showFullscreenPhoto(int position) {
@@ -196,4 +205,22 @@ public class AddTransformerDefect extends AppCompatActivity
         imageAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("image_path", photoUtility.getmCurrentPhotoPath());
+       // saveData();
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedState){
+        super.onRestoreInstanceState(savedState);
+
+        photoUtility.setmCurrentPhotoPath(savedState.getString("image_path"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

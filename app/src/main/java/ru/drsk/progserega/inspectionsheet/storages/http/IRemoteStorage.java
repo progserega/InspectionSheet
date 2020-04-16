@@ -22,14 +22,15 @@ public interface IRemoteStorage {
 
     void loadSubstations();
 
-
     void setProgressListener(IProgressListener progressListener);
 
     void exportTransformersInspections(List<TransformerInspection> transformerInspections);
 
     void exportLinesInspections( List< InspectedLine > inspectedLines, long resId);
 
-    void setServerUrl(String serverUrl);
+    void setServerUrls(List<String> serverUrls);
 
     void loadDeffectTypes();
+
+    void selectActiveServer();
 }

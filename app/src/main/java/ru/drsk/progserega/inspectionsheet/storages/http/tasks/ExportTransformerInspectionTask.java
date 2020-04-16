@@ -34,6 +34,9 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
     private IApiInspectionSheet apiArmIS;
     private List<TransformerInspection> transformerInspections;
     private ISettingsStorage settingsStorage;
+
+    private final String EXPORT_TAG = "EXPORT TRANSFORMERS:";
+
     public ExportTransformerInspectionTask(IApiInspectionSheet apiArmIS, List<TransformerInspection> transformerInspections, ISettingsStorage settingsStorage) {
         this.apiArmIS = apiArmIS;
         this.transformerInspections = transformerInspections;
@@ -41,20 +44,22 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
     }
 
     @Override
-    public void subscribe(ObservableEmitter<UploadRes> emitter) throws Exception {
+    public void subscribe(ObservableEmitter<UploadRes> emitter) {
 
         Map<Long, Long> stationInspectionsMap = new HashMap<>();
 
         long unixTime = System.currentTimeMillis() / 1000L;
+        Log.d(EXPORT_TAG, "Экспорт осмотров трансформаторов (" + transformerInspections.size() +") шт.");
         for (TransformerInspection inspection : transformerInspections) {
+
 
             long substationId = inspection.getSubstation().getUniqId();
             int substationType = inspection.getSubstation().getType().getValue();
-           // long transformerId = inspection.getTransformator().getId();
+            // long transformerId = inspection.getTransformator().getId();
 
             //грузим инфу о трансформаторе
             long transformerIdInArm = uploadTransformerInfo(inspection);
-            if(transformerIdInArm == 0){
+            if (transformerIdInArm == 0) {
                 continue;
             }
 //
@@ -65,16 +70,15 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 //            }
 
             Long inspectionId = stationInspectionsMap.get(inspection.getSubstation().getUniqId());
-            if(inspectionId == null) {
+            if (inspectionId == null) {
                 inspectionId = uploadStationInspectionInfo(inspection, 0L);
                 stationInspectionsMap.put(inspection.getSubstation().getUniqId(), inspectionId);
-            }
-            else{
+            } else {
                 uploadStationInspectionInfo(inspection, inspectionId);
             }
 
-            if(inspectionId == 0){
-                Log.e("[INSPECTION UPLOAD]", "Ошибка при экспорте осмотра подстанции/ТП.  inspectionId = 0");
+            if (inspectionId == 0) {
+                Log.e(EXPORT_TAG, "Ошибка при экспорте осмотра подстанции/ТП.  inspectionId = 0");
                 continue;
             }
 
@@ -83,10 +87,11 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
             uploadTransformersPhotos(inspection.getTransformator().getPhotoList(), transformerIdInArm, substationType, unixTime, inspectionId);
 
             //грузим осмотры
+            Log.d(EXPORT_TAG, "Экспорт элементов осмотра");
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
 
                 //пропускаем не заполненные
-                if(inspectionRes.isEmpty()){
+                if (inspectionRes.isEmpty()) {
                     continue;
                 }
 
@@ -102,18 +107,30 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                         inspectionId
                 );
 
-                Response response = apiArmIS.uploadInspection(inpectionResult).execute();
+                Response response = null;
+                try {
+                    Log.d(EXPORT_TAG, "apiArmIS.uploadInspection... ");
+                    response = apiArmIS.uploadInspection(inpectionResult).execute();
+                }
+                catch (Exception e){
+                    Log.e(EXPORT_TAG, "Error while upload transformer inspection result");
+                    e.printStackTrace();
+                    continue;
+                }
                 if (response.body() == null) {
-                    break;
+                    Log.e(EXPORT_TAG, "Error while upload transformer inspection result. Response.body() is null");
+                    continue;
                 }
 
                 UploadRes uploadRes = (UploadRes) response.body();
                 if (uploadRes.getStatus() != 200) {
+                    Log.e(EXPORT_TAG, "Error while upload transformer inspection result. status = "+ uploadRes.getStatus());
                     continue;
                 }
 
                 inspectionRes.setArmId(uploadRes.getId());
                 //upload photo
+                Log.d(EXPORT_TAG, "Экспорт фотографий элемента осмотра");
                 for (InspectionPhoto photo : inspectionRes.getResult().getPhotos()) {
 
                     if (!uploadPhoto(photo, inspectionRes.getArmId())) {
@@ -130,7 +147,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
     private long uploadStationInspectionInfo(TransformerInspection inspection, Long inspectinIdARM) {
 
-        Log.d("UPLOAD:", "Upload station inspection info....");
+        Log.d(EXPORT_TAG, "Upload station inspection info....");
 
         long inspectionDate = 0;
         if (inspection.getTransformator().getInspectionDate() != null) {
@@ -138,8 +155,8 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         }
 
-        String inspectorName =inspection.getInspectorName();
-        if(inspectorName.equals("")){
+        String inspectorName = inspection.getInspectorName();
+        if (inspectorName.equals("")) {
             inspectorName = settingsStorage.loadSettings().getFio();
         }
         StationInspectionJson inspectionJson = new StationInspectionJson(
@@ -156,6 +173,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         try {
             response = apiArmIS.uploadStationInspection(inspectionJson).execute();
         } catch (IOException e) {
+            Log.e(EXPORT_TAG, "Ошибка экспорта информации о осмотре подстанции (ТП)");
             e.printStackTrace();
             return 0;
         }
@@ -165,8 +183,9 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        Log.d(EXPORT_TAG, "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
+            Log.e(EXPORT_TAG, "Ошибка экспорта информации о осмотре подстанции (ТП) status = "+ uploadRes.getStatus());
             return 0;
         }
 
@@ -175,7 +194,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
     private long uploadTransformerInfo(TransformerInspection inspection) {
 
-        Log.d("UPLOAD:", "Upload transformer info....");
+        Log.d(EXPORT_TAG, "Upload transformer info....");
         long inspectionDate = 0;
         if (inspection.getTransformator().getInspectionDate() != null) {
             inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
@@ -196,17 +215,20 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         try {
             response = apiArmIS.uploadTransformerInfo(info).execute();
         } catch (IOException e) {
+            Log.d(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе...");
             e.printStackTrace();
             return 0;
         }
 
         if (response.body() == null) {
+            Log.d(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе...");
             return 0;
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        Log.d(EXPORT_TAG, "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
+            Log.d(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе. статус = " + uploadRes.getStatus());
             return 0;
         }
 
@@ -217,9 +239,9 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
-        if(!file.exists()){
+        if (!file.exists()) {
             Log.d("UPLOAD FILE:", "File does not exist: " + file.getName());
-            return  false;
+            return false;
         }
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
@@ -259,10 +281,11 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
     }
 
     private void uploadTransformersPhotos(List<InspectionPhoto> photos, long transformerId, int substationType, long date, long inspectionId) {
+        Log.d(EXPORT_TAG, "uploadTransformersPhotos...");
         if (photos == null || photos.isEmpty()) {
             return;
         }
-
+        Log.d(EXPORT_TAG, "Экспорт общих фотографий "+ photos.size() +" шт.");
         for (InspectionPhoto photo : photos) {
             uploadTransformerPhoto(photo, transformerId, substationType, date, inspectionId);
         }
@@ -273,9 +296,9 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         File file = new File(photo.getPath());
         Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
 
-        if(!file.exists()){
+        if (!file.exists()) {
             Log.d("UPLOAD FILE:", "File does not exist: " + file.getName());
-            return  false;
+            return false;
         }
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);

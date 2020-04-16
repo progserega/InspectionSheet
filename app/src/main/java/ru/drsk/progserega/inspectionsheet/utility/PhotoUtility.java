@@ -45,6 +45,15 @@ public class PhotoUtility {
 
 
     private Context context;
+
+    public String getmCurrentPhotoPath() {
+        return mCurrentPhotoPath;
+    }
+
+    public void setmCurrentPhotoPath(String mCurrentPhotoPath) {
+        this.mCurrentPhotoPath = mCurrentPhotoPath;
+    }
+
     private Activity activity;
 
     private ChoosedListener choosedListener;

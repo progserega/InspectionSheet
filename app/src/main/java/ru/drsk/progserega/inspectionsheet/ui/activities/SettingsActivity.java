@@ -108,6 +108,18 @@ public class SettingsActivity extends AppCompatActivity implements SettingsContr
         return textView.getText().toString();
     }
 
+    @Override
+    public String getServerAltUrl() {
+        EditText textView = (EditText) findViewById(R.id.settings_server_alt_url);
+        return textView.getText().toString();
+    }
+
+    @Override
+    public void setServerAltUrl(String serverAltUrl) {
+        EditText textView = (EditText) findViewById(R.id.settings_server_alt_url);
+        textView.setText(serverAltUrl);
+    }
+
     public void onSaveBtnPress(View view) {
         presenter.SaveBtnPressed();
         Toast.makeText(this, "Сохранено!", Toast.LENGTH_LONG).show();
