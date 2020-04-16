@@ -76,6 +76,9 @@ public class PhotoFullscreenManager {
     }
 
     private void removePhotoFromStorage(InspectionPhoto photo){
+        if(photo == null || photo.getPath() == null){
+            return;
+        }
         File imageFile = new File(photo.getPath());
         imageFile.delete();
     }

@@ -236,12 +236,14 @@ public class InspectTransformer extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        transformatorInspectionAdapter.notifyDataSetChanged();
+
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
 
         //Toast.makeText(this, "GET DEFFECT RESULT!!!", Toast.LENGTH_LONG).show();
-        transformatorInspectionAdapter.notifyDataSetChanged();
+        //transformatorInspectionAdapter.notifyDataSetChanged();
 
         if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
             photoUtility.onActivityResult(requestCode, resultCode, data);
@@ -471,4 +473,15 @@ public class InspectTransformer extends AppCompatActivity implements
         commonPhotoListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("image_path_transformer", photoUtility.getmCurrentPhotoPath());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedState){
+        super.onRestoreInstanceState(savedState);
+        photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_transformer"));
+    }
 }

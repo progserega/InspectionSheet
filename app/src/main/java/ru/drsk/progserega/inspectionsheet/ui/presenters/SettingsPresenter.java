@@ -1,34 +1,15 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
-import ru.drsk.progserega.inspectionsheet.entities.Line;
-import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
-import ru.drsk.progserega.inspectionsheet.entities.Tower;
-import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
-import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineDeffectType;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.entities.organization.ElectricNetworkArea;
 import ru.drsk.progserega.inspectionsheet.entities.organization.NetworkEnterprise;
-import ru.drsk.progserega.inspectionsheet.services.ILocation;
-import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
-import ru.drsk.progserega.inspectionsheet.ui.activities.SelectOrganizationDialogFragment;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
-import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineTowerContract;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.SettingsContract;
 
 public class SettingsPresenter implements SettingsContract.Presenter, IProgressListener {
@@ -40,11 +21,15 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     private IOrganizationStorage organizationStorage;
     private long resId = 0;
 
+    private List<String> serverUrls;
+
+    private Boolean selectServerTask = false;
     public SettingsPresenter(SettingsContract.View view, InspectionSheetApplication application) {
         this.view = view;
         this.application = application;
         settingsStorage = application.getSettingsStorage();
         organizationStorage = application.getOrganizationStorage();
+        serverUrls = new ArrayList<>();
     }
 
     @Override
@@ -64,6 +49,11 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         }
 
         view.setServerUrl(settings.getServerUrl());
+        serverUrls.add(settings.getServerUrl());
+        view.setServerAltUrl(settings.getServerAltUrl());
+        serverUrls.add(settings.getServerAltUrl());
+
+        selectServerTask = false;
     }
 
     @Override
@@ -71,15 +61,20 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         String fio = view.getFio();
         String position = view.getUserPosition();
         String serverUrl = view.getServerUrl();
+        String serverAltUrl = view.getServerAltUrl();
 
-        settingsStorage.saveSettings(new Settings(fio, position, (int) resId, serverUrl));
-        application.getRemoteStorage().setServerUrl(serverUrl);
+        settingsStorage.saveSettings(new Settings(fio, position, (int) resId, serverUrl, serverAltUrl));
+
+        serverUrls.clear();
+        serverUrls.add(serverUrl);
+        serverUrls.add(serverAltUrl);
+        application.getRemoteStorage().setServerUrls(serverUrls);
         view.finishView();
     }
 
     @Override
     public void SelectResBtnPressed() {
-        List< NetworkEnterprise > allEnt = organizationStorage.getAllEnterprices();
+        List<NetworkEnterprise> allEnt = organizationStorage.getAllEnterprices();
         if (allEnt == null || allEnt.size() == 0) {
             //if(true){
             view.showError("Список СП/РЭС пуст", "Нажмите кнопку обновить!");
@@ -91,7 +86,7 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     @Override
     public void OrganizationSelected(long spId, long resId) {
         ElectricNetworkArea res = organizationStorage.getResById(resId);
-        if(res == null) {
+        if (res == null) {
             view.showError("Ошибка!", "Не выбран РЭС");
             return;
         }
@@ -105,9 +100,15 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         view.ShowProgressBar();
         organizationStorage.ClearOrganizations();
 
-        application.getRemoteStorage().setServerUrl(view.getServerUrl());
+        serverUrls.clear();
+        serverUrls.add(view.getServerUrl());
+        serverUrls.add(view.getServerAltUrl());
+
+        application.getRemoteStorage().setServerUrls(serverUrls);
         application.getRemoteStorage().setProgressListener(this);
-        application.getRemoteStorage().loadOrganization();
+        //application.getRemoteStorage().loadOrganization();
+        selectServerTask = true;
+        application.getRemoteStorage().selectActiveServer();
     }
 
     @Override
@@ -118,7 +119,14 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     @Override
     public void progressComplete() {
         //  view.showSelectOrganizationDialog(0, 0);
-        view.HideProgressBar();
+
+        if(selectServerTask){
+            selectServerTask = false;
+            application.getRemoteStorage().loadOrganization();
+        }
+        else {
+            view.HideProgressBar();
+        }
     }
 
     @Override

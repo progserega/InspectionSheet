@@ -25,8 +25,9 @@ public class SettingsStorageImpl implements ISettingsStorage {
         int resId = sharedPref.getInt(Settings.RES_ID, 0);
 
         String serverUrl = sharedPref.getString(Settings.SERVER_URL, Settings.SERVER_URL_VALUE);
+        String serverAltUrl = sharedPref.getString(Settings.SERVER_ALT_URL, Settings.SERVER_ALT_URL_VALUE);
 
-        return new Settings(fio, position, resId, serverUrl);
+        return new Settings(fio, position, resId, serverUrl, serverAltUrl);
     }
 
 
@@ -39,6 +40,7 @@ public class SettingsStorageImpl implements ISettingsStorage {
         editor.putString(Settings.POSITION, settings.getPosition());
         editor.putInt(Settings.RES_ID, settings.getResId());
         editor.putString(Settings.SERVER_URL, settings.getServerUrl());
+        editor.putString(Settings.SERVER_ALT_URL, settings.getServerAltUrl());
 
         editor.commit();
     }

@@ -459,6 +459,18 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 //    }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("image_path_tower", photoUtility.getmCurrentPhotoPath());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedState){
+        super.onRestoreInstanceState(savedState);
+        photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_tower"));
+    }
+
+    @Override
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();

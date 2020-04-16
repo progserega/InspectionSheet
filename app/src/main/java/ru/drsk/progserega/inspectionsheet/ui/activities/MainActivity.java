@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private static final boolean DEBUG_MODE = false;
 
-
+    private static final String SELECT_ACTIVE_SERVER = "select_active_server";
     private static final String EXPORT_SUBST_TRANSFORMERS = "export_substations_transformers";
     private static final String EXPORT_TP_TRANSFORMERS = "export_tp_transformers";
     // private static final String EXPORT_SUBST_TRANSFORMERS = "export_transformers";
@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.clear();
 
+        networkTasksQueue.add(SELECT_ACTIVE_SERVER);
+
         networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_LINES);
@@ -240,6 +242,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         Log.d("NETWORK_TASK ", "TASK IS: " + task);
 
         switch (task) {
+            case SELECT_ACTIVE_SERVER:
+                application.getRemoteStorage().selectActiveServer();
+                return;
             case EXPORT_SUBST_TRANSFORMERS:
                 exportSubstationTransformers();
                 return;

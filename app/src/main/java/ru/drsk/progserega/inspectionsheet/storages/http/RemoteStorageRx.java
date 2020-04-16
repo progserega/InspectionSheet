@@ -5,16 +5,21 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
@@ -24,6 +29,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadSubstationsTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTPTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.PingServerTask;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -43,8 +49,11 @@ public class RemoteStorageRx implements IRemoteStorage {
     private IProgressListener progressListener;
     private Context context;
 
-    private  RetrofitApiArmISServiceFactory armISServiceFactory;
+    private RetrofitApiArmISServiceFactory armISServiceFactory;
     private ISettingsStorage settingsStorage;
+
+    private List<String> serverUrls;
+
 
     public RemoteStorageRx(DBDataImporter dbDataImporter, Context context, ISettingsStorage settingsStorage) {
         this.dbDataImporter = dbDataImporter;
@@ -59,10 +68,22 @@ public class RemoteStorageRx implements IRemoteStorage {
 
         RetrofitApiGeoServiceFactory apiGeoServiceFactory = new RetrofitApiGeoServiceFactory();
         apiGeo = apiGeoServiceFactory.create();
+
+        serverUrls = new ArrayList<>();
+        Settings settings = settingsStorage.loadSettings();
+        serverUrls.add(settings.getServerUrl());
+        serverUrls.add(settings.getServerAltUrl());
+
     }
 
     @Override
-    public void setServerUrl(String serverUrl) {
+    public void setServerUrls(List<String> serverUrls) {
+//        armISServiceFactory.setBaseUrl(serverUrl);
+//        apiArmIs = armISServiceFactory.create();
+        this.serverUrls = serverUrls;
+    }
+
+    private void setServerUrl(String serverUrl) {
         armISServiceFactory.setBaseUrl(serverUrl);
         apiArmIs = armISServiceFactory.create();
     }
@@ -75,7 +96,7 @@ public class RemoteStorageRx implements IRemoteStorage {
     @Override
     public void clearStorage() {
 
-        Observable.fromCallable(new Callable< String >() {
+        Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 dbDataImporter.ClearDB();
@@ -112,11 +133,10 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
 
-
     @Override
     public void loadTP() {
 
-        Observable.create(new LoadTPTask(apiArmIs,  dbDataImporter))
+        Observable.create(new LoadTPTask(apiArmIs, dbDataImporter))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());
@@ -135,11 +155,11 @@ public class RemoteStorageRx implements IRemoteStorage {
 
 
     @Override
-    public void exportTransformersInspections(List< TransformerInspection > transformerInspections) {
+    public void exportTransformersInspections(List<TransformerInspection> transformerInspections) {
         Observable.create(new ExportTransformerInspectionTask(apiArmIs, transformerInspections, settingsStorage))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer< UploadRes >() {
+                .subscribe(new Observer<UploadRes>() {
                                private int cnt = 0;
 
                                @Override
@@ -172,7 +192,7 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
     @Override
-    public void exportLinesInspections(List< InspectedLine > inspectedLines, long resId) {
+    public void exportLinesInspections(List<InspectedLine> inspectedLines, long resId) {
 
         Log.d("EXPORT", "Start export lines inspection");
         Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines, resId))
@@ -182,7 +202,61 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     }
 
-    private class ResultObserver implements Observer< String > {
+    @Override
+    public void selectActiveServer() {
+        final Map<String, Boolean> serversAccessMap = new HashMap<>();
+        Observable.fromIterable(this.serverUrls).
+                flatMap(new Function<String, ObservableSource<Map<String, Boolean>>>() {
+                    @Override
+                    public ObservableSource<Map<String, Boolean>> apply(String s) throws Exception {
+                        setServerUrl(s);
+                        return Observable.create(new PingServerTask(apiArmIs, s));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Map<String, Boolean>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, Boolean> stringBooleanMap) {
+                        serversAccessMap.putAll(stringBooleanMap);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (progressListener != null) {
+                            progressListener.progressError((Exception) e);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("ON COMPLETE", "COMPLETE");
+                        boolean isServerAvailable = false;
+                        for (Map.Entry<String, Boolean> entry : serversAccessMap.entrySet()) {
+                            if (entry.getValue().equals(true)) {
+                                setServerUrl(entry.getKey());
+                                isServerAvailable = true;
+                                break;
+                            }
+                        }
+
+                        if (isServerAvailable) {
+                            progressListener.progressComplete();
+                        } else {
+                            progressListener.progressError(new Exception("Сервен не доступен"));
+                        }
+                    }
+                });
+    }
+
+
+    private class ResultObserver implements Observer<String> {
 
         @Override
         public void onSubscribe(Disposable d) {

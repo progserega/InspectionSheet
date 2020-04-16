@@ -47,20 +47,20 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInsp
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
 
-public class ExportLineInspectionTask implements ObservableOnSubscribe< String > {
+public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     private IApiInspectionSheet apiArmIS;
-    private List< InspectedLine > inspectedLines;
+    private List<InspectedLine> inspectedLines;
     private long resId;
 
-    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List< InspectedLine > inspectedLines, long resId) {
+    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId) {
         this.apiArmIS = apiArmIS;
         this.inspectedLines = inspectedLines;
         this.resId = resId;
     }
 
     @Override
-    public void subscribe(ObservableEmitter< String > emitter) throws Exception {
+    public void subscribe(ObservableEmitter<String> emitter) {
 
         long unixTime = System.currentTimeMillis() / 1000L;
         for (InspectedLine line : inspectedLines) {
@@ -115,7 +115,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         emitter.onComplete();
     }
 
-    private long exportInspection(LineInspection inspection, long resId) throws ConnectException {
+    private long exportInspection(LineInspection inspection, long resId)  {
 
         long timestamp = 0;
         if (inspection.getInspectionDate() != null) {
@@ -135,7 +135,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         try {
             response = apiArmIS.uploadLineInspection(inspectionJson).execute();
         } catch (java.net.ConnectException e) {
-            throw new ConnectException("Ошибка соединения\n" + e.getMessage());
+            Log.e("UPLOAD LINE INSPECTION", "export line inspection connection exception ");
+            return 0;
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -170,7 +171,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
-    private void exportTowerInfo(ObservableEmitter< String > emitter, Tower tower) {
+    private void exportTowerInfo(ObservableEmitter<String> emitter, Tower tower) {
 
         TowerJson towerJson = new TowerJson(
                 tower.getUniqId(),
@@ -206,9 +207,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
-    private long exportTowerDeffects(List< TowerDeffect > deffectList, long towerInspectionId) {
+    private long exportTowerDeffects(List<TowerDeffect> deffectList, long towerInspectionId) {
 
-        List< TowerDeffectJson > deffectsJsonList = new ArrayList<>();
+        List<TowerDeffectJson> deffectsJsonList = new ArrayList<>();
         for (TowerDeffect deffect : deffectList) {
             deffectsJsonList.add(new TowerDeffectJson(
                     deffect.getTowerUniqId(),
@@ -231,7 +232,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
-    private long exportTowerDeffectsPhotos(List< InspectionPhoto > photos, long towerInspectionId) {
+    private long exportTowerDeffectsPhotos(List<InspectionPhoto> photos, long towerInspectionId) {
 
         if (photos == null || photos.size() == 0) {
             return 0;
@@ -309,7 +310,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         return uploadRes.getId();
     }
 
-    private void exportSectionInfo(ObservableEmitter< String > emitter, LineSection section) {
+    private void exportSectionInfo(ObservableEmitter<String> emitter, LineSection section) {
 
         SectionJson sectionJson = new SectionJson(
                 section.getLineUniqId(),
@@ -369,9 +370,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
         return processResult(response);
     }
 
-    private long exportSectionDeffects(LineSection section, List< LineSectionDeffect > deffectList, long sectionInspectionId) {
+    private long exportSectionDeffects(LineSection section, List<LineSectionDeffect> deffectList, long sectionInspectionId) {
 
-        List< SectionDeffectJson > deffectsJsonList = new ArrayList<>();
+        List<SectionDeffectJson> deffectsJsonList = new ArrayList<>();
         for (LineSectionDeffect deffect : deffectList) {
             deffectsJsonList.add(new SectionDeffectJson(
                     section.getLineUniqId(),
@@ -396,7 +397,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe< String >
 
     }
 
-    private void exportSectionDeffectsPhotos(List< InspectionPhoto > photos, long sectionInspectionId) {
+    private void exportSectionDeffectsPhotos(List<InspectionPhoto> photos, long sectionInspectionId) {
         if (photos == null || photos.size() == 0) {
             return;
         }
