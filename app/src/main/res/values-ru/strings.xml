@@ -84,5 +84,6 @@
 ]]></string>
     <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
     <string name="show_on_map_text">на карте</string>
+    <string name="journal">Журнал</string>
 
 </resources>

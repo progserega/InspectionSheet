@@ -105,6 +105,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 startActivity(intentAbout);
                 //   Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
+
+            case R.id.menu_journal:
+                Intent intentJournal = new Intent(this, Journal.class);
+                startActivity(intentJournal);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemRes
 import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
@@ -29,6 +31,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
+import ru.drsk.progserega.inspectionsheet.storages.ILogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
@@ -47,6 +50,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineDeffectTypesStora
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.LogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
@@ -56,6 +60,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstation
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 
 import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
+import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
 
 public class InspectionSheetApplication extends Application {
 
@@ -259,7 +264,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
 
 
@@ -326,6 +331,15 @@ public class InspectionSheetApplication extends Application {
                 lineSectionStorage,
                 transformerDeffectTypesStorage);
 
+        ILogStorage logStorage = new LogStorage(db);
+        DBLog.setLogStorage(logStorage);
+//        try{
+//            throw new IOException("Test exception");
+//        }
+//        catch (Exception ex){
+//            DBLog.e("APPLICATION", ex);
+//        }
+//        DBLog.i("APPLICATION", "TEST LOG MSG 3");
 
 
         this.LockOrientation();
