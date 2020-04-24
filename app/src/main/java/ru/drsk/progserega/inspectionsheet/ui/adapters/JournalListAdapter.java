@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
@@ -54,6 +56,11 @@ public class JournalListAdapter extends
         mLogRecords = logRecords;
     }
 
+    public void setLogRecords(List< LogModel > logRecords) {
+        mLogRecords = logRecords;
+        this.notifyDataSetChanged();
+    }
+
     // Usually involves inflating a layout from XML and returning the holder
     @Override
     public JournalListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,11 +82,20 @@ public class JournalListAdapter extends
         // Get the data model based on position
         LogModel logRecord =   mLogRecords.get(position);
 
-        TextView dateTextView = viewHolder.dateTextView;
-        dateTextView.setText(logRecord.getDate().toString());
+        Date messageDate = logRecord.getDate();
+        String pattern = "dd.MM.YYYY";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = simpleDateFormat.format(messageDate);
 
+
+        TextView dateTextView = viewHolder.dateTextView;
+        dateTextView.setText(date);
+
+        pattern = "HH:mm:ss";
+        simpleDateFormat = new SimpleDateFormat(pattern);
+        String time = simpleDateFormat.format(messageDate);
         TextView timeTextView = viewHolder.timeTextView;
-        timeTextView.setText(logRecord.getDate().toString());
+        timeTextView.setText(time);
 
         TextView messageTextView = viewHolder.messageTextView;
         messageTextView.setText(logRecord.getMessage());

@@ -121,6 +121,7 @@ public class InspectionSheetApplication extends Application {
 
     private ITransformerDeffectTypesStorage transformerDeffectTypesStorage;
 
+    private ILogStorage logStorage;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -254,6 +255,11 @@ public class InspectionSheetApplication extends Application {
         return transformerDeffectTypesStorage;
     }
 
+    public ILogStorage getLogStorage() {
+        return logStorage;
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -331,7 +337,7 @@ public class InspectionSheetApplication extends Application {
                 lineSectionStorage,
                 transformerDeffectTypesStorage);
 
-        ILogStorage logStorage = new LogStorage(db);
+        logStorage = new LogStorage(db);
         DBLog.setLogStorage(logStorage);
 //        try{
 //            throw new IOException("Test exception");

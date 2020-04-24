@@ -1,8 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
+import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.util.Date;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -17,6 +19,10 @@ public class LogStorage implements ILogStorage {
 
     public LogStorage(InspectionSheetDatabase db) {
         this.db = db;
+    }
+
+    public interface IDataFetchedListener {
+        void onDataFetched(List<LogModel> messages);
     }
 
     @Override
@@ -35,5 +41,40 @@ public class LogStorage implements ILogStorage {
                 return null;
             }
         }.execute();
+    }
+
+    @Override
+    public void getMessages(final IDataFetchedListener listener) {
+        //return db.logDao().fetchAllMessages();
+
+        FetchDataTask task = new FetchDataTask();
+        task.setListener(listener);
+        task.execute();
+
+    }
+
+    @Override
+    public List<LogModel> getAllMessages() {
+        return db.logDao().allMessages();
+    }
+
+    private class FetchDataTask extends AsyncTask<Void, Void, List<LogModel>>
+    {
+        private IDataFetchedListener listener;
+
+        public void setListener(IDataFetchedListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected List<LogModel> doInBackground(Void... voids) {
+            return db.logDao().fetchAllMessages();
+        }
+
+        @Override
+        protected void onPostExecute(List<LogModel> logModels) {
+            super.onPostExecute(logModels);
+            listener.onDataFetched(logModels);
+        }
     }
 }
