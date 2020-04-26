@@ -27,6 +27,7 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 
@@ -105,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 startActivity(intentAbout);
                 //   Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
+
+            case R.id.menu_journal:
+                Intent intentJournal = new Intent(this, Journal.class);
+                startActivity(intentJournal);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -170,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     @Override
     public void progressUpdate(String progress) {
-        Log.d("PROGRESS", "PROGRESS: " + progress);
+        DBLog.d("PROGRESS", "PROGRESS: " + progress);
         progressText.setText(progress);
     }
 
