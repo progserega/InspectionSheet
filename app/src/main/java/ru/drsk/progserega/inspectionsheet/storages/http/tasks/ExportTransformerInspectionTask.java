@@ -50,7 +50,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         Map<Long, Long> stationInspectionsMap = new HashMap<>();
 
         long unixTime = System.currentTimeMillis() / 1000L;
-        DBLog.d(EXPORT_TAG, "Экспорт осмотров трансформаторов (" + transformerInspections.size() +") шт.");
+        DBLog.d(EXPORT_TAG, "Экспорт осмотров трансформаторов (" + transformerInspections.size() + ") шт.");
         for (TransformerInspection inspection : transformerInspections) {
 
 
@@ -112,8 +112,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 try {
                     DBLog.d(EXPORT_TAG, "apiArmIS.uploadInspection... ");
                     response = apiArmIS.uploadInspection(inpectionResult).execute();
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result");
                     e.printStackTrace();
                     continue;
@@ -125,7 +124,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
                 UploadRes uploadRes = (UploadRes) response.body();
                 if (uploadRes.getStatus() != 200) {
-                    DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. status = "+ uploadRes.getStatus());
+                    DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. status = " + uploadRes.getStatus());
                     continue;
                 }
 
@@ -186,7 +185,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         UploadRes uploadRes = (UploadRes) response.body();
         DBLog.d(EXPORT_TAG, "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
-            DBLog.e(EXPORT_TAG, "Ошибка экспорта информации о осмотре подстанции (ТП) status = "+ uploadRes.getStatus());
+            DBLog.e(EXPORT_TAG, "Ошибка экспорта информации о осмотре подстанции (ТП) status = " + uploadRes.getStatus());
             return 0;
         }
 
@@ -229,7 +228,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         UploadRes uploadRes = (UploadRes) response.body();
         DBLog.d(EXPORT_TAG, "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
-            DBLog.d(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе. статус = " + uploadRes.getStatus());
+            DBLog.e(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе. статус = " + uploadRes.getStatus() + " " + uploadRes.getMessage());
             return 0;
         }
 
@@ -261,9 +260,11 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
 
         } catch (IOException e) {
+            DBLog.e("UPLOAD FILE:", e);
             e.printStackTrace();
             return false;
         } catch (Exception e) {
+            DBLog.e("UPLOAD FILE:", e);
             e.printStackTrace();
             return false;
         }
@@ -275,6 +276,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         UploadRes uploadRes = (UploadRes) response.body();
         DBLog.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
+            DBLog.d("UPLOAD FILE:", "result " + uploadRes.getStatus() + "  " + uploadRes.getMessage());
             return false;
         }
 
@@ -286,7 +288,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         if (photos == null || photos.isEmpty()) {
             return;
         }
-        DBLog.d(EXPORT_TAG, "Экспорт общих фотографий "+ photos.size() +" шт.");
+        DBLog.d(EXPORT_TAG, "Экспорт общих фотографий " + photos.size() + " шт.");
         for (InspectionPhoto photo : photos) {
             uploadTransformerPhoto(photo, transformerId, substationType, date, inspectionId);
         }
@@ -318,9 +320,11 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
 
         } catch (IOException e) {
+            DBLog.e("UPLOAD FILE:", e);
             e.printStackTrace();
             return false;
         } catch (Exception e) {
+            DBLog.e("UPLOAD FILE:", e);
             e.printStackTrace();
             return false;
         }
@@ -332,6 +336,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
         UploadRes uploadRes = (UploadRes) response.body();
         DBLog.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
+            DBLog.e("UPLOAD FILE:", "result " + uploadRes.getStatus() + "  " + uploadRes.getMessage());
             return false;
         }
 

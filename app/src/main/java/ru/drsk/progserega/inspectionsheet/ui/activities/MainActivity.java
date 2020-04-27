@@ -228,9 +228,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        //networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        //networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-         networkTasksQueue.add(EXPORT_LINES);
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_LINES);
 
 
         nextTask();
