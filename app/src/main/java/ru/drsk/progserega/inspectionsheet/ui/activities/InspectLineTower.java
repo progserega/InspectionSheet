@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -362,7 +361,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
 
     private void initPhotoList() {
-        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_tower_deffect_photos);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override

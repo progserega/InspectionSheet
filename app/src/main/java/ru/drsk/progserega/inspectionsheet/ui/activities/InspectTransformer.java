@@ -155,7 +155,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
         photoUtility = new PhotoUtility(this, this);
 
-        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_transformer_common_photos);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
         commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override

@@ -249,7 +249,7 @@ public class SearchObject extends ActivityWithGPS implements
 
             application.setCurrentSubstationInspection(substationInspection);
 
-            intent = new Intent(this, InspectTransformer.class);
+            intent = new Intent(this, InspectStation.class);
         }
 
         if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
@@ -261,7 +261,7 @@ public class SearchObject extends ActivityWithGPS implements
             }
             application.setCurrentSubstationInspection(substationInspection);
 
-            intent = new Intent(this, InspectTransformer.class);
+            intent = new Intent(this, InspectStation.class);
         }
 
 
