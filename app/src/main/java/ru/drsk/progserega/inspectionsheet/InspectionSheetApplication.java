@@ -9,14 +9,12 @@ import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
@@ -25,6 +23,8 @@ import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.services.LocationService;
 import ru.drsk.progserega.inspectionsheet.services.OrganizationService;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
+import ru.drsk.progserega.inspectionsheet.services.StationInspectionFactory;
+import ru.drsk.progserega.inspectionsheet.services.StationInspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
@@ -41,7 +41,6 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
-import ru.drsk.progserega.inspectionsheet.storages.json.LineDeffectTypesStorageJson;
 import ru.drsk.progserega.inspectionsheet.storages.shared_preferences.SettingsStorageImpl;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
@@ -58,6 +57,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerDeffectTyp
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
+import ru.drsk.progserega.inspectionsheet.storages.stub.StationDeffectsTypesStorageStub;
 
 import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
 import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
@@ -87,9 +87,9 @@ public class InspectionSheetApplication extends Application {
 
     private LineInspection currentLineInspection;
 
-    private ISubstationInspection currentSubstationInspection;
+    private IStationInspection currentStationInspection;
 
-    private List< ISubstationInspection > substationInspections;
+    private List<IStationInspection> substationInspectionsCache;
 
     private InspectionItemResult currentDeffect;
 
@@ -121,6 +121,8 @@ public class InspectionSheetApplication extends Application {
 
     private ITransformerDeffectTypesStorage transformerDeffectTypesStorage;
 
+    private StationInspectionFactory stationInspectionFactory;
+
     private ILogStorage logStorage;
 
     public ITransformerStorage getTransformerStorage() {
@@ -143,10 +145,6 @@ public class InspectionSheetApplication extends Application {
         return organizationStorage;
     }
 
-    //    public TowersService getTowersService() {
-//        return towersService;
-//    }
-
     public ICatalogStorage getCatalogStorage() {
         return catalogStorage;
     }
@@ -159,16 +157,16 @@ public class InspectionSheetApplication extends Application {
         this.currentLineInspection = currentLineInspection;
     }
 
-    public ISubstationInspection getCurrentSubstationInspection() {
-        return currentSubstationInspection;
+    public IStationInspection getCurrentStationInspection() {
+        return currentStationInspection;
     }
 
-    public void setCurrentSubstationInspection(ISubstationInspection currentSubstationInspection) {
-        this.currentSubstationInspection = currentSubstationInspection;
+    public void setCurrentStationInspection(IStationInspection currentStationInspection) {
+        this.currentStationInspection = currentStationInspection;
     }
 
-    public List< ISubstationInspection > getSubstationInspections() {
-        return substationInspections;
+    public List<IStationInspection> getSubstationInspectionsCache() {
+        return substationInspectionsCache;
     }
 
     public InspectionItemResult getCurrentDeffect() {
@@ -211,14 +209,6 @@ public class InspectionSheetApplication extends Application {
         this.inspectionItemsGroup = inspectionItemsGroup;
     }
 
-//    public List<InspectionPhoto> getPhotosForFullscreen() {
-//        return photosForFullscreen;
-//    }
-//
-//    public void setPhotosForFullscreen(List<InspectionPhoto> photosForFullscreen) {
-//        this.photosForFullscreen = photosForFullscreen;
-//    }
-
     public PhotoFullscreenManager getPhotoFullscreenManager() {
         return photoFullscreenManager;
     }
@@ -259,6 +249,9 @@ public class InspectionSheetApplication extends Application {
         return logStorage;
     }
 
+    public StationInspectionFactory getStationInspectionFactory() {
+        return stationInspectionFactory;
+    }
 
     @Override
     public void onCreate() {
@@ -310,7 +303,7 @@ public class InspectionSheetApplication extends Application {
         // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
         remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext(), settingsStorage);
 
-        substationInspections = new ArrayList<>();
+        substationInspectionsCache = new ArrayList<>();
 
         inspectionStorage = new InspectionStorage(db, getApplicationContext());
 
@@ -347,6 +340,11 @@ public class InspectionSheetApplication extends Application {
 //        }
 //        DBLog.i("APPLICATION", "TEST LOG MSG 3");
 
+
+        stationInspectionFactory = new StationInspectionFactory(
+                equipmentService,
+                inspectionService,
+                new StationInspectionService(new StationDeffectsTypesStorageStub(), inspectionStorage));
 
         this.LockOrientation();
     }

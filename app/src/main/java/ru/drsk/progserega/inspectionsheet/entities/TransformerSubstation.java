@@ -10,7 +10,7 @@ public class TransformerSubstation extends Equipment {
         this.id = id;
         this.uniqId = uniqId;
         this.name = name;
-        this.type = EquipmentType.TRANS_SUBSTATION;
+        this.type = EquipmentType.TP;
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
         this.location = new Point(lat, lon, 0);

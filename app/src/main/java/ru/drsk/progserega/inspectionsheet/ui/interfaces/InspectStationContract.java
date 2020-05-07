@@ -2,15 +2,33 @@ package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+
 public class InspectStationContract {
-    public interface View{
+    public interface View {
 
+        void setInspection(List<InspectionItem> inspectionItems);
 
+        void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group);
+
+        void startEditInspectionActivity(InspectionItem currentInspectionItem);
+
+        void setStationName(String name);
+
+        void setCommonPhotos(List<InspectionPhoto> photos);
     }
 
-    public interface Presenter{
+    public interface Presenter {
 
         void onViewCreated();
+
+        void onInspectionsListItemClick(int position);
+
+        void onInspectionValueEdited();
+
+        void onCommonPhotoTaken(String photoPath);
 
         void onDestroy();
 

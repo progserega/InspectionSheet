@@ -1,12 +1,11 @@
 package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 
-public class SubstationInspection implements ISubstationInspection {
+public class InspectedSubstation extends InspectedStation implements IStationInspection {
     private Substation substation;
 
     private List<TransformerInspection> transformerInspections;
@@ -15,9 +14,10 @@ public class SubstationInspection implements ISubstationInspection {
         return substation;
     }
 
-    public SubstationInspection(Substation substation) {
-        this.substation = substation;
-        transformerInspections = null;
+    public InspectedSubstation(Substation substation, List<TransformerInspection> transformerInspections, List<InspectionItem> stationInspectionItems) {
+       this.substation = substation;
+       this.transformerInspections = transformerInspections;
+       this.stationInspectionItems = stationInspectionItems;
     }
 
     public String getSubstationName() {
@@ -30,7 +30,7 @@ public class SubstationInspection implements ISubstationInspection {
     }
 
 
-    @Override
+
     public void setInspection(List<TransformerInspection> inspections) {
         this.transformerInspections = inspections;
     }
@@ -38,5 +38,15 @@ public class SubstationInspection implements ISubstationInspection {
     @Override
     public Equipment getEquipment() {
         return substation;
+    }
+
+    @Override
+    public List<InspectionItem> getStationInspectionItems() {
+        return this.stationInspectionItems;
+    }
+
+    @Override
+    public List<InspectionPhoto> getCommonPhotos() {
+        return commonPhotos;
     }
 }

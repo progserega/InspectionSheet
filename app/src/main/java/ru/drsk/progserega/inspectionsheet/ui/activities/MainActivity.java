@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private void exportTPTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TRANS_SUBSTATION);
+        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP);
 
         //int a = 0;
         application.getRemoteStorage().exportTransformersInspections(inspections);

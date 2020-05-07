@@ -2,14 +2,12 @@ package ru.drsk.progserega.inspectionsheet.services;
 
 import android.content.Context;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
@@ -22,7 +20,6 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
@@ -35,11 +32,9 @@ import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
-import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
 public class InspectionService {
@@ -91,7 +86,7 @@ public class InspectionService {
             return getSubstationInspections();
         }
 
-        if (equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
+        if (equipmentType.equals(EquipmentType.TP)) {
             return getTPInspections();
         }
 
@@ -258,7 +253,7 @@ public class InspectionService {
             template = transformerDeffectTypesStorage.getSubstationDeffects();
         }
 
-        if (substationType == EquipmentType.TRANS_SUBSTATION) {
+        if (substationType == EquipmentType.TP) {
             template = transformerDeffectTypesStorage.getTPDeffects();
         }
 

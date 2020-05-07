@@ -34,10 +34,8 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.SubstationInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerSubstationInspection;
 import ru.drsk.progserega.inspectionsheet.services.EquipmentService;
 import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.services.ILocationChangeListener;
@@ -88,7 +86,7 @@ public class SearchObject extends ActivityWithGPS implements
         this.equipmentService = this.application.getEquipmentService();
         this.locationService = this.application.getLocationService();
         this.organizationService = this.application.getOrganizationService();
-        this.application.setCurrentSubstationInspection(null);
+        this.application.setCurrentStationInspection(null);
 
         Intent intent = getIntent();
 
@@ -241,25 +239,25 @@ public class SearchObject extends ActivityWithGPS implements
 
         if (equipment.getType() == EquipmentType.SUBSTATION) {
 
-            ISubstationInspection substationInspection = getInspection(equipment);
+            IStationInspection substationInspection = getInspectionFromCache(equipment);
             if (substationInspection == null) {
-                substationInspection = new SubstationInspection(equipmentService.getSubstationById(equipment.getId()));
-                application.getSubstationInspections().add(substationInspection);
+                substationInspection = application.getStationInspectionFactory().build(equipment);
+                application.getSubstationInspectionsCache().add(substationInspection);
             }
 
-            application.setCurrentSubstationInspection(substationInspection);
+            application.setCurrentStationInspection(substationInspection);
 
-            intent = new Intent(this, InspectStation.class);
+            intent = new Intent(this, InspectTransformer.class);
         }
 
-        if (equipment.getType() == EquipmentType.TRANS_SUBSTATION) {
+        if (equipment.getType() == EquipmentType.TP) {
 
-            ISubstationInspection substationInspection = getInspection(equipment);
-            if (substationInspection == null) {
-                substationInspection = new TransformerSubstationInspection(equipmentService.getTransformerSubstationById(equipment.getId()));
-                application.getSubstationInspections().add(substationInspection);
+            IStationInspection TPInspection = getInspectionFromCache(equipment);
+            if (TPInspection == null) {
+                TPInspection = application.getStationInspectionFactory().build(equipment);
+                application.getSubstationInspectionsCache().add(TPInspection);
             }
-            application.setCurrentSubstationInspection(substationInspection);
+            application.setCurrentStationInspection(TPInspection);
 
             intent = new Intent(this, InspectStation.class);
         }
@@ -418,10 +416,10 @@ public class SearchObject extends ActivityWithGPS implements
     }
 
 
-    private ISubstationInspection getInspection(Equipment equipment) {
-        List< ISubstationInspection > inspections = application.getSubstationInspections();
+    private IStationInspection getInspectionFromCache(Equipment equipment) {
+        List<IStationInspection> inspections = application.getSubstationInspectionsCache();
 
-        for (ISubstationInspection substationInspection : inspections) {
+        for (IStationInspection substationInspection : inspections) {
             Equipment substationInspectionEquipment = substationInspection.getEquipment();
             if (substationInspectionEquipment.getType().equals(equipment.getType())
                     && substationInspectionEquipment.getId() == equipment.getId()) {
@@ -435,8 +433,8 @@ public class SearchObject extends ActivityWithGPS implements
     protected void onStart() {
         super.onStart();
 
-        if (equipmentType.equals(EquipmentType.SUBSTATION) || equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
-            ISubstationInspection inspection = application.getCurrentSubstationInspection();
+        if (equipmentType.equals(EquipmentType.SUBSTATION) || equipmentType.equals(EquipmentType.TP)) {
+            IStationInspection inspection = application.getCurrentStationInspection();
             if (inspection == null) {
                 return;
             }

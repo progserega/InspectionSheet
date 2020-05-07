@@ -5,11 +5,14 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 
-public interface ISubstationInspection {
+public interface IStationInspection {
 
-    void setInspection(List<TransformerInspection> inspections);
 
     List<TransformerInspection> getTransformerInspections();
 
     Equipment getEquipment();
-}
+
+    List<InspectionItem> getStationInspectionItems();
+
+    List<InspectionPhoto> getCommonPhotos();
+ }

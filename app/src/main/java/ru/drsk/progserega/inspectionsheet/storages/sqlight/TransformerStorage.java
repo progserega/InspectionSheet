@@ -43,7 +43,7 @@ public class TransformerStorage implements ITransformerStorage {
     public List<TransformerInSlot> getBySubstantionId(long substantionUniqId, EquipmentType type) {
 
         List<TransformerInSlot> transformers = new ArrayList<>();
-        if (type == EquipmentType.TRANS_SUBSTATION) {
+        if (type == EquipmentType.TP) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = transformerSubstationEquipmentDao.getBySubstation(substantionUniqId);
             transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
@@ -97,7 +97,7 @@ public class TransformerStorage implements ITransformerStorage {
 
     @Override
     public List<TransformerType> getAllByInstallationInEquipment(EquipmentType type) {
-        if(type.equals(EquipmentType.TRANS_SUBSTATION)){
+        if(type.equals(EquipmentType.TP)){
             List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("transformer_substation");
             return dbTransformerModelToEntity(transformerModelLit);
         }
@@ -121,7 +121,7 @@ public class TransformerStorage implements ITransformerStorage {
         }
 
 
-        if(substation.getType().equals(EquipmentType.TRANS_SUBSTATION)){
+        if(substation.getType().equals(EquipmentType.TP)){
             TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getUniqId(), transformerTypeId, slot, 0, null);
             return transformerSubstationEquipmentDao.insert(euipmentModel);
         }

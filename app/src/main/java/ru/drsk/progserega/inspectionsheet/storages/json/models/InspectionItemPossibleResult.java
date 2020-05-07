@@ -30,4 +30,9 @@ public class InspectionItemPossibleResult {
     public void setValues(List<String> values) {
         this.values = values;
     }
+
+    public InspectionItemPossibleResult(String type, List<String> values) {
+        this.type = type;
+        this.values = values;
+    }
 }

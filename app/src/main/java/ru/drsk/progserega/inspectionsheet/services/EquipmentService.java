@@ -8,11 +8,8 @@ import java.util.Map;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
-import ru.drsk.progserega.inspectionsheet.entities.LineTower;
-import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
-import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
@@ -105,7 +102,7 @@ public class EquipmentService {
             List<Substation> substations = substationStorage.getByFilters(this.filters);
             return substationsToEquipment(substations);
         }
-        else if ((EquipmentType) filters.get(EquipmentService.FILTER_TYPE) == EquipmentType.TRANS_SUBSTATION) {
+        else if ((EquipmentType) filters.get(EquipmentService.FILTER_TYPE) == EquipmentType.TP) {
             List<TransformerSubstation> substations = transformerSubstationStorage.getByFilters(this.filters);
             return transformerSubstationsToEquipment(substations);
         }

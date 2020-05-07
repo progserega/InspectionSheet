@@ -3,7 +3,6 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 import android.content.Context;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,30 +90,61 @@ public class InspectionStorage implements IInspectionStorage {
             }
         }
 
-       // updateSubstationInspectionInfo(inspection);
+        // updateSubstationInspectionInfo(inspection);
 
         updateTransformerEquipmentInfo(inspection);
 
         saveTransformerPhoto(inspection);
     }
 
+    /**
+     * Загружает сохраненные данные осмотра трансформатора в подстанции или ТП
+     * @param inspection TransformerInspection осмотр трансформатора
+     * @param inspection TransformerInspection осмотр трансформатора
+     */
     @Override
     public void loadInspections(TransformerInspection inspection) {
         if (inspection == null) {
             return;
         }
 
+        //сохраненные результаты
         List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
                 inspection.getSubstation().getUniqId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId());
 
+        //заполняем сохраненными результатами
+        fillInspectionValues( inspection.getInspectionItems(), inspectionModels);
+        loadInspectionPhotos(inspection.getInspectionItems());
+    }
+
+    /**
+     * Загружает сохраненные данные осмотров посдстанции/ТП вцелом
+     * @param stationUniqId long уникальный идентификатор подстанции или ТП
+     * @param inspectionItems список элементов осмотра
+     */
+    @Override
+    public void loadStationInspections(long stationUniqId, List<InspectionItem> inspectionItems) {
+
+        if (inspectionItems == null || inspectionItems.isEmpty()) {
+            return;
+        }
+        //сохраненные результаты
+        List<InspectionModel> inspectionModels = inspectionDao.getByStation(stationUniqId);
+
+        //заполняем сохраненными результатами
+        fillInspectionValues(inspectionItems, inspectionModels);
+        loadInspectionPhotos(inspectionItems);
+    }
+
+    private void fillInspectionValues(List<InspectionItem> inspectionItems, List<InspectionModel> inspectionModels ) {
         Map<Long, InspectionModel> inpectionsMap = new HashMap<>();
         for (InspectionModel inspectionModel : inspectionModels) {
             inpectionsMap.put(inspectionModel.getDeffectId(), inspectionModel);
         }
 
-        for (InspectionItem inspectionItem : inspection.getInspectionItems()) {
+        for (InspectionItem inspectionItem : inspectionItems) {
 
             if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
                 continue;
@@ -135,9 +165,22 @@ public class InspectionStorage implements IInspectionStorage {
                     List<String> subValues = Arrays.asList(subValuesString.split(","));
                     inspectionItem.getResult().getSubValues().addAll(subValues);
                 }
-            }
-            else{
+            } else {
                 inspectionItem.setId(0);
+            }
+
+        }
+    }
+
+    private void loadInspectionPhotos(List<InspectionItem> inspectionItems) {
+        for (InspectionItem inspectionItem : inspectionItems) {
+
+            if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
+                continue;
+            }
+
+            if (inspectionItem.getId() == 0) {
+                continue;
             }
 
             //Load photos
@@ -151,7 +194,7 @@ public class InspectionStorage implements IInspectionStorage {
     @Override
     public void updateSubstationInspectionInfo(TransformerInspection inspection) {
         Equipment equipment = inspection.getSubstation();
-        if (equipment.getType().equals(EquipmentType.TRANS_SUBSTATION)) {
+        if (equipment.getType().equals(EquipmentType.TP)) {
             transformerSubstationDao.updateInspectionInfo(
                     equipment.getId(),
                     equipment.getInspectionDate(),
@@ -167,19 +210,19 @@ public class InspectionStorage implements IInspectionStorage {
 
     }
 
-    private void updateTransformerEquipmentInfo(TransformerInspection inspection){
+    private void updateTransformerEquipmentInfo(TransformerInspection inspection) {
         Equipment equipment = inspection.getSubstation();
         TransformerInSlot transformerInSlot = inspection.getTransformator();
-        if (equipment.getType().equals(EquipmentType.TRANS_SUBSTATION)) {
-            transformerSubstationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate() , transformerInSlot.getId());
+        if (equipment.getType().equals(EquipmentType.TP)) {
+            transformerSubstationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate(), transformerInSlot.getId());
         }
 
         if (equipment.getType().equals(EquipmentType.SUBSTATION)) {
-            substationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate() , transformerInSlot.getId());
+            substationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate(), transformerInSlot.getId());
         }
     }
 
-    private void saveTransformerPhoto(TransformerInspection inspection){
+    private void saveTransformerPhoto(TransformerInspection inspection) {
         for (InspectionPhoto photo : inspection.getTransformator().getPhotoList()) {
 
             if (photo.getId() == 0) {

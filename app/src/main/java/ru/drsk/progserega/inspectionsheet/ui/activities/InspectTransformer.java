@@ -29,7 +29,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
-import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformatorInspectionAdapter;
+import ru.drsk.progserega.inspectionsheet.ui.adapters.InspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
@@ -38,7 +38,7 @@ import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.ISubstationInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -51,12 +51,12 @@ import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageAc
 
 public class InspectTransformer extends AppCompatActivity implements
         SelectTransformerDialog.AddTransformerListener,
-        TransformatorInspectionAdapter.OnItemPhotoClickListener,
+        InspectionAdapter.OnItemPhotoClickListener,
         PhotoUtility.ChoosedListener    {
 
     static final int GET_DEFFECT_VALUE_REQUEST = 1001;
 
-    private TransformatorInspectionAdapter transformatorInspectionAdapter;
+    private InspectionAdapter inspectionAdapter;
     private InspectionSheetApplication application;
     private ITransformerStorage transformerStorage;
 
@@ -65,7 +65,7 @@ public class InspectTransformer extends AppCompatActivity implements
     private Spinner transformatorSpinner;
     private  ListView transfInspectionList;
 
-    private ISubstationInspection substationInspection;
+    private IStationInspection substationInspection;
 
     //private List<TransformerInSlot> transformers;
 
@@ -93,7 +93,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
         this.application = (InspectionSheetApplication) this.getApplication();
 
-        substationInspection = this.application.getCurrentSubstationInspection();
+        substationInspection = this.application.getCurrentStationInspection();
         inspectionService = this.application.getInspectionService();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
@@ -107,10 +107,10 @@ public class InspectTransformer extends AppCompatActivity implements
         transformerStorage = this.application.getTransformerStorage();
 
         transformerInspections = substationInspection.getTransformerInspections();
-        if (transformerInspections == null) {
-            transformerInspections = inspectionService.getSubstationTransformersWithInspections(substation);
-            substationInspection.setInspection(transformerInspections);
-        }
+//        if (transformerInspections == null) {
+//            transformerInspections = inspectionService.getSubstationTransformersWithInspections(substation);
+//            substationInspection.setInspection(transformerInspections);
+//        }
 
 
         transformerSpinnerAdapter = new TransformerSpinnerAdapter(this, transformerInspections);
@@ -130,9 +130,9 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
         TransformerInspection inspection = new TransformerInspection(substation, null);
-        transformatorInspectionAdapter = new TransformatorInspectionAdapter(this, inspection, this);
+        inspectionAdapter = new InspectionAdapter(this, inspection.getInspectionItems(), this);
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
-        transfInspectionList.setAdapter(transformatorInspectionAdapter);
+        transfInspectionList.setAdapter(inspectionAdapter);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View itemView, int position, long id) {
@@ -208,10 +208,10 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
     private void onListItemClick(AdapterView<?> list, View v, int position, long id) {
-        InspectionItem inspectionItem = (InspectionItem) transformatorInspectionAdapter.getItem(position);
+        InspectionItem inspectionItem = (InspectionItem) inspectionAdapter.getItem(position);
 
         if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
-            List<InspectionItem> allItems = transformatorInspectionAdapter.getInspectionItems();
+            List<InspectionItem> allItems = inspectionAdapter.getInspectionItems();
             InspectionItem header = inspectionItem;
             List<InspectionItem> group = getInspectionGroup(header, allItems);
             application.setCurrentInspectionItem(header);
@@ -236,7 +236,7 @@ public class InspectTransformer extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        transformatorInspectionAdapter.notifyDataSetChanged();
+        inspectionAdapter.notifyDataSetChanged();
 
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -253,8 +253,9 @@ public class InspectTransformer extends AppCompatActivity implements
     private void onSelectTransormator(int position) {
 
         currentInspection = transformerInspections.get(position);
-        transformatorInspectionAdapter.setInspection(currentInspection);
-        transformatorInspectionAdapter.notifyDataSetChanged();
+        //inspectionAdapter.setInspection(currentInspection);
+        inspectionAdapter.setInspectionItems(currentInspection.getInspectionItems());
+        inspectionAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(transfInspectionList);
 
         setManufactureYear(currentInspection.getTransformator().getYear());
@@ -334,7 +335,7 @@ public class InspectTransformer extends AppCompatActivity implements
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
             public void onPhotoDeleted() {
-                transformatorInspectionAdapter.notifyDataSetChanged();
+                inspectionAdapter.notifyDataSetChanged();
             }
         });
         startActivity(intent);
@@ -380,12 +381,12 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
         transformerSpinnerAdapter.notifyDataSetChanged();
-        transformatorInspectionAdapter.notifyDataSetChanged();
+        inspectionAdapter.notifyDataSetChanged();
     }
 
     public static void justifyListViewHeightBasedOnChildren (ListView listView) {
 
-        TransformatorInspectionAdapter adapter = (TransformatorInspectionAdapter)listView.getAdapter();
+        InspectionAdapter adapter = (InspectionAdapter)listView.getAdapter();
 
         if (adapter == null) {
             return;
