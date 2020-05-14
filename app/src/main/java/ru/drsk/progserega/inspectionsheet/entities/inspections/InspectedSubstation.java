@@ -29,7 +29,10 @@ public class InspectedSubstation extends InspectedStation implements IStationIns
         return transformerInspections;
     }
 
-
+    @Override
+    public List<StationEquipmentInspection> getStationEquipmentInspections() {
+        return null;
+    }
 
     public void setInspection(List<TransformerInspection> inspections) {
         this.transformerInspections = inspections;

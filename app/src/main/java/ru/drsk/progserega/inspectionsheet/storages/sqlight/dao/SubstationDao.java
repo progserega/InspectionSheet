@@ -14,6 +14,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
+@Deprecated
 @Dao
 public interface SubstationDao {
 

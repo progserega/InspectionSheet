@@ -6,26 +6,24 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
+@Entity(tableName = "stations")
+public class StationModel {
 
-@Deprecated
-/**
- * Модель таблици описывает Трансформаторную подстанцию
- */
-@Entity(tableName = "tp")
-public class TransformerSubstationModel {
-
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
     private long id;
 
     @ColumnInfo(name = "uniq_id")
     private long uniqId;
 
-    @ColumnInfo(name = "power_center_name")
-    private String powerCenterName;
+    @ColumnInfo(name = "name")
+    private String name;
 
-    @ColumnInfo(name = "disp_name_name")
-    private String dispName;
+    @ColumnInfo(name = "voltage")
+    private String voltage;
+
+    @ColumnInfo(name = "type_id")
+    private long typeId;
 
     @ColumnInfo(name = "sp_id")
     private long spId;
@@ -45,18 +43,18 @@ public class TransformerSubstationModel {
     @ColumnInfo(name = "inspection_percent")
     private float inspectionPercent;
 
-
-    public TransformerSubstationModel(long id, long uniqId, String powerCenterName, String dispName, long spId, long resId, double lat, double lon) {
+    public StationModel(long id, long uniqId, String name, String voltage, long typeId, long spId, long resId, double lat, double lon, Date inspectionDate, float inspectionPercent) {
         this.id = id;
         this.uniqId = uniqId;
-        this.powerCenterName = powerCenterName;
-        this.dispName = dispName;
+        this.name = name;
+        this.voltage = voltage;
+        this.typeId = typeId;
         this.spId = spId;
         this.resId = resId;
         this.lat = lat;
         this.lon = lon;
-        this.inspectionDate = new Date(0);
-        this.inspectionPercent = 0;
+        this.inspectionDate = inspectionDate;
+        this.inspectionPercent = inspectionPercent;
     }
 
     public long getId() {
@@ -75,20 +73,28 @@ public class TransformerSubstationModel {
         this.uniqId = uniqId;
     }
 
-    public String getPowerCenterName() {
-        return powerCenterName;
+    public String getName() {
+        return name;
     }
 
-    public void setPowerCenterName(String powerCenterName) {
-        this.powerCenterName = powerCenterName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDispName() {
-        return dispName;
+    public String getVoltage() {
+        return voltage;
     }
 
-    public void setDispName(String dispName) {
-        this.dispName = dispName;
+    public void setVoltage(String voltage) {
+        this.voltage = voltage;
+    }
+
+    public long getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
     }
 
     public long getSpId() {

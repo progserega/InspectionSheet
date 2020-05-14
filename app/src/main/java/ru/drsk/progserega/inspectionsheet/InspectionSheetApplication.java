@@ -59,8 +59,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstation
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.StationDeffectsTypesStorageStub;
 
-import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
-import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
+//import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
+//import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
 
 public class InspectionSheetApplication extends Application {
 
@@ -263,7 +263,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                //.addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
 
 

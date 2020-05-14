@@ -6,29 +6,33 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 
-public class TransformerInSlot {
+public class Transformer extends Equipment {
     private long id;
     private int slot;
     private TransformerType transformerType;
     private int year;
     private List<InspectionPhoto> photoList;
-    private Date inspectionDate;
+    //private Date inspectionDate;
 
-    public TransformerInSlot(long id, int slot, TransformerType transformerType) {
+    public Transformer(long id, int slot, TransformerType transformerType) {
         this.id = id;
         this.slot = slot;
         this.transformerType = transformerType;
         this.photoList = new ArrayList<>(); //!!
         inspectionDate = null;
+        this.name = transformerType.getName();
+        this.type = EquipmentType.TRANSFORMER;
     }
 
-    public TransformerInSlot(long id, int slot, TransformerType transformerType, int year, Date inspectionDate) {
+    public Transformer(long id, int slot, TransformerType transformerType, int year, Date inspectionDate, EquipmentType equipmentType) {
         this.id = id;
         this.slot = slot;
         this.transformerType = transformerType;
         this.year = year;
         this.photoList = new ArrayList<>();//!!
         this.inspectionDate = inspectionDate;
+        this.name = transformerType.getName();
+        this.type = equipmentType;
     }
 
     public long getId() {
@@ -77,5 +81,10 @@ public class TransformerInSlot {
 
     public void setInspectionDate(Date inspectionDate) {
         this.inspectionDate = inspectionDate;
+    }
+
+    @Override
+    public Point getLocation() {
+        return null;
     }
 }

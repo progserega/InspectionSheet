@@ -18,6 +18,12 @@ public class InspectStationContract {
         void setStationName(String name);
 
         void setCommonPhotos(List<InspectionPhoto> photos);
+
+        void showCommonPhotoFullscreen(int position, List<InspectionPhoto> photos);
+
+        void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos);
+
+        void startSelectEquipmentActivity();
     }
 
     public interface Presenter {
@@ -29,6 +35,12 @@ public class InspectStationContract {
         void onInspectionValueEdited();
 
         void onCommonPhotoTaken(String photoPath);
+
+        void onCommonPhotoClicked(int position);
+
+        void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
+
+        void onGotoEquipmentBtnClicked();
 
         void onDestroy();
 

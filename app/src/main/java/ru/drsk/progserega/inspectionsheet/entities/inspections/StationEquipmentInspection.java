@@ -5,23 +5,22 @@ import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 
-public class TransformerInspection {
+public class StationEquipmentInspection<T extends Equipment> {
 
-    private Equipment substation;
-    private Transformer transformator;
+    private Equipment station;
+    private T equipment;
     private List<InspectionItem> inspectionItems;
     private Date date;
     private boolean done;
     private String inspectorName = "";
 
-    public Equipment getSubstation() {
-        return substation;
+    public Equipment getStation() {
+        return station;
     }
 
-    public Transformer getTransformator() {
-        return transformator;
+    public T getEquipment() {
+        return equipment;
     }
 
     public List<InspectionItem> getInspectionItems() {
@@ -36,10 +35,10 @@ public class TransformerInspection {
         this.date = date;
     }
 
-    public TransformerInspection(Equipment substation, Transformer transformator) {
+    public StationEquipmentInspection(Equipment substation, T equipment) {
 
-        this.substation = substation;
-        this.transformator = transformator;
+        this.station = substation;
+        this.equipment = equipment;
         inspectionItems = new ArrayList<>();
         done = false;
     }

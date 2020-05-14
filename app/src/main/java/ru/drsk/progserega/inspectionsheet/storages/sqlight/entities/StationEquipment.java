@@ -6,22 +6,27 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
-@Deprecated
-@Entity(tableName = "substation_equipments")
-public class SubstationEquipmentModel {
+@Entity(tableName = "station_equipments")
+public class StationEquipment {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long id;
 
-    @ColumnInfo(name = "substation_id")
+    @ColumnInfo(name = "uid")
+    private long uniqId;
+
+    @ColumnInfo(name = "station_id")
     private long substationId;
 
-    @ColumnInfo(name = "transformer_id")
-    private long transformerId;
+    @ColumnInfo(name = "type_id")
+    private long typeId;
 
-    @ColumnInfo(name = "slot")
-    private int slot;
+    @ColumnInfo(name = "model_id")
+    private long modelId;
+
+    @ColumnInfo(name = "place")
+    private String place;
 
     @ColumnInfo(name = "manufacture_year")
     private int manufactureYear;
@@ -29,22 +34,16 @@ public class SubstationEquipmentModel {
     @ColumnInfo(name = "inspection_date")
     private Date inspectionDate;
 
-    public SubstationEquipmentModel(long id, long substationId, long transformerId, int slot, int manufactureYear, Date inspectionDate) {
+    public StationEquipment(long id, long uniqId, long substationId, long typeId, long modelId, String place, int manufactureYear, Date inspectionDate) {
         this.id = id;
+        this.uniqId = uniqId;
         this.substationId = substationId;
-        this.transformerId = transformerId;
-        this.slot = slot;
+        this.typeId = typeId;
+        this.modelId = modelId;
+        this.place = place;
         this.manufactureYear = manufactureYear;
         this.inspectionDate = inspectionDate;
     }
-
-//    public SubstationEquipmentModel(long id, long substationId, long transformerId, int slot, int manufactureYear) {
-//        this.id = id;
-//        this.substationId = substationId;
-//        this.transformerId = transformerId;
-//        this.slot = slot;
-//        this.manufactureYear = manufactureYear;
-//    }
 
     public long getId() {
         return id;
@@ -52,6 +51,14 @@ public class SubstationEquipmentModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUniqId() {
+        return uniqId;
+    }
+
+    public void setUniqId(long uniqId) {
+        this.uniqId = uniqId;
     }
 
     public long getSubstationId() {
@@ -62,20 +69,28 @@ public class SubstationEquipmentModel {
         this.substationId = substationId;
     }
 
-    public long getTransformerId() {
-        return transformerId;
+    public long getTypeId() {
+        return typeId;
     }
 
-    public void setTransformerId(long transformerId) {
-        this.transformerId = transformerId;
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
     }
 
-    public int getSlot() {
-        return slot;
+    public long getModelId() {
+        return modelId;
     }
 
-    public void setSlot(int slot) {
-        this.slot = slot;
+    public void setModelId(long modelId) {
+        this.modelId = modelId;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public int getManufactureYear() {

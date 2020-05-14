@@ -86,5 +86,6 @@
     <string name="show_on_map_text">на карте</string>
     <string name="journal">Журнал</string>
     <string name="send_journal">Отправить</string>
+    <string name="next_select_equipment">Осмотр оборудования</string>
 
 </resources>

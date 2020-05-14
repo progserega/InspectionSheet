@@ -35,7 +35,7 @@ import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
@@ -310,10 +310,10 @@ public class InspectTransformer extends AppCompatActivity implements
 
         //Выбираем трансформатор
         TransformerType transformerType = transformerStorage.getById(transformerTypeId);
-        TransformerInSlot transformerInSlot = new TransformerInSlot(insertedId, slot, transformerType);
+        Transformer transformer = new Transformer(insertedId, slot, transformerType);
 
         //Создаем новый объект для осмотра
-        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformerInSlot);
+        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
         inspection.setInspectionItems(inspectionService.loadInspectionTemplates(substationInspection.getEquipment().getType()));
 
         //Добавляем к списку осмотров

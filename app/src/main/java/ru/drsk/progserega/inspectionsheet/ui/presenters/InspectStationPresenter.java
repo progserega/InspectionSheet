@@ -16,8 +16,8 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
     private InspectStationContract.View view;
     private InspectionSheetApplication application;
     private IStationInspection stationInspection;
-    private List<TransformerInspection> transformerInspections;
-    private TransformerInspection currentInspection;
+
+
 
     public InspectStationPresenter(InspectStationContract.View view, InspectionSheetApplication application) {
         this.view = view;
@@ -60,6 +60,16 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
         stationInspection.getCommonPhotos().add(new InspectionPhoto(0, photoPath, application));
     }
 
+    @Override
+    public void onCommonPhotoClicked(int position) {
+        view.showCommonPhotoFullscreen(position, stationInspection.getCommonPhotos());
+    }
+
+    @Override
+    public void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition) {
+        view.showInspectionPhotoFullcreen(photoPosition, inspectionItem.getResult().getPhotos());
+    }
+
     private List<InspectionItem> getInspectionGroup(InspectionItem header, List<InspectionItem> allItems) {
         List<InspectionItem> group = new ArrayList<>();
         for (InspectionItem item : allItems) {
@@ -68,6 +78,13 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
             }
         }
         return group;
+    }
+
+    @Override
+    public void onGotoEquipmentBtnClicked() {
+        //TODO SAVE
+        //TODO GOTO SELECT EQUIPMENT
+        view.startSelectEquipmentActivity();
     }
 
     @Override

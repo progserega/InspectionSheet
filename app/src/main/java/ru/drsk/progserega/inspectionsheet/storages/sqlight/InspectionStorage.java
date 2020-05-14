@@ -9,7 +9,7 @@ import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
@@ -212,13 +212,13 @@ public class InspectionStorage implements IInspectionStorage {
 
     private void updateTransformerEquipmentInfo(TransformerInspection inspection) {
         Equipment equipment = inspection.getSubstation();
-        TransformerInSlot transformerInSlot = inspection.getTransformator();
+        Transformer transformer = inspection.getTransformator();
         if (equipment.getType().equals(EquipmentType.TP)) {
-            transformerSubstationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate(), transformerInSlot.getId());
+            transformerSubstationEquipmentDao.updateTransformerCommonInfo(transformer.getYear(), transformer.getInspectionDate(), transformer.getId());
         }
 
         if (equipment.getType().equals(EquipmentType.SUBSTATION)) {
-            substationEquipmentDao.updateTransformerCommonInfo(transformerInSlot.getYear(), transformerInSlot.getInspectionDate(), transformerInSlot.getId());
+            substationEquipmentDao.updateTransformerCommonInfo(transformer.getYear(), transformer.getInspectionDate(), transformer.getId());
         }
     }
 

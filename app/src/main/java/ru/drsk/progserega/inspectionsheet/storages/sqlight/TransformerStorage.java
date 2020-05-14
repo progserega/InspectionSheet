@@ -8,7 +8,7 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -40,41 +40,42 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
-    public List<TransformerInSlot> getBySubstantionId(long substantionUniqId, EquipmentType type) {
+    public List<Transformer> getBySubstantionId(long substantionUniqId, EquipmentType substationType) {
 
-        List<TransformerInSlot> transformers = new ArrayList<>();
-        if (type == EquipmentType.TP) {
+        List<Transformer> transformers = new ArrayList<>();
+        if (substationType == EquipmentType.TP) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = transformerSubstationEquipmentDao.getBySubstation(substantionUniqId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, EquipmentType.TP_TRANSFORMER);
         }
 
-        if (type == EquipmentType.SUBSTATION) {
+        if (substationType == EquipmentType.SUBSTATION) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = substationEquipmentDao.getBySubstation(substantionUniqId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, EquipmentType.SUBSTATION_TRANSFORMER);
         }
 
         return transformers;
     }
 
-    private List<TransformerInSlot> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels, EquipmentType equipmentType) {
-        List<TransformerInSlot> transformers = new ArrayList<>();
+    private List<Transformer> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels, EquipmentType equipmentType) {
+        List<Transformer> transformers = new ArrayList<>();
         for (TransformerInsideSubstaionModel transformerModel : transformerDBModels) {
             TransformerModel transformerDBModel = transformerModel.getTransformer();
             TransformerType transformerType = new TransformerType(transformerDBModel.getId(), transformerDBModel.getType() );
-            TransformerInSlot transformerInSlot = new TransformerInSlot(
+            Transformer transformer = new Transformer(
                     transformerModel.getEquipmentId(),
                     transformerModel.getSlot(),
                     transformerType,
                     transformerModel.getManufactureYear(),
-                    transformerModel.getInspectioDate()
+                    transformerModel.getInspectioDate(),
+                    equipmentType
             );
 
             List<EquipmentPhotoModel> equipmentPhotoModels = equipmentPhotoDao.getByEquipment( transformerModel.getEquipmentId(), equipmentType.getValue());
-            transformerInSlot.setPhotoList(equipmentPhotoModelToInspectionPhoto(equipmentPhotoModels));
+            transformer.setPhotoList(equipmentPhotoModelToInspectionPhoto(equipmentPhotoModels));
 
-            transformers.add(transformerInSlot);
+            transformers.add(transformer);
         }
         return transformers;
     }

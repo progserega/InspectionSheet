@@ -1,11 +1,9 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
 
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -22,6 +20,9 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.ResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SectionDeffectTypesDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SpWithResDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationEquipmentDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationEquipmentModelsDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDao;
@@ -45,6 +46,9 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LogModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffectTypesModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipment;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentModels;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
@@ -79,8 +83,11 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         TransformerDeffectTypesModel.class,
         TowerDeffectTypesModel.class,
         SectionDeffectTypesModel.class,
+        StationModel.class,
+        StationEquipment.class,
+        StationEquipmentModels.class,
         LogModel.class
-}, version = 3)
+}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -134,81 +141,67 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
 
     public abstract TransformerDeffectTypesDao transformerDeffectTypesDao();
 
+    public abstract StationDao stationDao();
+
+    public abstract StationEquipmentDao stationEquipmentDao();
+
+    public abstract StationEquipmentModelsDao stationEquipmentModelsDao();
+
     public abstract LogDao logDao();
 
-    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Since we didn't alter the table, there's nothing else to do here.
-
-            //добавляем таблицу transformer_deffect_types
-            database.execSQL("CREATE TABLE \"transformer_deffect_types\" (\n" +
-                    "\t\"id\"\tINTEGER NOT NULL,\n" +
-                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
-                    "\t\"number\"\tTEXT,\n" +
-                    "\t\"name\"\tTEXT,\n" +
-                    "\t\"type\"\tINTEGER NOT NULL,\n" +
-                    "\t\"result\"\tTEXT,\n" +
-                    "\t\"sub_result\"\tTEXT,\n" +
-                    "\t\"equipment_type\"\tTEXT,\n" +
-                    "\tPRIMARY KEY(\"id\")\n" +
-                    ");");
-
-            //добавляем таблицу tower_deffect_types
-            database.execSQL("CREATE TABLE \"tower_deffect_types\" (\n" +
-                    "\t\"id\"\tINTEGER NOT NULL,\n" +
-                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
-                    "\t\"name\"\tTEXT,\n" +
-                    "\t\"voltage\"\tTEXT,\n" +
-                    "\tPRIMARY KEY(\"id\")\n" +
-                    ");");
-
-            //добавляем таблицу section_deffect_types
-            database.execSQL("CREATE TABLE \"section_deffect_types\" (\n" +
-                    "\t\"id\"\tINTEGER NOT NULL,\n" +
-                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
-                    "\t\"name\"\tTEXT,\n" +
-                    "\t\"voltage\"\tTEXT,\n" +
-                    "\tPRIMARY KEY(\"id\")\n" +
-                    ");");
-
-
-            //удаляем inspection_items
-            database.execSQL("DROP TABLE IF EXISTS inspection_items;");
-        }
-    };
-
-    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-
-            database.execSQL("CREATE TABLE \"log_storage\" (\n" +
-                    "                    \"date\"\tINTEGER,\n" +
-                    "                    \"level\"\tINTEGER NOT NULL,\n" +
-                    "                    \"tag\"\tTEXT,\n" +
-                    "                    \"message\"\tTEXT, " +
-                    "\tPRIMARY KEY(\"date\")\t)");
-        }
-    };
-
-//    public static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+//    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
 //        @Override
 //        public void migrate(SupportSQLiteDatabase database) {
-//            database.execSQL("CREATE TABLE \"lines\" (\n" +
+//            // Since we didn't alter the table, there's nothing else to do here.
+//
+//            //добавляем таблицу transformer_deffect_types
+//            database.execSQL("CREATE TABLE \"transformer_deffect_types\" (\n" +
 //                    "\t\"id\"\tINTEGER NOT NULL,\n" +
-//                    "\t\"uniq_id\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"number\"\tTEXT,\n" +
 //                    "\t\"name\"\tTEXT,\n" +
-//                    "\t\"voltage\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
-//                    "\t\"start_exploitation_year\"\tINTEGER NOT NULL,\n" +
-//                    "\t\"bbox_top_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
-//                    "\t\"bbox_top_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
-//                    "\t\"bbox_bottom_lat\"\tREAL  NOT NULL DEFAULT 0,\n" +
-//                    "\t\"bbox_botttom_lon\"\tREAL  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"type\"\tINTEGER NOT NULL,\n" +
+//                    "\t\"result\"\tTEXT,\n" +
+//                    "\t\"sub_result\"\tTEXT,\n" +
+//                    "\t\"equipment_type\"\tTEXT,\n" +
+//                    "\tPRIMARY KEY(\"id\")\n" +
+//                    ");");
+//
+//            //добавляем таблицу tower_deffect_types
+//            database.execSQL("CREATE TABLE \"tower_deffect_types\" (\n" +
+//                    "\t\"id\"\tINTEGER NOT NULL,\n" +
+//                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"name\"\tTEXT,\n" +
+//                    "\t\"voltage\"\tTEXT,\n" +
+//                    "\tPRIMARY KEY(\"id\")\n" +
+//                    ");");
+//
+//            //добавляем таблицу section_deffect_types
+//            database.execSQL("CREATE TABLE \"section_deffect_types\" (\n" +
+//                    "\t\"id\"\tINTEGER NOT NULL,\n" +
+//                    "\t\"order\"\tINTEGER  NOT NULL DEFAULT 0,\n" +
+//                    "\t\"name\"\tTEXT,\n" +
+//                    "\t\"voltage\"\tTEXT,\n" +
 //                    "\tPRIMARY KEY(\"id\")\n" +
 //                    ");");
 //
 //
-//
+//            //удаляем inspection_items
+//            database.execSQL("DROP TABLE IF EXISTS inspection_items;");
 //        }
 //    };
+//
+//    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+//        @Override
+//        public void migrate(SupportSQLiteDatabase database) {
+//
+//            database.execSQL("CREATE TABLE \"log_storage\" (\n" +
+//                    "                    \"date\"\tINTEGER,\n" +
+//                    "                    \"level\"\tINTEGER NOT NULL,\n" +
+//                    "                    \"tag\"\tTEXT,\n" +
+//                    "                    \"message\"\tTEXT, " +
+//                    "\tPRIMARY KEY(\"date\")\t)");
+//        }
+//    };
+
 }

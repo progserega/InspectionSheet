@@ -90,6 +90,8 @@
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -97,28 +99,24 @@
 
         <LinearLayout
             android:id="@+id/linLayout"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onSaveBtnPress"
-            android:orientation="vertical">
+            android:background="#097c09"
+            android:onClick="onGotoEquipmentBtnClick"
+            android:orientation="vertical"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
 
-            <ImageButton
-                android:id="@+id/inpsect_transformator_save_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:onClick="onSaveBtnPress"
-                android:contentDescription="TODO" />
 
             <TextView
-                android:id="@+id/textView2"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/inpsect_station_goto_equipment_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
                 android:gravity="center"
-                android:text="@string/save"
+                android:text="@string/next_select_equipment"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
+
 
         </LinearLayout>
     </LinearLayout>

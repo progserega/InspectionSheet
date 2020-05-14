@@ -16,7 +16,7 @@ import java.io.IOException;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
@@ -54,7 +54,7 @@ public class InspectionSorageTest {
         InspectionStorage storage = new InspectionStorage(mDb, context);
 
         Equipment substation = new Substation(1, 1,"Substation 1", null, 0, 0,0);
-        TransformerInSlot transformer = new TransformerInSlot(1, 1, new TransformerType( 1, "Transformerr name"));
+        Transformer transformer = new Transformer(1, 1, new TransformerType( 1, "Transformerr name"));
         TransformerInspection transformerInspection = new TransformerInspection(substation, transformer);
         TransfInspectionListReader inspectionListReader = new TransfInspectionListReader();
         transformerInspection.setInspectionItems(inspectionListReader.readInspections(context.getResources().openRawResource(R.raw.substation_transormer_deffect_types)));

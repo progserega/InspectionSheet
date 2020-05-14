@@ -38,6 +38,7 @@ import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 
 import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectLineSection.NEXT_SECTION;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer.GET_DEFFECT_VALUE_REQUEST;
 
 public class InspectStation extends AppCompatActivity implements InspectStationContract.View {
@@ -121,6 +122,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             //TODO
+            presenter.onInspectionPhotoClicked(inspectionItem, position);
         });
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);
@@ -139,7 +141,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(InspectionPhoto photo, int position) {
-              //  commonPhotoItemClick(position, currentInspection.getTransformator().getPhotoList());
+                presenter.onCommonPhotoClicked(position);
             }
         });
         list.setAdapter(commonPhotoListAdapter);
@@ -149,7 +151,6 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         photoUtility.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
 
     @Override
     public void setInspection(List<InspectionItem> inspections) {
@@ -211,7 +212,9 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         photoUtility.showPhotoDialog();
     }
 
-    public void commonPhotoItemClick(int position, List<InspectionPhoto> photos) {
+
+    @Override
+    public void showCommonPhotoFullscreen(int position, List<InspectionPhoto> photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.TRANSFORMER_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
@@ -228,10 +231,38 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     @Override
+    public void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos){
+        Intent intent = new Intent(this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        //application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
+        application.getPhotoFullscreenManager().setPhotos(photos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted() {
+                inspectionAdapter.notifyDataSetChanged();
+            }
+        });
+        startActivity(intent);
+    }
+
+    @Override
     public void setCommonPhotos(List<InspectionPhoto> photos){
         commonPhotoListAdapter.setItems(photos);
         commonPhotoListAdapter.notifyDataSetChanged();
     }
+
+    public void onGotoEquipmentBtnClick(View view) {
+        presenter.onGotoEquipmentBtnClicked();
+    }
+
+    @Override
+    public void startSelectEquipmentActivity() {
+        Intent intent = new Intent(this, StationEquipment.class);
+        //intent.putExtra(NEXT_SECTION, nextSectionId);
+        startActivity(intent);
+    }
+
     public static void justifyListViewHeightBasedOnChildren(ListView listView) {
 
         InspectionAdapter adapter = (InspectionAdapter) listView.getAdapter();
@@ -252,4 +283,12 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         listView.setLayoutParams(par);
         listView.requestLayout();
     }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
+    }
+
+
 }

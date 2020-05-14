@@ -10,6 +10,8 @@ public interface IStationInspection {
 
     List<TransformerInspection> getTransformerInspections();
 
+    List<StationEquipmentInspection> getStationEquipmentInspections();
+
     Equipment getEquipment();
 
     List<InspectionItem> getStationInspectionItems();

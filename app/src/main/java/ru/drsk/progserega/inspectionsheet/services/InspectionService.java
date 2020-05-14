@@ -14,7 +14,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
@@ -138,19 +138,19 @@ public class InspectionService {
     }
 
     public List< TransformerInspection > getSubstationTransformersWithInspections(Equipment substation) {
-        List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
+        List<Transformer> transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
         return buildInspectionsList(substation, transformers);
     }
 
     public List< TransformerInspection > getTPTransformersWithInspections(Equipment substation) {
-        List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
+        List<Transformer> transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
         return buildInspectionsList(substation, transformers);
     }
 
-    private List< TransformerInspection > buildInspectionsList(Equipment equipment, List< TransformerInSlot > transformers) {
+    private List< TransformerInspection > buildInspectionsList(Equipment equipment, List<Transformer> transformers) {
         List< TransformerInspection > inspectionList = new ArrayList<>();
 
-        for (TransformerInSlot transformer : transformers) {
+        for (Transformer transformer : transformers) {
 
             TransformerInspection inspection = new TransformerInspection(equipment, transformer);
             inspection.setInspectionItems(loadInspectionTemplates(equipment.getType()));

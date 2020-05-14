@@ -11,28 +11,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Substation;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
-import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
-import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionStorage;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerModel;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
