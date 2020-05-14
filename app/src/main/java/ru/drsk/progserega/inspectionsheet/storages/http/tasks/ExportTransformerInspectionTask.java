@@ -114,6 +114,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                     response = apiArmIS.uploadInspection(inpectionResult).execute();
                 } catch (Exception e) {
                     DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result");
+                    DBLog.e(EXPORT_TAG, e);
                     e.printStackTrace();
                     continue;
                 }
