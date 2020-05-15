@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.clear();
 
         //comment for DEBUG
-        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
-        exportBtn.setVisibility(View.GONE);
+        //Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+        //exportBtn.setVisibility(View.GONE);
     }
 
 
@@ -160,14 +160,14 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.add(SELECT_ACTIVE_SERVER);
 
-        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_LINES);
+      //  networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+      //  networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+       // networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
-        networkTasksQueue.add(LOAD_LINES);
+        //networkTasksQueue.add(LOAD_LINES);
         networkTasksQueue.add(LOAD_SUBSTATIONS);
         networkTasksQueue.add(LOAD_TP);
 //

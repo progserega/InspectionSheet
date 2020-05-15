@@ -6,6 +6,7 @@ import java.util.List;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import retrofit2.Response;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiGeo;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
@@ -60,6 +61,7 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
             throw new IOException("Данные по СП не получены");
         }
         dbDataImporter.loadSubstationTransformers(types, "transformer_substation");
+        dbDataImporter.importStationEquipmentModels(types, EquipmentType.TP_TRANSFORMER);
     }
 
 

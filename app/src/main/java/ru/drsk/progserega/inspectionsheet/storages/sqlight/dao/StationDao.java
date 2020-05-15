@@ -23,8 +23,8 @@ public interface StationDao {
     @RawQuery
     List<StationModel> getByFilters(SupportSQLiteQuery query);
 
-    @Query("SELECT * FROM stations WHERE id = :id ")
-    StationModel getById(long id);
+    @Query("SELECT * FROM stations WHERE uniq_id = :uid ")
+    StationModel getById(long uid);
 
 
     @Query("SELECT * FROM stations WHERE inspection_percent > 0")
@@ -33,8 +33,8 @@ public interface StationDao {
     @Insert
     long insert(StationModel stationModel);
 
-    @Query("UPDATE stations SET inspection_date = :date, inspection_percent = :percent WHERE id = :id ")
-    void updateInspectionInfo(long id, Date date, float percent);
+    @Query("UPDATE stations SET inspection_date = :date, inspection_percent = :percent WHERE uniq_id = :uid ")
+    void updateInspectionInfo(long uid, Date date, float percent);
 
     @Update
     void update(StationModel stationModel);
@@ -43,5 +43,5 @@ public interface StationDao {
     void delete(StationModel stationModel);
 
     @Query("DELETE FROM stations")
-    void delete();
+    void deleteAll();
 }

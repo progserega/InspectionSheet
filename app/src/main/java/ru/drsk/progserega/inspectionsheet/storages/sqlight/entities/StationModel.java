@@ -9,10 +9,8 @@ import java.util.Date;
 @Entity(tableName = "stations")
 public class StationModel {
 
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    private long id;
 
+    @PrimaryKey
     @ColumnInfo(name = "uniq_id")
     private long uniqId;
 
@@ -43,8 +41,8 @@ public class StationModel {
     @ColumnInfo(name = "inspection_percent")
     private float inspectionPercent;
 
-    public StationModel(long id, long uniqId, String name, String voltage, long typeId, long spId, long resId, double lat, double lon, Date inspectionDate, float inspectionPercent) {
-        this.id = id;
+    public StationModel( long uniqId, String name, String voltage, long typeId, long spId, long resId, double lat, double lon, Date inspectionDate, float inspectionPercent) {
+
         this.uniqId = uniqId;
         this.name = name;
         this.voltage = voltage;
@@ -55,14 +53,6 @@ public class StationModel {
         this.lon = lon;
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public long getUniqId() {

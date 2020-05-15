@@ -32,6 +32,6 @@ public interface StationEquipmentDao {
     void delete(StationEquipment equipmentModel);
 
     @Query("DELETE FROM station_equipments")
-    void delete();
+    void deleteAll();
 
 }

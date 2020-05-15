@@ -16,8 +16,8 @@ public class StationEquipment {
     @ColumnInfo(name = "uid")
     private long uniqId;
 
-    @ColumnInfo(name = "station_id")
-    private long substationId;
+    @ColumnInfo(name = "station_uid")
+    private long stationUniqId;
 
     @ColumnInfo(name = "type_id")
     private long typeId;
@@ -34,10 +34,10 @@ public class StationEquipment {
     @ColumnInfo(name = "inspection_date")
     private Date inspectionDate;
 
-    public StationEquipment(long id, long uniqId, long substationId, long typeId, long modelId, String place, int manufactureYear, Date inspectionDate) {
+    public StationEquipment(long id, long uniqId, long stationUniqId, long typeId, long modelId, String place, int manufactureYear, Date inspectionDate) {
         this.id = id;
         this.uniqId = uniqId;
-        this.substationId = substationId;
+        this.stationUniqId = stationUniqId;
         this.typeId = typeId;
         this.modelId = modelId;
         this.place = place;
@@ -61,12 +61,12 @@ public class StationEquipment {
         this.uniqId = uniqId;
     }
 
-    public long getSubstationId() {
-        return substationId;
+    public long getStationUniqId() {
+        return stationUniqId;
     }
 
-    public void setSubstationId(long substationId) {
-        this.substationId = substationId;
+    public void setStationUniqId(long stationUniqId) {
+        this.stationUniqId = stationUniqId;
     }
 
     public long getTypeId() {
