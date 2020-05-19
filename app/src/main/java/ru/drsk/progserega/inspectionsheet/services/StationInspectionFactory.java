@@ -9,6 +9,7 @@ import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTransformerSubstation;
 
@@ -28,26 +29,18 @@ public class StationInspectionFactory {
     public IStationInspection build(Equipment station) {
 
         List<InspectionItem> stationInspectionItems = stationInspectionService.getStationInspectionItems(station);
+        List<StationEquipmentInspection> equipmentInspections = stationInspectionService.getStationEquipmentWithInspections(station);
 
         if (station.getType().equals(EquipmentType.SUBSTATION)) {
-            Substation substation = equipmentService.getSubstationById(station.getId());
-            List<TransformerInspection> transformerInspections = inspectionService.getSubstationTransformersWithInspections(substation);
-
-            InspectedSubstation substationInspection = new InspectedSubstation(substation, transformerInspections, stationInspectionItems);
-
+            Substation substation = equipmentService.getSubstationById(station.getUniqId());
+            InspectedSubstation substationInspection = new InspectedSubstation(substation, stationInspectionItems, equipmentInspections);
             return substationInspection;
 
         }
 
         if (station.getType().equals(EquipmentType.TP)) {
-            TransformerSubstation transformerSubstation = equipmentService.getTransformerSubstationById(station.getId());
-
-            List<TransformerInspection> transformerInspections = inspectionService.getTPTransformersWithInspections(transformerSubstation);
-
-
-            InspectedTransformerSubstation transformerStationInspection =  new InspectedTransformerSubstation(transformerSubstation, transformerInspections, stationInspectionItems);
-
-
+            TransformerSubstation transformerSubstation = equipmentService.getTransformerSubstationById(station.getUniqId());
+            InspectedTransformerSubstation transformerStationInspection = new InspectedTransformerSubstation(transformerSubstation, stationInspectionItems, equipmentInspections);
             return transformerStationInspection;
 
         }

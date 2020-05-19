@@ -27,6 +27,8 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.InspectionAdapter;
@@ -34,8 +36,6 @@ import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformerSpinnerAdapter;
 import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
@@ -69,13 +69,13 @@ public class InspectTransformer extends AppCompatActivity implements
 
     //private List<TransformerInSlot> transformers;
 
-    private List<TransformerInspection> transformerInspections;
+    private List<StationEquipmentInspection> stationEquipmentInspections;
 
     private SelectTransformerDialog selectTransformerDialog;
 
     private InspectionService inspectionService;
 
-    private TransformerInspection currentInspection;
+    private StationEquipmentInspection currentInspection;
 
     private int year = 0;
     private int maxYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -97,7 +97,7 @@ public class InspectTransformer extends AppCompatActivity implements
         inspectionService = this.application.getInspectionService();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);
-        Equipment substation = substationInspection.getEquipment();
+        Equipment substation = substationInspection.getStation();
         substationNameText.setText(substation.getName());
 
         setTitle(substation.getName());
@@ -106,14 +106,10 @@ public class InspectTransformer extends AppCompatActivity implements
 
         transformerStorage = this.application.getTransformerStorage();
 
-        transformerInspections = substationInspection.getTransformerInspections();
-//        if (transformerInspections == null) {
-//            transformerInspections = inspectionService.getSubstationTransformersWithInspections(substation);
-//            substationInspection.setInspection(transformerInspections);
-//        }
+        stationEquipmentInspections = substationInspection.getStationEquipmentInspections();
 
 
-        transformerSpinnerAdapter = new TransformerSpinnerAdapter(this, transformerInspections);
+        transformerSpinnerAdapter = new TransformerSpinnerAdapter(this, stationEquipmentInspections);
         transformatorSpinner = (Spinner) findViewById(R.id.select_transformator_spinner);
         transformatorSpinner.setAdapter(transformerSpinnerAdapter);
         transformatorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -160,7 +156,7 @@ public class InspectTransformer extends AppCompatActivity implements
         commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(InspectionPhoto photo, int position) {
-                commonPhotoItemClick(position, currentInspection.getTransformator().getPhotoList());
+                commonPhotoItemClick(position, ((Transformer)currentInspection.getEquipment()).getPhotoList());
             }
         });
         list.setAdapter(commonPhotoListAdapter);
@@ -252,25 +248,26 @@ public class InspectTransformer extends AppCompatActivity implements
 
     private void onSelectTransormator(int position) {
 
-        currentInspection = transformerInspections.get(position);
+        currentInspection = stationEquipmentInspections.get(position);
         //inspectionAdapter.setInspection(currentInspection);
         inspectionAdapter.setInspectionItems(currentInspection.getInspectionItems());
         inspectionAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(transfInspectionList);
 
-        setManufactureYear(currentInspection.getTransformator().getYear());
+        Transformer transformer = (Transformer)currentInspection.getEquipment();
+        setManufactureYear(transformer.getYear());
 
         setTransformerPhotos(currentInspection);
     }
 
     public void onSaveBtnPress(View view) {
 
-        List<TransformerInspection> allInspections = substationInspection.getTransformerInspections();
+        List<StationEquipmentInspection> allInspections = substationInspection.getStationEquipmentInspections();
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         float sum = 0;
         Date inspectionDate = new Date();
-        for (TransformerInspection transformerInspection : allInspections) {
-            transformerInspection.getTransformator().setInspectionDate(inspectionDate);
+        for (StationEquipmentInspection transformerInspection : allInspections) {
+            transformerInspection.getEquipment().setInspectionDate(inspectionDate);
             inspectionStorage.saveInspection(transformerInspection);
             transformerInspection.setDone(true);
 
@@ -295,7 +292,7 @@ public class InspectTransformer extends AppCompatActivity implements
             selectTransformerDialog = SelectTransformerDialog.newInstance();
         }
         selectTransformerDialog.setSlot(slot);
-        selectTransformerDialog.setType(substationInspection.getEquipment().getType());
+        selectTransformerDialog.setType(substationInspection.getStation().getType());
 
 
         selectTransformerDialog.show(fm, "select_transformer");
@@ -304,23 +301,23 @@ public class InspectTransformer extends AppCompatActivity implements
 
     @Override
     public void onAddTransformer(long transformerTypeId, int slot) {
-        //Добавляем трансформатор к списку оборудования подстанции
-
-        long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment(), slot);
-
-        //Выбираем трансформатор
-        TransformerType transformerType = transformerStorage.getById(transformerTypeId);
-        Transformer transformer = new Transformer(insertedId, slot, transformerType);
-
-        //Создаем новый объект для осмотра
-        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
-        inspection.setInspectionItems(inspectionService.loadInspectionTemplates(substationInspection.getEquipment().getType()));
-
-        //Добавляем к списку осмотров
-        substationInspection.getTransformerInspections().add(inspection);
-
-
-        transformerSpinnerAdapter.notifyDataSetChanged();
+//        //Добавляем трансформатор к списку оборудования подстанции
+//
+//        long insertedId = transformerStorage.addToSubstation(transformerTypeId, substationInspection.getEquipment(), slot);
+//
+//        //Выбираем трансформатор
+//        EquipmentModel transformerType = transformerStorage.getById(transformerTypeId);
+//        Transformer transformer = new Transformer(insertedId, slot, transformerType);
+//
+//        //Создаем новый объект для осмотра
+//        TransformerInspection inspection = new TransformerInspection(substationInspection.getEquipment(), transformer);
+//        inspection.setInspectionItems(inspectionService.loadInspectionTemplates(substationInspection.getEquipment().getType()));
+//
+//        //Добавляем к списку осмотров
+//        substationInspection.getTransformerInspections().add(inspection);
+//
+//
+//        transformerSpinnerAdapter.notifyDataSetChanged();
 
     }
 
@@ -352,36 +349,36 @@ public class InspectTransformer extends AppCompatActivity implements
     }
 
     private void onSwitchInspectionsMenuClick() {
-        FragmentManager fm = getSupportFragmentManager();
-
-        SwitchTransformerInspectionsDialog dialog = SwitchTransformerInspectionsDialog.newInstance(
-                this.transformerInspections,
-                new SwitchTransformerInspectionsDialog.AcceptListener() {
-                    @Override
-                    public void onAcceptBtnClick(long sourcePos, long destPos) {
-                        //Toast.makeText(InspectTransformer.this, String.format("SWITCH transformers  %d <---> %d",sourcePos, destPos), Toast.LENGTH_LONG).show();
-                        switchInspections(sourcePos, destPos);
-                    }
-                });
-        dialog.show(fm, "switch_inspections");
+//        FragmentManager fm = getSupportFragmentManager();
+//
+//        SwitchTransformerInspectionsDialog dialog = SwitchTransformerInspectionsDialog.newInstance(
+//                this.stationEquipmentInspections,
+//                new SwitchTransformerInspectionsDialog.AcceptListener() {
+//                    @Override
+//                    public void onAcceptBtnClick(long sourcePos, long destPos) {
+//                        //Toast.makeText(InspectTransformer.this, String.format("SWITCH transformers  %d <---> %d",sourcePos, destPos), Toast.LENGTH_LONG).show();
+//                        switchInspections(sourcePos, destPos);
+//                    }
+//                });
+//        dialog.show(fm, "switch_inspections");
     }
 
     private void switchInspections(long sourcePos, long destPos) {
-        if (sourcePos == destPos) {
-            return;
-        }
-
-        TransformerInspection sourceInspection = transformerInspections.get((int) sourcePos);
-        TransformerInspection destInspection = transformerInspections.get((int) destPos);
-
-        List<InspectionItem> tmp = sourceInspection.getInspectionItems();
-
-        sourceInspection.setInspectionItems(destInspection.getInspectionItems());
-        destInspection.setInspectionItems(tmp);
-
-
-        transformerSpinnerAdapter.notifyDataSetChanged();
-        inspectionAdapter.notifyDataSetChanged();
+//        if (sourcePos == destPos) {
+//            return;
+//        }
+//
+//        TransformerInspection sourceInspection = stationEquipmentInspections.get((int) sourcePos);
+//        TransformerInspection destInspection = stationEquipmentInspections.get((int) destPos);
+//
+//        List<InspectionItem> tmp = sourceInspection.getInspectionItems();
+//
+//        sourceInspection.setInspectionItems(destInspection.getInspectionItems());
+//        destInspection.setInspectionItems(tmp);
+//
+//
+//        transformerSpinnerAdapter.notifyDataSetChanged();
+//        inspectionAdapter.notifyDataSetChanged();
     }
 
     public static void justifyListViewHeightBasedOnChildren (ListView listView) {
@@ -412,7 +409,7 @@ public class InspectTransformer extends AppCompatActivity implements
         SelectYearDialog dialog = SelectYearDialog.newInstance(year, maxYear, new SelectYearDialog.SelectYearListener() {
                     @Override
                     public void onSelectYear(int year) {
-                        currentInspection.getTransformator().setYear(year);
+                        ((Transformer)currentInspection.getEquipment()).setYear(year);
                         setManufactureYear(year);
                     }
                 }
@@ -448,8 +445,8 @@ public class InspectTransformer extends AppCompatActivity implements
 
     @Override
     public void onImageTaken(String photoPath) {
-        currentInspection.getTransformator().getPhotoList().add(new InspectionPhoto(0,photoPath, this));
-        commonPhotoListAdapter.notifyDataSetChanged();
+        //currentInspection.getEquipment().getPhotoList().add(new InspectionPhoto(0,photoPath, this));
+        //commonPhotoListAdapter.notifyDataSetChanged();
     }
 
 
@@ -469,9 +466,9 @@ public class InspectTransformer extends AppCompatActivity implements
         startActivity(intent);
     }
 
-    private void setTransformerPhotos(TransformerInspection inspection){
-        commonPhotoListAdapter.setItems(inspection.getTransformator().getPhotoList());
-        commonPhotoListAdapter.notifyDataSetChanged();
+    private void setTransformerPhotos(StationEquipmentInspection inspection){
+//        commonPhotoListAdapter.setItems(inspection.getC);
+//        commonPhotoListAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -68,9 +68,8 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initAddCommonPhotoBtn();
-        initInspectionList();
         initCommonPhotoList();
-
+        initInspectionList();
 
         this.presenter.onViewCreated();
     }

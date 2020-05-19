@@ -8,11 +8,9 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 public interface IStationInspection {
 
 
-    List<TransformerInspection> getTransformerInspections();
-
     List<StationEquipmentInspection> getStationEquipmentInspections();
 
-    Equipment getEquipment();
+    Equipment getStation();
 
     List<InspectionItem> getStationInspectionItems();
 

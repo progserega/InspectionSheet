@@ -14,6 +14,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.PhotoSubject;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -97,6 +98,11 @@ public class InspectionStorage implements IInspectionStorage {
         saveTransformerPhoto(inspection);
     }
 
+    @Override
+    public void saveInspection(StationEquipmentInspection inspection) {
+        //TODO!!!
+    }
+
     /**
      * Загружает сохраненные данные осмотра трансформатора в подстанции или ТП
      * @param inspection TransformerInspection осмотр трансформатора
@@ -113,6 +119,23 @@ public class InspectionStorage implements IInspectionStorage {
                 inspection.getSubstation().getUniqId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId());
+
+        //заполняем сохраненными результатами
+        fillInspectionValues( inspection.getInspectionItems(), inspectionModels);
+        loadInspectionPhotos(inspection.getInspectionItems());
+    }
+
+    @Override
+    public void loadInspections(StationEquipmentInspection inspection) {
+        if (inspection == null) {
+            return;
+        }
+
+        //сохраненные результаты
+        List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
+                inspection.getStation().getUniqId(),
+                inspection.getEquipment().getType().getValue(),
+                inspection.getEquipment().getId());
 
         //заполняем сохраненными результатами
         fillInspectionValues( inspection.getInspectionItems(), inspectionModels);

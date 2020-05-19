@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -76,7 +77,7 @@ public class StationEquipment extends AppCompatActivity implements StationEquipm
         equipmentsListAdapter.setOnItemClickListener(new StationEquipmentsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-
+                presenter.onEquipmentListItemClick(position);
             }
         });
         equipmentsList.setLayoutManager(new LinearLayoutManager(this));
@@ -87,6 +88,13 @@ public class StationEquipment extends AppCompatActivity implements StationEquipm
     @Override
     public void setEquipments(List<Equipment> equipments) {
         equipmentsListAdapter.setEquipments(equipments);
+    }
+
+    @Override
+    public void startInspectEquipmentActivity() {
+        Intent intent = new Intent(this, InspectStationEquipment.class);
+        //intent.putExtra(NEXT_SECTION, nextSectionId);
+        startActivity(intent);
     }
 
     @Override

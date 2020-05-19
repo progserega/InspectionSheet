@@ -3,14 +3,14 @@ package ru.drsk.progserega.inspectionsheet.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransformerType
+public class EquipmentModel
 //        extends Equipment
 {
 
     private long id;
     private String name;
 
-    public TransformerType(long id, String name) {
+    public EquipmentModel(long id, String name) {
         this.id = id;
         this.name = name;
       //  this.type = EquipmentType.TRANSFORMER;

@@ -9,30 +9,44 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 public class Transformer extends Equipment {
     private long id;
     private int slot;
-    private TransformerType transformerType;
+   // private String place;
+    private EquipmentModel model;
     private int year;
     private List<InspectionPhoto> photoList;
     //private Date inspectionDate;
 
-    public Transformer(long id, int slot, TransformerType transformerType) {
+//    public Transformer(long id, int slot, EquipmentModel model) {
+//        this.id = id;
+//        this.slot = slot;
+//        this.model = model;
+//        this.photoList = new ArrayList<>(); //!!
+//        inspectionDate = null;
+//        this.name = model.getName();
+//        this.type = EquipmentType.TRANSFORMER;
+//    }
+//
+    public Transformer(long id, int slot, EquipmentModel model, int year, Date inspectionDate, EquipmentType equipmentType) {
         this.id = id;
         this.slot = slot;
-        this.transformerType = transformerType;
-        this.photoList = new ArrayList<>(); //!!
-        inspectionDate = null;
-        this.name = transformerType.getName();
-        this.type = EquipmentType.TRANSFORMER;
-    }
-
-    public Transformer(long id, int slot, TransformerType transformerType, int year, Date inspectionDate, EquipmentType equipmentType) {
-        this.id = id;
-        this.slot = slot;
-        this.transformerType = transformerType;
+        this.model = model;
         this.year = year;
         this.photoList = new ArrayList<>();//!!
         this.inspectionDate = inspectionDate;
-        this.name = transformerType.getName();
+        this.name = model.getName();
         this.type = equipmentType;
+    }
+
+    public Transformer(long id, String place, EquipmentModel model, int year, Date inspectionDate, EquipmentType equipmentType) {
+        this.id = id;
+        this.place = place;
+        this.model = model;
+        this.year = year;
+
+        this.photoList = new ArrayList<>();//!!
+        this.inspectionDate = inspectionDate;
+        this.name = model.getName();
+        this.type = equipmentType;
+
     }
 
     public long getId() {
@@ -51,12 +65,12 @@ public class Transformer extends Equipment {
         this.slot = slot;
     }
 
-    public TransformerType getTransformerType() {
-        return transformerType;
+    public EquipmentModel getModel() {
+        return model;
     }
 
-    public void setTransformerType(TransformerType transformerType) {
-        this.transformerType = transformerType;
+    public void setModel(EquipmentModel model) {
+        this.model = model;
     }
 
     public int getYear() {
@@ -82,6 +96,10 @@ public class Transformer extends Equipment {
     public void setInspectionDate(Date inspectionDate) {
         this.inspectionDate = inspectionDate;
     }
+
+//    public String getPlace() {
+//        return place;
+//    }
 
     @Override
     public Point getLocation() {

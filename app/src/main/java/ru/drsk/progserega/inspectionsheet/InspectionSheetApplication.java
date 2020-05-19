@@ -51,6 +51,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationEquipmentStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerDeffectTypesStorage;
@@ -340,11 +341,17 @@ public class InspectionSheetApplication extends Application {
 //        }
 //        DBLog.i("APPLICATION", "TEST LOG MSG 3");
 
+        StationInspectionService stationInspectionService = new StationInspectionService(
+                new StationDeffectsTypesStorageStub(),
+                inspectionStorage,
+                new StationEquipmentStorage(db)
+        );
 
         stationInspectionFactory = new StationInspectionFactory(
                 equipmentService,
                 inspectionService,
-                new StationInspectionService(new StationDeffectsTypesStorageStub(), inspectionStorage));
+                stationInspectionService
+        );
 
         this.LockOrientation();
     }

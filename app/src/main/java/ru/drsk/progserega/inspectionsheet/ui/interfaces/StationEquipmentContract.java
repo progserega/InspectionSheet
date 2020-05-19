@@ -10,12 +10,15 @@ public class StationEquipmentContract {
     public interface View {
 
         void setEquipments(List<Equipment> equipments);
+
+        void startInspectEquipmentActivity();
     }
 
     public interface Presenter {
 
         void onViewCreated();
 
+        void onEquipmentListItemClick(int position);
 
         void onDestroy();
 

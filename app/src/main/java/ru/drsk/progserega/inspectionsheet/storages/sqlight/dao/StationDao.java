@@ -17,8 +17,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel
 @Dao
 public interface StationDao {
 
-    @Query("SELECT * FROM stations")
-    List<StationModel> loadAll();
+    @Query("SELECT * FROM stations WHERE type_id = :typeId")
+    List<StationModel> loadAllByType(long typeId);
 
     @RawQuery
     List<StationModel> getByFilters(SupportSQLiteQuery query);

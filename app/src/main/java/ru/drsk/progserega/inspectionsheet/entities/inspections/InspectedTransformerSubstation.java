@@ -9,39 +9,39 @@ public class InspectedTransformerSubstation extends InspectedStation implements 
 
     private TransformerSubstation transformerSubstation;
 
-    private List<TransformerInspection> transformerInspections;
+//    private List<TransformerInspection> transformerInspections;
 
     private List<StationEquipmentInspection> stationEquipmentInspections;
 
-    public InspectedTransformerSubstation(TransformerSubstation transformerSubstation, List<TransformerInspection> transformerInspections,  List<InspectionItem> stationInspectionItems) {
+//    public InspectedTransformerSubstation(TransformerSubstation transformerSubstation, List<TransformerInspection> transformerInspections,  List<InspectionItem> stationInspectionItems) {
+//        this.transformerSubstation = transformerSubstation;
+//        this.transformerInspections = transformerInspections;
+//        this.stationInspectionItems = stationInspectionItems;
+//    }
+
+
+    public InspectedTransformerSubstation(TransformerSubstation transformerSubstation, List<InspectionItem> stationInspectionItems, List<StationEquipmentInspection> stationEquipmentInspections) {
         this.transformerSubstation = transformerSubstation;
-        this.transformerInspections = transformerInspections;
+        this.stationEquipmentInspections = stationEquipmentInspections;
         this.stationInspectionItems = stationInspectionItems;
     }
 
-
-//    public InspectedTransformerSubstation(TransformerSubstation transformerSubstation, List<StationEquipmentInspection> stationEquipmentInspections,  List<InspectionItem> stationInspectionItems) {
-//        this.transformerSubstation = transformerSubstation;
-//        this.stationEquipmentInspections = stationEquipmentInspections;
-//         this.stationInspectionItems = stationInspectionItems;
+//    @Override
+//    public List<TransformerInspection> getTransformerInspections() {
+//        return transformerInspections;
 //    }
-
-    @Override
-    public List<TransformerInspection> getTransformerInspections() {
-        return transformerInspections;
-    }
 
     @Override
     public List<StationEquipmentInspection> getStationEquipmentInspections() {
         return stationEquipmentInspections;
     }
 
-    public void setInspection(List<TransformerInspection> inspections) {
-        this.transformerInspections = inspections;
-    }
+//    public void setInspection(List<TransformerInspection> inspections) {
+//        this.transformerInspections = inspections;
+//    }
 
     @Override
-    public Equipment getEquipment() {
+    public Equipment getStation() {
         return transformerSubstation;
     }
 

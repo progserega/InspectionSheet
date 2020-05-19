@@ -42,7 +42,7 @@ public class StationEquipmentsListAdapter extends
         public TextView nameTextView;
         public TextView inspectionPercentTextView;
         public TextView inspectionDateTextView;
-        public TextView showOnMaplabel;
+        public TextView placeTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -51,9 +51,10 @@ public class StationEquipmentsListAdapter extends
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.equipment_list_name);
-            inspectionPercentTextView = (TextView) itemView.findViewById(R.id.equipment_list_inspection_percent);
-            inspectionDateTextView = (TextView) itemView.findViewById(R.id.equipment_list_inspection_date);
+            nameTextView = (TextView) itemView.findViewById(R.id.station_equipment_list__name);
+            inspectionPercentTextView = (TextView) itemView.findViewById(R.id.station_equipment_list__inspection_percent);
+            inspectionDateTextView = (TextView) itemView.findViewById(R.id.station_equipment_list__inspection_date);
+            placeTextView = (TextView) itemView.findViewById(R.id.station_equipment_list__place);
 
             // Setup the click listener
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +92,7 @@ public class StationEquipmentsListAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.equipment_list_item, parent, false);
+        View contactView = inflater.inflate(R.layout.station_equipment_list_item, parent, false);
 
         // Return a new holder instance
         StationEquipmentsListAdapter.ViewHolder viewHolder = new StationEquipmentsListAdapter.ViewHolder(contactView);
@@ -110,6 +111,8 @@ public class StationEquipmentsListAdapter extends
         TextView textView = viewHolder.nameTextView;
         textView.setText(equipment.getName());
 
+        TextView placeTextView = viewHolder.placeTextView;
+        placeTextView.setText(equipment.getPlace());
 
         String percent = "";
         String date = "";

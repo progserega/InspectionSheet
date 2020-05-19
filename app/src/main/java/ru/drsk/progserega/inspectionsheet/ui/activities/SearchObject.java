@@ -421,7 +421,7 @@ public class SearchObject extends ActivityWithGPS implements
         List<IStationInspection> inspections = application.getSubstationInspectionsCache();
 
         for (IStationInspection substationInspection : inspections) {
-            Equipment substationInspectionEquipment = substationInspection.getEquipment();
+            Equipment substationInspectionEquipment = substationInspection.getStation();
             if (substationInspectionEquipment.getType().equals(equipment.getType())
                     && substationInspectionEquipment.getId() == equipment.getId()) {
                 return substationInspection;
@@ -440,7 +440,7 @@ public class SearchObject extends ActivityWithGPS implements
                 return;
             }
 
-            Equipment equipment = inspection.getEquipment();
+            Equipment equipment = inspection.getStation();
             if (equipment == null) {
                 return;
             }

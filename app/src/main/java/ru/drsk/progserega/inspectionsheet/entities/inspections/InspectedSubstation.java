@@ -8,38 +8,42 @@ import ru.drsk.progserega.inspectionsheet.entities.Substation;
 public class InspectedSubstation extends InspectedStation implements IStationInspection {
     private Substation substation;
 
-    private List<TransformerInspection> transformerInspections;
+    //private List<TransformerInspection> transformerInspections;
 
-    public Substation getSubstation() {
-        return substation;
+    private List<StationEquipmentInspection> equipmentInspections;
+
+    public InspectedSubstation(Substation substation, List<InspectionItem> stationInspectionItems, List<StationEquipmentInspection> equipmentInspections) {
+        this.substation = substation;
+        this.stationInspectionItems = stationInspectionItems;
+        this.equipmentInspections = equipmentInspections;
     }
 
-    public InspectedSubstation(Substation substation, List<TransformerInspection> transformerInspections, List<InspectionItem> stationInspectionItems) {
-       this.substation = substation;
-       this.transformerInspections = transformerInspections;
-       this.stationInspectionItems = stationInspectionItems;
-    }
+    //    public Substation getSubstation() {
+//        return substation;
+//    }
 
-    public String getSubstationName() {
-        return substation.getName();
-    }
 
-    @Override
-    public List<TransformerInspection> getTransformerInspections() {
-        return transformerInspections;
-    }
+//    public String getSubstationName() {
+//        return substation.getName();
+//    }
+
+//    @Override
+//    public List<TransformerInspection> getTransformerInspections() {
+//        return transformerInspections;
+//
+//    }
 
     @Override
     public List<StationEquipmentInspection> getStationEquipmentInspections() {
-        return null;
+        return equipmentInspections;
     }
 
-    public void setInspection(List<TransformerInspection> inspections) {
-        this.transformerInspections = inspections;
-    }
+//    public void setInspection(List<TransformerInspection> inspections) {
+//        this.transformerInspections = inspections;
+//    }
 
     @Override
-    public Equipment getEquipment() {
+    public Equipment getStation() {
         return substation;
     }
 

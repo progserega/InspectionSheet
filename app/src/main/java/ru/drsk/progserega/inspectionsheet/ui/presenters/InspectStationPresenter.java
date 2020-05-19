@@ -8,7 +8,6 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspectio
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectStationContract;
 
 public class InspectStationPresenter implements InspectStationContract.Presenter {
@@ -31,7 +30,7 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
         view.setInspection(stationInspection.getStationInspectionItems());
 
-        view.setStationName(stationInspection.getEquipment().getName());
+        view.setStationName(stationInspection.getStation().getName());
 
         view.setCommonPhotos(stationInspection.getCommonPhotos());
     }

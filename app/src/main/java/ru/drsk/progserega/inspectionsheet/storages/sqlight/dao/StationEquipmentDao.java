@@ -7,7 +7,9 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import java.util.Date;
+import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentInsideStaionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipment;
 
 @Dao
@@ -18,6 +20,11 @@ public interface StationEquipmentDao {
 //
 //    @Query("select se.id as equipment_id, tr.*, se.slot, se.manufacture_year, se.inspection_date from station_equipments se LEFT JOIN transformers tr ON se.transformer_id = tr.id WHERE se.substation_id = :substationUniqId ORDER BY slot")
 //    List<TransformerInsideSubstaionModel> getBySubstation(long substationUniqId);
+
+    @Query("SELECT se.*, m.name, m.descr FROM station_equipments se\n" +
+            ", station_equipment_models m\n" +
+            " WHERE se.station_uid = :stationUniqId AND m.uid = se.model_id")
+    List<EquipmentInsideStaionModel> getByStation(long stationUniqId);
 
     @Insert
     long insert(StationEquipment equipmentModel);

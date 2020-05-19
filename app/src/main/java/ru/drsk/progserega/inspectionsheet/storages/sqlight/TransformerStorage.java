@@ -7,7 +7,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentModel;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
@@ -62,7 +62,7 @@ public class TransformerStorage implements ITransformerStorage {
         List<Transformer> transformers = new ArrayList<>();
         for (TransformerInsideSubstaionModel transformerModel : transformerDBModels) {
             TransformerModel transformerDBModel = transformerModel.getTransformer();
-            TransformerType transformerType = new TransformerType(transformerDBModel.getId(), transformerDBModel.getType() );
+            EquipmentModel transformerType = new EquipmentModel(transformerDBModel.getId(), transformerDBModel.getType() );
             Transformer transformer = new Transformer(
                     transformerModel.getEquipmentId(),
                     transformerModel.getSlot(),
@@ -80,24 +80,24 @@ public class TransformerStorage implements ITransformerStorage {
         return transformers;
     }
 
-    private List<TransformerType> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
-        List<TransformerType> transformerTypes = new ArrayList<>();
+    private List<EquipmentModel> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
+        List<EquipmentModel> transformerTypes = new ArrayList<>();
         for (TransformerModel transformerModel : transformerDBModels) {
-            transformerTypes.add(new TransformerType(  transformerModel.getId(),  transformerModel.getType()));
+            transformerTypes.add(new EquipmentModel(  transformerModel.getId(),  transformerModel.getType()));
         }
         return transformerTypes;
     }
 
 
     @Override
-    public List<TransformerType> getAll() {
+    public List<EquipmentModel> getAll() {
         List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformers();
         return dbTransformerModelToEntity(transformerModelLit);
 
     }
 
     @Override
-    public List<TransformerType> getAllByInstallationInEquipment(EquipmentType type) {
+    public List<EquipmentModel> getAllByInstallationInEquipment(EquipmentType type) {
         if(type.equals(EquipmentType.TP)){
             List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("transformer_substation");
             return dbTransformerModelToEntity(transformerModelLit);
@@ -131,12 +131,12 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
-    public TransformerType getById(long transformerTypeId) {
+    public EquipmentModel getById(long transformerTypeId) {
         TransformerModel transformerModel = transformerDao.getById(transformerTypeId);
         if(transformerModel == null){
             return null;
         }
-        return new TransformerType( transformerModel.getId(), transformerModel.getDesc());
+        return new EquipmentModel( transformerModel.getId(), transformerModel.getDesc());
     }
 
 

@@ -207,7 +207,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 inspection.getTransformator().getYear(),
                 inspection.calcInspectionPercent(),
                 inspectionDate,
-                inspection.getTransformator().getTransformerType().getId(),
+                inspection.getTransformator().getModel().getId(),
                 inspection.getTransformator().getSlot()
         );
 

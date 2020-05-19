@@ -5,10 +5,8 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Point;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.StationEquipmentContract;
 
 public class StationEquipmentPresenter implements StationEquipmentContract.Presenter {
@@ -27,17 +25,23 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     public void onViewCreated() {
         stationInspection = this.application.getCurrentStationInspection();
 
-        List<TransformerInspection> transformerInspections = stationInspection.getTransformerInspections();
+        List<StationEquipmentInspection> stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
 
         List<Equipment> equipments = new ArrayList<>();
 
-        for (TransformerInspection transformerInspection:  transformerInspections ) {
+        for (StationEquipmentInspection equipmentInspection:  stationEquipmentInspections ) {
 
-            equipments.add(transformerInspection.getTransformator());
+            equipments.add(equipmentInspection.getEquipment());
 
         }
 
         view.setEquipments(equipments);
+    }
+
+    @Override
+    public void onEquipmentListItemClick(int position) {
+
+        view.startInspectEquipmentActivity();
     }
 
     @Override
