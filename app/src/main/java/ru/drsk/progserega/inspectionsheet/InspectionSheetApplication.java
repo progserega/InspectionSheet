@@ -65,6 +65,7 @@ import ru.drsk.progserega.inspectionsheet.storages.stub.StationDeffectsTypesStor
 
 public class InspectionSheetApplication extends Application {
 
+    private AppState appState = new AppState();
 
     //Сервис для получения списков оборудования
     private EquipmentService equipmentService;
@@ -96,16 +97,16 @@ public class InspectionSheetApplication extends Application {
 
     private IRemoteStorage remoteStorage;
 
-    ITransformerStorage transformerStorage;
+    private ITransformerStorage transformerStorage;
 
-    IInspectionStorage inspectionStorage;
+    private IInspectionStorage inspectionStorage;
 
-    InspectionService inspectionService;
+    private InspectionService inspectionService;
 
-    InspectionItem currentInspectionItem;
-    List< InspectionItem > inspectionItemsGroup;
+    private InspectionItem currentInspectionItem;
+    private List< InspectionItem > inspectionItemsGroup;
 
-    ILineSectionStorage lineSectionStorage;
+    private ILineSectionStorage lineSectionStorage;
 
     //  List<InspectionPhoto> photosForFullscreen;
 
@@ -114,7 +115,6 @@ public class InspectionSheetApplication extends Application {
     private PhotoFullscreenManager photoFullscreenManager;
 
     private ILineInspectionStorage lineInspectionStorage;
-
 
     private ISettingsStorage settingsStorage;
 
@@ -252,6 +252,14 @@ public class InspectionSheetApplication extends Application {
 
     public StationInspectionFactory getStationInspectionFactory() {
         return stationInspectionFactory;
+    }
+
+    public AppState getAppState() {
+        return appState;
+    }
+
+    public void setAppState(AppState appState) {
+        this.appState = appState;
     }
 
     @Override

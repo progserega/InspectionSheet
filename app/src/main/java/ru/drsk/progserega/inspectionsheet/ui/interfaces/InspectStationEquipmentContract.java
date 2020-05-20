@@ -8,7 +8,9 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 public class InspectStationEquipmentContract {
     public interface View {
 
-//        void setInspection(List<InspectionItem> inspectionItems);
+        public void setEquipmentName(String name);
+
+        void setInspection(List<InspectionItem> inspectionItems);
 //
 //        void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group);
 //

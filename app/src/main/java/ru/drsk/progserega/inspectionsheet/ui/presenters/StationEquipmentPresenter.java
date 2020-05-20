@@ -15,6 +15,7 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     private StationEquipmentContract.View view;
 
     private IStationInspection stationInspection;
+    private List< StationEquipmentInspection > stationEquipmentInspections;
 
     public StationEquipmentPresenter(InspectionSheetApplication application, StationEquipmentContract.View view) {
         this.application = application;
@@ -25,11 +26,11 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     public void onViewCreated() {
         stationInspection = this.application.getCurrentStationInspection();
 
-        List<StationEquipmentInspection> stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
+        stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
 
-        List<Equipment> equipments = new ArrayList<>();
+        List< Equipment > equipments = new ArrayList<>();
 
-        for (StationEquipmentInspection equipmentInspection:  stationEquipmentInspections ) {
+        for (StationEquipmentInspection equipmentInspection : stationEquipmentInspections) {
 
             equipments.add(equipmentInspection.getEquipment());
 
@@ -40,7 +41,8 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
 
     @Override
     public void onEquipmentListItemClick(int position) {
-
+        StationEquipmentInspection   equipmentInspection = stationEquipmentInspections.get(position);
+        application.getAppState().setCurrentStaionEquipmentInspection(equipmentInspection);
         view.startInspectEquipmentActivity();
     }
 
