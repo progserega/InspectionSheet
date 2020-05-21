@@ -17,5 +17,7 @@ public class InspectedStation {
 
     protected List<InspectionPhoto> commonPhotos = new ArrayList<>();
 
-
+    public void setCommonPhotos(List<InspectionPhoto> commonPhotos) {
+        this.commonPhotos = commonPhotos;
+    }
 }

@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -25,10 +24,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.HorizontalPhotoListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.InspectionAdapter;
@@ -38,7 +34,6 @@ import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 
 import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
-import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectLineSection.NEXT_SECTION;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer.GET_DEFFECT_VALUE_REQUEST;
 
 public class InspectStation extends AppCompatActivity implements InspectStationContract.View {
@@ -120,14 +115,12 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     private void initInspectionList() {
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
-            //TODO
             presenter.onInspectionPhotoClicked(inspectionItem, position);
         });
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);
 
         AdapterView.OnItemClickListener itemClickListener = (list, itemView, position, id) -> {
-            //onListItemClick(list, itemView, position, id);
             presenter.onInspectionsListItemClick(position);
         };
         transfInspectionList.setOnItemClickListener(itemClickListener);
@@ -160,8 +153,6 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
 
     @Override
     public void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group) {
-        application.setCurrentInspectionItem(currentInspectionItem);
-        application.setInspectionItemsGroup(group);
 
         Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
         startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
@@ -169,9 +160,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
 
     @Override
     public void startEditInspectionActivity(InspectionItem currentInspectionItem) {
-        InspectionItemResult inspectionItemResult = currentInspectionItem.getResult();
 
-        application.setCurrentDeffect(inspectionItemResult);
 
         Intent intent = new Intent(this, AddTransformerDefect.class);
         intent.putExtra(DEFFECT_NAME, currentInspectionItem.getName());
@@ -182,15 +171,15 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == GET_DEFFECT_VALUE_REQUEST && resultCode == Activity.RESULT_OK){
-             //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
-            presenter.onInspectionValueEdited();
-        }
-
         inspectionAdapter.notifyDataSetChanged();
 
         if (resultCode != Activity.RESULT_OK) {
             return;
+        }
+
+        if(requestCode == GET_DEFFECT_VALUE_REQUEST ){
+             //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
+            presenter.onInspectionValueEdited();
         }
 
         if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
@@ -215,10 +204,11 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     @Override
     public void showCommonPhotoFullscreen(int position, List<InspectionPhoto> photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
-        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.TRANSFORMER_PHOTO);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.STATION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
+                presenter.onCommonPhotoDeleted(photo);
                 commonPhotoListAdapter.notifyDataSetChanged();
             }
         });
@@ -238,7 +228,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 inspectionAdapter.notifyDataSetChanged();
             }
         });

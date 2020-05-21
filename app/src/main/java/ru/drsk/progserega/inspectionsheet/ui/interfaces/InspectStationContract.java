@@ -36,6 +36,8 @@ public class InspectStationContract {
 
         void onCommonPhotoTaken(String photoPath);
 
+        void onCommonPhotoDeleted(InspectionPhoto photo);
+
         void onCommonPhotoClicked(int position);
 
         void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);

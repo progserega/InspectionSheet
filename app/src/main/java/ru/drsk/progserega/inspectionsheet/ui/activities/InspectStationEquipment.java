@@ -1,5 +1,8 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,9 +18,15 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.InspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectStationEquipmentContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectStationEquipmentPresenter;
+
+import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
+import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer.GET_DEFFECT_VALUE_REQUEST;
 
 public class InspectStationEquipment extends AppCompatActivity
         implements InspectStationEquipmentContract.View {
@@ -76,7 +85,7 @@ public class InspectStationEquipment extends AppCompatActivity
 
         AdapterView.OnItemClickListener itemClickListener = (list, itemView, position, id) -> {
             //onListItemClick(list, itemView, position, id);
-            //presenter.onInspectionsListItemClick(position);
+            presenter.onInspectionsListItemClick(position);
         };
         inspectionList.setOnItemClickListener(itemClickListener);
     }
@@ -95,6 +104,55 @@ public class InspectStationEquipment extends AppCompatActivity
         inspectionAdapter.setInspectionItems(inspections);
         inspectionAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(inspectionList);
+    }
+
+    @Override
+    public void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group) {
+        Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
+        startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
+    }
+
+    @Override
+    public void startEditInspectionActivity(InspectionItem currentInspectionItem) {
+        Intent intent = new Intent(this, AddTransformerDefect.class);
+        intent.putExtra(DEFFECT_NAME, currentInspectionItem.getName());
+        startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
+    }
+
+    @Override
+    public void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos){
+        Intent intent = new Intent(this, FullscreenImageActivity.class);
+        intent.putExtra(IMAGE_IDX, position);
+        //application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
+        application.getPhotoFullscreenManager().setPhotos(photos);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
+        application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
+            @Override
+            public void onPhotoDeleted(InspectionPhoto photo) {
+                inspectionAdapter.notifyDataSetChanged();
+            }
+        });
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == GET_DEFFECT_VALUE_REQUEST && resultCode == Activity.RESULT_OK){
+            //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
+            //presenter.onInspectionValueEdited();
+        }
+
+        inspectionAdapter.notifyDataSetChanged();
+
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+//
+//        if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
+//            photoUtility.onActivityResult(requestCode, resultCode, data);
+//        }
     }
 
     @Override

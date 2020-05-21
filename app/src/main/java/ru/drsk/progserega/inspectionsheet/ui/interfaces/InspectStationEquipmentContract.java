@@ -11,18 +11,18 @@ public class InspectStationEquipmentContract {
         public void setEquipmentName(String name);
 
         void setInspection(List<InspectionItem> inspectionItems);
-//
-//        void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group);
-//
-//        void startEditInspectionActivity(InspectionItem currentInspectionItem);
-//
-//        void setStationName(String name);
-//
+
+        void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group);
+
+        void startEditInspectionActivity(InspectionItem currentInspectionItem);
+
+
+
 //        void setCommonPhotos(List<InspectionPhoto> photos);
 //
 //        void showCommonPhotoFullscreen(int position, List<InspectionPhoto> photos);
 //
-//        void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos);
+        void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos);
 //
 //        void startSelectEquipmentActivity();
     }
@@ -31,7 +31,7 @@ public class InspectStationEquipmentContract {
 
         void onViewCreated();
 
-//        void onInspectionsListItemClick(int position);
+        void onInspectionsListItemClick(int position);
 //
 //        void onInspectionValueEdited();
 //

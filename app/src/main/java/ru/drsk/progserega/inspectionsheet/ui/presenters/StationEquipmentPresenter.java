@@ -42,7 +42,7 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     @Override
     public void onEquipmentListItemClick(int position) {
         StationEquipmentInspection   equipmentInspection = stationEquipmentInspections.get(position);
-        application.getAppState().setCurrentStaionEquipmentInspection(equipmentInspection);
+        application.getState().setCurrentStaionEquipmentInspection(equipmentInspection);
         view.startInspectEquipmentActivity();
     }
 

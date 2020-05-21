@@ -419,7 +419,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 deffectsPhotoListAdapter.notifyDataSetChanged();
             }
         });

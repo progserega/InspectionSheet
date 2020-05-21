@@ -103,6 +103,63 @@ public class InspectionStorage implements IInspectionStorage {
         //TODO!!!
     }
 
+    @Override
+    public void saveStationInspection(Equipment station, List<InspectionItem> inspectionItems) {
+
+        if (inspectionItems == null || inspectionItems.isEmpty()) {
+            return;
+        }
+
+        for (InspectionItem inspectionItem : inspectionItems) {
+
+            if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
+                continue;
+            }
+
+            InspectionModel inspectionModel = new InspectionModel(
+                    station.getUniqId(),
+                    station.getType().getValue(),
+                    0,
+                    inspectionItem
+            );
+
+            if (inspectionItem.getId() == 0) {
+                long insertId = inspectionDao.insert(inspectionModel);
+                inspectionItem.setId(insertId);
+            } else {
+                inspectionDao.update(inspectionModel);
+            }
+
+            //save photos
+            for (InspectionPhoto photo : inspectionItem.getResult().getPhotos()) {
+
+                if (photo.getId() == 0) {
+                    InspectionPhotoModel photoModel = new InspectionPhotoModel(0, inspectionItem.getId(), photo.getPath(), PhotoSubject.TRANSFORMER.getType());
+                    long photoId = inspectionPhotoDao.insert(photoModel);
+                    photo.setId(photoId);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void saveStationCommonPhotos(Equipment station, List<InspectionPhoto> commonPhotos) {
+        for (InspectionPhoto photo :commonPhotos) {
+
+            if (photo.getId() == 0) {
+                EquipmentPhotoModel photoModel = new EquipmentPhotoModel(
+                        0,
+                        station.getUniqId(),
+                        station.getType().getValue(),
+                        photo.getPath()
+                );
+                long photoId = equipmentPhotoDao.insert(photoModel);
+                photo.setId(photoId);
+            }
+        }
+    }
+
     /**
      * Загружает сохраненные данные осмотра трансформатора в подстанции или ТП
      * @param inspection TransformerInspection осмотр трансформатора

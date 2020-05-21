@@ -9,6 +9,7 @@ import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSubstation;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTransformerSubstation;
@@ -16,12 +17,12 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTransfor
 public class StationInspectionFactory {
 
     private EquipmentService equipmentService;
-    private InspectionService inspectionService;
+   // private InspectionService inspectionService;
     private IStationInspectionService stationInspectionService;
 
-    public StationInspectionFactory(EquipmentService equipmentService, InspectionService inspectionService, IStationInspectionService stationInspectionService) {
+    public StationInspectionFactory(EquipmentService equipmentService, /*InspectionService inspectionService,*/ IStationInspectionService stationInspectionService) {
         this.equipmentService = equipmentService;
-        this.inspectionService = inspectionService;
+     //   this.inspectionService = inspectionService;
         this.stationInspectionService = stationInspectionService;
     }
 
@@ -30,10 +31,12 @@ public class StationInspectionFactory {
 
         List<InspectionItem> stationInspectionItems = stationInspectionService.getStationInspectionItems(station);
         List<StationEquipmentInspection> equipmentInspections = stationInspectionService.getStationEquipmentWithInspections(station);
+        List<InspectionPhoto> commonPhotos = stationInspectionService.getStationCommonPhotos(station);
 
         if (station.getType().equals(EquipmentType.SUBSTATION)) {
             Substation substation = equipmentService.getSubstationById(station.getUniqId());
             InspectedSubstation substationInspection = new InspectedSubstation(substation, stationInspectionItems, equipmentInspections);
+            substationInspection.setCommonPhotos(commonPhotos);
             return substationInspection;
 
         }
@@ -41,6 +44,8 @@ public class StationInspectionFactory {
         if (station.getType().equals(EquipmentType.TP)) {
             TransformerSubstation transformerSubstation = equipmentService.getTransformerSubstationById(station.getUniqId());
             InspectedTransformerSubstation transformerStationInspection = new InspectedTransformerSubstation(transformerSubstation, stationInspectionItems, equipmentInspections);
+            transformerStationInspection.setCommonPhotos(commonPhotos);
+
             return transformerStationInspection;
 
         }

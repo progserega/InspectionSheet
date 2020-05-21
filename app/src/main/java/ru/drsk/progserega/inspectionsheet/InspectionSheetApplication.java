@@ -12,8 +12,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
@@ -52,6 +50,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationEquipmentStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationPhotoStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerDeffectTypesStorage;
@@ -65,7 +64,7 @@ import ru.drsk.progserega.inspectionsheet.storages.stub.StationDeffectsTypesStor
 
 public class InspectionSheetApplication extends Application {
 
-    private AppState appState = new AppState();
+    private AppState state = new AppState();
 
     //Сервис для получения списков оборудования
     private EquipmentService equipmentService;
@@ -93,8 +92,6 @@ public class InspectionSheetApplication extends Application {
 
     private List<IStationInspection> substationInspectionsCache;
 
-    private InspectionItemResult currentDeffect;
-
     private IRemoteStorage remoteStorage;
 
     private ITransformerStorage transformerStorage;
@@ -102,9 +99,6 @@ public class InspectionSheetApplication extends Application {
     private IInspectionStorage inspectionStorage;
 
     private InspectionService inspectionService;
-
-    private InspectionItem currentInspectionItem;
-    private List< InspectionItem > inspectionItemsGroup;
 
     private ILineSectionStorage lineSectionStorage;
 
@@ -170,14 +164,6 @@ public class InspectionSheetApplication extends Application {
         return substationInspectionsCache;
     }
 
-    public InspectionItemResult getCurrentDeffect() {
-        return currentDeffect;
-    }
-
-    public void setCurrentDeffect(InspectionItemResult currentDeffect) {
-        this.currentDeffect = currentDeffect;
-    }
-
     public InspectionSheetDatabase getDb() {
         return db;
     }
@@ -192,22 +178,6 @@ public class InspectionSheetApplication extends Application {
 
     public InspectionService getInspectionService() {
         return inspectionService;
-    }
-
-    public InspectionItem getCurrentInspectionItem() {
-        return currentInspectionItem;
-    }
-
-    public void setCurrentInspectionItem(InspectionItem currentInspectionItem) {
-        this.currentInspectionItem = currentInspectionItem;
-    }
-
-    public List< InspectionItem > getInspectionItemsGroup() {
-        return inspectionItemsGroup;
-    }
-
-    public void setInspectionItemsGroup(List< InspectionItem > inspectionItemsGroup) {
-        this.inspectionItemsGroup = inspectionItemsGroup;
     }
 
     public PhotoFullscreenManager getPhotoFullscreenManager() {
@@ -254,16 +224,17 @@ public class InspectionSheetApplication extends Application {
         return stationInspectionFactory;
     }
 
-    public AppState getAppState() {
-        return appState;
+    public AppState getState() {
+        return state;
     }
 
-    public void setAppState(AppState appState) {
-        this.appState = appState;
+    public void setState(AppState state) {
+        this.state = state;
     }
 
     @Override
     public void onCreate() {
+
         super.onCreate();
         settingsStorage = new SettingsStorageImpl(getApplicationContext());
 
@@ -352,12 +323,13 @@ public class InspectionSheetApplication extends Application {
         StationInspectionService stationInspectionService = new StationInspectionService(
                 new StationDeffectsTypesStorageStub(),
                 inspectionStorage,
-                new StationEquipmentStorage(db)
+                new StationEquipmentStorage(db),
+                new StationPhotoStorage(db, getApplicationContext())
         );
 
         stationInspectionFactory = new StationInspectionFactory(
                 equipmentService,
-                inspectionService,
+              //  inspectionService,
                 stationInspectionService
         );
 

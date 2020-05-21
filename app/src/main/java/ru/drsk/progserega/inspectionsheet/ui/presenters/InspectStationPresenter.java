@@ -1,13 +1,20 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectStationContract;
 
 public class InspectStationPresenter implements InspectStationContract.Presenter {
@@ -15,7 +22,6 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
     private InspectStationContract.View view;
     private InspectionSheetApplication application;
     private IStationInspection stationInspection;
-
 
 
     public InspectStationPresenter(InspectStationContract.View view, InspectionSheetApplication application) {
@@ -42,8 +48,12 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
         if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
             List<InspectionItem> group = getInspectionGroup(inspectionItem, allItems);
+            application.getState().setCurrentInspectionItem(inspectionItem);
+            application.getState().setInspectionItemsGroup(group);
+
             view.startEditInspectionGroupActivity(inspectionItem, group);
         } else {
+            application.getState().setCurrentDeffect(inspectionItem.getResult());
             view.startEditInspectionActivity(inspectionItem);
         }
     }
@@ -51,12 +61,43 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
     @Override
     public void onInspectionValueEdited() {
+//        List<StationEquipmentInspection> allInspections = substationInspection.getStationEquipmentInspections();
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
+        inspectionStorage.saveStationInspection(stationInspection.getStation(), stationInspection.getStationInspectionItems());
+    //    inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
 
+//        float sum = 0;
+//        Date inspectionDate = new Date();
+//        for (StationEquipmentInspection transformerInspection : allInspections) {
+//            transformerInspection.getEquipment().setInspectionDate(inspectionDate);
+//            inspectionStorage.saveInspection(transformerInspection);
+//            transformerInspection.setDone(true);
+//
+//            sum += transformerInspection.calcInspectionPercent();
+//        }
+//        float middlePercent = sum / allInspections.size();
+//
+//        TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
+//        inspection.getSubstation().setInspectionDate(inspectionDate);
+//        inspection.getSubstation().setInspectionPercent(middlePercent);
+//        inspectionStorage.updateSubstationInspectionInfo(inspection);
+
+        //transformerSpinnerAdapter.notifyDataSetChanged();
+
+//        Toast.makeText(this, "Сохранено!", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCommonPhotoTaken(String photoPath) {
         stationInspection.getCommonPhotos().add(new InspectionPhoto(0, photoPath, application));
+
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
+        inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
+    }
+
+    @Override
+    public void onCommonPhotoDeleted(InspectionPhoto photo) {
+        //TODO удалять здесь
     }
 
     @Override
@@ -82,7 +123,6 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
     @Override
     public void onGotoEquipmentBtnClicked() {
         //TODO SAVE
-        //TODO GOTO SELECT EQUIPMENT
         view.startSelectEquipmentActivity();
     }
 

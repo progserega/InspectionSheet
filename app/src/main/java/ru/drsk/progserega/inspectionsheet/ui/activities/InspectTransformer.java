@@ -210,8 +210,8 @@ public class InspectTransformer extends AppCompatActivity implements
             List<InspectionItem> allItems = inspectionAdapter.getInspectionItems();
             InspectionItem header = inspectionItem;
             List<InspectionItem> group = getInspectionGroup(header, allItems);
-            application.setCurrentInspectionItem(header);
-            application.setInspectionItemsGroup(group);
+            application.getState().setCurrentInspectionItem(header);
+            application.getState().setInspectionItemsGroup(group);
 
             Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
             startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
@@ -219,7 +219,7 @@ public class InspectTransformer extends AppCompatActivity implements
         } else {
             InspectionItemResult inspectionItemResult = inspectionItem.getResult();
 
-            application.setCurrentDeffect(inspectionItemResult);
+            application.getState().setCurrentDeffect(inspectionItemResult);
             // Toast.makeText(this, inspectionItem.getName() + " selected!", Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, AddTransformerDefect.class);
@@ -331,7 +331,7 @@ public class InspectTransformer extends AppCompatActivity implements
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 inspectionAdapter.notifyDataSetChanged();
             }
         });
@@ -452,10 +452,10 @@ public class InspectTransformer extends AppCompatActivity implements
 
     public void commonPhotoItemClick(int position, List<InspectionPhoto> photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
-        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.TRANSFORMER_PHOTO);
+        application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.STATION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 commonPhotoListAdapter.notifyDataSetChanged();
             }
         });

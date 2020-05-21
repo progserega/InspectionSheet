@@ -2,8 +2,6 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -65,7 +63,7 @@ public class AddTransformerDefect extends AppCompatActivity
         TextView deffectNameTextView = (TextView) findViewById(R.id.add_defect_inspection_name);
         deffectNameTextView.setText(inspectionName);
 
-        deffect = application.getCurrentDeffect();
+        deffect = application.getState().getCurrentDeffect();
 
         deffectDescription = (TextView) findViewById(R.id.add_defect_description);
         deffectDescription.setText(deffect.getComment());
@@ -185,7 +183,7 @@ public class AddTransformerDefect extends AppCompatActivity
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 imageAdapter.notifyDataSetChanged();
             }
         });
