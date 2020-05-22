@@ -61,9 +61,12 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
     @Override
     public void onInspectionValueEdited() {
-//        List<StationEquipmentInspection> allInspections = substationInspection.getStationEquipmentInspections();
+
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         inspectionStorage.saveStationInspection(stationInspection.getStation(), stationInspection.getStationInspectionItems());
+
+        //TODO Добавить расчет процентов осмотра
+
     //    inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
 
 //        float sum = 0;
@@ -122,7 +125,13 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
     @Override
     public void onGotoEquipmentBtnClicked() {
-        //TODO SAVE
+
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
+        inspectionStorage.saveStationInspection(stationInspection.getStation(), stationInspection.getStationInspectionItems());
+        inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
+
+        //TODO пересчитать процент
+
         view.startSelectEquipmentActivity();
     }
 

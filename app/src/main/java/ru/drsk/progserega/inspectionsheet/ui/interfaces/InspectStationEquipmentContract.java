@@ -16,7 +16,9 @@ public class InspectStationEquipmentContract {
 
         void startEditInspectionActivity(InspectionItem currentInspectionItem);
 
+        void setManufactureYear(int year);
 
+        void showSelectYearDialog(int year, int maxYear);
 
 //        void setCommonPhotos(List<InspectionPhoto> photos);
 //
@@ -32,8 +34,12 @@ public class InspectStationEquipmentContract {
         void onViewCreated();
 
         void onInspectionsListItemClick(int position);
-//
-//        void onInspectionValueEdited();
+
+        void onManufactureYearClick();
+
+        void onManufactureYearSelected(int year);
+
+        void onInspectionValueEdited();
 //
 //        void onCommonPhotoTaken(String photoPath);
 //

@@ -11,7 +11,7 @@ public class Transformer extends Equipment {
     private int slot;
    // private String place;
     private EquipmentModel model;
-    private int year;
+
     private List<InspectionPhoto> photoList;
     //private Date inspectionDate;
 
@@ -73,13 +73,13 @@ public class Transformer extends Equipment {
         this.model = model;
     }
 
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
+//    public int getYear() {
+//        return year;
+//    }
+//
+//    public void setYear(int year) {
+//        this.year = year;
+//    }
 
     public List<InspectionPhoto> getPhotoList() {
         return photoList;

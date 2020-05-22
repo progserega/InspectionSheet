@@ -1,12 +1,14 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
+import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectStationEquipmentContract;
 
 public class InspectStationEquipmentPresenter implements InspectStationEquipmentContract.Presenter {
@@ -16,6 +18,8 @@ public class InspectStationEquipmentPresenter implements InspectStationEquipment
     private InspectionSheetApplication application;
 
     private StationEquipmentInspection equipmentInspection;
+
+    private int maxYear = Calendar.getInstance().get(Calendar.YEAR);
 
     public InspectStationEquipmentPresenter(InspectStationEquipmentContract.View view, InspectionSheetApplication application) {
         this.view = view;
@@ -33,6 +37,7 @@ public class InspectStationEquipmentPresenter implements InspectStationEquipment
 
         view.setInspection(equipmentInspection.getInspectionItems());
 
+        view.setManufactureYear(equipmentInspection.getEquipment().getYear());
     }
 
     @Override
@@ -51,6 +56,25 @@ public class InspectStationEquipmentPresenter implements InspectStationEquipment
             application.getState().setCurrentDeffect(inspectionItem.getResult());
             view.startEditInspectionActivity(inspectionItem);
         }
+    }
+
+    @Override
+    public void onManufactureYearClick() {
+        view.showSelectYearDialog(equipmentInspection.getEquipment().getYear(), maxYear);
+    }
+
+    @Override
+    public void onManufactureYearSelected(int year) {
+        equipmentInspection.getEquipment().setYear(year);
+        view.setManufactureYear(year);
+    }
+
+    @Override
+    public void onInspectionValueEdited() {
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
+        //inspectionStorage.saveStationInspection(equipmentInspection.getStation(), equipmentInspection.getStationInspectionItems());
+        inspectionStorage.saveInspection(equipmentInspection);
+
     }
 
     @Override

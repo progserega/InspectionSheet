@@ -14,8 +14,8 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspec
 
 public interface IInspectionStorage {
 
-    @Deprecated
-    void saveInspection(TransformerInspection inspection);
+
+   // void saveInspection(TransformerInspection inspection);
 
     void saveInspection(StationEquipmentInspection inspection);
 

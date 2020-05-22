@@ -10,10 +10,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspec
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 
 public class InspectionStorageStub implements IInspectionStorage {
-    @Override
-    public void saveInspection(TransformerInspection inspection) {
 
-    }
 
     @Override
     public void updateSubstationInspectionInfo(TransformerInspection inspection) {

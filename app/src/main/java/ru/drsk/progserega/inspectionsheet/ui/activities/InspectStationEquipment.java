@@ -3,8 +3,10 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ public class InspectStationEquipment extends AppCompatActivity
     private InspectionSheetApplication application;
     private InspectionAdapter inspectionAdapter;
     private ListView inspectionList;
+    private TextView manufactureYearTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +51,8 @@ public class InspectStationEquipment extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //initAddCommonPhotoBtn();
+        initManufactureYearBtn();
         initInspectionList();
-        //initCommonPhotoList();
-
 
         this.presenter.onViewCreated();
     }
@@ -74,17 +75,21 @@ public class InspectStationEquipment extends AppCompatActivity
 
     }
 
+    private void initManufactureYearBtn() {
+        manufactureYearTextView = (TextView) findViewById(R.id.inspect_station_equipment__manufacture_year);
+        manufactureYearTextView.setText("");
+    }
+
     private void initInspectionList() {
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             //TODO
-           // presenter.onInspectionPhotoClicked(inspectionItem, position);
+            // presenter.onInspectionPhotoClicked(inspectionItem, position);
         });
         inspectionList = (ListView) findViewById(R.id.inspect_station_equipment__inspection);
         inspectionList.setAdapter(inspectionAdapter);
 
         AdapterView.OnItemClickListener itemClickListener = (list, itemView, position, id) -> {
-            //onListItemClick(list, itemView, position, id);
             presenter.onInspectionsListItemClick(position);
         };
         inspectionList.setOnItemClickListener(itemClickListener);
@@ -92,7 +97,7 @@ public class InspectStationEquipment extends AppCompatActivity
 
     @Override
     public void setEquipmentName(String name) {
-        setTitle("Осмотр "+name);
+        setTitle("Осмотр " + name);
 
         TextView equipmentName = (TextView) findViewById(R.id.inspect_station_equipment__name);
         equipmentName.setText(name);
@@ -100,7 +105,7 @@ public class InspectStationEquipment extends AppCompatActivity
     }
 
     @Override
-    public void setInspection(List< InspectionItem > inspections) {
+    public void setInspection(List<InspectionItem> inspections) {
         inspectionAdapter.setInspectionItems(inspections);
         inspectionAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(inspectionList);
@@ -120,7 +125,7 @@ public class InspectStationEquipment extends AppCompatActivity
     }
 
     @Override
-    public void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos){
+    public void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos) {
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
         //application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
@@ -138,21 +143,47 @@ public class InspectStationEquipment extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == GET_DEFFECT_VALUE_REQUEST && resultCode == Activity.RESULT_OK){
-            //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
-            //presenter.onInspectionValueEdited();
-        }
-
         inspectionAdapter.notifyDataSetChanged();
 
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-//
+
+        if (requestCode == GET_DEFFECT_VALUE_REQUEST) {
+            //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
+            presenter.onInspectionValueEdited();
+        }
+
 //        if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
 //            photoUtility.onActivityResult(requestCode, resultCode, data);
 //        }
+    }
+
+    public void onEquipmentManufactureYearClick(View view){
+        presenter.onManufactureYearClick();
+    }
+
+    @Override
+    public void showSelectYearDialog(int year, int maxYear){
+        FragmentManager fm = getSupportFragmentManager();
+
+        SelectYearDialog dialog = SelectYearDialog.newInstance(year, maxYear, new SelectYearDialog.SelectYearListener() {
+                    @Override
+                    public void onSelectYear(int year) {
+                        presenter.onManufactureYearSelected(year);
+                    }
+                }
+        );
+        dialog.show(fm, "select_year");
+    }
+
+    @Override
+    public void setManufactureYear(int year){
+        if(year == 0){
+            manufactureYearTextView.setText(Html.fromHtml("<u>    не задан    </u>"));
+        }else {
+            manufactureYearTextView.setText(Html.fromHtml("<u>" + year + "</u>"));
+        }
     }
 
     @Override

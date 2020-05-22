@@ -49,6 +49,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
+@Deprecated
 public class InspectTransformer extends AppCompatActivity implements
         SelectTransformerDialog.AddTransformerListener,
         InspectionAdapter.OnItemPhotoClickListener,
