@@ -28,7 +28,6 @@ import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectStationEquipmentP
 
 import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
-import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer.GET_DEFFECT_VALUE_REQUEST;
 
 public class InspectStationEquipment extends AppCompatActivity
         implements InspectStationEquipmentContract.View {
@@ -38,6 +37,8 @@ public class InspectStationEquipment extends AppCompatActivity
     private InspectionAdapter inspectionAdapter;
     private ListView inspectionList;
     private TextView manufactureYearTextView;
+
+    static final int GET_DEFFECT_VALUE_REQUEST = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class InspectStationEquipment extends AppCompatActivity
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             //TODO
-            // presenter.onInspectionPhotoClicked(inspectionItem, position);
+            presenter.onInspectionPhotoClicked(inspectionItem, position);
         });
         inspectionList = (ListView) findViewById(R.id.inspect_station_equipment__inspection);
         inspectionList.setAdapter(inspectionAdapter);

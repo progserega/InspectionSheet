@@ -24,6 +24,8 @@ public class InspectStationContract {
         void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos);
 
         void startSelectEquipmentActivity();
+
+        void setInspectionPercent(float percent);
     }
 
     public interface Presenter {
@@ -43,6 +45,8 @@ public class InspectStationContract {
         void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
 
         void onGotoEquipmentBtnClicked();
+
+        void onResume();
 
         void onDestroy();
 

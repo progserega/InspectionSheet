@@ -45,7 +45,7 @@ public class InspectStationEquipmentContract {
 //
 //        void onCommonPhotoClicked(int position);
 //
-//        void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
+        void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
 //
 //        void onGotoEquipmentBtnClicked();
 

@@ -22,6 +22,6 @@ public class StationEquipmentContract {
 
         void onDestroy();
 
-
+        void onResume();
     }
 }

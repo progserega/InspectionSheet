@@ -10,9 +10,9 @@ public class InspectedSubstation extends InspectedStation implements IStationIns
 
     //private List<TransformerInspection> transformerInspections;
 
-    private List<StationEquipmentInspection> equipmentInspections;
+    private List< StationEquipmentInspection > equipmentInspections;
 
-    public InspectedSubstation(Substation substation, List<InspectionItem> stationInspectionItems, List<StationEquipmentInspection> equipmentInspections) {
+    public InspectedSubstation(Substation substation, List< InspectionItem > stationInspectionItems, List< StationEquipmentInspection > equipmentInspections) {
         this.substation = substation;
         this.stationInspectionItems = stationInspectionItems;
         this.equipmentInspections = equipmentInspections;
@@ -34,7 +34,7 @@ public class InspectedSubstation extends InspectedStation implements IStationIns
 //    }
 
     @Override
-    public List<StationEquipmentInspection> getStationEquipmentInspections() {
+    public List< StationEquipmentInspection > getStationEquipmentInspections() {
         return equipmentInspections;
     }
 
@@ -48,12 +48,23 @@ public class InspectedSubstation extends InspectedStation implements IStationIns
     }
 
     @Override
-    public List<InspectionItem> getStationInspectionItems() {
+    public List< InspectionItem > getStationInspectionItems() {
         return this.stationInspectionItems;
     }
 
     @Override
-    public List<InspectionPhoto> getCommonPhotos() {
+    public List< InspectionPhoto > getCommonPhotos() {
         return commonPhotos;
+    }
+
+    @Override
+    public float getInspectionPercent() {
+        int stationPercent = calcInspectionPercent();
+
+        for (StationEquipmentInspection equipmentInspection : equipmentInspections) {
+            stationPercent += equipmentInspection.calcInspectionPercent();
+        }
+
+        return stationPercent / (equipmentInspections.size() + 1);
     }
 }

@@ -54,4 +54,15 @@ public class InspectedTransformerSubstation extends InspectedStation implements 
     public List<InspectionPhoto> getCommonPhotos() {
         return commonPhotos;
     }
+
+    @Override
+    public float getInspectionPercent() {
+        int stationPercent = calcInspectionPercent();
+
+        for (StationEquipmentInspection equipmentInspection : stationEquipmentInspections) {
+            stationPercent += equipmentInspection.calcInspectionPercent();
+        }
+
+        return stationPercent / (stationEquipmentInspections.size() + 1);
+    }
 }

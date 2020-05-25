@@ -34,7 +34,6 @@ import ru.drsk.progserega.inspectionsheet.utility.PhotoUtility;
 
 import static ru.drsk.progserega.inspectionsheet.ui.activities.AddTransformerDefect.DEFFECT_NAME;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
-import static ru.drsk.progserega.inspectionsheet.ui.activities.InspectTransformer.GET_DEFFECT_VALUE_REQUEST;
 
 public class InspectStation extends AppCompatActivity implements InspectStationContract.View {
 
@@ -49,6 +48,8 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     private PhotoUtility photoUtility;
 
     private HorizontalPhotoListAdapter commonPhotoListAdapter;
+
+    static final int GET_DEFFECT_VALUE_REQUEST = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,6 +253,18 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         startActivity(intent);
     }
 
+    @Override
+    public void setInspectionPercent(float percent) {
+        TextView percentTextView = (TextView) findViewById(R.id.inspect_station__inspected_percent);
+        percentTextView.setText(floatFmt(percent)+"%");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
     public static void justifyListViewHeightBasedOnChildren(ListView listView) {
 
         InspectionAdapter adapter = (InspectionAdapter) listView.getAdapter();
@@ -277,6 +290,14 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
+    }
+
+    private String floatFmt(float n) {
+        if (n % 1 == 0) {
+            return String.format("%.0f", n);
+        } else {
+            return String.format("%.1f", n);
+        }
     }
 
 

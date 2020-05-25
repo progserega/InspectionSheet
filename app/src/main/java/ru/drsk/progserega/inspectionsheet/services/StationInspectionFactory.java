@@ -14,6 +14,13 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentI
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTransformerSubstation;
 
+/**
+ * Класс собирает информацию о омотре Подстанции или ТП
+ * загружает общие фото подстанции/ТП
+ * загружает элементы осмотра подстанции/ТП
+ * загружает список оборудовани подстанции/ТП с осмотрами
+ *
+ */
 public class StationInspectionFactory {
 
     private EquipmentService equipmentService;

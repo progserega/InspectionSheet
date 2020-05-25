@@ -15,7 +15,7 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 
 public class StationEquipmentsListAdapter extends
-        RecyclerView.Adapter<StationEquipmentsListAdapter.ViewHolder> {
+        RecyclerView.Adapter< StationEquipmentsListAdapter.ViewHolder > {
 
     /***** Creating OnItemClickListener *****/
 
@@ -76,12 +76,12 @@ public class StationEquipmentsListAdapter extends
     }
 
     // Store a member variable for the contacts
-    private List<Equipment> mEquipments;
+    private List< Equipment > mEquipments;
 
     private Context context;
 
     // Pass in the contact array into the constructor
-    public StationEquipmentsListAdapter(List<Equipment> equipments) {
+    public StationEquipmentsListAdapter(List< Equipment > equipments) {
         mEquipments = equipments;
     }
 
@@ -98,7 +98,6 @@ public class StationEquipmentsListAdapter extends
         StationEquipmentsListAdapter.ViewHolder viewHolder = new StationEquipmentsListAdapter.ViewHolder(contactView);
         return viewHolder;
     }
-
 
 
     // Involves populating data into the item through holder
@@ -119,7 +118,12 @@ public class StationEquipmentsListAdapter extends
 
         if (equipment.getInspectionPercent() > 0.01f) {
             percent = floatFmt(equipment.getInspectionPercent()) + " %";
+        }
+        else{
+            percent =  "0%";
+        }
 
+        if (equipment.getInspectionDate() != null) {
             DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
             date = dateFormat.format(equipment.getInspectionDate());
         }
@@ -138,11 +142,11 @@ public class StationEquipmentsListAdapter extends
         return mEquipments.size();
     }
 
-    public List<Equipment> getEquipments() {
+    public List< Equipment > getEquipments() {
         return this.mEquipments;
     }
 
-    public void setEquipments(List<Equipment> mEquipments) {
+    public void setEquipments(List< Equipment > mEquipments) {
         this.mEquipments = mEquipments;
         this.notifyDataSetChanged();
     }

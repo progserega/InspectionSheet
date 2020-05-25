@@ -226,7 +226,7 @@ public class InspectionStorage implements IInspectionStorage {
         //сохраненные результаты
         List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
                 inspection.getStation().getUniqId(),
-                inspection.getEquipment().getType().getValue(),
+                inspection.getStation().getType().getValue(),
                 inspection.getEquipment().getId());
 
         //заполняем сохраненными результатами

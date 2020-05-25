@@ -31,9 +31,9 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
         List< Equipment > equipments = new ArrayList<>();
 
         for (StationEquipmentInspection equipmentInspection : stationEquipmentInspections) {
-
-            equipments.add(equipmentInspection.getEquipment());
-
+            Equipment equipment = equipmentInspection.getEquipment();
+            equipment.setInspectionPercent(equipmentInspection.calcInspectionPercent());
+            equipments.add(equipment);
         }
 
         view.setEquipments(equipments);
@@ -44,6 +44,11 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
         StationEquipmentInspection   equipmentInspection = stationEquipmentInspections.get(position);
         application.getState().setCurrentStaionEquipmentInspection(equipmentInspection);
         view.startInspectEquipmentActivity();
+    }
+
+    @Override
+    public void onResume() {
+
     }
 
     @Override

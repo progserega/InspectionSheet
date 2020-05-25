@@ -41,7 +41,6 @@ private IStationPhotoStorage stationPhotoStorage;
     public List<StationEquipmentInspection> getStationEquipmentWithInspections(Equipment station) {
         List<Equipment> stationEquipments = equipmentStorage.getStationEquipment(station);
 
-
         return buildInspectionsList(station, stationEquipments);
     }
 

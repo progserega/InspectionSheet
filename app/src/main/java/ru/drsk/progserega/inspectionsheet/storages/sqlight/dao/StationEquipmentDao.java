@@ -35,6 +35,12 @@ public interface StationEquipmentDao {
     @Query("Update station_equipments SET manufacture_year  =:year, inspection_date = :inspectionDate WHERE id = :equipmentId")
     void updateCommonInfo(int year, Date inspectionDate, long equipmentId);
 
+    @Query("Update station_equipments SET manufacture_year  =:year WHERE id = :equipmentId")
+    void updateManufactureYear(int year, long equipmentId);
+
+    @Query("Update station_equipments SET inspection_date = :inspectionDate WHERE id = :equipmentId")
+    void updateInspectionDate(Date inspectionDate, long equipmentId);
+
     @Delete
     void delete(StationEquipment equipmentModel);
 

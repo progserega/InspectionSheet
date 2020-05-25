@@ -15,4 +15,6 @@ public interface IStationInspection {
     List<InspectionItem> getStationInspectionItems();
 
     List<InspectionPhoto> getCommonPhotos();
+
+    float getInspectionPercent();
  }

@@ -32,6 +32,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IOrganizationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
+import ru.drsk.progserega.inspectionsheet.storages.IStationEquipmentStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ISubstationStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
@@ -119,6 +120,8 @@ public class InspectionSheetApplication extends Application {
     private StationInspectionFactory stationInspectionFactory;
 
     private ILogStorage logStorage;
+
+    private IStationEquipmentStorage stationEquipmentStorage;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -232,6 +235,10 @@ public class InspectionSheetApplication extends Application {
         this.state = state;
     }
 
+    public IStationEquipmentStorage getStationEquipmentStorage() {
+        return stationEquipmentStorage;
+    }
+
     @Override
     public void onCreate() {
 
@@ -320,16 +327,16 @@ public class InspectionSheetApplication extends Application {
 //        }
 //        DBLog.i("APPLICATION", "TEST LOG MSG 3");
 
+        stationEquipmentStorage =  new StationEquipmentStorage(db);
         StationInspectionService stationInspectionService = new StationInspectionService(
                 new StationDeffectsTypesStorageStub(),
                 inspectionStorage,
-                new StationEquipmentStorage(db),
+                stationEquipmentStorage,
                 new StationPhotoStorage(db, getApplicationContext())
         );
 
         stationInspectionFactory = new StationInspectionFactory(
                 equipmentService,
-              //  inspectionService,
                 stationInspectionService
         );
 

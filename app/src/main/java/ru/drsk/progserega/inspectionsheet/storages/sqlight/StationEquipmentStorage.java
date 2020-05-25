@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
@@ -54,6 +55,17 @@ public class StationEquipmentStorage implements IStationEquipmentStorage {
         }
 
         return stationEquipments;
+
+    }
+
+    @Override
+    public void updateManufactureYear(int year, long equipmentId) {
+        this.db.stationEquipmentDao().updateManufactureYear(year, equipmentId);
+    }
+
+    @Override
+    public void updateInspectionDate(Date date, long equipmentId) {
+        this.db.stationEquipmentDao().updateInspectionDate(date, equipmentId);
 
     }
 }

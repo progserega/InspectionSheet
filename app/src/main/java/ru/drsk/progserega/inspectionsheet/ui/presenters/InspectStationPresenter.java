@@ -39,6 +39,8 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
         view.setStationName(stationInspection.getStation().getName());
 
         view.setCommonPhotos(stationInspection.getCommonPhotos());
+
+       // view.setInspectionPercent(stationInspection.getInspectionPercent());
     }
 
     @Override
@@ -65,30 +67,14 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
         inspectionStorage.saveStationInspection(stationInspection.getStation(), stationInspection.getStationInspectionItems());
 
-        //TODO Добавить расчет процентов осмотра
 
-    //    inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
+        float percent = stationInspection.getInspectionPercent();
+        view.setInspectionPercent(percent);
 
-//        float sum = 0;
-//        Date inspectionDate = new Date();
-//        for (StationEquipmentInspection transformerInspection : allInspections) {
-//            transformerInspection.getEquipment().setInspectionDate(inspectionDate);
-//            inspectionStorage.saveInspection(transformerInspection);
-//            transformerInspection.setDone(true);
-//
-//            sum += transformerInspection.calcInspectionPercent();
-//        }
-//        float middlePercent = sum / allInspections.size();
-//
-//        TransformerInspection inspection = (TransformerInspection) transformatorSpinner.getSelectedItem();
-//        inspection.getSubstation().setInspectionDate(inspectionDate);
-//        inspection.getSubstation().setInspectionPercent(middlePercent);
-//        inspectionStorage.updateSubstationInspectionInfo(inspection);
-
-        //transformerSpinnerAdapter.notifyDataSetChanged();
-
-//        Toast.makeText(this, "Сохранено!", Toast.LENGTH_LONG).show();
+        //TODO сохранить процент осмотра и дату
     }
+
+
 
     @Override
     public void onCommonPhotoTaken(String photoPath) {
@@ -121,6 +107,12 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
             }
         }
         return group;
+    }
+
+    @Override
+    public void onResume() {
+        float percent = stationInspection.getInspectionPercent();
+        view.setInspectionPercent(percent);
     }
 
     @Override

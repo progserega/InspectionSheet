@@ -88,5 +88,6 @@
     <string name="send_journal">Отправить</string>
     <string name="next_select_equipment">Осмотр оборудования</string>
     <string name="manufacture_year">год производства</string>
+    <string name="inspected">осмотрено:</string>
 
 </resources>
