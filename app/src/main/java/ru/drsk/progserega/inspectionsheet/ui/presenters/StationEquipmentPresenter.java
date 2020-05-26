@@ -1,12 +1,15 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
+import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
+import ru.drsk.progserega.inspectionsheet.storages.IStationEquipmentStorage;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.StationEquipmentContract;
 
 public class StationEquipmentPresenter implements StationEquipmentContract.Presenter {
@@ -49,6 +52,29 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     @Override
     public void onResume() {
 
+    }
+
+    @Override
+    public void onFinishBtnPress() {
+        //SAVE ALL
+        stationInspection = this.application.getCurrentStationInspection();
+        stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
+        IInspectionStorage inspectionStorage = application.getInspectionStorage();
+
+        Date inspDate = new Date();
+        for (StationEquipmentInspection equipmentInspection : stationEquipmentInspections) {
+            Equipment equipment = equipmentInspection.getEquipment();
+            equipment.setInspectionPercent(equipmentInspection.calcInspectionPercent());
+            equipmentInspection.getEquipment().setInspectionDate(inspDate);
+
+            inspectionStorage.saveInspection(equipmentInspection);
+        }
+
+        inspectionStorage.saveStationInspection(stationInspection.getStation(), stationInspection.getStationInspectionItems());
+        inspectionStorage.saveStationCommonPhotos(stationInspection.getStation(), stationInspection.getCommonPhotos());
+        inspectionStorage.updateStationInspectionInfo(stationInspection.getStation(), inspDate, stationInspection.getInspectionPercent());
+
+        view.gotoSearchObjectActivity(stationInspection.getStation().getType());
     }
 
     @Override

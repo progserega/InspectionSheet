@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.storages.stub;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
@@ -44,6 +45,11 @@ public class InspectionStorageStub implements IInspectionStorage {
 
     @Override
     public void saveStationCommonPhotos(Equipment station, List<InspectionPhoto> commonPhotos) {
+
+    }
+
+    @Override
+    public void updateStationInspectionInfo(Equipment station, Date inspectionDate, float inspectionPercent) {
 
     }
 }

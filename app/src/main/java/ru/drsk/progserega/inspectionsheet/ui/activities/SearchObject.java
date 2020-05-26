@@ -458,6 +458,12 @@ public class SearchObject extends ActivityWithGPS implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 

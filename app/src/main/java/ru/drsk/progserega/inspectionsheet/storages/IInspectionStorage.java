@@ -3,6 +3,7 @@ package ru.drsk.progserega.inspectionsheet.storages;
 import android.content.Context;
 import android.media.audiofx.DynamicsProcessing;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
@@ -22,6 +23,8 @@ public interface IInspectionStorage {
     void saveStationCommonPhotos(Equipment station, List<InspectionPhoto> commonPhotos);
 
     void updateSubstationInspectionInfo(TransformerInspection inspection);
+
+    void updateStationInspectionInfo(Equipment station, Date inspectionDate, float inspectionPercent);
 
     void loadInspections(TransformerInspection inspection);
 

@@ -3,6 +3,7 @@ package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,8 +105,8 @@ public class InspectionStorage implements IInspectionStorage {
             return;
         }
 
-        List<InspectionItem> inspectionItemList = inspection.getInspectionItems();
-        for(InspectionItem inspectionItem: inspectionItemList){
+        List< InspectionItem > inspectionItemList = inspection.getInspectionItems();
+        for (InspectionItem inspectionItem : inspectionItemList) {
 
             if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
                 continue;
@@ -139,7 +140,7 @@ public class InspectionStorage implements IInspectionStorage {
     }
 
     @Override
-    public void saveStationInspection(Equipment station, List<InspectionItem> inspectionItems) {
+    public void saveStationInspection(Equipment station, List< InspectionItem > inspectionItems) {
 
         if (inspectionItems == null || inspectionItems.isEmpty()) {
             return;
@@ -179,8 +180,8 @@ public class InspectionStorage implements IInspectionStorage {
     }
 
     @Override
-    public void saveStationCommonPhotos(Equipment station, List<InspectionPhoto> commonPhotos) {
-        for (InspectionPhoto photo :commonPhotos) {
+    public void saveStationCommonPhotos(Equipment station, List< InspectionPhoto > commonPhotos) {
+        for (InspectionPhoto photo : commonPhotos) {
 
             if (photo.getId() == 0) {
                 EquipmentPhotoModel photoModel = new EquipmentPhotoModel(
@@ -197,6 +198,7 @@ public class InspectionStorage implements IInspectionStorage {
 
     /**
      * Загружает сохраненные данные осмотра трансформатора в подстанции или ТП
+     *
      * @param inspection TransformerInspection осмотр трансформатора
      * @param inspection TransformerInspection осмотр трансформатора
      */
@@ -207,13 +209,13 @@ public class InspectionStorage implements IInspectionStorage {
         }
 
         //сохраненные результаты
-        List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
+        List< InspectionModel > inspectionModels = inspectionDao.getByEquipment(
                 inspection.getSubstation().getUniqId(),
                 inspection.getSubstation().getType().getValue(),
                 inspection.getTransformator().getId());
 
         //заполняем сохраненными результатами
-        fillInspectionValues( inspection.getInspectionItems(), inspectionModels);
+        fillInspectionValues(inspection.getInspectionItems(), inspectionModels);
         loadInspectionPhotos(inspection.getInspectionItems());
     }
 
@@ -224,37 +226,38 @@ public class InspectionStorage implements IInspectionStorage {
         }
 
         //сохраненные результаты
-        List<InspectionModel> inspectionModels = inspectionDao.getByEquipment(
+        List< InspectionModel > inspectionModels = inspectionDao.getByEquipment(
                 inspection.getStation().getUniqId(),
                 inspection.getStation().getType().getValue(),
                 inspection.getEquipment().getId());
 
         //заполняем сохраненными результатами
-        fillInspectionValues( inspection.getInspectionItems(), inspectionModels);
+        fillInspectionValues(inspection.getInspectionItems(), inspectionModels);
         loadInspectionPhotos(inspection.getInspectionItems());
     }
 
     /**
      * Загружает сохраненные данные осмотров посдстанции/ТП вцелом
-     * @param stationUniqId long уникальный идентификатор подстанции или ТП
+     *
+     * @param stationUniqId   long уникальный идентификатор подстанции или ТП
      * @param inspectionItems список элементов осмотра
      */
     @Override
-    public void loadStationInspections(long stationUniqId, List<InspectionItem> inspectionItems) {
+    public void loadStationInspections(long stationUniqId, List< InspectionItem > inspectionItems) {
 
         if (inspectionItems == null || inspectionItems.isEmpty()) {
             return;
         }
         //сохраненные результаты
-        List<InspectionModel> inspectionModels = inspectionDao.getByStation(stationUniqId);
+        List< InspectionModel > inspectionModels = inspectionDao.getByStation(stationUniqId);
 
         //заполняем сохраненными результатами
         fillInspectionValues(inspectionItems, inspectionModels);
         loadInspectionPhotos(inspectionItems);
     }
 
-    private void fillInspectionValues(List<InspectionItem> inspectionItems, List<InspectionModel> inspectionModels ) {
-        Map<Long, InspectionModel> inpectionsMap = new HashMap<>();
+    private void fillInspectionValues(List< InspectionItem > inspectionItems, List< InspectionModel > inspectionModels) {
+        Map< Long, InspectionModel > inpectionsMap = new HashMap<>();
         for (InspectionModel inspectionModel : inspectionModels) {
             inpectionsMap.put(inspectionModel.getDeffectId(), inspectionModel);
         }
@@ -271,13 +274,13 @@ public class InspectionStorage implements IInspectionStorage {
                 inspectionItem.getResult().setComment(inspectionModel.getDeffectComment());
                 String valuesString = inspectionModel.getDeffectValues();
                 if (!valuesString.isEmpty()) {
-                    List<String> values = Arrays.asList(valuesString.split(","));
+                    List< String > values = Arrays.asList(valuesString.split(","));
                     inspectionItem.getResult().getValues().addAll(values);
                 }
 
                 String subValuesString = inspectionModel.getDeffectSubValues();
                 if (!subValuesString.isEmpty()) {
-                    List<String> subValues = Arrays.asList(subValuesString.split(","));
+                    List< String > subValues = Arrays.asList(subValuesString.split(","));
                     inspectionItem.getResult().getSubValues().addAll(subValues);
                 }
             } else {
@@ -287,7 +290,7 @@ public class InspectionStorage implements IInspectionStorage {
         }
     }
 
-    private void loadInspectionPhotos(List<InspectionItem> inspectionItems) {
+    private void loadInspectionPhotos(List< InspectionItem > inspectionItems) {
         for (InspectionItem inspectionItem : inspectionItems) {
 
             if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
@@ -299,13 +302,14 @@ public class InspectionStorage implements IInspectionStorage {
             }
 
             //Load photos
-            List<InspectionPhotoModel> photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId(), PhotoSubject.TRANSFORMER.getType());
+            List< InspectionPhotoModel > photoModels = inspectionPhotoDao.getByInspection(inspectionItem.getId(), PhotoSubject.TRANSFORMER.getType());
             for (InspectionPhotoModel photoModel : photoModels) {
                 inspectionItem.getResult().getPhotos().add(new InspectionPhoto(photoModel.getId(), photoModel.getPhotoPath(), context));
             }
         }
     }
 
+    @Deprecated
     @Override
     public void updateSubstationInspectionInfo(TransformerInspection inspection) {
         Equipment equipment = inspection.getSubstation();
@@ -322,6 +326,26 @@ public class InspectionStorage implements IInspectionStorage {
                     equipment.getInspectionDate(),
                     equipment.getInspectionPercent());
         }
+
+    }
+
+    @Override
+    public void updateStationInspectionInfo(Equipment station, Date inspectionDate, float inspectionPercent) {
+
+        db.stationDao().updateInspectionInfo(station.getUniqId(), inspectionDate, inspectionPercent);
+//        if (station.getType().equals(EquipmentType.TP)) {
+//            transformerSubstationDao.updateInspectionInfo(
+//                    station.getId(),
+//                    inspectionDate,
+//                    inspectionPercent);
+//        }
+//
+//        if (station.getType().equals(EquipmentType.SUBSTATION)) {
+//            substationDao.updateInspectionInfo(
+//                    station.getId(),
+//                    inspectionDate,
+//                    inspectionPercent);
+//        }
 
     }
 

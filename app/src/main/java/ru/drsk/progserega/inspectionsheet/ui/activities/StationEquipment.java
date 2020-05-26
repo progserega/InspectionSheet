@@ -20,11 +20,14 @@ import java.util.List;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.InspectionAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.StationEquipmentsListAdapter;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.StationEquipmentContract;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.InspectStationPresenter;
 import ru.drsk.progserega.inspectionsheet.ui.presenters.StationEquipmentPresenter;
+
+import static ru.drsk.progserega.inspectionsheet.ui.activities.SearchObject.OBJECT_TYPE;
 
 public class StationEquipment extends AppCompatActivity implements StationEquipmentContract.View {
 
@@ -106,9 +109,23 @@ public class StationEquipment extends AppCompatActivity implements StationEquipm
         equipmentsListAdapter.notifyDataSetChanged();
     }
 
+    public void onFinishButtonClick(View view) {
+        presenter.onFinishBtnPress();
+    }
+
+    @Override
+    public void gotoSearchObjectActivity(EquipmentType equipmentType) {
+        Intent intent = new Intent(this, SearchObject.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(OBJECT_TYPE, equipmentType);
+        startActivity(intent);
+    }
+
     @Override
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
     }
+
+
 }

@@ -16,44 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="409dp"
-            android:layout_height="697dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="33dp">
-
-            <TextView
-                android:id="@+id/inspect_station_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Наименование Подстанции/ТП"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Общее фото:"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView21" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/inspect_station_common_photos"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/inspect_station_add_common_photo"
-                app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
             <ImageButton
                 android:id="@+id/inspect_station_add_common_photo"
@@ -82,6 +48,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/inspect_station_common_photos" />
 
             <TextView
+                android:id="@+id/inspect_station_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Наименование Подстанции/ТП"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Общее фото:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+            <TextView
                 android:id="@+id/textView21"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,10 +88,21 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:text="0%"
-                android:textSize="12sp"
                 android:textColor="@android:color/holo_green_dark"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/textView21"
                 app:layout_constraintTop_toBottomOf="@+id/inspect_station_name" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/inspect_station_common_photos"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/inspect_station_add_common_photo"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
     <!--android:divider="@null"-->
@@ -127,17 +127,18 @@
             android:background="#097c09"
             android:onClick="onGotoEquipmentBtnClick"
             android:orientation="vertical"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
 
 
             <TextView
                 android:id="@+id/inpsect_station_goto_equipment_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="36dp"
                 android:gravity="center"
                 android:text="@string/next_select_equipment"
                 android:textColor="#FFFFFF"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
 

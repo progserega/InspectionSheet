@@ -84,7 +84,6 @@ public class InspectStationEquipment extends AppCompatActivity
     private void initInspectionList() {
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
-            //TODO
             presenter.onInspectionPhotoClicked(inspectionItem, position);
         });
         inspectionList = (ListView) findViewById(R.id.inspect_station_equipment__inspection);
