@@ -25,6 +25,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+       // networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_LINES);
 
@@ -288,19 +289,20 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     private void exportSubstationTransformers() {
-        InspectionService inspectionService = application.getInspectionService();
-        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
-
-
-        application.getRemoteStorage().exportTransformersInspections(inspections);
+//        InspectionService inspectionService = application.getInspectionService();
+//        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
+//
+//
+//        application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
     private void exportTPTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP);
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP,      application.getStationInspectionFactory());
 
-        //int a = 0;
-        application.getRemoteStorage().exportTransformersInspections(inspections);
+        int a = 0;
+        application.getRemoteStorage().exportStationsInspections(inspections);
+       // application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
     private void exportLines() {

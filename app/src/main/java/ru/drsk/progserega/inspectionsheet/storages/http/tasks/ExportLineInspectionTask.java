@@ -1,13 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.storages.http.tasks;
 
-import android.text.TextUtils;
-
 
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +20,11 @@ import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
@@ -42,11 +36,8 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffe
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
 
 public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 

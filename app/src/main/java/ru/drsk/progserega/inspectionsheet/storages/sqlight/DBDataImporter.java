@@ -23,7 +23,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJso
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
@@ -31,9 +31,6 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineProlet
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTower;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTowerNode;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTowers;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
@@ -56,6 +53,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffe
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipment;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentModels;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentsDeffectType;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
@@ -142,6 +140,8 @@ public class DBDataImporter {
         db.stationDao().deleteAll();
         db.stationEquipmentDao().deleteAll();
         db.stationEquipmentModelsDao().deleteAll();
+
+        db.stationEquipmentsDeffectTypesDao().deleteAll();
     }
 
 //    public void loadSteTpModel(List< SteTPModel > tpModels) {
@@ -709,10 +709,10 @@ public class DBDataImporter {
         db.sectionDeffectTypesDao().insertAll(deffectTypesModels);
     }
 
-    public void loadTransformersDeffectTypes(List<TransformerDeffectTypesJson> deffectTypes) {
+    public void loadTransformersDeffectTypes(List< StationDeffectTypesJson > deffectTypes) {
 
         List<TransformerDeffectTypesModel> deffectTypesModels = new ArrayList<>();
-        for (TransformerDeffectTypesJson deffectType : deffectTypes) {
+        for (StationDeffectTypesJson deffectType : deffectTypes) {
 
             deffectTypesModels.add(new TransformerDeffectTypesModel(
                     deffectType.getId(),
@@ -727,5 +727,25 @@ public class DBDataImporter {
         }
 
         db.transformerDeffectTypesDao().insertAll(deffectTypesModels);
+    }
+
+    public void loadStationsDeffectTypes(List< StationDeffectTypesJson > deffectTypes) {
+
+        List< StationEquipmentsDeffectType > deffectTypesModels = new ArrayList<>();
+        for (StationDeffectTypesJson deffectType : deffectTypes) {
+
+            deffectTypesModels.add(new StationEquipmentsDeffectType(
+                    deffectType.getId(),
+                    deffectType.getOrder(),
+                    deffectType.getNumber(),
+                    deffectType.getName(),
+                    deffectType.getType(),
+                    deffectType.getResult(),
+                    deffectType.getSubResult(),
+                    EquipmentType.getByName(deffectType.getEquipmentType()).getValue()
+            ));
+        }
+
+        db.stationEquipmentsDeffectTypesDao().insertAll(deffectTypesModels);
     }
 }

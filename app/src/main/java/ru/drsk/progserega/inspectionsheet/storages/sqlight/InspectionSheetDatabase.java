@@ -23,6 +23,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SPDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationEquipmentModelsDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.StationEquipmentsDeffectTypesDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TowerDao;
@@ -48,6 +49,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipment;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentModels;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentsDeffectType;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
@@ -86,6 +88,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         StationModel.class,
         StationEquipment.class,
         StationEquipmentModels.class,
+        StationEquipmentsDeffectType.class,
         LogModel.class
 }, version = 1)
 @TypeConverters({Converters.class})
@@ -146,6 +149,8 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract StationEquipmentDao stationEquipmentDao();
 
     public abstract StationEquipmentModelsDao stationEquipmentModelsDao();
+
+    public abstract StationEquipmentsDeffectTypesDao stationEquipmentsDeffectTypesDao();
 
     public abstract LogDao logDao();
 

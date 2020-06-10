@@ -50,6 +50,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.LogStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.OrganizationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationDeffectsTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationEquipmentStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.StationPhotoStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.SubstationStorage;
@@ -329,7 +330,7 @@ public class InspectionSheetApplication extends Application {
 
         stationEquipmentStorage =  new StationEquipmentStorage(db);
         StationInspectionService stationInspectionService = new StationInspectionService(
-                new StationDeffectsTypesStorageStub(),
+                new StationDeffectsTypesStorage(db),
                 inspectionStorage,
                 stationEquipmentStorage,
                 new StationPhotoStorage(db, getApplicationContext())

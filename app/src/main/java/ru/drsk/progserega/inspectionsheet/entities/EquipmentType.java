@@ -30,4 +30,29 @@ public enum EquipmentType {
         return null;
     }
     public boolean Compare(int i){return value == i;}
+
+    public static EquipmentType getByName(String name){
+
+        switch (name.toUpperCase()){
+            case "SUBSTATION":
+                return SUBSTATION;
+            case "LINE":
+                return LINE;
+            case "TP":
+                return TP;
+            case "TOWER":
+                return TOWER;
+            case "LINE_SECTION":
+                return LINE_SECTION;
+            case "TRANSFORMER":
+                return TRANSFORMER;
+            case "SUBSTATION_TRANSFORMER":
+                return SUBSTATION_TRANSFORMER;
+            case "TP_TRANSFORMER":
+                return TP_TRANSFORMER;
+            default:
+                return null;
+        }
+
+    }
 }

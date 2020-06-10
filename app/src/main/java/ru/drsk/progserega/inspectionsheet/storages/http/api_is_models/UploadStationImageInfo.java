@@ -3,18 +3,18 @@ package ru.drsk.progserega.inspectionsheet.storages.http.api_is_models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UploadTransformerImageInfo {
+public class UploadStationImageInfo {
     @SerializedName("name")
     @Expose
     private String name;
 
-    @SerializedName("transformer_id")
+    @SerializedName("station_uid")
     @Expose
-    private long transformer_id;
+    private long stationUid;
 
-    @SerializedName("sybstation_type")
+    @SerializedName("station_type")
     @Expose
-    private int sybstation_type;
+    private int stationType;
 
     @SerializedName("upload_date")
     @Expose
@@ -25,10 +25,10 @@ public class UploadTransformerImageInfo {
     private long inspectionId;
 
 
-    public UploadTransformerImageInfo(String name, long transformer_id, int sybstation_type, long uploadDate, long inspectionId) {
+    public UploadStationImageInfo(String name, long stationUid, int stationType, long uploadDate, long inspectionId) {
         this.name = name;
-        this.transformer_id = transformer_id;
-        this.sybstation_type = sybstation_type;
+        this.stationUid = stationUid;
+        this.stationType = stationType;
         this.uploadDate = uploadDate;
         this.inspectionId = inspectionId;
     }
@@ -41,20 +41,20 @@ public class UploadTransformerImageInfo {
         this.name = name;
     }
 
-    public long getTransformer_id() {
-        return transformer_id;
+    public long getStationUid() {
+        return stationUid;
     }
 
-    public void setTransformer_id(long transformer_id) {
-        this.transformer_id = transformer_id;
+    public void setStationUid(long stationUid) {
+        this.stationUid = stationUid;
     }
 
-    public int getSybstation_type() {
-        return sybstation_type;
+    public int getStationType() {
+        return stationType;
     }
 
-    public void setSybstation_type(int sybstation_type) {
-        this.sybstation_type = sybstation_type;
+    public void setStationType(int stationType) {
+        this.stationType = stationType;
     }
 
     public long getUploadDate() {

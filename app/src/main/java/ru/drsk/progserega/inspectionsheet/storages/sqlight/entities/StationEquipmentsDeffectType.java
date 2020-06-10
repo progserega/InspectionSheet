@@ -1,43 +1,39 @@
-package ru.drsk.progserega.inspectionsheet.storages.http.api_is_models;
+package ru.drsk.progserega.inspectionsheet.storages.sqlight.entities;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
-public class TransformerDeffectTypesJson {
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
-    @SerializedName("id")
-    @Expose
+@Entity(tableName = "station_equipments_deffect_types")
+public class StationEquipmentsDeffectType {
+
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     private long id;
 
-    @SerializedName("order")
-    @Expose
-    private int order;
+    @ColumnInfo(name = "order")
+    private int order ;
 
-    @SerializedName("number")
-    @Expose
+    @ColumnInfo(name = "number")
     private String number;
 
-    @SerializedName("name")
-    @Expose
+    @ColumnInfo(name = "name")
     private String name;
 
-    @SerializedName("type")
-    @Expose
+    @ColumnInfo(name = "type")
     private int type;
 
-    @SerializedName("result")
-    @Expose
+    @ColumnInfo(name = "result")
     private String result;
 
-    @SerializedName("sub_result")
-    @Expose
+    @ColumnInfo(name = "sub_result")
     private String subResult;
 
-    @SerializedName("equipment_type")
-    @Expose
-    private String equipmentType;
+    @ColumnInfo(name = "equipment_type")
+    private long equipmentType;
 
-    public TransformerDeffectTypesJson(long id, int order, String number, String name, int type, String result, String subResult, String equipmentType) {
+    public StationEquipmentsDeffectType(long id, int order, String number, String name, int type, String result, String subResult, long equipmentType) {
         this.id = id;
         this.order = order;
         this.number = number;
@@ -104,11 +100,11 @@ public class TransformerDeffectTypesJson {
         this.subResult = subResult;
     }
 
-    public String getEquipmentType() {
+    public long getEquipmentType() {
         return equipmentType;
     }
 
-    public void setEquipmentType(String equipmentType) {
+    public void setEquipmentType(long equipmentType) {
         this.equipmentType = equipmentType;
     }
 }

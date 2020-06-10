@@ -30,6 +30,9 @@ public interface StationDao {
     @Query("SELECT * FROM stations WHERE inspection_percent > 0")
     List<StationModel> loadInspected();
 
+    @Query("SELECT * FROM stations WHERE inspection_percent > 0 AND type_id = :typeId")
+    List<StationModel> loadInspectedByType(long typeId);
+
     @Insert
     long insert(StationModel stationModel);
 

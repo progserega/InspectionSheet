@@ -16,6 +16,7 @@ import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
@@ -34,6 +35,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStora
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
@@ -80,14 +82,14 @@ public class InspectionService {
 //
 //    }
 
-    public List< TransformerInspection > getInspectionByEquipment(EquipmentType equipmentType) {
+    public List< IStationInspection > getInspectionByEquipment(EquipmentType equipmentType, StationInspectionFactory inspectionFactory) {
 
         if (equipmentType.equals(EquipmentType.SUBSTATION)) {
-            return getSubstationInspections();
+            return null; //getSubstationInspections();
         }
 
         if (equipmentType.equals(EquipmentType.TP)) {
-            return getTPInspections();
+            return getTPInspections(inspectionFactory);
         }
 
         return null;
@@ -115,26 +117,79 @@ public class InspectionService {
 
     }
 
-    private List< TransformerInspection > getTPInspections() {
+//    private List< TransformerInspection > getTPInspections() {
+//
+//
+//        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
+//
+//        List< TransformerInspection > inspectionList = new ArrayList<>();
+//        for (TransformerSubstationModel substationModel : substationModels) {
+//            Equipment substation = new TransformerSubstation(
+//                    substationModel.getId(),
+//                    substationModel.getUniqId(),
+//                    substationModel.getDispName(),
+//                    substationModel.getInspectionDate(),
+//                    substationModel.getInspectionPercent(),
+//                    substationModel.getLat(),
+//                    substationModel.getLon()
+//            );
+//            inspectionList.addAll(getTPTransformersWithInspections(substation));
+//        }
+//        return inspectionList;
+//
+//    }
 
+    private List< IStationInspection > getTPInspections(StationInspectionFactory inspectionFactory) {
+        List<IStationInspection> inspectedStations = new ArrayList<>();
 
-        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
-
-        List< TransformerInspection > inspectionList = new ArrayList<>();
-        for (TransformerSubstationModel substationModel : substationModels) {
-            Equipment substation = new TransformerSubstation(
-                    substationModel.getId(),
-                    substationModel.getUniqId(),
-                    substationModel.getDispName(),
-                    substationModel.getInspectionDate(),
-                    substationModel.getInspectionPercent(),
-                    substationModel.getLat(),
-                    substationModel.getLon()
-            );
-            inspectionList.addAll(getTPTransformersWithInspections(substation));
+        List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.TP.getValue());
+        for(StationModel stationModel: stationModels){
+            TransformerSubstation tp = buildTPFromModel(stationModel);
+            inspectedStations.add(inspectionFactory.build(tp));
         }
-        return inspectionList;
 
+        return inspectedStations;
+
+//        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
+//
+//        List< TransformerInspection > inspectionList = new ArrayList<>();
+//        for (TransformerSubstationModel substationModel : substationModels) {
+//            Equipment substation = new TransformerSubstation(
+//                    substationModel.getId(),
+//                    substationModel.getUniqId(),
+//                    substationModel.getDispName(),
+//                    substationModel.getInspectionDate(),
+//                    substationModel.getInspectionPercent(),
+//                    substationModel.getLat(),
+//                    substationModel.getLon()
+//            );
+//            inspectionList.addAll(getTPTransformersWithInspections(substation));
+//        }
+//        return inspectionList;
+
+    }
+
+    private Substation buildSubstationFromModel(StationModel stationModel) {
+        return new Substation(
+                stationModel.getUniqId(),
+                stationModel.getUniqId(),
+                stationModel.getName(),
+                stationModel.getInspectionDate(),
+                stationModel.getInspectionPercent(),
+                stationModel.getLat(),
+                stationModel.getLon()
+        );
+    }
+    private TransformerSubstation buildTPFromModel(StationModel stationModel) {
+        return new TransformerSubstation(
+                stationModel.getUniqId(),
+                stationModel.getUniqId(),
+                stationModel.getName(),
+                stationModel.getInspectionDate(),
+                stationModel.getInspectionPercent(),
+                stationModel.getLat(),
+                stationModel.getLon()
+        );
     }
 
     public List< TransformerInspection > getSubstationTransformersWithInspections(Equipment substation) {

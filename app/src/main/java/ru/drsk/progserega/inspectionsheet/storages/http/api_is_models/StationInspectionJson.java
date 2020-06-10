@@ -34,12 +34,12 @@ public class StationInspectionJson {
     @Expose
     private float inspectionPercent;
 
-    @SerializedName("slot")
-    @Expose
-    private int slot;
+//    @SerializedName("slot")
+//    @Expose
+//    private int slot;
 
 
-    public StationInspectionJson(long inspectionId, long stationUniqId, int stationType, String inspectorName, int inspectionType, long inspectionDate, float inspectionPercent, int slot) {
+    public StationInspectionJson(long inspectionId, long stationUniqId, int stationType, String inspectorName, int inspectionType, long inspectionDate, float inspectionPercent) {
         this.inspectionId = inspectionId;
         this.stationUniqId = stationUniqId;
         this.stationType = stationType;
@@ -47,7 +47,7 @@ public class StationInspectionJson {
         this.inspectionType = inspectionType;
         this.inspectionDate = inspectionDate;
         this.inspectionPercent = inspectionPercent;
-        this.slot = slot;
+      //  this.slot = slot;
     }
 
     public long getStationUniqId() {
@@ -106,11 +106,11 @@ public class StationInspectionJson {
         this.inspectionId = inspectionId;
     }
 
-    public int getSlot() {
-        return slot;
-    }
-
-    public void setSlot(int slot) {
-        this.slot = slot;
-    }
+//    public int getSlot() {
+//        return slot;
+//    }
+//
+//    public void setSlot(int slot) {
+//        this.slot = slot;
+//    }
 }
