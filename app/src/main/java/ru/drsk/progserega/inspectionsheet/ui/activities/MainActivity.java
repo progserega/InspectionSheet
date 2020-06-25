@@ -129,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             showError("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
             return;
         }
-        showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
+        //showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
+        showQuestion("Загрузить данные с сервера?", "Важно! Все не экспортированные результаты осмотров будут очищены!");
     }
 
     private void showQuestion(String title, String message) {
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
-        //networkTasksQueue.add(LOAD_LINES);
+        networkTasksQueue.add(LOAD_LINES);
         networkTasksQueue.add(LOAD_SUBSTATIONS);
         networkTasksQueue.add(LOAD_TP);
 //
@@ -293,12 +294,6 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION,   application.getStationInspectionFactory());
 
         application.getRemoteStorage().exportStationsInspections(inspections);
-
-//        InspectionService inspectionService = application.getInspectionService();
-//        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
-//
-//
-//        application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
     private void exportTPTransformers() {
