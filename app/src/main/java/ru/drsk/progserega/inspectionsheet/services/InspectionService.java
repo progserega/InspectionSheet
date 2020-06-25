@@ -85,7 +85,7 @@ public class InspectionService {
     public List< IStationInspection > getInspectionByEquipment(EquipmentType equipmentType, StationInspectionFactory inspectionFactory) {
 
         if (equipmentType.equals(EquipmentType.SUBSTATION)) {
-            return null; //getSubstationInspections();
+            return getSubstationInspections(inspectionFactory);
         }
 
         if (equipmentType.equals(EquipmentType.TP)) {
@@ -95,49 +95,21 @@ public class InspectionService {
         return null;
     }
 
-    private List< TransformerInspection > getSubstationInspections() {
+    private List< IStationInspection > getSubstationInspections(StationInspectionFactory inspectionFactory) {
 
-        SubstationDao substationDao = db.substationDao();
-        List< SubstationModel > substationModels = substationDao.loadInspected();
+        List<IStationInspection> inspectedStations = new ArrayList<>();
 
-        List< TransformerInspection > inspectionList = new ArrayList<>();
-        for (SubstationModel substationModel : substationModels) {
-            Equipment substation = new Substation(
-                    substationModel.getId(),
-                    substationModel.getUniqId(),
-                    substationModel.getName(),
-                    substationModel.getInspectionDate(),
-                    substationModel.getInspectionPercent(),
-                    substationModel.getLat(),
-                    substationModel.getLon()
-            );
-            inspectionList.addAll(getSubstationTransformersWithInspections(substation));
+        List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.SUBSTATION.getValue());
+        for(StationModel stationModel: stationModels){
+            Substation substation = buildSubstationFromModel(stationModel);
+            inspectedStations.add(inspectionFactory.build(substation));
         }
-        return inspectionList;
+
+        return inspectedStations;
 
     }
 
-//    private List< TransformerInspection > getTPInspections() {
-//
-//
-//        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
-//
-//        List< TransformerInspection > inspectionList = new ArrayList<>();
-//        for (TransformerSubstationModel substationModel : substationModels) {
-//            Equipment substation = new TransformerSubstation(
-//                    substationModel.getId(),
-//                    substationModel.getUniqId(),
-//                    substationModel.getDispName(),
-//                    substationModel.getInspectionDate(),
-//                    substationModel.getInspectionPercent(),
-//                    substationModel.getLat(),
-//                    substationModel.getLon()
-//            );
-//            inspectionList.addAll(getTPTransformersWithInspections(substation));
-//        }
-//        return inspectionList;
-//
-//    }
+
 
     private List< IStationInspection > getTPInspections(StationInspectionFactory inspectionFactory) {
         List<IStationInspection> inspectedStations = new ArrayList<>();
@@ -150,22 +122,6 @@ public class InspectionService {
 
         return inspectedStations;
 
-//        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
-//
-//        List< TransformerInspection > inspectionList = new ArrayList<>();
-//        for (TransformerSubstationModel substationModel : substationModels) {
-//            Equipment substation = new TransformerSubstation(
-//                    substationModel.getId(),
-//                    substationModel.getUniqId(),
-//                    substationModel.getDispName(),
-//                    substationModel.getInspectionDate(),
-//                    substationModel.getInspectionPercent(),
-//                    substationModel.getLat(),
-//                    substationModel.getLon()
-//            );
-//            inspectionList.addAll(getTPTransformersWithInspections(substation));
-//        }
-//        return inspectionList;
 
     }
 

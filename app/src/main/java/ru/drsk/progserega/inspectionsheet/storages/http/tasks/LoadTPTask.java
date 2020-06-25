@@ -11,6 +11,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.IApiGeo;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
@@ -72,7 +73,7 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
         int cnt = 0;
         do {
             offset = page * PAGE_SIZE;
-            SubstationsResponse substationsResponse = null;
+            TPResponse substationsResponse = null;
 
             Response response = null;
             int attempt = 1;
@@ -97,7 +98,7 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
                 break;
             }
 
-            substationsResponse = (SubstationsResponse) response.body();
+            substationsResponse = (TPResponse) response.body();
             total = substationsResponse.getTotal();
 
             if (substationsResponse.getData() != null && !substationsResponse.getData().isEmpty()) {

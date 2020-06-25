@@ -33,6 +33,7 @@ public class StationEquipmentStorage implements IStationEquipmentStorage {
                 case TP_TRANSFORMER:
                     stationEquipments.add(new Transformer(
                             equipmentInStation.getEquipment().getId(),
+                            equipmentInStation.getEquipment().getUniqId(),
                             equipmentInStation.getEquipment().getPlace(),
                             new EquipmentModel(equipmentInStation.getEquipment().getModelId(), equipmentInStation.getName()),
                             equipmentInStation.getEquipment().getManufactureYear(),

@@ -208,7 +208,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 inspection.calcInspectionPercent(),
                 inspectionDate,
                 inspection.getTransformator().getModel().getId(),
-                inspection.getTransformator().getSlot()
+               ""// inspection.getTransformator().getSlot()
         );
 
         Response response = null;

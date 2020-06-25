@@ -15,9 +15,11 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
@@ -37,7 +39,10 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
     private final String EXPORT_TAG = "EXPORT STATIONS:";
 
+
     long uploadTime = 0;
+
+    private ObservableEmitter< UploadRes > emitter;
 
     public ExportStationInspectionTask(IApiInspectionSheet apiArmIS, List< IStationInspection > stationInspections, ISettingsStorage settingsStorage) {
         this.apiArmIS = apiArmIS;
@@ -48,6 +53,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
     @Override
     public void subscribe(ObservableEmitter< UploadRes > emitter) {
         uploadTime = System.currentTimeMillis() / 1000L;
+        this.emitter = emitter;
 
         DBLog.d(EXPORT_TAG, "Экспорт осмотров подстанций (ТП) (" + stationInspections.size() + ") шт.");
         for (IStationInspection inspection : stationInspections) {
@@ -60,82 +66,32 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
             DBLog.d(EXPORT_TAG, "Начало экспорта осмотра %s [%s] uid = %d", stationTypeName, station.getName(), stationUid);
 
-            long inspectionId = uploadStationInspectionInfo(inspection, 0L);
+            long inspectionArmId = uploadStationInspectionInfo(inspection, 0L);
 
-            if (inspectionId == 0) {
-                DBLog.e(EXPORT_TAG, "Ошибка при экспорте осмотра.  inspectionId = 0");
+            if (inspectionArmId == 0) {
+                DBLog.e(EXPORT_TAG, "Ошибка при экспорте осмотра.  inspectionArmId = 0");
                 continue;
             }
 
             //грузим общие фото
-            uploadCommonPhotos(inspection.getCommonPhotos(), stationUid, stationType, uploadTime, inspectionId);
+            uploadCommonPhotos(inspection.getCommonPhotos(), stationUid, stationType, uploadTime, inspectionArmId);
 
-            //отправка осмотра подстанции
-            uploadStationInspectionItems(stationUid, stationType, inspectionId, inspection.getStationInspectionItems());
+            //отправка осмотра подстанции (ТП)
+            DBLog.d(EXPORT_TAG, "отправка осмотра подстанции (ТП)..");
+            uploadStationInspectionItems(stationUid, stationType, inspectionArmId, inspection.getStationInspectionItems());
 
+            //отправка осмотров оборудования
+            DBLog.d(EXPORT_TAG, "отправка осмотров оборудования..");
+            for (StationEquipmentInspection equipmentInspection : inspection.getStationEquipmentInspections()) {
 
-            // long transformerId = inspection.getTransformator().getId();
+                long transformerIdInArm = uploadEquipmentInfo(equipmentInspection);
+                if (transformerIdInArm == 0) {
+                    continue;
+                }
 
-//            //грузим инфу о трансформаторе
-//            long transformerIdInArm = uploadTransformerInfo(inspection);
-//            if (transformerIdInArm == 0) {
-//                continue;
-//            }
+                uplodEquipmentInspectionItems(stationUid, stationType, inspectionArmId, transformerIdInArm, equipmentInspection.getInspectionItems());
 
-
-            //грузим осмотры
-//            DBLog.d(EXPORT_TAG, "Экспорт элементов осмотра");
-//            for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
-//
-//                //пропускаем не заполненные
-//                if (inspectionRes.isEmpty()) {
-//                    continue;
-//                }
-//
-//                TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
-//                        stationUid,
-//                        stationType,
-//                        transformerIdInArm,
-//                        inspectionRes.getValueId(),
-//                        TextUtils.join(",", inspectionRes.getResult().getValues()),
-//                        TextUtils.join(",", inspectionRes.getResult().getSubValues()),
-//                        inspectionRes.getResult().getComment(),
-//                        unixTime,
-//                        inspectionId
-//                );
-//
-//                Response response = null;
-//                try {
-//                    DBLog.d(EXPORT_TAG, "apiArmIS.uploadInspection... ");
-//                    response = apiArmIS.uploadInspection(inpectionResult).execute();
-//                } catch (Exception e) {
-//                    DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result");
-//                    e.printStackTrace();
-//                    continue;
-//                }
-//                if (response.body() == null) {
-//                    DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. Response.body() is null");
-//                    continue;
-//                }
-//
-//                UploadRes uploadRes = (UploadRes) response.body();
-//                if (uploadRes.getStatus() != 200) {
-//                    DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. status = " + uploadRes.getStatus());
-//                    continue;
-//                }
-//
-//                inspectionRes.setArmId(uploadRes.getId());
-//                //upload photo
-//                DBLog.d(EXPORT_TAG, "Экспорт фотографий элемента осмотра");
-//                for (InspectionPhoto photo : inspectionRes.getResult().getPhotos()) {
-//
-//                    if (!uploadPhoto(photo, inspectionRes.getArmId())) {
-//                        //return; //<--для отладки
-//                    }
-//                }
-//
-//                emitter.onNext(uploadRes);
-//            }
+            }
         }
 
         emitter.onComplete();
@@ -184,23 +140,23 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
         return uploadRes.getId();
     }
 
-    private long uploadTransformerInfo(TransformerInspection inspection) {
+    private long uploadEquipmentInfo(StationEquipmentInspection inspection) {
 
         DBLog.d(EXPORT_TAG, "Upload transformer info....");
         long inspectionDate = 0;
-        if (inspection.getTransformator().getInspectionDate() != null) {
-            inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
+        if (inspection.getEquipment().getInspectionDate() != null) {
+            inspectionDate = inspection.getEquipment().getInspectionDate().getTime() / 1000L;
         }
 
         TransformerInfo info = new TransformerInfo(
-                inspection.getSubstation().getUniqId(),
-                inspection.getSubstation().getType().getValue(),
-                inspection.getTransformator().getId(),
-                inspection.getTransformator().getYear(),
+                inspection.getStation().getUniqId(),
+                inspection.getStation().getType().getValue(),
+                inspection.getEquipment().getUniqId(),
+                inspection.getEquipment().getYear(),
                 inspection.calcInspectionPercent(),
                 inspectionDate,
-                inspection.getTransformator().getModel().getId(),
-                inspection.getTransformator().getSlot()
+                ((Transformer) inspection.getEquipment()).getModel().getId(),
+                inspection.getEquipment().getPlace()
         );
 
         Response response = null;
@@ -388,6 +344,62 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             }
 
 //                emitter.onNext(uploadRes);
+        }
+    }
+
+    private void uplodEquipmentInspectionItems(long stationUid, int stationType, long inspectionId, long equipmentArmId, List< InspectionItem > inspectionItems) {
+        //грузим осмотры
+        DBLog.d(EXPORT_TAG, "Экспорт элементов осмотра");
+        for (InspectionItem inspectionRes : inspectionItems) {
+
+            //пропускаем не заполненные
+            if (inspectionRes.isEmpty()) {
+                continue;
+            }
+
+            TransformerInspectionResult inpectionResult = new TransformerInspectionResult(
+                    stationUid,
+                    stationType,
+                    equipmentArmId,
+                    inspectionRes.getValueId(),
+                    TextUtils.join(",", inspectionRes.getResult().getValues()),
+                    TextUtils.join(",", inspectionRes.getResult().getSubValues()),
+                    inspectionRes.getResult().getComment(),
+                    this.uploadTime,
+                    inspectionId
+            );
+
+            Response response = null;
+            try {
+                DBLog.d(EXPORT_TAG, "apiArmIS.uploadInspection... ");
+                response = apiArmIS.uploadInspection(inpectionResult).execute();
+            } catch (Exception e) {
+                DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result");
+                e.printStackTrace();
+                continue;
+            }
+            if (response.body() == null) {
+                DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. Response.body() is null");
+                continue;
+            }
+
+            UploadRes uploadRes = (UploadRes) response.body();
+            if (uploadRes.getStatus() != 200) {
+                DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result. status = " + uploadRes.getStatus());
+                continue;
+            }
+
+            inspectionRes.setArmId(uploadRes.getId());
+            //upload photo
+            DBLog.d(EXPORT_TAG, "Экспорт фотографий элемента осмотра");
+            for (InspectionPhoto photo : inspectionRes.getResult().getPhotos()) {
+
+                if (!uploadPhoto(photo, inspectionRes.getArmId())) {
+                    //return; //<--для отладки
+                }
+            }
+
+            emitter.onNext(uploadRes);
         }
     }
 }

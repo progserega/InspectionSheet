@@ -22,7 +22,9 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionIns
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationInspectionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerInspectionJson;
@@ -48,7 +50,7 @@ public interface IApiInspectionSheet {
     Observable< List< ResModel > > getAllResRx();
 
     @GET("/api/substations/transformers/types")
-    Call< List< TransformerType > > getSubstationTransformersTypes();
+    Call< List< SubstationTransformerType > > getSubstationTransformersTypes();
 
     @GET("/api/tp/transformers/types")
     Call< List< TransformerType > > geTpTransformersTypes();
@@ -73,7 +75,7 @@ public interface IApiInspectionSheet {
     Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/api/tp")
-    Call< SubstationsResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
+    Call< TPResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
 
     @POST("/api/inspection")
     Call< UploadRes > uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);

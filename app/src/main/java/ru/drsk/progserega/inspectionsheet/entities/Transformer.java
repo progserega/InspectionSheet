@@ -36,12 +36,12 @@ public class Transformer extends Equipment {
         this.type = equipmentType;
     }
 
-    public Transformer(long id, String place, EquipmentModel model, int year, Date inspectionDate, EquipmentType equipmentType) {
+    public Transformer(long id, long uniqId,  String place, EquipmentModel model, int year, Date inspectionDate, EquipmentType equipmentType) {
         this.id = id;
         this.place = place;
         this.model = model;
         this.year = year;
-
+        this.uniqId = uniqId;
         this.photoList = new ArrayList<>();//!!
         this.inspectionDate = inspectionDate;
         this.name = model.getName();

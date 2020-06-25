@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-       // networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_LINES);
 
@@ -289,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     private void exportSubstationTransformers() {
+        InspectionService inspectionService = application.getInspectionService();
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION,   application.getStationInspectionFactory());
+
+        application.getRemoteStorage().exportStationsInspections(inspections);
+
 //        InspectionService inspectionService = application.getInspectionService();
 //        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
 //
@@ -300,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         InspectionService inspectionService = application.getInspectionService();
         List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP,      application.getStationInspectionFactory());
 
-        int a = 0;
+//        int a = 0;
         application.getRemoteStorage().exportStationsInspections(inspections);
        // application.getRemoteStorage().exportTransformersInspections(inspections);
     }

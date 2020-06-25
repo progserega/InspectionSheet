@@ -32,9 +32,9 @@ public class TransformerInfo {
     @Expose
     private long transformerTypeId;
 
-    @SerializedName("transformer_slot_id")
+    @SerializedName("place")
     @Expose
-    private int transformerSlotId;
+    private String  place;
 
 
     public TransformerInfo(long substationId,
@@ -44,7 +44,7 @@ public class TransformerInfo {
                            int inspectionPercent,
                            long inspectionDate,
                            long transformerTypeId,
-                           int transformerSlotId) {
+                           String place) {
 
         this.substationId = substationId;
         this.substationType = substationType;
@@ -53,7 +53,7 @@ public class TransformerInfo {
         this.inspectionPercent = inspectionPercent;
         this.inspectionDate = inspectionDate;
         this.transformerTypeId = transformerTypeId;
-        this.transformerSlotId = transformerSlotId;
+        this.place = place;
     }
 
     public long getSubstationId() {
@@ -112,12 +112,12 @@ public class TransformerInfo {
         this.transformerTypeId = transformerTypeId;
     }
 
-    public int getTransformerSlotId() {
-        return transformerSlotId;
+    public String getPlace() {
+        return place;
     }
 
-    public void setTransformerSlotId(int transformerSlotId) {
-        this.transformerSlotId = transformerSlotId;
+    public void setPlace(String place) {
+        this.place = place;
     }
 }
 
