@@ -6,8 +6,9 @@ public abstract class Equipment {
     protected long id;
     protected long uniqId;
     protected String name;
+    protected String place;
     protected EquipmentType type;
-
+    protected int year = 0;
     protected Date inspectionDate = new Date(0);
     protected float inspectionPercent = 0;
 
@@ -60,6 +61,22 @@ public abstract class Equipment {
 
     public void setInspectionPercent(float inspectionPercent) {
         this.inspectionPercent = inspectionPercent;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     abstract public Point getLocation();

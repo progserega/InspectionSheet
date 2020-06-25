@@ -18,34 +18,40 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
-public class TransformatorInspectionAdapter extends BaseAdapter {
+public class InspectionAdapter extends BaseAdapter {
 
     public interface OnItemPhotoClickListener {
         void onItemPhotoClick(InspectionItem inspectionItem, InspectionPhoto photo, int position);
     }
 
     private final Context context;
-    private TransformerInspection inspection;
+
+
+
+    // private TransformerInspection inspection;
     private List<InspectionItem> inspectionItems;
     private OnItemPhotoClickListener onItemPhotoClickListener;
 
-    public void setInspection(TransformerInspection inspection) {
-        this.inspection = inspection;
-        if(inspection == null){
-            inspectionItems = new ArrayList<>();
-        }else {
-            inspectionItems = inspection.getInspectionItems();
-        }
+//    public void setInspection(TransformerInspection inspection) {
+//        this.inspection = inspection;
+//        if(inspection == null){
+//            inspectionItems = new ArrayList<>();
+//        }else {
+//            inspectionItems = inspection.getInspectionItems();
+//        }
+//    }
+
+    public void setInspectionItems(List<InspectionItem> inspectionItems) {
+        this.inspectionItems = inspectionItems;
     }
 
     public List<InspectionItem> getInspectionItems() {
         return inspectionItems;
     }
 
-    public TransformatorInspectionAdapter(Context context, TransformerInspection inspection, OnItemPhotoClickListener photoClickListener){
+    public InspectionAdapter(Context context,  List<InspectionItem> inspectionItems, OnItemPhotoClickListener photoClickListener){
         this.context = context;
-        this.inspection = inspection;
-        this.inspectionItems = inspection.getInspectionItems();
+        this.inspectionItems = inspectionItems;
         this.onItemPhotoClickListener = photoClickListener;
     }
 
@@ -144,14 +150,10 @@ public class TransformatorInspectionAdapter extends BaseAdapter {
         return rowView;
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-
-        if(inspection == null){
-            inspectionItems = new ArrayList<>();
-        }else {
-            inspectionItems = inspection.getInspectionItems();
-        }
-    }
+//    @Override
+//    public void notifyDataSetChanged() {
+//        super.notifyDataSetChanged();
+//
+//
+//    }
 }

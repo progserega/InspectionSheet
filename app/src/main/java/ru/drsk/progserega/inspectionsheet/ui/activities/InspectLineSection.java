@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -111,7 +110,7 @@ public class InspectLineSection extends AppCompatActivity implements
     }
 
     private void initPhotoList() {
-        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_section_deffect_photos);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
@@ -245,7 +244,7 @@ public class InspectLineSection extends AppCompatActivity implements
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 deffectsPhotoListAdapter.notifyDataSetChanged();
             }
         });

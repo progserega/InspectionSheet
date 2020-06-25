@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 
+@Deprecated
 @Entity(tableName = "transformer_deffect_types")
 public class TransformerDeffectTypesModel {
 

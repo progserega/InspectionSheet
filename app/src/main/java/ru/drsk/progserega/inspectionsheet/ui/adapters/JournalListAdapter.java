@@ -83,7 +83,7 @@ public class JournalListAdapter extends
         LogModel logRecord =   mLogRecords.get(position);
 
         Date messageDate = logRecord.getDate();
-        String pattern = "dd.MM.YYYY";
+        String pattern = "dd.MM.yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String date = simpleDateFormat.format(messageDate);
 

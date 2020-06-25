@@ -10,7 +10,6 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Voltage;
 
-import static ru.drsk.progserega.inspectionsheet.ui.activities.SearchObject.LINE_TYPE;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.SearchObject.OBJECT_TYPE;
 
 public class SelectTypeLine extends AppCompatActivity {
@@ -82,7 +81,7 @@ public class SelectTypeLine extends AppCompatActivity {
     public void defectInTp6_10_04(View view) {
 
         Intent intent = new Intent(this, SearchObject.class);
-        intent.putExtra(OBJECT_TYPE, EquipmentType.TRANS_SUBSTATION);
+        intent.putExtra(OBJECT_TYPE, EquipmentType.TP);
 
         startActivity(intent);
     }

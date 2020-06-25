@@ -29,7 +29,7 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
 
 
 @RunWith(AndroidJUnit4.class)
-public class TransformerTypeSubstationStorageTest {
+public class EquipmentModelSubstationStorageTest {
 
 
     private InspectionSheetDatabase mDb;
@@ -72,7 +72,7 @@ public class TransformerTypeSubstationStorageTest {
         ITransformerSubstationStorage substationStorage = new TransformerSubstationStorage(mDb, null);
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put(EquipmentService.FILTER_TYPE, EquipmentType.TRANS_SUBSTATION);
+        filters.put(EquipmentService.FILTER_TYPE, EquipmentType.TP);
 
         List<TransformerSubstation> substations = substationStorage.getByFilters(filters);
 
@@ -89,7 +89,7 @@ public class TransformerTypeSubstationStorageTest {
         ITransformerSubstationStorage substationStorage = new TransformerSubstationStorage(mDb, null);
 
         Map<String, Object> filters = new HashMap<>();
-        filters.put(EquipmentService.FILTER_TYPE, EquipmentType.TRANS_SUBSTATION);
+        filters.put(EquipmentService.FILTER_TYPE, EquipmentType.TP);
         filters.put(EquipmentService.FILTER_NAME, "olo");
 
         List<TransformerSubstation> substations = substationStorage.getByFilters(filters);

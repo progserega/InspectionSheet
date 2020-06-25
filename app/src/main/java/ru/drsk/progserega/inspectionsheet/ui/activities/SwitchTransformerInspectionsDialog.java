@@ -69,7 +69,7 @@ public class SwitchTransformerInspectionsDialog  extends DialogFragment {
 
         List<String> transformersNames = new ArrayList<>();
         for(TransformerInspection inspection: transformerInspections){
-            transformersNames.add(String.format("[T%d]  %s",inspection.getTransformator().getSlot(), inspection.getTransformator().getTransformerType().getName()));
+            transformersNames.add(String.format("[T%d]  %s",inspection.getTransformator().getSlot(), inspection.getTransformator().getModel().getName()));
         }
 
         ArrayAdapter<String> dataAdapterSource = new ArrayAdapter<String>(view.getContext(),

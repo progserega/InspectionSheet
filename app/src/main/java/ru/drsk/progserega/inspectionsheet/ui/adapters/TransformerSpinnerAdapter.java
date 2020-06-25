@@ -11,15 +11,17 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
 public class TransformerSpinnerAdapter extends BaseAdapter {
 
     private final Context context;
 
-    private List<TransformerInspection> transformers;
+    private List<StationEquipmentInspection> transformers;
 
-    public TransformerSpinnerAdapter(Context context, List<TransformerInspection> transformers) {
+    public TransformerSpinnerAdapter(Context context, List<StationEquipmentInspection> transformers) {
 
         this.context = context;
 
@@ -38,7 +40,7 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return transformers.get(position).getTransformator().getId();
+        return transformers.get(position).getEquipment().getId();
     }
 
     @Override
@@ -47,10 +49,11 @@ public class TransformerSpinnerAdapter extends BaseAdapter {
         View rowView = inflater.inflate(R.layout.transf_spinner_item, parent, false);
 
         TextView textView = (TextView) rowView.findViewById(R.id.transf_spinner_item_name);
-        textView.setText(transformers.get(position).getTransformator().getTransformerType().getName());
+        textView.setText(transformers.get(position).getEquipment().getName());
 
         TextView slotTextView = (TextView) rowView.findViewById(R.id.transf_spinner_item_slot);
-        slotTextView.setText("ТР "+transformers.get(position).getTransformator().getSlot());
+        Transformer transformer =(Transformer)transformers.get(position).getEquipment();
+        slotTextView.setText(transformer.getPlace());
 
 
         TextView percentText = (TextView) rowView.findViewById(R.id.transf_inspection_done_percent);

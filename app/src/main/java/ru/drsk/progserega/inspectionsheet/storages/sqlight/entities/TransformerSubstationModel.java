@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.util.Date;
 
 
+@Deprecated
 /**
  * Модель таблици описывает Трансформаторную подстанцию
  */

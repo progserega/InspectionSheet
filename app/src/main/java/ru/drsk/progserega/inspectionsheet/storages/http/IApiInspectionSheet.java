@@ -9,7 +9,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -23,12 +22,14 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionIns
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationInspectionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -49,7 +50,7 @@ public interface IApiInspectionSheet {
     Observable< List< ResModel > > getAllResRx();
 
     @GET("/api/substations/transformers/types")
-    Call< List< TransformerType > > getSubstationTransformersTypes();
+    Call< List< SubstationTransformerType > > getSubstationTransformersTypes();
 
     @GET("/api/tp/transformers/types")
     Call< List< TransformerType > > geTpTransformersTypes();
@@ -63,16 +64,18 @@ public interface IApiInspectionSheet {
     Call< List< SectionDeffectTypesJson > > getSectionDeffectsTypes();
 
     @GET("/api/deffects/transformers")
-    Call< List< TransformerDeffectTypesJson > > getTransformersDeffectsTypes();
+    Call< List< StationDeffectTypesJson > > getTransformersDeffectsTypes();
 
-
+    @GET("/api/deffects/transformers")
+    //заменить на /api/deffects/station
+    Call< List< StationDeffectTypesJson > > getStationDeffectsTypes();
 
 
     @GET("/api/substations")
     Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/api/tp")
-    Call< SubstationsResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
+    Call< TPResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
 
     @POST("/api/inspection")
     Call< UploadRes > uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);
@@ -82,8 +85,8 @@ public interface IApiInspectionSheet {
     Call< UploadRes > uploadInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
 
     @Multipart
-    @POST("/api/transformer/image")
-    Call< UploadRes > uploadTransformerImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
+    @POST("/api/station/image")
+    Call< UploadRes > uploadStationImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
 
 
     @POST("/api/transformer/info")

@@ -15,14 +15,18 @@ import java.util.Set;
 
 import ru.drsk.progserega.inspectionsheet.R;
 
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerType;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPModel;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPTransformerModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
@@ -30,9 +34,6 @@ import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineProlet
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTower;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTowerNode;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineTowers;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoSubstation;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTPModel;
-import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.SteTransformator;
 import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionItemDao;
@@ -53,6 +54,10 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SP;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SectionDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SpWithRes;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipment;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentModels;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationEquipmentsDeffectType;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationEquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectTypesModel;
@@ -134,111 +139,117 @@ public class DBDataImporter {
         db.towerDeffectTypesDao().deleteAll();
         db.sectionDeffectTypesDao().deleteAll();
         db.transformerDeffectTypesDao().deleteAll();
+
+        db.stationDao().deleteAll();
+        db.stationEquipmentDao().deleteAll();
+        db.stationEquipmentModelsDao().deleteAll();
+
+        db.stationEquipmentsDeffectTypesDao().deleteAll();
     }
 
-    public void loadSteTpModel(List< SteTPModel > tpModels) {
+//    public void loadSteTpModel(List< SteTPModel > tpModels) {
+//
+//        for (SteTPModel tpModel : tpModels) {
+//
+//            long spId = getSpFromCache(tpModel.getSpName());
+//            long resId = getResFromCache(tpModel.getResName(), spId);
+//
+//            TransformerSubstationModel substationModel = new TransformerSubstationModel(
+//                    tpModel.getId(),
+//                    tpModel.getUniqId(),
+//                    tpModel.getPowerCenterName(),
+//                    tpModel.getDispName(),
+//                    spId,
+//                    resId,
+//                    tpModel.getLat(),
+//                    tpModel.getLon());
+//
+//
+//            long tpId = db.transformerSubstationDao().insert(substationModel);
+//
+//
+//            List< SteTransformator > steTransformators = new ArrayList<>();
+//            if (tpModel.getT1() != null && tpModel.getT1().getDesc() != null) {
+//                steTransformators.add(tpModel.getT1());
+//            }
+//            if (tpModel.getT2() != null && tpModel.getT2().getDesc() != null) {
+//                steTransformators.add(tpModel.getT2());
+//            }
+//
+//            if (tpModel.getT3() != null && tpModel.getT3().getDesc() != null) {
+//                steTransformators.add(tpModel.getT3());
+//            }
+//
+//            int slot = 1;
+//            for (SteTransformator transformator : steTransformators) {
+//
+//                TransformerModel transformerModel = new TransformerModel(
+//                        transformator.getId(),
+//                        transformator.getTrType(),
+//                        transformator.getDesc(),
+//                        "transformer_substation");
+//
+//
+//                if (!transfCache.contains(transformator.getId())) {
+//                    transformerDao.insert(transformerModel);
+//                    transfCache.add(transformator.getId());
+//                }
+//
+//                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpModel.getUniqId(), transformator.getId(), slot, 0, null);
+//                transformerSubstationEquipmentDao.insert(transformerSubstationEuipmentModel);
+//                slot++;
+//            }
+//        }
+//
+//
+//    }
 
-        for (SteTPModel tpModel : tpModels) {
-
-            long spId = getSpFromCache(tpModel.getSpName());
-            long resId = getResFromCache(tpModel.getResName(), spId);
-
-            TransformerSubstationModel substationModel = new TransformerSubstationModel(
-                    tpModel.getId(),
-                    tpModel.getUniqId(),
-                    tpModel.getPowerCenterName(),
-                    tpModel.getDispName(),
-                    spId,
-                    resId,
-                    tpModel.getLat(),
-                    tpModel.getLon());
-
-
-            long tpId = db.transformerSubstationDao().insert(substationModel);
-
-
-            List< SteTransformator > steTransformators = new ArrayList<>();
-            if (tpModel.getT1() != null && tpModel.getT1().getDesc() != null) {
-                steTransformators.add(tpModel.getT1());
-            }
-            if (tpModel.getT2() != null && tpModel.getT2().getDesc() != null) {
-                steTransformators.add(tpModel.getT2());
-            }
-
-            if (tpModel.getT3() != null && tpModel.getT3().getDesc() != null) {
-                steTransformators.add(tpModel.getT3());
-            }
-
-            int slot = 1;
-            for (SteTransformator transformator : steTransformators) {
-
-                TransformerModel transformerModel = new TransformerModel(
-                        transformator.getId(),
-                        transformator.getTrType(),
-                        transformator.getDesc(),
-                        "transformer_substation");
-
-
-                if (!transfCache.contains(transformator.getId())) {
-                    transformerDao.insert(transformerModel);
-                    transfCache.add(transformator.getId());
-                }
-
-                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpModel.getUniqId(), transformator.getId(), slot, 0, null);
-                transformerSubstationEquipmentDao.insert(transformerSubstationEuipmentModel);
-                slot++;
-            }
-        }
-
-
-    }
-
-    public void loadGeoSubstations(List< GeoSubstation > substations) {
-
-        Set< String > spNames = spCache.keySet();
-        Set< String > resNames = resCache.keySet();
-
-        for (GeoSubstation substation : substations) {
-
-            long spId = 0;
-            if (substation.getSp() == null || substation.getSp().isEmpty()) {
-                spId = 0;
-
-            } else {
-                String spName = substation.getSp().get("name");
-                spId = findSpIdInCache(spNames, spName);
-            }
-
-
-            long resId = 0;
-            if (substation.getRes() == null || substation.getRes().isEmpty()) {
-                resId = 0;
-            } else {
-                String resName = substation.getRes().get("name");
-                resId = findResIdInCache(resNames, resName);
-                if (resId == 0) {
-                    resId = getResFromCache(resName, spId);
-                }
-            }
-
-            SubstationModel substationModel = new SubstationModel(
-                    0,
-                    0,
-                    substation.getName(),
-                    substation.getVoltage(),
-                    substation.getObjectType(),
-                    spId,
-                    resId,
-                    substation.getLat(),
-                    substation.getLon(),
-                    null,
-                    0
-            );
-
-            long substationId = substationDao.insert(substationModel);
-        }
-
-    }
+//    public void loadGeoSubstations(List< GeoSubstation > substations) {
+//
+//        Set< String > spNames = spCache.keySet();
+//        Set< String > resNames = resCache.keySet();
+//
+//        for (GeoSubstation substation : substations) {
+//
+//            long spId = 0;
+//            if (substation.getSp() == null || substation.getSp().isEmpty()) {
+//                spId = 0;
+//
+//            } else {
+//                String spName = substation.getSp().get("name");
+//                spId = findSpIdInCache(spNames, spName);
+//            }
+//
+//
+//            long resId = 0;
+//            if (substation.getRes() == null || substation.getRes().isEmpty()) {
+//                resId = 0;
+//            } else {
+//                String resName = substation.getRes().get("name");
+//                resId = findResIdInCache(resNames, resName);
+//                if (resId == 0) {
+//                    resId = getResFromCache(resName, spId);
+//                }
+//            }
+//
+//            SubstationModel substationModel = new SubstationModel(
+//                    0,
+//                    0,
+//                    substation.getName(),
+//                    substation.getVoltage(),
+//                    substation.getObjectType(),
+//                    spId,
+//                    resId,
+//                    substation.getLat(),
+//                    substation.getLon(),
+//                    null,
+//                    0
+//            );
+//
+//            long substationId = substationDao.insert(substationModel);
+//        }
+//
+//    }
 
     public void loadSubstationTransformers(List< TransformerType > transformers, String installIn) {
 
@@ -254,15 +265,65 @@ public class DBDataImporter {
         }
     }
 
+    public void importStationEquipmentModels(List< TransformerType > transformers, EquipmentType equipmentType) {
+        for (TransformerType type : transformers) {
+
+            StationEquipmentModels model = new StationEquipmentModels(
+                    0,
+                    type.getId(),
+                    equipmentType.getValue(),
+                    type.getName(),
+                    type.getDescription()
+            );
+
+            db.stationEquipmentModelsDao().insert(model);
+        }
+    }
+
+    public void importSubStationEquipmentModels(List< SubstationTransformerType > transformers, EquipmentType equipmentType) {
+        for (SubstationTransformerType type : transformers) {
+
+            StationEquipmentModels model = new StationEquipmentModels(
+                    0,
+                    type.getId() + 1000000,
+                    equipmentType.getValue(),
+                    type.getName(),
+                    type.getDescription()
+            );
+
+            db.stationEquipmentModelsDao().insert(model);
+        }
+    }
+
     public void loadSubstations(List< ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel > substations) {
 
         for (ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel substation : substations) {
-            SubstationModel substationModel = new SubstationModel(
-                    substation.getId(),
+//            SubstationModel substationModel = new SubstationModel(
+//                    substation.getId(),
+//                    substation.getUniqId(),
+//                    substation.getName(),
+//                    null,
+//                    "substation",
+//                    substation.getSpId(),
+//                    substation.getResId(),
+//                    substation.getLat(),
+//                    substation.getLon(),
+//                    null,
+//                    0
+//            );
+//
+//            try {
+//                long substationId = substationDao.insert(substationModel);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                continue;
+//            }
+            StationModel stationModel = new StationModel(
+
                     substation.getUniqId(),
                     substation.getName(),
                     null,
-                    "substation",
+                    EquipmentType.SUBSTATION.getValue(),
                     substation.getSpId(),
                     substation.getResId(),
                     substation.getLat(),
@@ -271,28 +332,46 @@ public class DBDataImporter {
                     0
             );
 
-            long substationId = substationDao.insert(substationModel);
+            // db.stationDao().insert(stationModel);
+            try {
+                db.stationDao().insert(stationModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
 
             if (substation.getEquipmnents() == null) {
                 continue;
             }
             for (SubstationTransformerModel transformer : substation.getEquipmnents()) {
-                SubstationEquipmentModel equipmentModel = new SubstationEquipmentModel(
+//                SubstationEquipmentModel equipmentModel = new SubstationEquipmentModel(
+//                        0,
+//                        substation.getUniqId(),
+//                        transformer.getTransformerTypeid(),
+//                        transformer.getSlot(),
+//                        transformer.getManufactureYear(),
+//                        null
+//                );
+//                substationEquipmentDao.insert(equipmentModel);
+
+                StationEquipment stationEquipment = new StationEquipment(
                         0,
-                        substation.getUniqId(),
-                        transformer.getTransformerTypeid(),
-                        transformer.getSlot(),
+                        transformer.getEquipmentId(),
+                        transformer.getSubstationUid(),
+                        EquipmentType.SUBSTATION_TRANSFORMER.getValue(),
+                        transformer.getEquipmentModelId() + 1000000,
+                        transformer.getPlace(),
                         transformer.getManufactureYear(),
                         null
                 );
-                substationEquipmentDao.insert(equipmentModel);
+                db.stationEquipmentDao().insert(stationEquipment);
             }
         }
     }
 
-    public void loadTps(List< ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel > substations) {
+    public void loadTps(List< TPModel > substations) {
 
-        for (ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationModel substation : substations) {
+        for (TPModel substation : substations) {
             TransformerSubstationModel substationModel = new TransformerSubstationModel(
                     substation.getId(),
                     substation.getUniqId(),
@@ -307,11 +386,31 @@ public class DBDataImporter {
 
             long substationId = transformerSubstationDao.insert(substationModel);
 
+            StationModel stationModel = new StationModel(
+
+                    substation.getUniqId(),
+                    substation.getName(),
+                    null,
+                    EquipmentType.TP.getValue(),
+                    substation.getSpId(),
+                    substation.getResId(),
+                    substation.getLat(),
+                    substation.getLon(),
+                    null,
+                    0
+            );
+
+            try {
+                long stationId = db.stationDao().insert(stationModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
             if (substation.getEquipmnents() == null) {
                 continue;
             }
 
-            for (SubstationTransformerModel transformer : substation.getEquipmnents()) {
+            for (TPTransformerModel transformer : substation.getEquipmnents()) {
                 TransformerSubstationEuipmentModel equipmentModel = new TransformerSubstationEuipmentModel(
                         0,
                         substation.getUniqId(),
@@ -321,6 +420,18 @@ public class DBDataImporter {
                         null
                 );
                 transformerSubstationEquipmentDao.insert(equipmentModel);
+
+                StationEquipment stationEquipment = new StationEquipment(
+                        0,
+                        0,
+                        substation.getUniqId(),
+                        EquipmentType.TP_TRANSFORMER.getValue(),
+                        transformer.getTransformerTypeid(),
+                        "T" + transformer.getSlot(),
+                        transformer.getManufactureYear(),
+                        null
+                );
+                db.stationEquipmentDao().insert(stationEquipment);
             }
         }
     }
@@ -542,7 +653,9 @@ public class DBDataImporter {
         updateLineBoundingBox(towers, lineUniqId);
     }
 
-    private void buildLineDetailsModels(GeoLineTowers geoLineTowers, Map< Long, TowerModel > towersMap, List< LineSectionModel > sectionModels, long lineUniqId) {
+    private void buildLineDetailsModels(GeoLineTowers
+                                                geoLineTowers, Map< Long, TowerModel > towersMap, List< LineSectionModel > sectionModels,
+                                        long lineUniqId) {
         List< GeoLineTower > towers = new ArrayList< GeoLineTower >(geoLineTowers.getTowers().values());
         for (GeoLineTower tower : towers) {
             GeoLineTowerNode towerNode = tower.getNode();
@@ -626,10 +739,10 @@ public class DBDataImporter {
         db.sectionDeffectTypesDao().insertAll(deffectTypesModels);
     }
 
-    public void loadTransformersDeffectTypes(List< TransformerDeffectTypesJson > deffectTypes) {
+    public void loadTransformersDeffectTypes(List< StationDeffectTypesJson > deffectTypes) {
 
         List< TransformerDeffectTypesModel > deffectTypesModels = new ArrayList<>();
-        for (TransformerDeffectTypesJson deffectType : deffectTypes) {
+        for (StationDeffectTypesJson deffectType : deffectTypes) {
 
             deffectTypesModels.add(new TransformerDeffectTypesModel(
                     deffectType.getId(),
@@ -644,5 +757,25 @@ public class DBDataImporter {
         }
 
         db.transformerDeffectTypesDao().insertAll(deffectTypesModels);
+    }
+
+    public void loadStationsDeffectTypes(List< StationDeffectTypesJson > deffectTypes) {
+
+        List< StationEquipmentsDeffectType > deffectTypesModels = new ArrayList<>();
+        for (StationDeffectTypesJson deffectType : deffectTypes) {
+
+            deffectTypesModels.add(new StationEquipmentsDeffectType(
+                    deffectType.getId(),
+                    deffectType.getOrder(),
+                    deffectType.getNumber(),
+                    deffectType.getName(),
+                    deffectType.getType(),
+                    deffectType.getResult(),
+                    deffectType.getSubResult(),
+                    EquipmentType.getByName(deffectType.getEquipmentType()).getValue()
+            ));
+        }
+
+        db.stationEquipmentsDeffectTypesDao().insertAll(deffectTypesModels);
     }
 }

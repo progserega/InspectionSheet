@@ -132,7 +132,7 @@ public class GroupAddTransfrmerDeffect extends Activity implements
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.INSPECTION_ITEM_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 groupListAdapter.notifyDataSetChanged();
             }
         });

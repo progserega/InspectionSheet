@@ -12,10 +12,10 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDa
 public class PhotoFullscreenManager {
 
     public interface DeletePhotoCompleteListener{
-        void onPhotoDeleted();
+        void onPhotoDeleted(InspectionPhoto photo);
     }
 
-    public static final int TRANSFORMER_PHOTO = 1;
+    public static final int STATION_PHOTO = 1;
     public static final int INSPECTION_ITEM_PHOTO = 2;
     public static final int LINE_INSPECTION_PHOTO = 3;
 
@@ -65,13 +65,14 @@ public class PhotoFullscreenManager {
             return;
         }
         InspectionPhoto photo = photos.get(position);
+        //TODO перенести удаление в листенер
         removePhotoFromStorage(photo);
         removePhotoFromSqlight(photo);
 
         photos.remove(position);
 
         if(deletePhotoCompleteListener != null){
-            deletePhotoCompleteListener.onPhotoDeleted();
+            deletePhotoCompleteListener.onPhotoDeleted(photo);
         }
     }
 
@@ -88,7 +89,7 @@ public class PhotoFullscreenManager {
             return;
         }
 
-        if(photoOwner == TRANSFORMER_PHOTO){
+        if(photoOwner == STATION_PHOTO){
             equipmentPhotoDao.deleteById(photo.getId());
         }
 

@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
+@Deprecated
 @Entity(tableName = "tp_transformers")
 public class TransformerSubstationEuipmentModel {
 

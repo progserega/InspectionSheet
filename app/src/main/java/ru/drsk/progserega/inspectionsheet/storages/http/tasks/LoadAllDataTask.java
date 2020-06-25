@@ -13,6 +13,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SpModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TPResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.ste_models.GeoLineDetail;
@@ -276,7 +277,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe< String > {
         int cnt = 0;
         do {
             offset = page * PAGE_SIZE;
-            SubstationsResponse substationsResponse = null;
+            TPResponse substationsResponse = null;
 
             Response response = null;
             int attempt = 1;
@@ -301,7 +302,7 @@ public class LoadAllDataTask implements ObservableOnSubscribe< String > {
                 break;
             }
 
-            substationsResponse = (SubstationsResponse) response.body();
+            substationsResponse = (TPResponse) response.body();
             total = substationsResponse.getTotal();
 
             if (substationsResponse.getData() != null && !substationsResponse.getData().isEmpty()) {

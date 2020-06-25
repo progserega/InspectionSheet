@@ -6,9 +6,11 @@ import java.util.List;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import retrofit2.Response;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiGeo;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiSTE;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationTransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SubstationsResponse;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerType;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
@@ -50,18 +52,24 @@ public class LoadSubstationsTask implements ObservableOnSubscribe< String > {
     }
 
 
+    /**
+     * TODO все модели оборудования получается какбудто это трансформаторы
+     * надо подгружать типы оборудования подстанции и модели грузить в соответствии с типами
+     *
+    **/
     private void loadSubstationTransformersTypes(ObservableEmitter< String > emitter) throws IOException {
         Response response = apiInspectionSheet.getSubstationTransformersTypes().execute();
         if (response.body() == null) {
             throw new IOException("Данные по Типам трансформаторов не получены. response.body is null");
         }
 
-        List< TransformerType > types = (List< TransformerType >) response.body();
+        List< SubstationTransformerType > types = (List< SubstationTransformerType >) response.body();
 
         if (types == null || types.isEmpty()) {
-            throw new IOException("Данные по СП не получены");
+            throw new IOException("Данные по моделям оборудования подстанций не получены");
         }
-        dbDataImporter.loadSubstationTransformers(types, "substation");
+       // dbDataImporter.loadSubstationTransformers(types, "substation");
+        dbDataImporter.importSubStationEquipmentModels(types, EquipmentType.SUBSTATION_TRANSFORMER);
     }
 
 

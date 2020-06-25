@@ -95,4 +95,7 @@
     <string name="show_on_map_text">go to map</string>
     <string name="journal">Journal</string>
     <string name="send_journal">Отправить</string>
+    <string name="next_select_equipment">Осмотр оборудования</string>
+    <string name="manufacture_year">год производства</string>
+    <string name="inspected">осмотрено:</string>
 </resources>

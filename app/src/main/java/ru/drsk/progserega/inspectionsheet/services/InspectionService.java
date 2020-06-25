@@ -2,27 +2,25 @@ package ru.drsk.progserega.inspectionsheet.services;
 
 import android.content.Context;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.Substation;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.TransformerSubstation;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
@@ -35,11 +33,10 @@ import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
-import ru.drsk.progserega.inspectionsheet.storages.json.TransfInspectionListReader;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.StationModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.SubstationModel;
-import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerDeffectTypesModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerSubstationModel;
 
 public class InspectionService {
@@ -85,77 +82,86 @@ public class InspectionService {
 //
 //    }
 
-    public List< TransformerInspection > getInspectionByEquipment(EquipmentType equipmentType) {
+    public List< IStationInspection > getInspectionByEquipment(EquipmentType equipmentType, StationInspectionFactory inspectionFactory) {
 
         if (equipmentType.equals(EquipmentType.SUBSTATION)) {
-            return getSubstationInspections();
+            return getSubstationInspections(inspectionFactory);
         }
 
-        if (equipmentType.equals(EquipmentType.TRANS_SUBSTATION)) {
-            return getTPInspections();
+        if (equipmentType.equals(EquipmentType.TP)) {
+            return getTPInspections(inspectionFactory);
         }
 
         return null;
     }
 
-    private List< TransformerInspection > getSubstationInspections() {
+    private List< IStationInspection > getSubstationInspections(StationInspectionFactory inspectionFactory) {
 
-        SubstationDao substationDao = db.substationDao();
-        List< SubstationModel > substationModels = substationDao.loadInspected();
+        List<IStationInspection> inspectedStations = new ArrayList<>();
 
-        List< TransformerInspection > inspectionList = new ArrayList<>();
-        for (SubstationModel substationModel : substationModels) {
-            Equipment substation = new Substation(
-                    substationModel.getId(),
-                    substationModel.getUniqId(),
-                    substationModel.getName(),
-                    substationModel.getInspectionDate(),
-                    substationModel.getInspectionPercent(),
-                    substationModel.getLat(),
-                    substationModel.getLon()
-            );
-            inspectionList.addAll(getSubstationTransformersWithInspections(substation));
+        List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.SUBSTATION.getValue());
+        for(StationModel stationModel: stationModels){
+            Substation substation = buildSubstationFromModel(stationModel);
+            inspectedStations.add(inspectionFactory.build(substation));
         }
-        return inspectionList;
+
+        return inspectedStations;
 
     }
 
-    private List< TransformerInspection > getTPInspections() {
 
 
-        List< TransformerSubstationModel > substationModels = db.transformerSubstationDao().loadInspected();
+    private List< IStationInspection > getTPInspections(StationInspectionFactory inspectionFactory) {
+        List<IStationInspection> inspectedStations = new ArrayList<>();
 
-        List< TransformerInspection > inspectionList = new ArrayList<>();
-        for (TransformerSubstationModel substationModel : substationModels) {
-            Equipment substation = new TransformerSubstation(
-                    substationModel.getId(),
-                    substationModel.getUniqId(),
-                    substationModel.getDispName(),
-                    substationModel.getInspectionDate(),
-                    substationModel.getInspectionPercent(),
-                    substationModel.getLat(),
-                    substationModel.getLon()
-            );
-            inspectionList.addAll(getTPTransformersWithInspections(substation));
+        List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.TP.getValue());
+        for(StationModel stationModel: stationModels){
+            TransformerSubstation tp = buildTPFromModel(stationModel);
+            inspectedStations.add(inspectionFactory.build(tp));
         }
-        return inspectionList;
 
+        return inspectedStations;
+
+
+    }
+
+    private Substation buildSubstationFromModel(StationModel stationModel) {
+        return new Substation(
+                stationModel.getUniqId(),
+                stationModel.getUniqId(),
+                stationModel.getName(),
+                stationModel.getInspectionDate(),
+                stationModel.getInspectionPercent(),
+                stationModel.getLat(),
+                stationModel.getLon()
+        );
+    }
+    private TransformerSubstation buildTPFromModel(StationModel stationModel) {
+        return new TransformerSubstation(
+                stationModel.getUniqId(),
+                stationModel.getUniqId(),
+                stationModel.getName(),
+                stationModel.getInspectionDate(),
+                stationModel.getInspectionPercent(),
+                stationModel.getLat(),
+                stationModel.getLon()
+        );
     }
 
     public List< TransformerInspection > getSubstationTransformersWithInspections(Equipment substation) {
-        List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
+        List<Transformer> transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
         return buildInspectionsList(substation, transformers);
     }
 
     public List< TransformerInspection > getTPTransformersWithInspections(Equipment substation) {
-        List< TransformerInSlot > transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
+        List<Transformer> transformers = transformerStorage.getBySubstantionId(substation.getUniqId(), substation.getType());
         return buildInspectionsList(substation, transformers);
     }
 
-    private List< TransformerInspection > buildInspectionsList(Equipment equipment, List< TransformerInSlot > transformers) {
+    private List< TransformerInspection > buildInspectionsList(Equipment equipment, List<Transformer> transformers) {
         List< TransformerInspection > inspectionList = new ArrayList<>();
 
-        for (TransformerInSlot transformer : transformers) {
+        for (Transformer transformer : transformers) {
 
             TransformerInspection inspection = new TransformerInspection(equipment, transformer);
             inspection.setInspectionItems(loadInspectionTemplates(equipment.getType()));
@@ -258,7 +264,7 @@ public class InspectionService {
             template = transformerDeffectTypesStorage.getSubstationDeffects();
         }
 
-        if (substationType == EquipmentType.TRANS_SUBSTATION) {
+        if (substationType == EquipmentType.TP) {
             template = transformerDeffectTypesStorage.getTPDeffects();
         }
 

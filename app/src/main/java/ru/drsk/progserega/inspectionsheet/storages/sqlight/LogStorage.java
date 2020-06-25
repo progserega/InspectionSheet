@@ -1,6 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
-import android.arch.lifecycle.LiveData;
+
 import android.os.AsyncTask;
 
 import java.util.Date;

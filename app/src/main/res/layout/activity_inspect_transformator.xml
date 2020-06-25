@@ -102,7 +102,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/transformer_photos"
+                    android:id="@+id/inspect_transformer_common_photos"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"

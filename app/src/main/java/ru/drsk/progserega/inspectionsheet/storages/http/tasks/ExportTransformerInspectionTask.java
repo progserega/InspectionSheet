@@ -27,7 +27,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationIns
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadStationImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
 public class ExportTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
@@ -167,8 +167,8 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 inspectorName,
                 0, //пока не используется
                 inspectionDate,
-                inspection.calcInspectionPercent(),
-                inspection.getTransformator().getSlot()
+                inspection.calcInspectionPercent()
+             //   inspection.getTransformator().getSlot()
         );
         Response response = null;
         try {
@@ -208,8 +208,8 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 inspection.getTransformator().getYear(),
                 inspection.calcInspectionPercent(),
                 inspectionDate,
-                inspection.getTransformator().getTransformerType().getId(),
-                inspection.getTransformator().getSlot()
+                inspection.getTransformator().getModel().getId(),
+               ""// inspection.getTransformator().getSlot()
         );
 
         Response response = null;
@@ -311,13 +311,13 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
             //Не работает с кирилическими именами файлов
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
 
-            UploadTransformerImageInfo imageInfo = new UploadTransformerImageInfo(file.getName(), transformerId, substationType, date, inspectionId);
+            UploadStationImageInfo imageInfo = new UploadStationImageInfo(file.getName(), transformerId, substationType, date, inspectionId);
             Gson gson = new Gson();
             String fileInfoJson = gson.toJson(imageInfo);
             RequestBody fileInfo = RequestBody.create(MediaType.parse("text/plain"), fileInfoJson);
 
 
-            response = apiArmIS.uploadTransformerImage(fileToUpload, fileInfo).execute();
+            response = apiArmIS.uploadStationImage(fileToUpload, fileInfo).execute();
 
 
         } catch (IOException e) {

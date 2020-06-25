@@ -10,16 +10,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.R;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentModel;
 
 public class TransformersListAdapter extends BaseAdapter {
 
 
     private final Context context;
 
-    private List<TransformerType> transformerTypes;
+    private List<EquipmentModel> transformerTypes;
 
-    public TransformersListAdapter(Context context, List<TransformerType> transformerTypes) {
+    public TransformersListAdapter(Context context, List<EquipmentModel> transformerTypes) {
 
         this.context = context;
 
