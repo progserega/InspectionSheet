@@ -151,7 +151,15 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initSelectTowerBtn() {
-        TextView textView = (TextView) findViewById(R.id.inspect_line_select_tower_btn);
+//        TextView textView = (TextView) findViewById(R.id.inspect_line_select_tower_btn);
+//        textView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                presenter.onSelectTowerBtnClick();
+//            }
+//        });
+
+        ImageButton textView = (ImageButton) findViewById(R.id.inspect_line_select_tower_btn);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
