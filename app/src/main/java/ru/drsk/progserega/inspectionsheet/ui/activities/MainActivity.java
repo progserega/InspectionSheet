@@ -25,8 +25,10 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 
@@ -78,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.clear();
 
         //comment for DEBUG
-        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
-        exportBtn.setVisibility(View.GONE);
+        //Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+        //exportBtn.setVisibility(View.GONE);
     }
 
 
@@ -105,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 startActivity(intentAbout);
                 //   Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                 return true;
+
+            case R.id.menu_journal:
+                Intent intentJournal = new Intent(this, Journal.class);
+                startActivity(intentJournal);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -122,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             showError("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
             return;
         }
-        showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
+        //showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
+        showQuestion("Загрузить данные с сервера?", "Важно! Все не экспортированные результаты осмотров будут очищены!");
     }
 
     private void showQuestion(String title, String message) {
@@ -154,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.add(SELECT_ACTIVE_SERVER);
 
-        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-        networkTasksQueue.add(EXPORT_LINES);
+      //  networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+      //  networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+       // networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
@@ -170,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     @Override
     public void progressUpdate(String progress) {
-        Log.d("PROGRESS", "PROGRESS: " + progress);
+        DBLog.d("PROGRESS", "PROGRESS: " + progress);
         progressText.setText(progress);
     }
 
@@ -222,9 +230,10 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
-        //networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-        //networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-         networkTasksQueue.add(EXPORT_LINES);
+        networkTasksQueue.add(SELECT_ACTIVE_SERVER);
+        networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        networkTasksQueue.add(EXPORT_LINES);
 
 
         nextTask();
@@ -283,18 +292,18 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private void exportSubstationTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION);
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION,   application.getStationInspectionFactory());
 
-
-        application.getRemoteStorage().exportTransformersInspections(inspections);
+        application.getRemoteStorage().exportStationsInspections(inspections);
     }
 
     private void exportTPTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< TransformerInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TRANS_SUBSTATION);
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP,      application.getStationInspectionFactory());
 
-        //int a = 0;
-        application.getRemoteStorage().exportTransformersInspections(inspections);
+//        int a = 0;
+        application.getRemoteStorage().exportStationsInspections(inspections);
+       // application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
     private void exportLines() {

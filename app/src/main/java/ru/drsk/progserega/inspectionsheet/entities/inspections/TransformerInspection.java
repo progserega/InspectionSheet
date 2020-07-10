@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 
 public class TransformerInspection {
 
     private Equipment substation;
-    private TransformerInSlot transformator;
+    private Transformer transformator;
     private List<InspectionItem> inspectionItems;
     private Date date;
     private boolean done;
@@ -20,7 +20,7 @@ public class TransformerInspection {
         return substation;
     }
 
-    public TransformerInSlot getTransformator() {
+    public Transformer getTransformator() {
         return transformator;
     }
 
@@ -36,7 +36,7 @@ public class TransformerInspection {
         this.date = date;
     }
 
-    public TransformerInspection(Equipment substation, TransformerInSlot transformator) {
+    public TransformerInspection(Equipment substation, Transformer transformator) {
 
         this.substation = substation;
         this.transformator = transformator;

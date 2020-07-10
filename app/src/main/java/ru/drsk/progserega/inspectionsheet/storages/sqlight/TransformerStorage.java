@@ -7,8 +7,8 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerInSlot;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentModel;
+import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
@@ -40,64 +40,65 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
-    public List<TransformerInSlot> getBySubstantionId(long substantionUniqId, EquipmentType type) {
+    public List<Transformer> getBySubstantionId(long substantionUniqId, EquipmentType substationType) {
 
-        List<TransformerInSlot> transformers = new ArrayList<>();
-        if (type == EquipmentType.TRANS_SUBSTATION) {
+        List<Transformer> transformers = new ArrayList<>();
+        if (substationType == EquipmentType.TP) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = transformerSubstationEquipmentDao.getBySubstation(substantionUniqId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, EquipmentType.TP_TRANSFORMER);
         }
 
-        if (type == EquipmentType.SUBSTATION) {
+        if (substationType == EquipmentType.SUBSTATION) {
 
             List<TransformerInsideSubstaionModel> transformerDBModels = substationEquipmentDao.getBySubstation(substantionUniqId);
-            transformers = dbTranformerInsideSubstationModel(transformerDBModels, type);
+            transformers = dbTranformerInsideSubstationModel(transformerDBModels, EquipmentType.SUBSTATION_TRANSFORMER);
         }
 
         return transformers;
     }
 
-    private List<TransformerInSlot> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels, EquipmentType equipmentType) {
-        List<TransformerInSlot> transformers = new ArrayList<>();
+    private List<Transformer> dbTranformerInsideSubstationModel(List<TransformerInsideSubstaionModel> transformerDBModels, EquipmentType equipmentType) {
+        List<Transformer> transformers = new ArrayList<>();
         for (TransformerInsideSubstaionModel transformerModel : transformerDBModels) {
             TransformerModel transformerDBModel = transformerModel.getTransformer();
-            TransformerType transformerType = new TransformerType(transformerDBModel.getId(), transformerDBModel.getType() );
-            TransformerInSlot transformerInSlot = new TransformerInSlot(
+            EquipmentModel transformerType = new EquipmentModel(transformerDBModel.getId(), transformerDBModel.getType() );
+            Transformer transformer = new Transformer(
                     transformerModel.getEquipmentId(),
                     transformerModel.getSlot(),
                     transformerType,
                     transformerModel.getManufactureYear(),
-                    transformerModel.getInspectioDate()
+                    transformerModel.getInspectioDate(),
+                    equipmentType
             );
 
             List<EquipmentPhotoModel> equipmentPhotoModels = equipmentPhotoDao.getByEquipment( transformerModel.getEquipmentId(), equipmentType.getValue());
-            transformerInSlot.setPhotoList(equipmentPhotoModelToInspectionPhoto(equipmentPhotoModels));
+            transformer.setPhotoList(equipmentPhotoModelToInspectionPhoto(equipmentPhotoModels));
 
-            transformers.add(transformerInSlot);
+            transformers.add(transformer);
         }
         return transformers;
     }
 
-    private List<TransformerType> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
-        List<TransformerType> transformerTypes = new ArrayList<>();
+    private List<EquipmentModel> dbTransformerModelToEntity(List<TransformerModel> transformerDBModels) {
+        List<EquipmentModel> transformerTypes = new ArrayList<>();
         for (TransformerModel transformerModel : transformerDBModels) {
-            transformerTypes.add(new TransformerType(  transformerModel.getId(),  transformerModel.getType()));
+            transformerTypes.add(new EquipmentModel(  transformerModel.getId(),  transformerModel.getType()));
         }
         return transformerTypes;
     }
 
 
     @Override
-    public List<TransformerType> getAll() {
+    public List<EquipmentModel> getAll() {
         List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformers();
         return dbTransformerModelToEntity(transformerModelLit);
 
     }
 
     @Override
-    public List<TransformerType> getAllByInstallationInEquipment(EquipmentType type) {
-        if(type.equals(EquipmentType.TRANS_SUBSTATION)){
+    public List<EquipmentModel> getAllByInstallationInEquipment(EquipmentType type) {
+        if(type.equals(EquipmentType.TP)){
             List<TransformerModel> transformerModelLit = transformerDao.loadAllTransformersByInstallation("transformer_substation");
             return dbTransformerModelToEntity(transformerModelLit);
         }
@@ -121,7 +122,7 @@ public class TransformerStorage implements ITransformerStorage {
         }
 
 
-        if(substation.getType().equals(EquipmentType.TRANS_SUBSTATION)){
+        if(substation.getType().equals(EquipmentType.TP)){
             TransformerSubstationEuipmentModel euipmentModel = new TransformerSubstationEuipmentModel(0, substation.getUniqId(), transformerTypeId, slot, 0, null);
             return transformerSubstationEquipmentDao.insert(euipmentModel);
         }
@@ -130,12 +131,12 @@ public class TransformerStorage implements ITransformerStorage {
     }
 
     @Override
-    public TransformerType getById(long transformerTypeId) {
+    public EquipmentModel getById(long transformerTypeId) {
         TransformerModel transformerModel = transformerDao.getById(transformerTypeId);
         if(transformerModel == null){
             return null;
         }
-        return new TransformerType( transformerModel.getId(), transformerModel.getDesc());
+        return new EquipmentModel( transformerModel.getId(), transformerModel.getDesc());
     }
 
 

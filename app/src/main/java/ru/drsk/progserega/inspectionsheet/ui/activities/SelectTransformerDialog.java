@@ -20,7 +20,7 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.TransformersListAdapter;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.TransformerType;
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentModel;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 
 public class SelectTransformerDialog  extends DialogFragment {
@@ -76,7 +76,7 @@ public class SelectTransformerDialog  extends DialogFragment {
         InspectionSheetApplication application = (InspectionSheetApplication) getActivity().getApplication();
 
         ITransformerStorage transformerStorage = application.getTransformerStorage();
-        List<TransformerType> transformerTypes = transformerStorage.getAllByInstallationInEquipment(type);
+        List<EquipmentModel> transformerTypes = transformerStorage.getAllByInstallationInEquipment(type);
         //List<TransformerType> transformerTypes = transformerStorage.getAll();
 
 
@@ -108,7 +108,7 @@ public class SelectTransformerDialog  extends DialogFragment {
             public void onClick(View v) {
               //  TransformerType transformerType =  (TransformerType) transformerList.getSelectedItem();
                 int pos = transformerList.getCheckedItemPosition();
-                TransformerType transformerType = (TransformerType) transformerList.getAdapter().getItem(pos);
+                EquipmentModel transformerType = (EquipmentModel) transformerList.getAdapter().getItem(pos);
                 if( transformerType != null) {
                     addTransformerListener.onAddTransformer(transformerType.getId(), slot);
                     getDialog().dismiss();

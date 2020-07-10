@@ -73,9 +73,7 @@
 
     <string name="preference_file_key">ru.drsk.progserega.inspectionsheet.settings_file</string>
     <string name="text_about"><![CDATA[
-            <h2>Программный комплекс фиксации неполадок в электросетевом хозяйстве.</h2>
-            <br>
-            <br>
+
             Разработка АО "ДРСК" "Приморские электрические сети"
             <br>
             <br>
@@ -93,4 +91,11 @@
             <br>
 ]]></string>
     <string name="show_on_map_text">go to map</string>
+    <string name="journal">Journal</string>
+    <string name="send_journal">Отправить</string>
+    <string name="next_select_equipment">Осмотр оборудования</string>
+    <string name="manufacture_year">год производства</string>
+    <string name="inspected">осмотрено:</string>
+    <string name="about_title_tex">Программный комплекс фиксации неполадок в электросетевом хозяйстве</string>
+    <string name="about_version">версия</string>
 </resources>

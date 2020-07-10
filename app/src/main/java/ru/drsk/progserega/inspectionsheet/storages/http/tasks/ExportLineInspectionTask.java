@@ -1,13 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.storages.http.tasks;
 
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +20,12 @@ import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedSection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedTower;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
+import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectJson;
@@ -41,11 +36,8 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffe
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectsJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInspectionResult;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadTransformerImageInfo;
 
 public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
@@ -135,7 +127,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineInspection(inspectionJson).execute();
         } catch (java.net.ConnectException e) {
-            Log.e("UPLOAD LINE INSPECTION", "export line inspection connection exception ");
+            DBLog.e("UPLOAD LINE INSPECTION", "export line inspection connection exception ");
             return 0;
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,7 +191,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        DBLog.d("UPLOAD :", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
             emitter.onNext("Ошибка обновления информации о Опоре");
         }
@@ -248,9 +240,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
     private boolean uploadPhoto(InspectionPhoto photo, long inspectionId, EquipmentType equipmentType) {
 
         File file = new File(photo.getPath());
-        Log.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        DBLog.d("UPLOAD FILE:", "Start upload file: " + file.getName());
         if (!file.exists()) {
-            Log.d("UPLOAD FILE:", "File does not exist: " + file.getName());
+            DBLog.d("UPLOAD FILE:", "File does not exist: " + file.getName());
             return false;
         }
         //RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -287,7 +279,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
+        DBLog.d("UPLOAD FILE:", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
             return false;
         }
@@ -301,9 +293,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        DBLog.d("UPLOAD :", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
-            Log.d("ERROR :", response.body().toString());
+            DBLog.d("ERROR :", response.body().toString());
             return 0;
         }
 
@@ -335,7 +327,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         }
 
         UploadRes uploadRes = (UploadRes) response.body();
-        Log.d("UPLOAD :", "result " + uploadRes.getStatus());
+        DBLog.d("UPLOAD :", "result " + uploadRes.getStatus());
         if (uploadRes.getStatus() != 200) {
             emitter.onNext("Ошибка обновления информации о пролете");
         }

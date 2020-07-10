@@ -61,7 +61,7 @@ public class PermissionsUtility {
 
             showExplanation(
                     "Необходимо разрешение",
-                    "Для доступа к фотографиям необходимо разрешение",
+                    "Для доступа к фотографиям или файлам необходимо разрешение",
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE} ,
                     REQUEST_CODE_WRITE_EXTERNAL_STORAGE,
                     activity);

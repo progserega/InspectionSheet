@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -152,7 +151,15 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initSelectTowerBtn() {
-        TextView textView = (TextView) findViewById(R.id.inspect_line_select_tower_btn);
+//        TextView textView = (TextView) findViewById(R.id.inspect_line_select_tower_btn);
+//        textView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                presenter.onSelectTowerBtnClick();
+//            }
+//        });
+
+        ImageButton textView = (ImageButton) findViewById(R.id.inspect_line_select_tower_btn);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -362,7 +369,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
 
     private void initPhotoList() {
-        RecyclerView list = (RecyclerView) findViewById(R.id.transformer_photos);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_tower_deffect_photos);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
@@ -420,7 +427,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
             @Override
-            public void onPhotoDeleted() {
+            public void onPhotoDeleted(InspectionPhoto photo) {
                 deffectsPhotoListAdapter.notifyDataSetChanged();
             }
         });

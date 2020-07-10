@@ -45,8 +45,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
 
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
                     android:inputType="text|textNoSuggestions|textVisiblePassword"
                     android:text=""
                     app:layout_constraintEnd_toStartOf="@+id/inspect_line_select_tower_btn"
@@ -69,21 +69,23 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <ImageButton
                     android:id="@+id/inspect_line_select_tower_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-
-
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="24dp"
+
                     android:background="@drawable/circlebackground"
                     android:gravity="center"
-                    android:text="+"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_tower_switch_gps" />
+                    app:layout_constraintEnd_toStartOf="@+id/inspect_line_tower_switch_gps"
+                    app:srcCompat="@drawable/ic_exchange"
+
+                    />
+
             </android.support.constraint.ConstraintLayout>
 
             <TextView
@@ -184,7 +186,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/transformer_photos"
+                    android:id="@+id/inspect_line_tower_deffect_photos"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginBottom="8dp"

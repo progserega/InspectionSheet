@@ -22,12 +22,12 @@ public class GroupAddTransfDeffectPresenter
 
     @Override
     public void initViewData() {
-        InspectionItem header = application.getCurrentInspectionItem();
+        InspectionItem header = application.getState().getCurrentInspectionItem();
 
         view.setHeaderNumber(header.getNumber());
         view.setHeaderTitle(header.getName());
 
-        view.initListAdapter(application.getInspectionItemsGroup());
+        view.initListAdapter(application.getState().getInspectionItemsGroup());
     }
 
 
@@ -37,7 +37,7 @@ public class GroupAddTransfDeffectPresenter
                                  Map<Integer, String> comments,
                                  Map<Integer, List<InspectionPhoto>> photos) {
 
-        List<InspectionItem> inspectionItemsGroup = application.getInspectionItemsGroup();
+        List<InspectionItem> inspectionItemsGroup = application.getState().getInspectionItemsGroup();
         for(int i =0; i < inspectionItemsGroup.size(); i++){
 
             InspectionItemResult deffectResult = inspectionItemsGroup.get(i).getResult();

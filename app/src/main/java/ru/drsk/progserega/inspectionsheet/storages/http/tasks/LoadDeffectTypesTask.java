@@ -6,10 +6,9 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import retrofit2.Response;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerDeffectTypesJson;
-import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerDeffectTypesJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.DBDataImporter;
 
 public class LoadDeffectTypesTask implements ObservableOnSubscribe< String > {
@@ -35,6 +34,8 @@ public class LoadDeffectTypesTask implements ObservableOnSubscribe< String > {
             loadSectionDeffectTypes(emitter);
 
             loadTransformersDeffectTypes(emitter);
+
+            loadStationsDeffectTypes(emitter);
 
             emitter.onComplete();
         } catch (Exception e) {
@@ -145,12 +146,51 @@ public class LoadDeffectTypesTask implements ObservableOnSubscribe< String > {
             return;
         }
 
-        List< TransformerDeffectTypesJson > deffectTypesJson = (List< TransformerDeffectTypesJson >) response.body();
+        List< StationDeffectTypesJson > deffectTypesJson = (List< StationDeffectTypesJson >) response.body();
 
 
         if (!deffectTypesJson.isEmpty()) {
             //передаем данные на обработку
             dbDataImporter.loadTransformersDeffectTypes(deffectTypesJson);
+            emitter.onNext("Типы деффектов  подстанций и ктп загружены");
+        }
+
+
+    }
+
+    private void loadStationsDeffectTypes(ObservableEmitter< String > emitter) throws Exception {
+        Response response = null;
+
+        int attempt = 1;
+        while (attempt < ATTEMPT_COUNT) {
+            try {
+                response = apiInspectionSheet.getStationDeffectsTypes().execute();
+                break;
+            } catch (java.net.ProtocolException ex) {
+                if (attempt == ATTEMPT_COUNT - 1) {
+                    throw ex;
+                }
+            } catch (Exception ex) {
+                if (attempt == ATTEMPT_COUNT - 1) {
+                    throw ex;
+                }
+            }
+            emitter.onNext("Ошибка при загрузке типов деффектов подстанций и ктп. Попытка " + String.valueOf(attempt));
+            attempt++;
+
+        }
+        if (response == null || response.body() == null) {
+            return;
+        }
+
+        List< StationDeffectTypesJson > deffectTypesJson = (List< StationDeffectTypesJson >) response.body();
+
+
+        if (!deffectTypesJson.isEmpty()) {
+            //передаем данные на обработку
+            //dbDataImporter.loadTransformersDeffectTypes(deffectTypesJson);
+
+            dbDataImporter.loadStationsDeffectTypes(deffectTypesJson);
             emitter.onNext("Типы деффектов  подстанций и ктп загружены");
         }
 
