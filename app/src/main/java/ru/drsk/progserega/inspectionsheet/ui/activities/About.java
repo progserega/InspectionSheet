@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,23 @@ public class About extends AppCompatActivity {
         } else {
             textView.setText(Html.fromHtml(getString(R.string.text_about)));
         }
+
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        //get the app version Name for display
+        String version = pInfo.versionName;
+
+        //get the app version Code for checking
+        int versionCode = pInfo.versionCode;
+
+        TextView versionTextView = (TextView)findViewById(R.id.about_version);
+        versionTextView.setText(version);
     }
 
     @Override
