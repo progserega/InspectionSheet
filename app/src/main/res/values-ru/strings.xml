@@ -89,5 +89,6 @@
     <string name="inspected">осмотрено:</string>
     <string name="about_title_tex">Программный комплекс фиксации неполадок в электросетевом хозяйстве</string>
     <string name="about_version">версия:</string>
+    <string name="check_for_update"><u>проверить обновление</u></string>
 
 </resources>
