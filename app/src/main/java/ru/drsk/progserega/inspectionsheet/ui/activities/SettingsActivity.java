@@ -161,11 +161,13 @@ public class SettingsActivity extends AppCompatActivity implements SettingsContr
         builder.create().show();
     }
 
+    @Override
     public void ShowProgressBar(){
         LinearLayout progress = (LinearLayout) findViewById(R.id.settingss_progress_bar);
         progress.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public void HideProgressBar(){
         LinearLayout progress = (LinearLayout) findViewById(R.id.settingss_progress_bar);
         progress.setVisibility(View.GONE);

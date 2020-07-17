@@ -2,6 +2,7 @@ package ru.drsk.progserega.inspectionsheet.storages.http;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,8 +25,10 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspectio
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspectionTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportStationInspectionTask;
+import ru.drsk.progserega.inspectionsheet.storages.http.tasks.GetAppVersionTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadDeffectTypesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadLinesTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTask;
@@ -236,6 +239,14 @@ public class RemoteStorageRx implements IRemoteStorage {
     }
 
     @Override
+    public void getAppVersion(Observer< AppVersionJson > observer ) {
+        Observable.create(new GetAppVersionTask(apiArmIs))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
+
+    @Override
     public void selectActiveServer() {
         final Map< String, Boolean > serversAccessMap = new HashMap<>();
         Observable.fromIterable(this.serverUrls).
@@ -286,6 +297,8 @@ public class RemoteStorageRx implements IRemoteStorage {
                         }
                     }
                 });
+
+
     }
 
 

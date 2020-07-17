@@ -1,10 +1,14 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
+import android.util.Pair;
+
 import java.util.List;
 
+import io.reactivex.Observer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 
@@ -36,4 +40,6 @@ public interface IRemoteStorage {
     void loadDeffectTypes();
 
     void selectActiveServer();
+
+    void getAppVersion(Observer< AppVersionJson > observer);
 }
