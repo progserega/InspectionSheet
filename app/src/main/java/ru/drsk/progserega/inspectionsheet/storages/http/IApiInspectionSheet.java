@@ -1,5 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
+import android.util.Pair;
+
 import java.util.List;
 
 
@@ -13,6 +15,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
@@ -128,6 +131,9 @@ public interface IApiInspectionSheet {
    // @Headers("Accept-Encoding: identity")
     @GET("/api/lines")
     Call< LinesResponseJson > getLines(@Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("/api/appversion")
+    Call< AppVersionJson > getVersion();
 
 
 }
