@@ -75,10 +75,10 @@ public interface IApiInspectionSheet {
 
 
     @GET("/api/substations")
-    Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);
+    Call< SubstationsResponse > getSubstations(@Query("sp_id") long spId, @Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/api/tp")
-    Call< TPResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
+    Call< TPResponse > getTP(@Query("sp_id") long spId, @Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 
     @POST("/api/inspection")
     Call< UploadRes > uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);
