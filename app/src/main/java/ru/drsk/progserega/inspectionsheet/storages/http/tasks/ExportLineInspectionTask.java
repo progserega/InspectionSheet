@@ -203,6 +203,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
         List<TowerDeffectJson> deffectsJsonList = new ArrayList<>();
         for (TowerDeffect deffect : deffectList) {
+            if(deffect.getValue() == 0){
+                continue;
+            }
             deffectsJsonList.add(new TowerDeffectJson(
                     deffect.getTowerUniqId(),
                     (int) deffect.getDeffectType().getId(),
@@ -366,6 +369,11 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
         List<SectionDeffectJson> deffectsJsonList = new ArrayList<>();
         for (LineSectionDeffect deffect : deffectList) {
+
+            if(deffect.getValue() == 0){
+                continue;
+            }
+
             deffectsJsonList.add(new SectionDeffectJson(
                     section.getLineUniqId(),
                     section.getTowerFromUniqId(),

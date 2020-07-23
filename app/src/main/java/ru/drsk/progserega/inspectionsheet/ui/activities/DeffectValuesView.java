@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -16,22 +17,24 @@ import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemPos
 public class DeffectValuesView {
 
     public interface OnValueChangeListener {
-        void valuesChange(List<String> values);
+        void valuesChange(List< String > values);
     }
 
     private OnValueChangeListener valueChangeListener;
     private LinearLayout layout;
     private InspectionItemPossibleResult possibleResult;
-    private List<String> selectedValues;
+    private List< String > selectedValues;
 
     private Context context;
 
     private RadioGroup radioGroup;
-    private List<CheckBox> checkBoxes;
+    private List< CheckBox > checkBoxes;
+
+    private int previousCheckedRadio = -1;
 
     public DeffectValuesView(LinearLayout layout,
                              InspectionItemPossibleResult possibleResult,
-                             List<String> selectedValues,
+                             List< String > selectedValues,
                              Context context,
                              OnValueChangeListener valueChangeListener) {
 
@@ -43,6 +46,7 @@ public class DeffectValuesView {
     }
 
     public void build() {
+        previousCheckedRadio = -1;
         int id = 0;
         //InspectionItemPossibleResult possibleResult = result.getPossibleResult();
         if (possibleResult.getType().equals("radio")) {
@@ -56,9 +60,27 @@ public class DeffectValuesView {
                 rdbtn.setText(value);
                 radioGroup.addView(rdbtn);
 
-                if(!selectedValues.isEmpty() && selectedValues.get(0).equals(value)){
+                if (!selectedValues.isEmpty() && selectedValues.get(0).equals(value)) {
                     rdbtn.setChecked(true);
+                    previousCheckedRadio = id;
                 }
+
+
+                rdbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                        if(checkedRadioButtonId == previousCheckedRadio){
+                            radioGroup.clearCheck();
+                            previousCheckedRadio = -1;
+                            valueChangeListener.valuesChange(new ArrayList<>());
+                        }
+                        else{
+                            previousCheckedRadio = checkedRadioButtonId;
+                        }
+                    }
+                });
+
                 id++;
             }
 
@@ -67,10 +89,13 @@ public class DeffectValuesView {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+
+                    // Toast.makeText(context, radioBtn.getText(), Toast.LENGTH_SHORT).show();
+                    List< String > results = new ArrayList<>();
                     RadioButton radioBtn = (RadioButton) layout.findViewById(checkedRadioButtonId);
-                   // Toast.makeText(context, radioBtn.getText(), Toast.LENGTH_SHORT).show();
-                   List<String> results = new ArrayList<>();
-                    results.add( radioBtn.getText().toString());
+                    if (radioBtn != null) {
+                        results.add(radioBtn.getText().toString());
+                    }
                     valueChangeListener.valuesChange(results);
                 }
             });
@@ -90,8 +115,8 @@ public class DeffectValuesView {
                 checkBoxes.add(cb);
 
                 //Устанавливает галочки если уже были установлены значения
-                for(String checkedValue: selectedValues){
-                    if(checkedValue.equals(value)){
+                for (String checkedValue : selectedValues) {
+                    if (checkedValue.equals(value)) {
                         cb.setChecked(true);
                     }
                 }
@@ -100,15 +125,15 @@ public class DeffectValuesView {
                 cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                       // String msg = "You have " + (isChecked ? "checked" : "unchecked") + " this Check it Checkbox.";
+                        // String msg = "You have " + (isChecked ? "checked" : "unchecked") + " this Check it Checkbox.";
                         //Toast.makeText(context, msg + finalId, Toast.LENGTH_SHORT).show();
 
-                        List<String> results = new ArrayList<>();
-                        for(CheckBox cb: checkBoxes){
+                        List< String > results = new ArrayList<>();
+                        for (CheckBox cb : checkBoxes) {
                             boolean checked = cb.isChecked();
-                            if(checked){
+                            if (checked) {
 
-                                String value = possibleResult.getValues().get( cb.getId() );
+                                String value = possibleResult.getValues().get(cb.getId());
                                 results.add(value);
                             }
                         }
@@ -132,9 +157,9 @@ public class DeffectValuesView {
         layout.setPadding(paddingPx, paddingPx, paddingPx, paddingPx);
     }
 
-    public List<String> getResult() {
+    public List< String > getResult() {
 
-        List<String> results = new ArrayList<>();
+        List< String > results = new ArrayList<>();
 
         if (possibleResult.getType().equals("radio")) {
             int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -146,11 +171,11 @@ public class DeffectValuesView {
 
         if (possibleResult.getType().equals("checkbox")) {
 
-            for(CheckBox cb: checkBoxes){
+            for (CheckBox cb : checkBoxes) {
                 boolean checked = cb.isChecked();
-                if(checked){
+                if (checked) {
 
-                    String value = possibleResult.getValues().get( cb.getId() );
+                    String value = possibleResult.getValues().get(cb.getId());
                     results.add(value);
                 }
             }
