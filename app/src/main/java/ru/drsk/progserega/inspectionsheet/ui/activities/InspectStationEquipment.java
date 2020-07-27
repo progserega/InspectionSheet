@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,8 @@ public class InspectStationEquipment extends AppCompatActivity
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             presenter.onInspectionPhotoClicked(inspectionItem, position);
+        }, (inspectionItem )-> {
+            Toast.makeText(this, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
         });
         inspectionList = (ListView) findViewById(R.id.inspect_station_equipment__inspection);
         inspectionList.setAdapter(inspectionAdapter);

@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -117,6 +118,8 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
 
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             presenter.onInspectionPhotoClicked(inspectionItem, position);
+        }, (inspectionItem) -> {
+            Toast.makeText(this, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
         });
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);

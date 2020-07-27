@@ -26,6 +26,10 @@ public class InspectionAdapter extends BaseAdapter {
         void onItemPhotoClick(InspectionItem inspectionItem, InspectionPhoto photo, int position);
     }
 
+    public interface OnItemAboutClickListener {
+        void OnItemAboutClick(InspectionItem inspectionItem);
+    }
+
     private final Context context;
 
 
@@ -33,6 +37,8 @@ public class InspectionAdapter extends BaseAdapter {
     // private TransformerInspection inspection;
     private List<InspectionItem> inspectionItems;
     private OnItemPhotoClickListener onItemPhotoClickListener;
+    private OnItemAboutClickListener onItemAboutClickListener;
+
 
 //    public void setInspection(TransformerInspection inspection) {
 //        this.inspection = inspection;
@@ -51,10 +57,11 @@ public class InspectionAdapter extends BaseAdapter {
         return inspectionItems;
     }
 
-    public InspectionAdapter(Context context,  List<InspectionItem> inspectionItems, OnItemPhotoClickListener photoClickListener){
+    public InspectionAdapter(Context context,  List<InspectionItem> inspectionItems, OnItemPhotoClickListener photoClickListener, OnItemAboutClickListener onItemAboutClickListener){
         this.context = context;
         this.inspectionItems = inspectionItems;
         this.onItemPhotoClickListener = photoClickListener;
+        this.onItemAboutClickListener = onItemAboutClickListener;
     }
 
     @Override
@@ -149,7 +156,8 @@ public class InspectionAdapter extends BaseAdapter {
                 aboutBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(context, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
+                        onItemAboutClickListener.OnItemAboutClick(inspectionItem);
+
                     }
                 });
                 break;
