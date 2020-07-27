@@ -1,42 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/inspection_list__item_about"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.285"
+            app:srcCompat="@drawable/ic_help"
+            android:contentDescription="about deffect btn" />
+
+        <TextView
+
+            android:id="@+id/transf_inspection_item_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:baselineAligned="false"
+            android:gravity="left|center"
+            android:minHeight="40dp"
+            android:paddingStart="4dp"
+            android:text="ЗАГОЛОВОК"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/inspection_list__item_about"
+            app:layout_constraintStart_toEndOf="@+id/transf_inspection_item_number"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/transf_inspection_item_number"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
 
             android:baselineAligned="false"
             android:gravity="center"
             android:text="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-        <TextView
-
-            android:id="@+id/transf_inspection_item_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginRight="8dp"
-            android:baselineAligned="false"
-            android:gravity="left|center"
-            android:minHeight="40dp"
-            android:text="ЗАГОЛОВОК"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/transf_inspection_item_values"

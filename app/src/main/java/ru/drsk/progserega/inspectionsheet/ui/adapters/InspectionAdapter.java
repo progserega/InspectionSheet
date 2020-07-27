@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +145,13 @@ public class InspectionAdapter extends BaseAdapter {
                     }
                 }));
 
+                ImageView aboutBtn = (ImageView)  rowView.findViewById(R.id.inspection_list__item_about);
+                aboutBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
+                    }
+                });
                 break;
 
         }
