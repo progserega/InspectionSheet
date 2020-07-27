@@ -211,7 +211,7 @@ public class InspectStationEquipment extends AppCompatActivity
         }
 
         ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1)) + 350;
         listView.setLayoutParams(par);
         listView.requestLayout();
     }
