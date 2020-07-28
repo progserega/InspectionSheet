@@ -3,4 +3,5 @@
     <!--<external-path name="my_images" path="Android/data/com.example.package.name/files/Pictures" />-->
     <external-path name="my_images" path="Android/data/ru.drsk.progserega.inspectionsheet/files/Pictures" />
     <external-path name="tmp" path="/tmp" />
+    <external-path name="downloads" path="/Download" />
 </paths>
