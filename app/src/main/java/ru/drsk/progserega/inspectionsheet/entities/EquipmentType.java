@@ -59,17 +59,17 @@ public enum EquipmentType {
     public int getArmObjecTypeId(){
         switch (this) {
             case LINE:
-                return 1;
+                return -1; //не используется
             case SUBSTATION:
                 return 5;
             case TP:
                 return 6;
             case TOWER:
-                return 2;
+                return -2; //не используется
             case TRANSFORMER:
                 return 9;
             case LINE_SECTION:
-                return 3;
+                return -3; //не используется
             case TP_TRANSFORMER:
                 return 7;
             case SUBSTATION_TRANSFORMER:
