@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import ru.drsk.progserega.inspectionsheet.R;
 
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.DeffectDescriptionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
@@ -146,6 +148,7 @@ public class DBDataImporter {
         db.stationDao().deleteAll();
         db.stationEquipmentDao().deleteAll();
         db.stationEquipmentModelsDao().deleteAll();
+        db.equipmentPhotoDao().deleteAll();
 
         db.stationEquipmentsDeffectTypesDao().deleteAll();
 
@@ -708,9 +711,9 @@ public class DBDataImporter {
         }
 
         for (DeffectDescriptionJson descriptionJson : descriptionJsons) {
-            DefectDescriptionPhotoModel photo = photosMap.get(descriptionJson.getId());
+            DefectDescriptionPhotoModel oldPhoto = photosMap.get(descriptionJson.getId());
 
-            if (photo == null) {
+            if (oldPhoto == null) {
 
                 if (descriptionJson.getImageUrl() != null && !descriptionJson.getImageUrl().equals("")) {
                     descriptionsForDownload.add(descriptionJson);
@@ -719,22 +722,30 @@ public class DBDataImporter {
             }
 
             if (descriptionJson.getImageUrl() == null || descriptionJson.getImageUrl().equals("")) {
-                db.defectDescriptionPhotoDao().deleteById(photo.getId());
-                //TODO:Удалить файл
+                db.defectDescriptionPhotoDao().deleteById(oldPhoto.getId());
+                removePhotoFromStorage(oldPhoto);
                 continue;
             }
 
-            if(descriptionJson.getImageUrl().equals(photo.getImageUrl())) {
+            if(descriptionJson.getImageUrl().equals(oldPhoto.getImageUrl())) {
                 continue;
             }
 
-            db.defectDescriptionPhotoDao().deleteById(photo.getId());
-            //TODO:Удалить файл
+            db.defectDescriptionPhotoDao().deleteById(oldPhoto.getId());
+            removePhotoFromStorage(oldPhoto);
             descriptionsForDownload.add(descriptionJson);
 
         }
 
         return descriptionsForDownload;
+    }
+
+    private void removePhotoFromStorage(DefectDescriptionPhotoModel photo){
+        if(photo == null || photo.getPhotoPath() == null || photo.getPhotoPath().isEmpty() ){
+            return;
+        }
+        File imageFile = new File(photo.getPhotoPath());
+        imageFile.delete();
     }
 
     public void loadDefectDescriptionPhotoFile(DeffectDescriptionJson descriptionJson, String filePath){

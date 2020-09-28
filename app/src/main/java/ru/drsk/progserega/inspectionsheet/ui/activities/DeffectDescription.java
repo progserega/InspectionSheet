@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +43,10 @@ public class DeffectDescription extends AppCompatActivity {
         ImageView imageView = (ImageView) findViewById(R.id.deffect_description__image);
         if (description.getPhoto() != null && description.getPhoto().getPath() != null && !description.getPhoto().getPath().isEmpty()) {
             imageView.setImageURI(Uri.fromFile(new File(description.getPhoto().getPath())));
+            imageView.setVisibility(View.VISIBLE);
+        }
+        else{
+            imageView.setVisibility(View.GONE);
         }
 
 //        File imgFile = new File(inspectionItem.getDescription().getPhoto().getPath());
