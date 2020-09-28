@@ -12,7 +12,6 @@ import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.LineSection;
 import ru.drsk.progserega.inspectionsheet.entities.catalogs.Material;
-import ru.drsk.progserega.inspectionsheet.entities.catalogs.TowerType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
@@ -125,6 +124,12 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         inspection.setInspectionDate(new Date());
         application.getLineInspectionStorage().saveSectionInspection(inspection);
 
+    }
+
+    @Override
+    public void onDefectAboutBtnClick(LineSectionDeffect sectionDeffect) {
+        application.getState().setDeffectDescription(sectionDeffect.getDeffectType().getDeffectDescription());
+        view.startDeffectDescriptionActivity();
     }
 
     @Override

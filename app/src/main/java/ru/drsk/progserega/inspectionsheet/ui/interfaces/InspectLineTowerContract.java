@@ -31,6 +31,8 @@ public class InspectLineTowerContract {
         void showNextSectionSelectorDialog(String[] selectionItems);
 
         void showEndOfLineDialog();
+
+        void startDeffectDescriptionActivity();
     }
 
     public interface Presenter{
@@ -58,6 +60,8 @@ public class InspectLineTowerContract {
         void onDestroy();
 
         void onNextSectionSelected(int pos);
+
+        void onDefectAboutBtnClick(TowerDeffect towerDeffect);
 
         void finishButtonPressed();
 

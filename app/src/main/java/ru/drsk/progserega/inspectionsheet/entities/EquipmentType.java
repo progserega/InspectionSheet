@@ -55,4 +55,28 @@ public enum EquipmentType {
         }
 
     }
+
+    public int getArmObjecTypeId(){
+        switch (this) {
+            case LINE:
+                return 1;
+            case SUBSTATION:
+                return 5;
+            case TP:
+                return 6;
+            case TOWER:
+                return 2;
+            case TRANSFORMER:
+                return 9;
+            case LINE_SECTION:
+                return 3;
+            case TP_TRANSFORMER:
+                return 7;
+            case SUBSTATION_TRANSFORMER:
+                return 8;
+        }
+
+          return 0;
+
+    }
 }

@@ -107,6 +107,13 @@ public class InspectLineSection extends AppCompatActivity implements
                 presenter.onDeffectSelectionChange(position, isSelect);
             }
         });
+
+        deffectsListAdapter.setOnItemAboutClickListener(new LineSectionDeffectsListAdapter.OnItemAboutClickListener() {
+            @Override
+            public void OnItemAboutClick(LineSectionDeffect sectionDeffect) {
+                presenter.onDefectAboutBtnClick(sectionDeffect);
+            }
+        });
     }
 
     private void initPhotoList() {
@@ -252,6 +259,12 @@ public class InspectLineSection extends AppCompatActivity implements
         //application.setPhotosForFullscreen(photos);
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
+        startActivity(intent);
+    }
+
+    @Override
+    public void startDeffectDescriptionActivity() {
+        Intent intent = new Intent(this, DeffectDescription.class);
         startActivity(intent);
     }
 

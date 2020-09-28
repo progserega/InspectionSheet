@@ -1,9 +1,12 @@
 package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 
+import android.content.Intent;
+
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.ui.activities.DeffectDescription;
 
 public class InspectStationEquipmentContract {
     public interface View {
@@ -27,6 +30,7 @@ public class InspectStationEquipmentContract {
         void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos);
 //
 //        void startSelectEquipmentActivity();
+         void startDeffectDescriptionActivity(InspectionItem currentInspectionItem);
     }
 
     public interface Presenter {
@@ -48,6 +52,8 @@ public class InspectStationEquipmentContract {
         void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
 //
 //        void onGotoEquipmentBtnClicked();
+
+        void onInspectionAboutClicked(InspectionItem inspectionItem);
 
         void onDestroy();
 

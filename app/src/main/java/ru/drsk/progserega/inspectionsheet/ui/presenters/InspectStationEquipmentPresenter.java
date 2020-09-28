@@ -93,6 +93,12 @@ public class InspectStationEquipmentPresenter implements InspectStationEquipment
     }
 
     @Override
+    public void onInspectionAboutClicked(InspectionItem inspectionItem) {
+        application.getState().setDeffectDescription(inspectionItem.getDescription());
+        view.startDeffectDescriptionActivity(inspectionItem);
+    }
+
+    @Override
     public void onDestroy() {
         view = null;
     }

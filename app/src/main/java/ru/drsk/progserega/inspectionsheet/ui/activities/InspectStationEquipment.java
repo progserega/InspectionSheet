@@ -87,7 +87,9 @@ public class InspectStationEquipment extends AppCompatActivity
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             presenter.onInspectionPhotoClicked(inspectionItem, position);
         }, (inspectionItem )-> {
-            Toast.makeText(this, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
+
+            presenter.onInspectionAboutClicked(inspectionItem);
+            //Toast.makeText(this, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
         });
         inspectionList = (ListView) findViewById(R.id.inspect_station_equipment__inspection);
         inspectionList.setAdapter(inspectionAdapter);
@@ -140,6 +142,12 @@ public class InspectStationEquipment extends AppCompatActivity
                 inspectionAdapter.notifyDataSetChanged();
             }
         });
+        startActivity(intent);
+    }
+
+    @Override
+    public void startDeffectDescriptionActivity(InspectionItem currentInspectionItem) {
+        Intent intent = new Intent(this, DeffectDescription.class);
         startActivity(intent);
     }
 

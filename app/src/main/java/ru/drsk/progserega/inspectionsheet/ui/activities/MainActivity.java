@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         networkTasksQueue.add(CLEAR_DB);
         networkTasksQueue.add(LOAD_DEFFECT_TYPES);
         networkTasksQueue.add(LOAD_LINES);
-        networkTasksQueue.add(LOAD_SUBSTATIONS);
+     //   networkTasksQueue.add(LOAD_SUBSTATIONS);
         networkTasksQueue.add(LOAD_TP);
 //
         nextTask();

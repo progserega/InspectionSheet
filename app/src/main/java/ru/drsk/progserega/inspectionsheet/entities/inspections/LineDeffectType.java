@@ -8,6 +8,8 @@ public class LineDeffectType {
     private int order;
     private String name;
 
+    private DeffectDescription deffectDescription;
+
     public LineDeffectType(long id, int order, String name) {
         this.id = id;
         this.order = order;
@@ -36,5 +38,13 @@ public class LineDeffectType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DeffectDescription getDeffectDescription() {
+        return deffectDescription;
+    }
+
+    public void setDeffectDescription(DeffectDescription deffectDescription) {
+        this.deffectDescription = deffectDescription;
     }
 }

@@ -148,6 +148,13 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
                 presenter.onDeffectSelectionChange(position, isSelect);
             }
         });
+
+        deffectsListAdapter.setOnItemAboutClickListener(new LineTowerDeffectsListAdapter.OnItemAboutClickListener() {
+            @Override
+            public void OnItemAboutClick(TowerDeffect towerDeffect) {
+                presenter.onDefectAboutBtnClick(towerDeffect);
+            }
+        });
     }
 
     private void initSelectTowerBtn() {
@@ -349,6 +356,11 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         startActivity(intent);
     }
 
+    @Override
+    public void startDeffectDescriptionActivity() {
+        Intent intent = new Intent(this, DeffectDescription.class);
+        startActivity(intent);
+    }
 
     @Override
     public void setComment(String comment) {

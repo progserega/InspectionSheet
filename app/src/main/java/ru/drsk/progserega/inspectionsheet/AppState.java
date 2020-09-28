@@ -2,6 +2,7 @@ package ru.drsk.progserega.inspectionsheet;
 
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.entities.inspections.DeffectDescription;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItemResult;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
@@ -11,6 +12,7 @@ public class AppState {
     private InspectionItem currentInspectionItem;
     private List< InspectionItem > inspectionItemsGroup;
     private InspectionItemResult currentDeffect;
+    private DeffectDescription deffectDescription;
 
     public StationEquipmentInspection getCurrentStaionEquipmentInspection() {
         return currentStaionEquipmentInspection;
@@ -42,5 +44,13 @@ public class AppState {
 
     public void setCurrentDeffect(InspectionItemResult currentDeffect) {
         this.currentDeffect = currentDeffect;
+    }
+
+    public DeffectDescription getDeffectDescription() {
+        return deffectDescription;
+    }
+
+    public void setDeffectDescription(DeffectDescription deffectDescription) {
+        this.deffectDescription = deffectDescription;
     }
 }

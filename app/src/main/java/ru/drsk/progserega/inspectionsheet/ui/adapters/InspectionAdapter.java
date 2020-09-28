@@ -152,7 +152,13 @@ public class InspectionAdapter extends BaseAdapter {
                     }
                 }));
 
+
                 ImageView aboutBtn = (ImageView)  rowView.findViewById(R.id.inspection_list__item_about);
+
+                if(inspectionItem.getDescription() == null){
+                    aboutBtn.setVisibility(View.GONE);
+                }
+
                 aboutBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

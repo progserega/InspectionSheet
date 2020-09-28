@@ -125,32 +125,9 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             presenter.onInspectionPhotoClicked(inspectionItem, position);
         }, (inspectionItem) -> {
-            Toast.makeText(this, "TAP ON ABOUT BTN ", Toast.LENGTH_LONG).show();
-
-            // создаём новое намерение
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-
-            // устанавливаем флаг для того, чтобы дать внешнему приложению пользоваться нашим FileProvider
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            // генерируем URI, я определил полномочие как ID приложения в манифесте, последний параметр это файл, который я хочу открыть
-            //.concat("/")
-            File pdfFileDir = new File(Environment.getExternalStorageDirectory(), "/");
-            File[] mImageFiles = pdfFileDir.listFiles();
-
-
-            File pdfFile = new File(Environment.getExternalStorageDirectory(), "Download/rxjava.pdf");
-            Uri uri = FileProvider.getUriForFile(that, BuildConfig.APPLICATION_ID+".fileprovider",pdfFile);
-
-            // я открываю PDF-файл, поэтому я даю ему действительный тип MIME
-            intent.setDataAndType(uri, "application/pdf");
-
-            // подтвердите, что устройство может открыть этот файл!
-            PackageManager pm = that.getPackageManager();
-            if (intent.resolveActivity(pm) != null) {
-                startActivity(intent);
-            }
+            presenter.onInspectionAboutClicked(inspectionItem);
         });
+
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);
 
@@ -290,6 +267,12 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     public void setInspectionPercent(float percent) {
         TextView percentTextView = (TextView) findViewById(R.id.inspect_station__inspected_percent);
         percentTextView.setText(floatFmt(percent) + "%");
+    }
+
+    @Override
+    public void startDeffectDescriptionActivity(InspectionItem currentInspectionItem) {
+        Intent intent = new Intent(this, DeffectDescription.class);
+        startActivity(intent);
     }
 
     @Override

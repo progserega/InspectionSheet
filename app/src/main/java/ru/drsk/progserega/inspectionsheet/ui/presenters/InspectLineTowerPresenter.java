@@ -209,6 +209,12 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     @Override
+    public void onDefectAboutBtnClick(TowerDeffect towerDeffect) {
+        application.getState().setDeffectDescription(towerDeffect.getDeffectType().getDeffectDescription());
+        view.startDeffectDescriptionActivity();
+    }
+
+    @Override
     public void onNextSectionSelected(int pos) {
         if (nextSections == null || nextSections.isEmpty()) {
             return;

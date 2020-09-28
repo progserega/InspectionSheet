@@ -69,6 +69,7 @@ private IStationPhotoStorage stationPhotoStorage;
 
         List<InspectionItem> template  = deffectTypesStorage.getDeffectTypes(equipmentType);
 
+
         return template;
     }
 

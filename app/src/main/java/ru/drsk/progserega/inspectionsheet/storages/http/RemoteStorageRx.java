@@ -123,7 +123,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void loadDeffectTypes() {
-        Observable.create(new LoadDeffectTypesTask(apiArmIs, dbDataImporter))
+        Observable.create(new LoadDeffectTypesTask(apiArmIs, dbDataImporter, context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());
