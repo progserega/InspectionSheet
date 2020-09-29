@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import ru.drsk.progserega.inspectionsheet.R;
 
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.DeffectDescriptionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionJson;
@@ -46,6 +49,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.SubstationEquipme
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.DefectDescriptionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.DefectDescriptionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionItemModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineSectionModel;
@@ -143,113 +148,13 @@ public class DBDataImporter {
         db.stationDao().deleteAll();
         db.stationEquipmentDao().deleteAll();
         db.stationEquipmentModelsDao().deleteAll();
+        db.equipmentPhotoDao().deleteAll();
 
         db.stationEquipmentsDeffectTypesDao().deleteAll();
+
+        db.defectDescriptionDao().deleteAll();
     }
 
-//    public void loadSteTpModel(List< SteTPModel > tpModels) {
-//
-//        for (SteTPModel tpModel : tpModels) {
-//
-//            long spId = getSpFromCache(tpModel.getSpName());
-//            long resId = getResFromCache(tpModel.getResName(), spId);
-//
-//            TransformerSubstationModel substationModel = new TransformerSubstationModel(
-//                    tpModel.getId(),
-//                    tpModel.getUniqId(),
-//                    tpModel.getPowerCenterName(),
-//                    tpModel.getDispName(),
-//                    spId,
-//                    resId,
-//                    tpModel.getLat(),
-//                    tpModel.getLon());
-//
-//
-//            long tpId = db.transformerSubstationDao().insert(substationModel);
-//
-//
-//            List< SteTransformator > steTransformators = new ArrayList<>();
-//            if (tpModel.getT1() != null && tpModel.getT1().getDesc() != null) {
-//                steTransformators.add(tpModel.getT1());
-//            }
-//            if (tpModel.getT2() != null && tpModel.getT2().getDesc() != null) {
-//                steTransformators.add(tpModel.getT2());
-//            }
-//
-//            if (tpModel.getT3() != null && tpModel.getT3().getDesc() != null) {
-//                steTransformators.add(tpModel.getT3());
-//            }
-//
-//            int slot = 1;
-//            for (SteTransformator transformator : steTransformators) {
-//
-//                TransformerModel transformerModel = new TransformerModel(
-//                        transformator.getId(),
-//                        transformator.getTrType(),
-//                        transformator.getDesc(),
-//                        "transformer_substation");
-//
-//
-//                if (!transfCache.contains(transformator.getId())) {
-//                    transformerDao.insert(transformerModel);
-//                    transfCache.add(transformator.getId());
-//                }
-//
-//                TransformerSubstationEuipmentModel transformerSubstationEuipmentModel = new TransformerSubstationEuipmentModel(0, tpModel.getUniqId(), transformator.getId(), slot, 0, null);
-//                transformerSubstationEquipmentDao.insert(transformerSubstationEuipmentModel);
-//                slot++;
-//            }
-//        }
-//
-//
-//    }
-
-//    public void loadGeoSubstations(List< GeoSubstation > substations) {
-//
-//        Set< String > spNames = spCache.keySet();
-//        Set< String > resNames = resCache.keySet();
-//
-//        for (GeoSubstation substation : substations) {
-//
-//            long spId = 0;
-//            if (substation.getSp() == null || substation.getSp().isEmpty()) {
-//                spId = 0;
-//
-//            } else {
-//                String spName = substation.getSp().get("name");
-//                spId = findSpIdInCache(spNames, spName);
-//            }
-//
-//
-//            long resId = 0;
-//            if (substation.getRes() == null || substation.getRes().isEmpty()) {
-//                resId = 0;
-//            } else {
-//                String resName = substation.getRes().get("name");
-//                resId = findResIdInCache(resNames, resName);
-//                if (resId == 0) {
-//                    resId = getResFromCache(resName, spId);
-//                }
-//            }
-//
-//            SubstationModel substationModel = new SubstationModel(
-//                    0,
-//                    0,
-//                    substation.getName(),
-//                    substation.getVoltage(),
-//                    substation.getObjectType(),
-//                    spId,
-//                    resId,
-//                    substation.getLat(),
-//                    substation.getLon(),
-//                    null,
-//                    0
-//            );
-//
-//            long substationId = substationDao.insert(substationModel);
-//        }
-//
-//    }
 
     public void loadSubstationTransformers(List< TransformerType > transformers, String installIn) {
 
@@ -777,5 +682,76 @@ public class DBDataImporter {
         }
 
         db.stationEquipmentsDeffectTypesDao().insertAll(deffectTypesModels);
+    }
+
+    public void loadDefectDescriptions(List< DeffectDescriptionJson > descriptionJsons) {
+
+        List< DefectDescriptionModel > defectDescriptionModels = new ArrayList<>();
+
+        for (DeffectDescriptionJson descriptionJson : descriptionJsons) {
+            defectDescriptionModels.add(new DefectDescriptionModel(
+                    descriptionJson.getId(),
+                    descriptionJson.getDeffectId(),
+                    descriptionJson.getObjectTypeId(),
+                    descriptionJson.getDescription()
+            ));
+        }
+
+        db.defectDescriptionDao().insertAll(defectDescriptionModels);
+    }
+
+    public List< DeffectDescriptionJson > getDescriptionsFilesForDownload(List< DeffectDescriptionJson > descriptionJsons) {
+        List< DeffectDescriptionJson > descriptionsForDownload = new ArrayList<>();
+
+        List< DefectDescriptionPhotoModel > defectDescriptionPhotos = db.defectDescriptionPhotoDao().getAll();
+        Map< Long, DefectDescriptionPhotoModel > photosMap = new HashMap<>();
+
+        for (DefectDescriptionPhotoModel photoModel : defectDescriptionPhotos) {
+            photosMap.put(photoModel.getDescriptionId(), photoModel);
+        }
+
+        for (DeffectDescriptionJson descriptionJson : descriptionJsons) {
+            DefectDescriptionPhotoModel oldPhoto = photosMap.get(descriptionJson.getId());
+
+            if (oldPhoto == null) {
+
+                if (descriptionJson.getImageUrl() != null && !descriptionJson.getImageUrl().equals("")) {
+                    descriptionsForDownload.add(descriptionJson);
+                }
+                continue;
+            }
+
+            if (descriptionJson.getImageUrl() == null || descriptionJson.getImageUrl().equals("")) {
+                db.defectDescriptionPhotoDao().deleteById(oldPhoto.getId());
+                removePhotoFromStorage(oldPhoto);
+                continue;
+            }
+
+            if(descriptionJson.getImageUrl().equals(oldPhoto.getImageUrl())) {
+                continue;
+            }
+
+            db.defectDescriptionPhotoDao().deleteById(oldPhoto.getId());
+            removePhotoFromStorage(oldPhoto);
+            descriptionsForDownload.add(descriptionJson);
+
+        }
+
+        return descriptionsForDownload;
+    }
+
+    private void removePhotoFromStorage(DefectDescriptionPhotoModel photo){
+        if(photo == null || photo.getPhotoPath() == null || photo.getPhotoPath().isEmpty() ){
+            return;
+        }
+        File imageFile = new File(photo.getPhotoPath());
+        imageFile.delete();
+    }
+
+    public void loadDefectDescriptionPhotoFile(DeffectDescriptionJson descriptionJson, String filePath){
+        DefectDescriptionPhotoModel photoModel = new DefectDescriptionPhotoModel(0, descriptionJson.getId(), descriptionJson.getImageUrl(), filePath);
+
+        db.defectDescriptionPhotoDao().insert(photoModel);
+
     }
 }

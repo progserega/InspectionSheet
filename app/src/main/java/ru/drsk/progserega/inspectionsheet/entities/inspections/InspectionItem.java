@@ -2,6 +2,9 @@ package ru.drsk.progserega.inspectionsheet.entities.inspections;
 
 import ru.drsk.progserega.inspectionsheet.storages.json.models.InspectionItemPossibleResult;
 
+/**
+ * Пункт в листе осмотра
+ */
 public class InspectionItem {
 
     private long id;
@@ -12,6 +15,8 @@ public class InspectionItem {
     private InspectionItemType type;
 
     private InspectionItemResult result;
+
+    private DeffectDescription description;
 
     private long armId = 0;
 
@@ -59,6 +64,14 @@ public class InspectionItem {
         this.armId = armId;
     }
 
+    public DeffectDescription getDescription() {
+        return description;
+    }
+
+    public void setDescription(DeffectDescription description) {
+        this.description = description;
+    }
+
     public InspectionItem(int id,
                           int valueId,
                           String number,
@@ -74,6 +87,7 @@ public class InspectionItem {
         this.type = type;
         this.result = new InspectionItemResult(values, subresultValues);
         this.parentId = parentId;
+        this.description = null;
     }
 
     public boolean isEmpty() {

@@ -26,6 +26,8 @@ public class InspectStationContract {
         void startSelectEquipmentActivity();
 
         void setInspectionPercent(float percent);
+
+        void startDeffectDescriptionActivity(InspectionItem currentInspectionItem);
     }
 
     public interface Presenter {
@@ -43,6 +45,8 @@ public class InspectStationContract {
         void onCommonPhotoClicked(int position);
 
         void onInspectionPhotoClicked(InspectionItem inspectionItem, int photoPosition);
+
+        void onInspectionAboutClicked(InspectionItem inspectionItem);
 
         void onGotoEquipmentBtnClicked();
 

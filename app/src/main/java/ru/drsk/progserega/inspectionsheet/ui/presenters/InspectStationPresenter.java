@@ -99,6 +99,12 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
         view.showInspectionPhotoFullcreen(photoPosition, inspectionItem.getResult().getPhotos());
     }
 
+    @Override
+    public void onInspectionAboutClicked(InspectionItem inspectionItem) {
+        application.getState().setDeffectDescription(inspectionItem.getDescription());
+        view.startDeffectDescriptionActivity(inspectionItem);
+   }
+
     private List<InspectionItem> getInspectionGroup(InspectionItem header, List<InspectionItem> allItems) {
         List<InspectionItem> group = new ArrayList<>();
         for (InspectionItem item : allItems) {

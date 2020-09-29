@@ -2,10 +2,8 @@ package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 
 import java.util.List;
 
-import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 
 public class InspectLineSectionContract {
     public interface View{
@@ -24,6 +22,8 @@ public class InspectLineSectionContract {
 
         void setInspectionPhotos(List<InspectionPhoto> photos);
 
+        void startDeffectDescriptionActivity();
+
     }
 
     public interface Presenter{
@@ -39,6 +39,8 @@ public class InspectLineSectionContract {
         void onImageTaken(String photoPath);
 
         void onDestroy();
+
+        void onDefectAboutBtnClick(LineSectionDeffect sectionDeffect);
 
         void finishButtonPressed();
 

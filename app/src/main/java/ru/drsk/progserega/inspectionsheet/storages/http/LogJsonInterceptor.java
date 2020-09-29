@@ -8,8 +8,10 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -23,7 +25,20 @@ public class LogJsonInterceptor implements Interceptor {
         Log.d("REUEST_URL", request.url().toString());
 
         Response response = chain.proceed(request);
+
+        MediaType contentType =  response.body().contentType();
+
+        MediaType png = MediaType.parse("image/png");
+        MediaType jpeg = MediaType.parse("image/jpeg");
+        MediaType gif = MediaType.parse("image/gif");
+
+        if(contentType.equals(png) || contentType.equals(jpeg) || contentType.equals(gif) ){
+           return response;
+        }
+
+
         String rawJson = response.body().string();
+        //InputStream bodyStream = response.body().byteStream();
        // Log.d("RESPONSE BODY", String.format("raw JSON response is: %s", rawJson));
 
         try {
