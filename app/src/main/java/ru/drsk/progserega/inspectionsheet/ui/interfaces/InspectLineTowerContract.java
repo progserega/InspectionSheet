@@ -33,6 +33,10 @@ public class InspectLineTowerContract {
         void showEndOfLineDialog();
 
         void startDeffectDescriptionActivity();
+
+        void hideUI();
+
+        void showUI();
     }
 
     public interface Presenter{
@@ -65,5 +69,6 @@ public class InspectLineTowerContract {
 
         void finishButtonPressed();
 
+        void onCurrentTowerNameChange(String name);
     }
 }
