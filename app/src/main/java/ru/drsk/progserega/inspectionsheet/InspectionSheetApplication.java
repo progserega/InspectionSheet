@@ -61,6 +61,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.TransformerSubstation
 import ru.drsk.progserega.inspectionsheet.storages.stub.CatalogStorageStub;
 import ru.drsk.progserega.inspectionsheet.storages.stub.StationDeffectsTypesStorageStub;
 
+import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
+
 //import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_1_2;
 //import static ru.drsk.progserega.inspectionsheet.storages.sqlight.InspectionSheetDatabase.MIGRATION_2_3;
 
@@ -251,6 +253,7 @@ public class InspectionSheetApplication extends Application {
                 InspectionSheetDatabase.class,
                 "inspection_sheet_db")
                 .allowMainThreadQueries() //TODO сделать везде асинхронно и убрать это
+                .addMigrations(MIGRATION_1_2)
                 //.addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
 
@@ -300,7 +303,7 @@ public class InspectionSheetApplication extends Application {
         photoFullscreenManager = new PhotoFullscreenManager(db);
 
         //lineDeffectTypesStorage = new LineDeffectTypesStorageJson(getApplicationContext());
-        lineDeffectTypesStorage = new LineDeffectTypesStorage(db);
+        lineDeffectTypesStorage = new LineDeffectTypesStorage(db, getApplicationContext());
 
         lineInspectionStorage = new LineInspectionStorage(db, getApplicationContext(), lineDeffectTypesStorage, catalogStorage, lineStorage);
 
@@ -330,7 +333,7 @@ public class InspectionSheetApplication extends Application {
 
         stationEquipmentStorage =  new StationEquipmentStorage(db);
         StationInspectionService stationInspectionService = new StationInspectionService(
-                new StationDeffectsTypesStorage(db),
+                new StationDeffectsTypesStorage(db, getApplicationContext()),
                 inspectionStorage,
                 stationEquipmentStorage,
                 new StationPhotoStorage(db, getApplicationContext())

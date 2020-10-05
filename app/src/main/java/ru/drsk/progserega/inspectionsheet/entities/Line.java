@@ -86,4 +86,15 @@ public class Line extends Equipment{
     public Point getLocation() {
         return null;
     }
+
+    public Tower getTowerByName(String name){
+        String nameLowerCase = name.toLowerCase();
+        for(Tower tower: this.towers){
+
+            if(tower.getName().toLowerCase().equals( nameLowerCase)){
+                return tower;
+            }
+        }
+        return null;
+    }
 }

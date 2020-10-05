@@ -19,6 +19,8 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
     private ISettingsStorage settingsStorage;
 
     private IOrganizationStorage organizationStorage;
+
+    private long spId = 0;
     private long resId = 0;
 
     private List<String> serverUrls;
@@ -63,13 +65,13 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         String serverUrl = view.getServerUrl();
         String serverAltUrl = view.getServerAltUrl();
 
-        settingsStorage.saveSettings(new Settings(fio, position, (int) resId, serverUrl, serverAltUrl));
+        settingsStorage.saveSettings(new Settings(fio, position, (int)spId, (int) resId, serverUrl, serverAltUrl));
 
         serverUrls.clear();
         serverUrls.add(serverUrl);
         serverUrls.add(serverAltUrl);
         application.getRemoteStorage().setServerUrls(serverUrls);
-        view.finishView();
+       // view.finishView();
     }
 
     @Override
@@ -92,7 +94,7 @@ public class SettingsPresenter implements SettingsContract.Presenter, IProgressL
         }
         view.setSpResName(res.getNetworkEnterprise().getName() + " / " + res.getName());
         this.resId = res.getId();
-
+        this.spId = spId;
     }
 
     @Override

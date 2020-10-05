@@ -2,17 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.drsk.progserega.inspectionsheet">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
-    <uses-feature android:name="android.hardware.location.gps" />
-
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:required="true" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:required="true" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".InspectionSheetApplication"
         android:allowBackup="true"
@@ -23,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activities.InspectStationEquipment"></activity>
+        <activity android:name=".ui.activities.DeffectDescription"></activity>
+        <activity android:name=".ui.activities.InspectStationEquipment" />
         <activity android:name=".ui.activities.StationEquipment" />
         <activity android:name=".ui.activities.InspectStation" />
         <activity android:name=".ui.activities.Journal" />
@@ -56,19 +46,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activities.InspectTransformer" />
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="ru.drsk.progserega.inspectionsheet.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
         <activity
             android:name=".ui.activities.TowerDeffectsActivity"
             android:label="@string/title_activity_tower_deffects" />
+
         <activity
             android:name=".ui.activities.FullscreenImageActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
@@ -82,6 +63,26 @@
         <activity android:name=".ui.activities.InspectLine" />
         <activity android:name=".ui.activities.InspectLineTower" />
         <activity android:name=".ui.activities.InspectLineSection" />
-    </application>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ru.drsk.progserega.inspectionsheet.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-feature android:name="android.hardware.location.gps" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

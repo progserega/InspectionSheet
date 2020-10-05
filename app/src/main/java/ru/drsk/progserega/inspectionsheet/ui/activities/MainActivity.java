@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.add(SELECT_ACTIVE_SERVER);
 
-      //  networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
-      //  networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
-       // networkTasksQueue.add(EXPORT_LINES);
+        //  networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
+        //  networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
+        // networkTasksQueue.add(EXPORT_LINES);
 
         //networkTasksQueue.add(SELECT_RES);
         networkTasksQueue.add(CLEAR_DB);
@@ -248,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             return;
         }
 
+        Settings settings = application.getSettingsStorage().loadSettings();
+
         Log.d("NETWORK_TASK ", "TASK IS: " + task);
 
         switch (task) {
@@ -272,14 +274,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case SELECT_RES:
                 selectOrganization();
                 return;
-//            case LOAD_DATA:
-//                application.getRemoteStorage().loadRemoteData();
-//                return;
             case LOAD_TP:
-                application.getRemoteStorage().loadTP();
+                application.getRemoteStorage().loadTP(settings.getSpId(), settings.getResId());
                 return;
             case LOAD_SUBSTATIONS:
-                application.getRemoteStorage().loadSubstations();
+                application.getRemoteStorage().loadSubstations(settings.getSpId(), settings.getResId());
                 return;
             case LOAD_LINES:
                 loadLines();
@@ -292,18 +291,18 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     private void exportSubstationTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION,   application.getStationInspectionFactory());
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION, application.getStationInspectionFactory());
 
         application.getRemoteStorage().exportStationsInspections(inspections);
     }
 
     private void exportTPTransformers() {
         InspectionService inspectionService = application.getInspectionService();
-        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP,      application.getStationInspectionFactory());
+        List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP, application.getStationInspectionFactory());
 
 //        int a = 0;
         application.getRemoteStorage().exportStationsInspections(inspections);
-       // application.getRemoteStorage().exportTransformersInspections(inspections);
+        // application.getRemoteStorage().exportTransformersInspections(inspections);
     }
 
     private void exportLines() {

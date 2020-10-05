@@ -5,6 +5,7 @@ public class Settings {
     //наименования полей в хранилище
     public static final String FIO = "fio";
     public static final String POSITION = "position";
+    public static final String SP_ID = "sp_id";
     public static final String RES_ID = "res_id";
     public static final String SERVER_URL = "server_url";
     public static final String SERVER_URL_VALUE = "http://arm-is.prim.drsk.ru";
@@ -15,13 +16,15 @@ public class Settings {
     private String fio;
     private String position;
     private int resId;
+    private int spId;
     private String serverUrl;
     private String serverAltUrl;
 
 
-    public Settings(String fio, String position, int resId, String serverUrl, String serverAltUrl) {
+    public Settings(String fio, String position, int spId, int resId,  String serverUrl, String serverAltUrl) {
         this.fio = fio;
         this.position = position;
+        this.spId = spId;
         this.resId = resId;
         this.serverUrl = serverUrl;
         this.serverAltUrl = serverAltUrl;
@@ -41,6 +44,14 @@ public class Settings {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public int getSpId() {
+        return spId;
+    }
+
+    public void setSpId(int spId) {
+        this.spId = spId;
     }
 
     public int getResId() {

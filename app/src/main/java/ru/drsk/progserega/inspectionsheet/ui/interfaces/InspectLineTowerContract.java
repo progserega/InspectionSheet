@@ -31,6 +31,12 @@ public class InspectLineTowerContract {
         void showNextSectionSelectorDialog(String[] selectionItems);
 
         void showEndOfLineDialog();
+
+        void startDeffectDescriptionActivity();
+
+        void hideUI();
+
+        void showUI();
     }
 
     public interface Presenter{
@@ -59,7 +65,10 @@ public class InspectLineTowerContract {
 
         void onNextSectionSelected(int pos);
 
+        void onDefectAboutBtnClick(TowerDeffect towerDeffect);
+
         void finishButtonPressed();
 
+        void onCurrentTowerNameChange(String name);
     }
 }

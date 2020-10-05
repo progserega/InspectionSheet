@@ -74,6 +74,12 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     private void setViewData() {
+        if(currentTower==null){
+            view.hideUI();
+            return;
+        }
+
+        view.showUI();
         view.setTowerNumber(currentTower.getName());
 
         view.setMaterialsSpinnerData(getMaterials(), getMaterialIdx());
@@ -159,6 +165,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     public void onDeffectSelectionChange(int pos, boolean isSelected) {
         deffects.get(pos).setValue(isSelected ? 1 : 0);
         changedDeffects.add(pos);
+        saveCurrentTower();
     }
 
     @Override
@@ -209,6 +216,12 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     @Override
+    public void onDefectAboutBtnClick(TowerDeffect towerDeffect) {
+        application.getState().setDeffectDescription(towerDeffect.getDeffectType().getDeffectDescription());
+        view.startDeffectDescriptionActivity();
+    }
+
+    @Override
     public void onNextSectionSelected(int pos) {
         if (nextSections == null || nextSections.isEmpty()) {
             return;
@@ -225,17 +238,20 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     public void onMaterialSelected(int pos) {
         currentTower.setMaterial(application.getCatalogStorage().getMaterials().get(pos));
         line.setCachedTowerMaterial(application.getCatalogStorage().getMaterials().get(pos));
+        saveCurrentTower();
     }
 
     @Override
     public void onTowerTypeSelected(int pos) {
         currentTower.setTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
         line.setCachedTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
+        saveCurrentTower();
     }
 
     @Override
     public void onImageTaken(String photoPath) {
         inspection.getPhotos().add(new InspectionPhoto(0, photoPath, application.getApplicationContext()));
+        saveCurrentTower();
     }
 
     private List< String > getMaterials() {
@@ -362,6 +378,18 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
 
         return nearest;
+    }
+
+    @Override
+    public void onCurrentTowerNameChange(String name) {
+        Tower tower = line.getTowerByName(name);
+        if(tower == null){
+            view.hideUI();
+            return;
+        }
+
+        currentTower = tower;
+        setViewData();
     }
 
     @Override

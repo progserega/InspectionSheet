@@ -8,6 +8,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -15,7 +16,10 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.DeffectDescriptionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
@@ -73,12 +77,19 @@ public interface IApiInspectionSheet {
     //заменить на /api/deffects/station
     Call< List< StationDeffectTypesJson > > getStationDeffectsTypes();
 
+    @GET("/api/all/deffects/descriptions")
+    Call< List< DeffectDescriptionJson > > getDeffectDescriptions();
+
+    @GET
+    @Streaming
+    Call< ResponseBody > downloadFileWithDynamicUrl(@Url String fileUrl);
+
 
     @GET("/api/substations")
-    Call< SubstationsResponse > getSubstations(@Query("offset") int offset, @Query("limit") int limit);
+    Call< SubstationsResponse > getSubstations(@Query("sp_id") long spId, @Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/api/tp")
-    Call< TPResponse > getTP(@Query("offset") int offset, @Query("limit") int limit);
+    Call< TPResponse > getTP(@Query("sp_id") long spId, @Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
 
     @POST("/api/inspection")
     Call< UploadRes > uploadInspection(@Body TransformerInspectionResult transformerInspectionResult);

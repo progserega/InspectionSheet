@@ -127,7 +127,12 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
         TransformerInspection inspection = new TransformerInspection(substation, null);
-        inspectionAdapter = new InspectionAdapter(this, inspection.getInspectionItems(), this);
+        inspectionAdapter = new InspectionAdapter(this, inspection.getInspectionItems(), this, new InspectionAdapter.OnItemAboutClickListener() {
+            @Override
+            public void OnItemAboutClick(InspectionItem inspectionItem) {
+
+            }
+        });
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);
 

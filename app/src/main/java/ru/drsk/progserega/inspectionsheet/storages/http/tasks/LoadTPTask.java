@@ -21,11 +21,15 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
     private IApiInspectionSheet apiInspectionSheet;
 
     private DBDataImporter dbDataImporter;
+    private long spId = 0;
+    private long resId = 0;
 
 
-    public LoadTPTask(IApiInspectionSheet apiInspectionSheet, DBDataImporter dbDataImporter) {
+    public LoadTPTask(IApiInspectionSheet apiInspectionSheet, DBDataImporter dbDataImporter, long spId, long resId) {
         this.apiInspectionSheet = apiInspectionSheet;
         this.dbDataImporter = dbDataImporter;
+        this.spId = spId;
+        this.resId = resId;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
         if (types == null || types.isEmpty()) {
             throw new IOException("Данные по СП не получены");
         }
-        dbDataImporter.loadSubstationTransformers(types, "transformer_substation");
+        //dbDataImporter.loadSubstationTransformers(types, "transformer_substation");
         dbDataImporter.importStationEquipmentModels(types, EquipmentType.TP_TRANSFORMER);
     }
 
@@ -79,7 +83,7 @@ public class LoadTPTask implements ObservableOnSubscribe< String > {
             int attempt = 1;
             while (attempt < ATTEMPT_COUNT) {
                 try {
-                    response = apiInspectionSheet.getTP( offset, PAGE_SIZE).execute();
+                    response = apiInspectionSheet.getTP(spId, resId, offset, PAGE_SIZE).execute();
                     break;
                 } catch (java.net.ProtocolException ex) {
                     if (attempt == ATTEMPT_COUNT - 1) {

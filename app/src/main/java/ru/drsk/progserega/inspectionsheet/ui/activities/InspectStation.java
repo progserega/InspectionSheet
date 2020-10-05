@@ -3,7 +3,11 @@ package ru.drsk.progserega.inspectionsheet.ui.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,11 +19,14 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.drsk.progserega.inspectionsheet.BuildConfig;
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
@@ -88,11 +95,11 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
 
     }
 
-    private void initAddCommonPhotoBtn(){
+    private void initAddCommonPhotoBtn() {
         initAddPhotoBtnImg();
 
         Context context = this;
-        WeakReference<Context> contextWeakReference = new WeakReference<>(this);
+        WeakReference< Context > contextWeakReference = new WeakReference<>(this);
         photoUtility = new PhotoUtility(this, new PhotoUtility.ChoosedListener() {
             @Override
             public void onImageTaken(String photoPath) {
@@ -114,10 +121,13 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     private void initInspectionList() {
-
+        final InspectStation that = this;
         inspectionAdapter = new InspectionAdapter(this, new ArrayList<>(), (inspectionItem, photo, position) -> {
             presenter.onInspectionPhotoClicked(inspectionItem, position);
+        }, (inspectionItem) -> {
+            presenter.onInspectionAboutClicked(inspectionItem);
         });
+
         transfInspectionList = (ListView) findViewById(R.id.inspection_transformator_list);
         transfInspectionList.setAdapter(inspectionAdapter);
 
@@ -127,11 +137,11 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         transfInspectionList.setOnItemClickListener(itemClickListener);
     }
 
-    private void initCommonPhotoList(){
+    private void initCommonPhotoList() {
 
         RecyclerView list = (RecyclerView) findViewById(R.id.inspect_station_common_photos);
-        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
-        commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
+        list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        commonPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList< InspectionPhoto >(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(InspectionPhoto photo, int position) {
                 presenter.onCommonPhotoClicked(position);
@@ -146,14 +156,14 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     @Override
-    public void setInspection(List<InspectionItem> inspections) {
+    public void setInspection(List< InspectionItem > inspections) {
         inspectionAdapter.setInspectionItems(inspections);
         inspectionAdapter.notifyDataSetChanged();
         justifyListViewHeightBasedOnChildren(transfInspectionList);
     }
 
     @Override
-    public void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List<InspectionItem> group) {
+    public void startEditInspectionGroupActivity(InspectionItem currentInspectionItem, List< InspectionItem > group) {
 
         Intent intent = new Intent(this, GroupAddTransfrmerDeffect.class);
         startActivityForResult(intent, GET_DEFFECT_VALUE_REQUEST);
@@ -178,32 +188,32 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
             return;
         }
 
-        if(requestCode == GET_DEFFECT_VALUE_REQUEST ){
-             //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
+        if (requestCode == GET_DEFFECT_VALUE_REQUEST) {
+            //Toast.makeText(this, "EDIT DEFFECTS DONE!", Toast.LENGTH_LONG).show();
             presenter.onInspectionValueEdited();
         }
 
-        if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
-             photoUtility.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
+            photoUtility.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     @Override
     public void setStationName(String name) {
-        setTitle("Осмотр "+name);
+        setTitle("Осмотр " + name);
 
         TextView stationName = (TextView) findViewById(R.id.inspect_station_name);
         stationName.setText(name);
 
     }
 
-    public void onAddCommonPhotoBtnClick(View view){
+    public void onAddCommonPhotoBtnClick(View view) {
         photoUtility.showPhotoDialog();
     }
 
 
     @Override
-    public void showCommonPhotoFullscreen(int position, List<InspectionPhoto> photos) {
+    public void showCommonPhotoFullscreen(int position, List< InspectionPhoto > photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.STATION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
@@ -221,7 +231,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     @Override
-    public void showInspectionPhotoFullcreen(int position, List<InspectionPhoto> photos){
+    public void showInspectionPhotoFullcreen(int position, List< InspectionPhoto > photos) {
         Intent intent = new Intent(this, FullscreenImageActivity.class);
         intent.putExtra(IMAGE_IDX, position);
         //application.setPhotosForFullscreen(inspectionItem.getResult().getPhotos());
@@ -237,7 +247,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     @Override
-    public void setCommonPhotos(List<InspectionPhoto> photos){
+    public void setCommonPhotos(List< InspectionPhoto > photos) {
         commonPhotoListAdapter.setItems(photos);
         commonPhotoListAdapter.notifyDataSetChanged();
     }
@@ -256,7 +266,13 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     @Override
     public void setInspectionPercent(float percent) {
         TextView percentTextView = (TextView) findViewById(R.id.inspect_station__inspected_percent);
-        percentTextView.setText(floatFmt(percent)+"%");
+        percentTextView.setText(floatFmt(percent) + "%");
+    }
+
+    @Override
+    public void startDeffectDescriptionActivity(InspectionItem currentInspectionItem) {
+        Intent intent = new Intent(this, DeffectDescription.class);
+        startActivity(intent);
     }
 
     @Override
@@ -281,7 +297,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         }
 
         ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1)) + 350;
         listView.setLayoutParams(par);
         listView.requestLayout();
     }

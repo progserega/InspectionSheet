@@ -23,9 +23,9 @@ public interface IRemoteStorage {
 //    @Deprecated
 //    void loadRemoteData();
 
-    void loadTP();
+    void loadTP(long spId, long resId);
 
-    void loadSubstations();
+    void loadSubstations(long spId, long resId);
 
     void setProgressListener(IProgressListener progressListener);
 

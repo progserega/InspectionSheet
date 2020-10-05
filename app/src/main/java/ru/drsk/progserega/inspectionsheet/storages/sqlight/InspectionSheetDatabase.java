@@ -1,11 +1,15 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
+import android.arch.persistence.room.migration.Migration;
 
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.converters.Converters;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.DefectDescriptionDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.DefectDescriptionPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.EquipmentPhotoDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.InspectionPhotoDao;
@@ -34,6 +38,8 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDeffec
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationEquipmentDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.TransformerSubstationDao;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.DefectDescriptionModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.DefectDescriptionPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.EquipmentPhotoModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionModel;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.InspectionPhotoModel;
@@ -89,8 +95,10 @@ import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TransformerS
         StationEquipment.class,
         StationEquipmentModels.class,
         StationEquipmentsDeffectType.class,
-        LogModel.class
-}, version = 1)
+        LogModel.class,
+        DefectDescriptionModel.class,
+        DefectDescriptionPhotoModel.class
+}, version = 2)
 @TypeConverters({Converters.class})
 public abstract class InspectionSheetDatabase extends RoomDatabase {
 
@@ -153,6 +161,22 @@ public abstract class InspectionSheetDatabase extends RoomDatabase {
     public abstract StationEquipmentsDeffectTypesDao stationEquipmentsDeffectTypesDao();
 
     public abstract LogDao logDao();
+
+    public abstract DefectDescriptionDao defectDescriptionDao();
+
+    public abstract DefectDescriptionPhotoDao defectDescriptionPhotoDao();
+
+    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            //добавляем таблицу defects_descriptions
+            database.execSQL("CREATE TABLE `defects_descriptions` (`id` INTEGER NOT NULL, `deffect_id` INTEGER NOT NULL, `object_type_id` INTEGER NOT NULL, `description` TEXT, PRIMARY KEY(`id`));");
+
+            //добавляем таблицу defect_description_photos
+            database.execSQL("CREATE TABLE `defect_description_photos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `description_id` INTEGER NOT NULL, `image_url` TEXT, `photo_path` TEXT) ");
+        }
+    };
 
 //    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
 //        @Override

@@ -27,7 +27,7 @@ import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import static ru.drsk.progserega.inspectionsheet.ui.activities.FullscreenImageActivity.IMAGE_IDX;
 
 public class AddTransformerDefect extends AppCompatActivity
-    implements PhotoUtility.ChoosedListener {
+        implements PhotoUtility.ChoosedListener {
 
     public static final String DEFFECT_NAME = "deffect_name";
 
@@ -37,7 +37,7 @@ public class AddTransformerDefect extends AppCompatActivity
     private ImageAdapter imageAdapter;
     private InspectionItemResult deffect;
 
-    private List<InspectionPhoto> inspectionPhotos;
+    private List< InspectionPhoto > inspectionPhotos;
 
     private TextView deffectDescription;
 
@@ -76,8 +76,9 @@ public class AddTransformerDefect extends AppCompatActivity
                     deffect.getValues(),
                     this, new DeffectValuesView.OnValueChangeListener() {
                 @Override
-                public void valuesChange(List<String> values) {
-
+                public void valuesChange(List< String > values) {
+                    int a = 0;
+                    deffect.setValues(values);
                 }
             });
             valuesView.build();
@@ -91,8 +92,8 @@ public class AddTransformerDefect extends AppCompatActivity
                     deffect.getSubValues(),
                     this, new DeffectValuesView.OnValueChangeListener() {
                 @Override
-                public void valuesChange(List<String> values) {
-
+                public void valuesChange(List< String > values) {
+                    deffect.setSubValues(values);
                 }
             });
             subValuesView.build();
@@ -111,7 +112,7 @@ public class AddTransformerDefect extends AppCompatActivity
         gridview.setAdapter(imageAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
+            public void onItemClick(AdapterView< ? > parent, View v,
                                     int position, long id) {
                 showFullscreenPhoto(position);
             }
@@ -121,7 +122,7 @@ public class AddTransformerDefect extends AppCompatActivity
         photoUtility = new PhotoUtility(this, this);
     }
 
-    private void saveDeffectPhotos(List<InspectionPhoto> photos) {
+    private void saveDeffectPhotos(List< InspectionPhoto > photos) {
         inspectionPhotos = new ArrayList<>();
         for (InspectionPhoto photo : photos) {
             inspectionPhotos.add(photo);
@@ -142,7 +143,7 @@ public class AddTransformerDefect extends AppCompatActivity
             return;
         }
 
-        if(requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
+        if (requestCode == PhotoUtility.REQUEST_CAMERA || requestCode == PhotoUtility.SELECT_FILE) {
             photoUtility.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -206,12 +207,12 @@ public class AddTransformerDefect extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("image_path", photoUtility.getmCurrentPhotoPath());
-       // saveData();
+        // saveData();
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedState){
+    public void onRestoreInstanceState(Bundle savedState) {
         super.onRestoreInstanceState(savedState);
 
         photoUtility.setmCurrentPhotoPath(savedState.getString("image_path"));

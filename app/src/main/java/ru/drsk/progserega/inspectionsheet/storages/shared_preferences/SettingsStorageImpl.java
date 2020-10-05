@@ -23,11 +23,12 @@ public class SettingsStorageImpl implements ISettingsStorage {
         String fio = sharedPref.getString(Settings.FIO, "");
         String position = sharedPref.getString(Settings.POSITION, "");
         int resId = sharedPref.getInt(Settings.RES_ID, 0);
+        int spId = sharedPref.getInt(Settings.SP_ID, 0);
 
         String serverUrl = sharedPref.getString(Settings.SERVER_URL, Settings.SERVER_URL_VALUE);
         String serverAltUrl = sharedPref.getString(Settings.SERVER_ALT_URL, Settings.SERVER_ALT_URL_VALUE);
 
-        return new Settings(fio, position, resId, serverUrl, serverAltUrl);
+        return new Settings(fio, position,spId, resId, serverUrl, serverAltUrl);
     }
 
 
@@ -39,17 +40,11 @@ public class SettingsStorageImpl implements ISettingsStorage {
         editor.putString(Settings.FIO, settings.getFio());
         editor.putString(Settings.POSITION, settings.getPosition());
         editor.putInt(Settings.RES_ID, settings.getResId());
+        editor.putInt(Settings.SP_ID, settings.getSpId());
         editor.putString(Settings.SERVER_URL, settings.getServerUrl());
         editor.putString(Settings.SERVER_ALT_URL, settings.getServerAltUrl());
 
         editor.commit();
     }
 
-//    @Override
-//    public void saveServerUrl(String serverUrl) {
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putString(Settings.SERVER_URL,serverUrl);
-//
-//        editor.commit();
-//    }
 }

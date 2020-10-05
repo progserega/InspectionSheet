@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,7 +23,11 @@ public class LineSectionDeffectsListAdapter extends BaseAdapter {
         void onDeffectSelectionChange(int position, boolean isSelect);
     }
 
+    public interface OnItemAboutClickListener {
+        void OnItemAboutClick(LineSectionDeffect sectionDeffect);
+    }
     private IDeffectSelectionListener selectionListener;
+    private OnItemAboutClickListener onItemAboutClickListener;
 
     private Context context;
 
@@ -35,6 +40,14 @@ public class LineSectionDeffectsListAdapter extends BaseAdapter {
 
     public void setSelectionListener(IDeffectSelectionListener selectionListener) {
         this.selectionListener = selectionListener;
+    }
+
+    public IDeffectSelectionListener getSelectionListener() {
+        return selectionListener;
+    }
+
+    public void setOnItemAboutClickListener(OnItemAboutClickListener onItemAboutClickListener) {
+        this.onItemAboutClickListener = onItemAboutClickListener;
     }
 
     public void setDeffects(List<LineSectionDeffect> deffects) {
@@ -76,6 +89,22 @@ public class LineSectionDeffectsListAdapter extends BaseAdapter {
                 }
             }
         });
+
+
+
+        ImageView aboutBtn = (ImageView)  rowView.findViewById(R.id.line_tower_deffect_item__about);
+
+        if(sectionDeffect.getDeffectType().getDeffectDescription() == null){
+            aboutBtn.setVisibility(View.GONE);
+        }
+
+        aboutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemAboutClickListener.OnItemAboutClick(sectionDeffect);
+            }
+        });
+
         return rowView;
     }
 }

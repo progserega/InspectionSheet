@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,10 @@ public class InspectionAdapter extends BaseAdapter {
         void onItemPhotoClick(InspectionItem inspectionItem, InspectionPhoto photo, int position);
     }
 
+    public interface OnItemAboutClickListener {
+        void OnItemAboutClick(InspectionItem inspectionItem);
+    }
+
     private final Context context;
 
 
@@ -31,6 +37,8 @@ public class InspectionAdapter extends BaseAdapter {
     // private TransformerInspection inspection;
     private List<InspectionItem> inspectionItems;
     private OnItemPhotoClickListener onItemPhotoClickListener;
+    private OnItemAboutClickListener onItemAboutClickListener;
+
 
 //    public void setInspection(TransformerInspection inspection) {
 //        this.inspection = inspection;
@@ -49,10 +57,11 @@ public class InspectionAdapter extends BaseAdapter {
         return inspectionItems;
     }
 
-    public InspectionAdapter(Context context,  List<InspectionItem> inspectionItems, OnItemPhotoClickListener photoClickListener){
+    public InspectionAdapter(Context context,  List<InspectionItem> inspectionItems, OnItemPhotoClickListener photoClickListener, OnItemAboutClickListener onItemAboutClickListener){
         this.context = context;
         this.inspectionItems = inspectionItems;
         this.onItemPhotoClickListener = photoClickListener;
+        this.onItemAboutClickListener = onItemAboutClickListener;
     }
 
     @Override
@@ -143,6 +152,20 @@ public class InspectionAdapter extends BaseAdapter {
                     }
                 }));
 
+
+                ImageView aboutBtn = (ImageView)  rowView.findViewById(R.id.inspection_list__item_about);
+
+                if(inspectionItem.getDescription() == null){
+                    aboutBtn.setVisibility(View.GONE);
+                }
+
+                aboutBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemAboutClickListener.OnItemAboutClick(inspectionItem);
+
+                    }
+                });
                 break;
 
         }

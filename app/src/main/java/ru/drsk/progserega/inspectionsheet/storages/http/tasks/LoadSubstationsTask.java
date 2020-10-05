@@ -23,10 +23,15 @@ public class LoadSubstationsTask implements ObservableOnSubscribe< String > {
 
     private DBDataImporter dbDataImporter;
 
+    private long spId = 0;
+    private long resId = 0;
 
-    public LoadSubstationsTask(IApiInspectionSheet apiInspectionSheet,  DBDataImporter dbDataImporter) {
+
+    public LoadSubstationsTask(IApiInspectionSheet apiInspectionSheet,  DBDataImporter dbDataImporter, long spId, long resId) {
         this.apiInspectionSheet = apiInspectionSheet;
         this.dbDataImporter = dbDataImporter;
+        this.spId = spId;
+        this.resId = resId;
     }
 
     @Override
@@ -86,7 +91,7 @@ public class LoadSubstationsTask implements ObservableOnSubscribe< String > {
             int attempt = 1;
             while (attempt < ATTEMPT_COUNT) {
                 try {
-                    response = apiInspectionSheet.getSubstations( offset, PAGE_SIZE).execute();
+                    response = apiInspectionSheet.getSubstations(spId, resId, offset, PAGE_SIZE).execute();
                     break;
                 } catch (java.net.ProtocolException ex) {
                     if (attempt == ATTEMPT_COUNT - 1) {

@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -69,6 +73,12 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     private PhotoUtility photoUtility;
     private HorizontalPhotoListAdapter deffectsPhotoListAdapter;
 
+    //private boolean towerNumEdited = false;
+
+    private EditText towerNumEditText;
+    private TextWatcher editTowerNumTextWatcher = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +86,13 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
         this.application = (InspectionSheetApplication) this.getApplication();
         this.presenter = new InspectLineTowerPresenter(this, application);
-        this.application.getLocationService().setLocationChangeListener(new WeakReference<ILocationChangeListener>(this));
+        this.application.getLocationService().setLocationChangeListener(new WeakReference< ILocationChangeListener >(this));
 
         setTitle("Осмотр опоры");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        initTowerNumTextView();
         initSelectTowerBtn();
         initSwitchGPSBtn();
         initMaterialSpinner();
@@ -102,6 +113,8 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
             nextTower = (Long) intent.getSerializableExtra(NEXT_TOWER);
         }
 
+
+
         presenter.onViewCreated(nextTower);
     }
 
@@ -119,6 +132,29 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
             }
         });
     }
+
+    private void initTowerNumTextView() {
+        towerNumEditText = (EditText) findViewById(R.id.inspect_line_tower_number);
+        final InspectLineTower that = this;
+
+        editTowerNumTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Toast.makeText(that, "after text " + s.toString(), Toast.LENGTH_SHORT).show();
+                presenter.onCurrentTowerNameChange(s.toString());
+            }
+        };
+        towerNumEditText.addTextChangedListener(editTowerNumTextWatcher);
+    }
+
 
     @Override
     protected void onGPSRequestGaranted() {
@@ -148,6 +184,13 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
                 presenter.onDeffectSelectionChange(position, isSelect);
             }
         });
+
+        deffectsListAdapter.setOnItemAboutClickListener(new LineTowerDeffectsListAdapter.OnItemAboutClickListener() {
+            @Override
+            public void OnItemAboutClick(TowerDeffect towerDeffect) {
+                presenter.onDefectAboutBtnClick(towerDeffect);
+            }
+        });
     }
 
     private void initSelectTowerBtn() {
@@ -169,18 +212,18 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initMaterialSpinner() {
-        materialsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<String>());
+        materialsAdapter = new ArrayAdapter< String >(this, android.R.layout.simple_spinner_item, new ArrayList< String >());
         materialsAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         materialsSpinner = (Spinner) findViewById(R.id.materials_spinner);
         materialsSpinner.setAdapter(materialsAdapter);
         materialsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            public void onItemSelected(AdapterView< ? > parentView, View selectedItemView, int position, long id) {
                 presenter.onMaterialSelected(position);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
+            public void onNothingSelected(AdapterView< ? > parentView) {
                 // your code here
             }
 
@@ -188,18 +231,18 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initTowerTypeSpinner() {
-        towerTypesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new ArrayList<String>());
+        towerTypesAdapter = new ArrayAdapter< String >(this, android.R.layout.simple_spinner_item, new ArrayList< String >());
         towerTypesAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         towerTypesSpinner = (Spinner) findViewById(R.id.tower_type_spinner);
         towerTypesSpinner.setAdapter(towerTypesAdapter);
         towerTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            public void onItemSelected(AdapterView< ? > parentView, View selectedItemView, int position, long id) {
                 presenter.onTowerTypeSelected(position);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
+            public void onNothingSelected(AdapterView< ? > parentView) {
                 // your code here
             }
 
@@ -207,7 +250,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setMaterialsSpinnerData(List<String> materials, int sel) {
+    public void setMaterialsSpinnerData(List< String > materials, int sel) {
         materialsAdapter.clear();
         materialsAdapter.addAll(materials);
         materialsAdapter.notifyDataSetChanged();
@@ -215,7 +258,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setTowerTypesSpinnerData(List<String> towerTypes, int sel) {
+    public void setTowerTypesSpinnerData(List< String > towerTypes, int sel) {
         towerTypesAdapter.clear();
         towerTypesAdapter.addAll(towerTypes);
         towerTypesAdapter.notifyDataSetChanged();
@@ -223,7 +266,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void showSelectTowerDialog(List<Tower> towers) {
+    public void showSelectTowerDialog(List< Tower > towers) {
         FragmentManager fm = getSupportFragmentManager();
         if (selectTowerDialog == null) {
             selectTowerDialog = SelectTowerDialog.newInstance();
@@ -236,8 +279,11 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
     @Override
     public void setTowerNumber(String number) {
-        EditText numberView = (EditText) findViewById(R.id.inspect_line_tower_number);
-        numberView.setText(number);
+
+        towerNumEditText.removeTextChangedListener(editTowerNumTextWatcher);
+        towerNumEditText.setText(number);
+        towerNumEditText.setSelection(towerNumEditText.getText().length());
+        towerNumEditText.addTextChangedListener(editTowerNumTextWatcher);
     }
 
     private void initAddPhotoBtnImg() {
@@ -252,7 +298,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setDeffectsList(List<TowerDeffect> towerDeffects) {
+    public void setDeffectsList(List< TowerDeffect > towerDeffects) {
         deffectsListAdapter.setDeffects(towerDeffects);
         deffectsListAdapter.notifyDataSetChanged();
         //justifyListViewHeightBasedOnChildren(inspectionList, this);
@@ -289,7 +335,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         // Set the alert dialog title
         builder.setTitle("Перейти к пролету");
 
-        final Map<Integer, Integer> selectedPos = new HashMap<>();
+        final Map< Integer, Integer > selectedPos = new HashMap<>();
         selectedPos.put(0, -1);
 
         // Set a single choice items list for alert dialog
@@ -324,7 +370,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void showEndOfLineDialog(){
+    public void showEndOfLineDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setMessage("Выберите другую опору или завершите осмотр")
@@ -332,7 +378,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (dialog != null){
+                if (dialog != null) {
                     dialog.dismiss();
                 }
             }
@@ -349,6 +395,11 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         startActivity(intent);
     }
 
+    @Override
+    public void startDeffectDescriptionActivity() {
+        Intent intent = new Intent(this, DeffectDescription.class);
+        startActivity(intent);
+    }
 
     @Override
     public void setComment(String comment) {
@@ -371,7 +422,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     private void initPhotoList() {
         RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_tower_deffect_photos);
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList<InspectionPhoto>(), new HorizontalPhotoListAdapter.OnItemClickListener() {
+        deffectsPhotoListAdapter = new HorizontalPhotoListAdapter(new ArrayList< InspectionPhoto >(), new HorizontalPhotoListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(InspectionPhoto photo, int position) {
                 deffectsPhotoItemClick(position, deffectsPhotoListAdapter.getItems());
@@ -381,7 +432,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setTowerPhotos(List<InspectionPhoto> photos) {
+    public void setTowerPhotos(List< InspectionPhoto > photos) {
         deffectsPhotoListAdapter.setItems(photos);
         deffectsPhotoListAdapter.notifyDataSetChanged();
     }
@@ -422,7 +473,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         deffectsPhotoListAdapter.notifyDataSetChanged();
     }
 
-    public void deffectsPhotoItemClick(int position, List<InspectionPhoto> photos) {
+    public void deffectsPhotoItemClick(int position, List< InspectionPhoto > photos) {
         application.getPhotoFullscreenManager().setPhotos(photos);
         application.getPhotoFullscreenManager().setPhotoOwner(PhotoFullscreenManager.LINE_INSPECTION_PHOTO);
         application.getPhotoFullscreenManager().setDeletePhotoCompleteListener(new PhotoFullscreenManager.DeletePhotoCompleteListener() {
@@ -438,33 +489,6 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         startActivity(intent);
     }
 
-    // работает криво если высота динамическая
-//    public static void justifyListViewHeightBasedOnChildren(ListView listView, Context context) {
-//
-//        LineTowerDeffectsListAdapter adapter = (LineTowerDeffectsListAdapter) listView.getAdapter();
-//
-//        if (adapter == null) {
-//            return;
-//        }
-//        ViewGroup vg = listView;
-//        int totalHeight = 0;
-//
-//        int width = MetricsUtils.getDisplayWidthDp(context);
-//
-//        for (int i = 0; i < adapter.getCount(); i++) {
-//            View listItem = adapter.getView(i, null, vg);
-//            listItem.measure(0, 0);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams par = listView.getLayoutParams();
-//        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
-//        listView.setLayoutParams(par);
-//        listView.requestLayout();
-//
-//
-//    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("image_path_tower", photoUtility.getmCurrentPhotoPath());
@@ -472,9 +496,35 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedState){
+    public void onRestoreInstanceState(Bundle savedState) {
         super.onRestoreInstanceState(savedState);
         photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_tower"));
+    }
+
+    @Override
+    public void hideUI() {
+        materialsSpinner.setVisibility(View.GONE);
+        towerTypesSpinner.setVisibility(View.GONE);
+        inspectionList.setVisibility(View.GONE);
+        ImageButton addPhotoBtn = (ImageButton) findViewById(R.id.add_line_tower_deffect_photo_btn);
+        addPhotoBtn.setVisibility(View.GONE);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_tower_deffect_photos);
+        list.setVisibility(View.GONE);
+        EditText commentView = (EditText) findViewById(R.id.inspect_line_tower_comment);
+        commentView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showUI() {
+        materialsSpinner.setVisibility(View.VISIBLE);
+        towerTypesSpinner.setVisibility(View.VISIBLE);
+        inspectionList.setVisibility(View.VISIBLE);
+        ImageButton addPhotoBtn = (ImageButton) findViewById(R.id.add_line_tower_deffect_photo_btn);
+        addPhotoBtn.setVisibility(View.VISIBLE);
+        RecyclerView list = (RecyclerView) findViewById(R.id.inspect_line_tower_deffect_photos);
+        list.setVisibility(View.VISIBLE);
+        EditText commentView = (EditText) findViewById(R.id.inspect_line_tower_comment);
+        commentView.setVisibility(View.VISIBLE);
     }
 
     @Override
