@@ -31,6 +31,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadOrganizationTa
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadSubstationsTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.LoadTPTask;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.PingServerTask;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.Res;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
@@ -156,36 +157,7 @@ public class RemoteStorageRx implements IRemoteStorage {
         Observable.create(new ExportTransformerInspectionTask(apiArmIs, transformerInspections, settingsStorage))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer< UploadRes >() {
-                               private int cnt = 0;
-
-                               @Override
-                               public void onSubscribe(Disposable d) {
-
-                               }
-
-                               @Override
-                               public void onNext(UploadRes uploadRes) {
-
-//                                   dbDataImporter.loadSteTpModel(steTPResponse.getData());
-//                                   cnt += steTPResponse.getData().size();
-//                                   progressListener.progressUpdate((int) ((cnt / (float) steTPResponse.getTotalRecords()) * 100));
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   progressListener.progressComplete();
-                               }
-
-                               @Override
-                               public void onComplete() {
-                                   progressListener.progressComplete();
-                               }
-                           }
-
-                );
-
+                .subscribe(new ResultObserver());
     }
 
     @Override
@@ -193,30 +165,7 @@ public class RemoteStorageRx implements IRemoteStorage {
         Observable.create(new ExportStationInspectionTask(apiArmIs, stationInspections, settingsStorage))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer< UploadRes >() {
-                               private int cnt = 0;
-
-                               @Override
-                               public void onSubscribe(Disposable d) {
-                               }
-
-                               @Override
-                               public void onNext(UploadRes uploadRes) {
-                               }
-
-                               @Override
-                               public void onError(Throwable e) {
-                                   e.printStackTrace();
-                                   progressListener.progressComplete();
-                               }
-
-                               @Override
-                               public void onComplete() {
-                                   progressListener.progressComplete();
-                               }
-                           }
-
-                );
+                .subscribe(new ResultObserver());
     }
 
     @Override
@@ -240,6 +189,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void selectActiveServer() {
+        progressListener.progressUpdate("Проверка доступности сервера ");
         final Map< String, Boolean > serversAccessMap = new HashMap<>();
         Observable.fromIterable(this.serverUrls).
                 flatMap(new Function< String, ObservableSource< Map< String, Boolean > > >() {

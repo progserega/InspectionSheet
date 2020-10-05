@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.storages.http.tasks;
 
+import android.service.carrier.CarrierMessagingService;
 import android.text.TextUtils;
 
 
@@ -30,13 +31,14 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadStationImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
-public class ExportTransformerInspectionTask implements ObservableOnSubscribe<UploadRes> {
+public class ExportTransformerInspectionTask implements ObservableOnSubscribe<String> {
 
     private IApiInspectionSheet apiArmIS;
     private List<TransformerInspection> transformerInspections;
     private ISettingsStorage settingsStorage;
 
     private final String EXPORT_TAG = "EXPORT TRANSFORMERS:";
+    private  ObservableEmitter<String> emitter;
 
     public ExportTransformerInspectionTask(IApiInspectionSheet apiArmIS, List<TransformerInspection> transformerInspections, ISettingsStorage settingsStorage) {
         this.apiArmIS = apiArmIS;
@@ -45,11 +47,12 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
     }
 
     @Override
-    public void subscribe(ObservableEmitter<UploadRes> emitter) {
-
+    public void subscribe(ObservableEmitter<String> emitter) {
+        this.emitter = emitter;
         Map<Long, Long> stationInspectionsMap = new HashMap<>();
 
         long unixTime = System.currentTimeMillis() / 1000L;
+        emitter.onNext( "Экспорт осмотров трансформаторов (" + transformerInspections.size() + ") шт.");
         DBLog.d(EXPORT_TAG, "Экспорт осмотров трансформаторов (" + transformerInspections.size() + ") шт.");
         for (TransformerInspection inspection : transformerInspections) {
 
@@ -89,6 +92,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
             //грузим осмотры
             DBLog.d(EXPORT_TAG, "Экспорт элементов осмотра");
+            emitter.onNext("Сохранение  элементов осмотра");
             for (InspectionItem inspectionRes : inspection.getInspectionItems()) {
 
                 //пропускаем не заполненные
@@ -111,6 +115,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                 Response response = null;
                 try {
                     DBLog.d(EXPORT_TAG, "apiArmIS.uploadInspection... ");
+                    emitter.onNext("Сохранение элемента осмотра");
                     response = apiArmIS.uploadInspection(inpectionResult).execute();
                 } catch (Exception e) {
                     DBLog.e(EXPORT_TAG, "Error while upload transformer inspection result");
@@ -139,17 +144,17 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
                     }
                 }
 
-                emitter.onNext(uploadRes);
+                emitter.onNext("Сохранение  элементов осмотра - Выполнено");
             }
         }
-
+        emitter.onNext("Сохранение осмотров оборудования выполнено");
         emitter.onComplete();
     }
 
     private long uploadStationInspectionInfo(TransformerInspection inspection, Long inspectinIdARM) {
 
         DBLog.d(EXPORT_TAG, "Upload station inspection info....");
-
+        emitter.onNext("Сохранение информации о осмотре");
         long inspectionDate = 0;
         if (inspection.getTransformator().getInspectionDate() != null) {
             inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
@@ -196,6 +201,8 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
     private long uploadTransformerInfo(TransformerInspection inspection) {
 
         DBLog.d(EXPORT_TAG, "Upload transformer info....");
+        emitter.onNext("Сохранение информации о трансформаторе");
+
         long inspectionDate = 0;
         if (inspection.getTransformator().getInspectionDate() != null) {
             inspectionDate = inspection.getTransformator().getInspectionDate().getTime() / 1000L;
@@ -217,6 +224,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
             response = apiArmIS.uploadTransformerInfo(info).execute();
         } catch (IOException e) {
             DBLog.d(EXPORT_TAG, "Ошибка экспорта информации о трансформаторе...");
+            DBLog.e(EXPORT_TAG, e);
             e.printStackTrace();
             return 0;
         }
@@ -240,6 +248,8 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         File file = new File(photo.getPath());
         DBLog.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        emitter.onNext("Сохранение фотографии элемента осмотра");
+
         if (!file.exists()) {
             DBLog.d("UPLOAD FILE:", "File does not exist: " + file.getName());
             return false;
@@ -299,7 +309,7 @@ public class ExportTransformerInspectionTask implements ObservableOnSubscribe<Up
 
         File file = new File(photo.getPath());
         DBLog.d("UPLOAD FILE:", "Start upload file: " + file.getName());
-
+        emitter.onNext("Сохранение фотографии трансформатора");
         if (!file.exists()) {
             DBLog.d("UPLOAD FILE:", "File does not exist: " + file.getName());
             return false;

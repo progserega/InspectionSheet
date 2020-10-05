@@ -31,7 +31,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInsp
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadStationImageInfo;
 
-public class ExportStationInspectionTask implements ObservableOnSubscribe< UploadRes > {
+public class ExportStationInspectionTask implements ObservableOnSubscribe< String > {
 
     private IApiInspectionSheet apiArmIS;
     private List< IStationInspection > stationInspections;
@@ -42,7 +42,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
     long uploadTime = 0;
 
-    private ObservableEmitter< UploadRes > emitter;
+    private ObservableEmitter< String > emitter;
 
     public ExportStationInspectionTask(IApiInspectionSheet apiArmIS, List< IStationInspection > stationInspections, ISettingsStorage settingsStorage) {
         this.apiArmIS = apiArmIS;
@@ -51,11 +51,12 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
     }
 
     @Override
-    public void subscribe(ObservableEmitter< UploadRes > emitter) {
+    public void subscribe(ObservableEmitter< String > emitter) {
         uploadTime = System.currentTimeMillis() / 1000L;
         this.emitter = emitter;
 
         DBLog.d(EXPORT_TAG, "Экспорт осмотров подстанций (ТП) (" + stationInspections.size() + ") шт.");
+        emitter.onNext("Экспорт осмотров подстанций (ТП) (" + stationInspections.size() + ") шт.");
         for (IStationInspection inspection : stationInspections) {
 
 
@@ -65,8 +66,9 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             String stationTypeName = inspection.getStation().getType().name();
 
             DBLog.d(EXPORT_TAG, "Начало экспорта осмотра %s [%s] uid = %d", stationTypeName, station.getName(), stationUid);
-
+            emitter.onNext(String.format("Начало экспорта осмотра %s [%s] uid = %d", stationTypeName, station.getName(), stationUid));
             long inspectionArmId = uploadStationInspectionInfo(inspection, 0L);
+
 
             if (inspectionArmId == 0) {
                 DBLog.e(EXPORT_TAG, "Ошибка при экспорте осмотра.  inspectionArmId = 0");
@@ -93,14 +95,14 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
             }
         }
-
+        emitter.onNext("Сохранение осмотров Подстанции/ТП - Выполнено" );
         emitter.onComplete();
     }
 
     private long uploadStationInspectionInfo(IStationInspection inspection, Long inspectinIdARM) {
 
         DBLog.d(EXPORT_TAG, "Upload station inspection info....");
-
+        emitter.onNext("Сохранение информации о осмотре станции");
         long inspectionDate = 0;
         if (inspection.getStation().getInspectionDate() != null) {
             inspectionDate = inspection.getStation().getInspectionDate().getTime() / 1000L;
@@ -136,7 +138,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             DBLog.e(EXPORT_TAG, "Ошибка экспорта информации о осмотре подстанции (ТП) status = " + uploadRes.getStatus());
             return 0;
         }
-
+        emitter.onNext("Сохранение информации о осмотре станции - Выполнено" );
         return uploadRes.getId();
     }
 
@@ -187,6 +189,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
         File file = new File(photo.getPath());
         DBLog.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        emitter.onNext("Сохранение Фотографии элемента осмотра" );
         if (!file.exists()) {
             DBLog.d("UPLOAD FILE:", "File does not exist: " + file.getName());
             return false;
@@ -227,7 +230,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             DBLog.d("UPLOAD FILE:", "result " + uploadRes.getStatus() + "  " + uploadRes.getMessage());
             return false;
         }
-
+        emitter.onNext("Сохранение Фотографии - Выполнено" );
         return true;
     }
 
@@ -246,6 +249,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
         File file = new File(photo.getPath());
         DBLog.d("UPLOAD FILE:", "Start upload file: " + file.getName());
+        emitter.onNext("Сохранение фотографии подстанции/ТП" );
 
         if (!file.exists()) {
             DBLog.d("UPLOAD FILE:", "File does not exist: " + file.getName());
@@ -287,13 +291,13 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             DBLog.e("UPLOAD FILE:", "result " + uploadRes.getStatus() + "  " + uploadRes.getMessage());
             return false;
         }
-
+        emitter.onNext("Сохранение фотографии подстанции/ТП - выполнено" );
         return true;
     }
 
     private void uploadStationInspectionItems(long stationUid, int stationType, long inspectionId, List< InspectionItem > inspectionItems) {
 
-
+        emitter.onNext("Сохранение элементов осмотра" );
         for (InspectionItem inspectionRes : inspectionItems) {
 
             //пропускаем не заполненные
@@ -316,6 +320,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
             Response response = null;
             try {
                 DBLog.d(EXPORT_TAG, "[uploadSrationInspection]... ");
+                emitter.onNext("Сохранение элемент осмотра" );
                 response = apiArmIS.uploadInspection(inpectionResult).execute();
             } catch (Exception e) {
                 DBLog.e(EXPORT_TAG, "Error while upload station inspection item result");
@@ -345,6 +350,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
 
 //                emitter.onNext(uploadRes);
         }
+        emitter.onNext("Сохранение элементов осмотра - выполнено" );
     }
 
     private void uplodEquipmentInspectionItems(long stationUid, int stationType, long inspectionId, long equipmentArmId, List< InspectionItem > inspectionItems) {
@@ -399,7 +405,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Uploa
                 }
             }
 
-            emitter.onNext(uploadRes);
+            emitter.onNext("");/// !!!!!!!!!!!!!!!!
         }
     }
 }
