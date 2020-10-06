@@ -164,29 +164,30 @@ public class About extends AppCompatActivity implements AboutContract.View {
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
         request.setTitle(fileName); // Title for notification.
+        request.setDescription(fileName);
         request.setVisibleInDownloadsUi(true);
-        request.setDestinationInExternalPublicDir(destinationPath, "/");  // Storage directory path
+        request.setDestinationInExternalPublicDir(destinationPath, fileName);  // Storage directory path
 
-        final long downloadId =  ((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
+        final long downloadId = ((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request); // This will start downloading
 
         final int DOWNLOAD_PROGRESS = 5020;
         final int DOWNLOAD_COMPLETE = 5021;
         DownloadManager manager = (DownloadManager) getApplicationContext()
                 .getSystemService(Context.DOWNLOAD_SERVICE);
         final TextView progressText = (TextView) findViewById(R.id.pbText);
-        final Handler handler = new Handler(){
+        final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if(msg.what==DOWNLOAD_PROGRESS){
-                    String downloaded = String.format("%.2f MB", (double)(msg.arg1)/1024.0/1024);
-                    String total = String.format("%.2f MB", (double) (msg.arg2)/1024.0/1024);
+                if (msg.what == DOWNLOAD_PROGRESS) {
+                    String downloaded = String.format("%.2f MB", (double) (msg.arg1) / 1024.0 / 1024);
+                    String total = String.format("%.2f MB", (double) (msg.arg2) / 1024.0 / 1024);
                     String status = downloaded + " / " + total;
                     //Log.d("DOWNLOAD", status);
 
                     progressText.setText(status);
 
                 }
-                if(msg.what == DOWNLOAD_COMPLETE){
+                if (msg.what == DOWNLOAD_COMPLETE) {
                     HideProgressBar();
 
                     Intent intent = new Intent();
@@ -227,11 +228,12 @@ public class About extends AppCompatActivity implements AboutContract.View {
             }
         }).start();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 ShowProgressBar();
                 presenter.onDownloadBtnPressed();
             }
@@ -250,8 +252,8 @@ public class About extends AppCompatActivity implements AboutContract.View {
 
     @Override
     public void HideProgressBar() {
-          LinearLayout progress = (LinearLayout) findViewById(R.id.about__progress_bar);
-          progress.setVisibility(View.GONE);
+        LinearLayout progress = (LinearLayout) findViewById(R.id.about__progress_bar);
+        progress.setVisibility(View.GONE);
     }
 
     @Override
