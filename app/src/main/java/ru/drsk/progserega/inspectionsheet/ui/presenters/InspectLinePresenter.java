@@ -22,7 +22,7 @@ public class InspectLinePresenter implements InspectLineContract.Presenter {
 
     @Override
     public void onViewCreate() {
-        lineInspection = application.getCurrentLineInspection();
+        lineInspection = application.getState().getCurrentLineInspection();
         line = lineInspection.getLine();
         line.setTowers(application.getTowerStorage().getByLineUniqId(line.getUniqId()));
 

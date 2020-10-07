@@ -94,7 +94,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
         this.application = (InspectionSheetApplication) this.getApplication();
 
-        substationInspection = this.application.getCurrentStationInspection();
+        substationInspection = this.application.getState().getCurrentStationInspection();
         inspectionService = this.application.getInspectionService();
 
         TextView substationNameText = (TextView) findViewById(R.id.inspection_transformator_substation);

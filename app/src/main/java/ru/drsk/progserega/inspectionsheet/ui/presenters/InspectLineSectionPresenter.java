@@ -48,7 +48,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             return;
         }
 
-        line = application.getCurrentLineInspection().getLine();
+        line = application.getState().getCurrentLineInspection().getLine();
         currentSection = application.getLineSectionStorage().getById(sectionId);
 
         setViewData();

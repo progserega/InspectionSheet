@@ -32,7 +32,7 @@ public class InspectStationPresenter implements InspectStationContract.Presenter
 
     @Override
     public void onViewCreated() {
-        stationInspection = this.application.getCurrentStationInspection();
+        stationInspection = this.application.getState().getCurrentStationInspection();
 
         view.setInspection(stationInspection.getStationInspectionItems());
 

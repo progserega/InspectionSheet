@@ -57,7 +57,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onViewCreated(long nextTowerUniqId) {
 
-        line = application.getCurrentLineInspection().getLine();
+        line = application.getState().getCurrentLineInspection().getLine();
         towers = line.getTowers();
         nextSections = null;
 

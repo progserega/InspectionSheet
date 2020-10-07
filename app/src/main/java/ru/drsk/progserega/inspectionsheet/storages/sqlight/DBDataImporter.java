@@ -19,6 +19,7 @@ import ru.drsk.progserega.inspectionsheet.R;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
+import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.DeffectDescriptionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
@@ -117,9 +118,8 @@ public class DBDataImporter {
 
 
     public void ClearDB() {
-        // db.clearAllTables();
-//        spDao.delete();
-//        resDao.delete();
+
+        DBLog.d("CLEAR DB", "Clear DB start");
         transformerDao.delete();
         transformerSubstationDao.delete();
         transformerSubstationEquipmentDao.delete();
@@ -153,6 +153,8 @@ public class DBDataImporter {
         db.stationEquipmentsDeffectTypesDao().deleteAll();
 
         db.defectDescriptionDao().deleteAll();
+
+        DBLog.d("CLEAR DB", "Clear DB done");
     }
 
 
