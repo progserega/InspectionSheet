@@ -11,6 +11,8 @@ public interface ILineSectionStorage {
 
     List<LineSection> getByLineStartWithTower(long lineUniqId, long towerUniqId);
 
+    List<LineSection> getByLineEndWithTower(long lineUniqId, long towerUniqId);
+
     LineSection getById(long id);
 
     List<LineSection> getByIds(Long[] ids);

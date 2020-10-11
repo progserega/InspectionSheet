@@ -102,6 +102,8 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         initAddPhotoBtnImg();
         initPhotoList();
 
+        initNavigationButtons();
+
 
         photoUtility = new PhotoUtility(this, this);
 
@@ -413,10 +415,9 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         return commentView.getText().toString();
     }
 
-    public void onNextBtnClick(View view) {
-        presenter.nextButtonPressed();
-        //Toast.makeText(this, "Данные сохранены!", Toast.LENGTH_SHORT).show();
-    }
+//    public void onNextBtnClick(View view) {
+//
+//    }
 
 
     private void initPhotoList() {
@@ -437,7 +438,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         deffectsPhotoListAdapter.notifyDataSetChanged();
     }
 
-    public void onFinishBtnClick(View view) {
+    public void onFinishBtnClick() {
         presenter.finishButtonPressed();
         Intent intent = new Intent(this, InspectLineFinish.class);
         startActivity(intent);
@@ -500,6 +501,37 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         super.onRestoreInstanceState(savedState);
         photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_tower"));
     }
+
+    private void initNavigationButtons(){
+        TextView prevBtn = (TextView) findViewById(R.id.inpsect_tower__previous_btn_text);
+        final InspectLineTower that = this;
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(that, "НАЗАД!", Toast.LENGTH_SHORT).show();
+                presenter.previousButtonPressed();
+            }
+        });
+
+
+        TextView nextBtn = (TextView) findViewById(R.id.inpsect_tower__next_btn_text);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.nextButtonPressed();
+            }
+        });
+
+        TextView finishBtn = (TextView) findViewById(R.id.inpsect_tower__finish_btn_text);
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFinishBtnClick();
+            }
+        });
+
+    }
+
 
     @Override
     public void hideUI() {

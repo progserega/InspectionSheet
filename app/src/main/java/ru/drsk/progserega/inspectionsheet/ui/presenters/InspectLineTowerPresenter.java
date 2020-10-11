@@ -179,6 +179,25 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         //определяем пролет
         nextSections = getNextSections();
 
+        gotoSections();
+    }
+
+    @Override
+    public void previousButtonPressed() {
+        if (currentTower == null) {
+            return;
+        }
+
+        saveCurrentTower();
+
+        //определяем пролет
+        nextSections = getPreviousSections();
+
+       gotoSections();
+
+    }
+
+    private void gotoSections(){
         if (nextSections == null || nextSections.isEmpty()) {
             view.showEndOfLineDialog();
             return;
@@ -340,6 +359,18 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
         return sectionModels;
     }
+
+
+    private List< LineSection > getPreviousSections() {
+        if (currentTower == null) {
+            return new ArrayList<>();
+        }
+
+        List< LineSection > sectionModels = application.getLineSectionStorage().getByLineEndWithTower(line.getUniqId(), currentTower.getUniqId());
+
+        return sectionModels;
+    }
+
 
     private List< Tower > getNearestTowerFromCurrent(int max) {
 

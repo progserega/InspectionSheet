@@ -16,6 +16,8 @@
     <string name="selectResText">Выберите РЭС</string>
     <string name="selectObjectText">Выберите объект</string>
     <string name="next">Далее</string>
+    <string name="forward">Вперед</string>
+    <string name="prev">Назад</string>
     <string name="towerNameText">№ Опоры</string>
     <string name="inspectionTypeText">Тип осмотра</string>
     <string name="towerMaterialText">Материал опоры</string>

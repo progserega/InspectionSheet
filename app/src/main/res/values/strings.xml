@@ -17,6 +17,8 @@
     <string name="selectResText">Select RES</string>
     <string name="selectObjectText">Select object</string>
     <string name="next">Next</string>
+    <string name="forward">Forward</string>
+    <string name="prev">Previous</string>
     <string name="towerNameText">Tower №</string>
     <string name="inspectionTypeText">Type of equipmentInspection</string>
     <string name="towerMaterialText">Tower material</string>

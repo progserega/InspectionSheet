@@ -55,6 +55,8 @@ public class InspectLineTowerContract {
 
         void nextButtonPressed();
 
+        void previousButtonPressed();
+
         void onMaterialSelected(int pos);
 
         void onTowerTypeSelected(int pos);

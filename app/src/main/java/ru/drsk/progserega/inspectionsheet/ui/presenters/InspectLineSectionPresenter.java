@@ -111,6 +111,20 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
         view.gotoNextTowerInspection(nextTowerUniqId);
     }
 
+    @Override
+    public void previousButtonPressed() {
+        if (currentSection == null) {
+            return;
+        }
+
+        saveCurrentSection();
+
+        //определяем следующую опору
+        long nextTowerUniqId = currentSection.getTowerFromUniqId();
+
+        view.gotoNextTowerInspection(nextTowerUniqId);
+    }
+
     private void saveCurrentSection(){
         //сохраняем выявленные деффекты
         saveDeffects();
