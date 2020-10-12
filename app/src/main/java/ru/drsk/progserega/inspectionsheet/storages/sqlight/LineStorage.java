@@ -1,10 +1,12 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,23 +159,28 @@ public class LineStorage implements ILineStorage {
 //    }
 
     private List< LineModel > sortByNearest(List< LineModel > lines, Point userPosition) {
+        Map< Long, LineModel > linesMap = new HashMap<>();
+        List< Pair< Long, Double > > distances = new ArrayList<>();
 
-        Map<Double, LineModel> distanceMap = new HashMap<>();
         List< LineModel > sortedLines = new ArrayList<>();
 
-        for(LineModel line: lines){
+        for (LineModel line : lines) {
             Double distance = distanceToLine(line, userPosition);
-            distanceMap.put(distance, line);
+            Pair< Long, Double > lineDist = new Pair<>(line.getUniqId(), distance);
+            distances.add(lineDist);
+            linesMap.put(line.getUniqId(), line);
         }
 
-        List< Double > distances = new ArrayList<>(distanceMap.keySet());
-        Collections.sort(distances);
-
-        for (Double dist : distances) {
-            LineModel lineModel = distanceMap.get(dist);
-            if (lineModel != null) {
-                sortedLines.add(lineModel);
+        Collections.sort(distances, new Comparator< Pair< Long, Double > >() {
+            @Override
+            public int compare(Pair< Long, Double > o1, Pair< Long, Double > o2) {
+                return Double.compare(o1.second, o2.second);
             }
+        });
+
+        for( Pair< Long, Double > lineDist: distances){
+            LineModel lineModel = linesMap.get(lineDist.first);
+            sortedLines.add(lineModel);
         }
 
         return sortedLines;
@@ -186,7 +193,7 @@ public class LineStorage implements ILineStorage {
         for (TowerModel tower : towers) {
             double dist = locationService.distanceBetween(new Point(tower.getLat(), tower.getLon(), tower.getEle()), userPosition);
 
-            if(dist < minDist){
+            if (dist < minDist) {
                 minDist = dist;
             }
         }
