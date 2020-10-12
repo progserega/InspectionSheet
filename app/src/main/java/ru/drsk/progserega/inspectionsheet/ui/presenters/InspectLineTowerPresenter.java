@@ -74,7 +74,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     private void setViewData() {
-        if(currentTower==null){
+        if (currentTower == null) {
             view.hideUI();
             return;
         }
@@ -193,11 +193,11 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         //определяем пролет
         nextSections = getPreviousSections();
 
-       gotoSections();
+        gotoSections();
 
     }
 
-    private void gotoSections(){
+    private void gotoSections() {
         if (nextSections == null || nextSections.isEmpty()) {
             view.showEndOfLineDialog();
             return;
@@ -296,14 +296,26 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
 
         List< Tower > filteredTowers = new ArrayList<>();
+        Map< Double, Tower > filteredTowersMap = new HashMap<>();
+
         ILocation locationService = application.getLocationService();
         for (Tower tower : line.getTowers()) {
             double distance = locationService.distanceBetween(tower.getMapPoint(), locationService.getUserPosition());
             if (distance <= SEARCH_RADIUS) {
-                filteredTowers.add(tower);
+                filteredTowersMap.put(Double.valueOf(distance), tower);
+                //        filteredTowers.add(tower);
             }
         }
 
+        List< Double > distances = new ArrayList<>(filteredTowersMap.keySet());
+        Collections.sort(distances);
+
+        for (Double dist : distances) {
+            Tower tower = filteredTowersMap.get(dist);
+            if (tower != null) {
+                filteredTowers.add(tower);
+            }
+        }
         return filteredTowers;
     }
 
@@ -414,7 +426,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onCurrentTowerNameChange(String name) {
         Tower tower = line.getTowerByName(name);
-        if(tower == null){
+        if (tower == null) {
             view.hideUI();
             return;
         }
