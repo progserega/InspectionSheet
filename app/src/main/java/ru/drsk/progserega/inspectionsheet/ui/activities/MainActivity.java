@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 exportLines();
                 return;
             case CLEAR_DB:
+                application.getState().clear();
                 application.getRemoteStorage().clearStorage();
                 return;
             case LOAD_ORGANIZATION:

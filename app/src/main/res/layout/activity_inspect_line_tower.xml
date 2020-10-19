@@ -205,77 +205,66 @@
     </ScrollView>
 
     <!--Bottom tolbar -->
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/inspect_line_tower_bottomLA"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:padding="4dp"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
 
-        <LinearLayout
-            android:id="@+id/next_btn_layout"
+<!--        android:background="#F44336"-->
+        <TextView
+            android:id="@+id/inpsect_tower__finish_btn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/red_button_background"
+            android:gravity="center"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="@string/finish"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/inpsect_tower__previous_btn_text"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:onClick="onNextBtnClick"
-            android:orientation="vertical"
-            android:background="#097c09"
-            >
+            android:layout_height="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/green_button_background"
+            android:gravity="center"
+            android:text="@string/prev"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <!--<ImageButton-->
-                <!--android:id="@+id/inpsect_line_tower_next_btn"-->
-                <!--android:layout_width="30dp"-->
-                <!--android:layout_height="30dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@null"-->
-                <!--android:onClick="onNextBtnClick" />-->
-
-            <TextView
-                android:id="@+id/inpsect_line_textViewNB"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/next"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/finish_btn_layout"
+        <TextView
+            android:id="@+id/inpsect_tower__next_btn_text"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:onClick="onFinishBtnClick"
-            android:orientation="vertical"
-            android:layout_marginLeft="100dp"
-            android:background="#b42c11"
-            >
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/inpsect_line_tower_finish_btn"-->
-                <!--android:layout_width="30dp"-->
-                <!--android:layout_height="30dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@null"-->
-                <!--android:onClick="onFinishBtnClick" />-->
-
-            <TextView
-                android:id="@+id/inpsect_line_textViewFB"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/finish"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-    </LinearLayout>
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/green_button_background"
+            android:gravity="center"
+            android:text="@string/forward"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/inpsect_tower__previous_btn_text"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

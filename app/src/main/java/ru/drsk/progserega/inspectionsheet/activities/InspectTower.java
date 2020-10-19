@@ -67,7 +67,7 @@ public class InspectTower extends AppCompatActivity {
 
 //        lineId = intent.getLongExtra(LINE_ID, 0);
 //        String lineName = intent.getStringExtra(LINE_NAME);
-        Line line = application.getCurrentLineInspection().getLine();
+        Line line = application.getState().getCurrentLineInspection().getLine();
 
         TextView lineNameText = (TextView) findViewById(R.id.inspection_tower_name);
         lineNameText.setText(line.getName());
@@ -241,7 +241,7 @@ public class InspectTower extends AppCompatActivity {
         if(position == 0){
             return;
         }
-        application.getCurrentLineInspection().setInspectionType(inspectionTypes.get(position - 1));
+        application.getState().getCurrentLineInspection().setInspectionType(inspectionTypes.get(position - 1));
     }
 
     public void onNextBtnPress(View view){

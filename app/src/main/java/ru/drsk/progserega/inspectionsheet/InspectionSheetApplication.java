@@ -82,19 +82,11 @@ public class InspectionSheetApplication extends Application {
     //Сервис для работы с sqlight
     private InspectionSheetDatabase db;
 
-    //private TowersService towersService;
-
     private ITowerStorage towerStorage;
 
     private ICatalogStorage catalogStorage;
 
     private ILineStorage lineStorage;
-
-    private LineInspection currentLineInspection;
-
-    private IStationInspection currentStationInspection;
-
-    private List<IStationInspection> substationInspectionsCache;
 
     private IRemoteStorage remoteStorage;
 
@@ -105,8 +97,6 @@ public class InspectionSheetApplication extends Application {
     private InspectionService inspectionService;
 
     private ILineSectionStorage lineSectionStorage;
-
-    //  List<InspectionPhoto> photosForFullscreen;
 
     private ILineDeffectTypesStorage lineDeffectTypesStorage;
 
@@ -148,26 +138,6 @@ public class InspectionSheetApplication extends Application {
 
     public ICatalogStorage getCatalogStorage() {
         return catalogStorage;
-    }
-
-    public LineInspection getCurrentLineInspection() {
-        return currentLineInspection;
-    }
-
-    public void setCurrentLineInspection(LineInspection currentLineInspection) {
-        this.currentLineInspection = currentLineInspection;
-    }
-
-    public IStationInspection getCurrentStationInspection() {
-        return currentStationInspection;
-    }
-
-    public void setCurrentStationInspection(IStationInspection currentStationInspection) {
-        this.currentStationInspection = currentStationInspection;
-    }
-
-    public List<IStationInspection> getSubstationInspectionsCache() {
-        return substationInspectionsCache;
     }
 
     public InspectionSheetDatabase getDb() {
@@ -294,7 +264,7 @@ public class InspectionSheetApplication extends Application {
         // remoteStorage = new RemoteSorage(dbDataImporter, getApplicationContext());
         remoteStorage = new RemoteStorageRx(dbDataImporter, getApplicationContext(), settingsStorage);
 
-        substationInspectionsCache = new ArrayList<>();
+        //substationInspectionsCache = new ArrayList<>();
 
         inspectionStorage = new InspectionStorage(db, getApplicationContext());
 

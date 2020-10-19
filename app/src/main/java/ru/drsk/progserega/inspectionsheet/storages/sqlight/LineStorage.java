@@ -1,9 +1,13 @@
 package ru.drsk.progserega.inspectionsheet.storages.sqlight;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +21,7 @@ import ru.drsk.progserega.inspectionsheet.services.ILocation;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.dao.LineDao;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.LineModel;
+import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerModel;
 
 public class LineStorage implements ILineStorage {
 
@@ -43,6 +48,8 @@ public class LineStorage implements ILineStorage {
         String queryStr = "SELECT * FROM lines ";
         List< String > filtersParts = new ArrayList<>();
         List< Object > filtersValues = new ArrayList<>();
+        Point center = null;
+
         for (Map.Entry< String, Object > entry : filters.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -61,7 +68,7 @@ public class LineStorage implements ILineStorage {
             }
 
             if (key.equals(EquipmentService.FILTER_POSITION)) {
-                Point center = (Point) value;
+                center = (Point) value;
                 filtersParts.add("bbox_top_lat >= ? ");
                 filtersParts.add("bbox_top_lon <= ? ");
                 filtersParts.add("bbox_bottom_lat <= ? ");
@@ -99,6 +106,10 @@ public class LineStorage implements ILineStorage {
 //            radius = (radius != null) ? radius : locationService.defaultSearchRadius();
 //            lineModelList = filterByPoint(lineModelList, center, radius);
 //        }
+
+        if (center != null) {
+            lineModelList = sortByNearest(lineModelList, center);
+        }
 
 
         return dbModelToEntity(lineModelList);
@@ -146,4 +157,46 @@ public class LineStorage implements ILineStorage {
 //    public ArrayList<Line> getLinesByTypeAndName(Voltage voltage, String name) {
 //        return null;
 //    }
+
+    private List< LineModel > sortByNearest(List< LineModel > lines, Point userPosition) {
+        Map< Long, LineModel > linesMap = new HashMap<>();
+        List< Pair< Long, Double > > distances = new ArrayList<>();
+
+        List< LineModel > sortedLines = new ArrayList<>();
+
+        for (LineModel line : lines) {
+            Double distance = distanceToLine(line, userPosition);
+            Pair< Long, Double > lineDist = new Pair<>(line.getUniqId(), distance);
+            distances.add(lineDist);
+            linesMap.put(line.getUniqId(), line);
+        }
+
+        Collections.sort(distances, new Comparator< Pair< Long, Double > >() {
+            @Override
+            public int compare(Pair< Long, Double > o1, Pair< Long, Double > o2) {
+                return Double.compare(o1.second, o2.second);
+            }
+        });
+
+        for( Pair< Long, Double > lineDist: distances){
+            LineModel lineModel = linesMap.get(lineDist.first);
+            sortedLines.add(lineModel);
+        }
+
+        return sortedLines;
+    }
+
+    private Double distanceToLine(LineModel line, Point userPosition) {
+
+        List< TowerModel > towers = db.towerDao().getByLineUniqId(line.getUniqId());
+        double minDist = Double.MAX_VALUE;
+        for (TowerModel tower : towers) {
+            double dist = locationService.distanceBetween(new Point(tower.getLat(), tower.getLon(), tower.getEle()), userPosition);
+
+            if (dist < minDist) {
+                minDist = dist;
+            }
+        }
+        return Double.valueOf(minDist);
+    }
 }

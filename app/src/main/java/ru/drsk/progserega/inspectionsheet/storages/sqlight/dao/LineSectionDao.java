@@ -22,7 +22,10 @@ public interface LineSectionDao {
     List<LineSectionModel> getByIds(Long[] ids);
 
     @Query("SELECT * FROM line_section WHERE line_uniq_id = :lineUniqId AND from_tower_uniq_id = :towerUniqId")
-    List<LineSectionModel> getByLineTower(long lineUniqId, long towerUniqId);
+    List<LineSectionModel> getByLineTowerFrom(long lineUniqId, long towerUniqId);
+
+    @Query("SELECT * FROM line_section WHERE line_uniq_id = :lineUniqId AND to_tower_uniq_id = :towerUniqId")
+    List<LineSectionModel> getByLineTowerTo(long lineUniqId, long towerUniqId);
 
     @Query("SELECT * FROM line_section WHERE line_uniq_id = :lineUniqId")
     List<LineSectionModel> getByLine(long lineUniqId);

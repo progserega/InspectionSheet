@@ -34,6 +34,8 @@ public class InspectLineSectionContract {
 
         void nextButtonPressed();
 
+        void previousButtonPressed();
+
         void onMaterialSelected(int pos);
 
         void onImageTaken(String photoPath);

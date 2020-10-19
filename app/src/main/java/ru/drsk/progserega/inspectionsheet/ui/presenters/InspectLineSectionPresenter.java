@@ -48,7 +48,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             return;
         }
 
-        line = application.getCurrentLineInspection().getLine();
+        line = application.getState().getCurrentLineInspection().getLine();
         currentSection = application.getLineSectionStorage().getById(sectionId);
 
         setViewData();
@@ -107,6 +107,20 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
 
         //определяем следующую опору
         long nextTowerUniqId = currentSection.getTowerToUniqId();
+
+        view.gotoNextTowerInspection(nextTowerUniqId);
+    }
+
+    @Override
+    public void previousButtonPressed() {
+        if (currentSection == null) {
+            return;
+        }
+
+        saveCurrentSection();
+
+        //определяем следующую опору
+        long nextTowerUniqId = currentSection.getTowerFromUniqId();
 
         view.gotoNextTowerInspection(nextTowerUniqId);
     }

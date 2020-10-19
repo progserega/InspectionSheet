@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,8 @@ public class InspectLineSection extends AppCompatActivity implements
         initInspectionItemsList();
         initAddPhotoBtnImg();
         initPhotoList();
+
+        initNavigationButtons();
 
         photoUtility = new PhotoUtility(this, this);
 
@@ -160,7 +163,7 @@ public class InspectLineSection extends AppCompatActivity implements
         presenter.nextButtonPressed();
     }
 
-    public void onFinishBtnClick(View view) {
+    public void onFinishBtnClick() {
 
         presenter.finishButtonPressed();
 
@@ -266,6 +269,36 @@ public class InspectLineSection extends AppCompatActivity implements
     public void startDeffectDescriptionActivity() {
         Intent intent = new Intent(this, DeffectDescription.class);
         startActivity(intent);
+    }
+
+    private void initNavigationButtons(){
+        TextView prevBtn = (TextView) findViewById(R.id.inpsect_section__previous_btn_text);
+        final InspectLineSection that = this;
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Toast.makeText(that, "НАЗАД!", Toast.LENGTH_SHORT).show();
+                presenter.previousButtonPressed();
+            }
+        });
+
+
+        TextView nextBtn = (TextView) findViewById(R.id.inpsect_section__next_btn_text);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.nextButtonPressed();
+            }
+        });
+
+        TextView finishBtn = (TextView) findViewById(R.id.inpsect_section__finish_btn_text);
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFinishBtnClick();
+            }
+        });
+
     }
 
     @Override

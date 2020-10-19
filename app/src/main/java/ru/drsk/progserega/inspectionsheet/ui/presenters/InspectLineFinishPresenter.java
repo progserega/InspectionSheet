@@ -29,7 +29,7 @@ public class InspectLineFinishPresenter implements InspectLineFinishContract.Pre
 
     @Override
     public void onViewCreate() {
-        lineInspection = application.getCurrentLineInspection();
+        lineInspection = application.getState().getCurrentLineInspection();
 
         view.setDateInspection(lineInspection.getInspectionDate());
 

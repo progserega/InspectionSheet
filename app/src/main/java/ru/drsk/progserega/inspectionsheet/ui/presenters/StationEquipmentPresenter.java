@@ -27,7 +27,7 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
 
     @Override
     public void onViewCreated() {
-        stationInspection = this.application.getCurrentStationInspection();
+        stationInspection = this.application.getState().getCurrentStationInspection();
 
         stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
 
@@ -57,7 +57,7 @@ public class StationEquipmentPresenter implements StationEquipmentContract.Prese
     @Override
     public void onFinishBtnPress() {
         //SAVE ALL
-        stationInspection = this.application.getCurrentStationInspection();
+        stationInspection = this.application.getState().getCurrentStationInspection();
         stationEquipmentInspections = stationInspection.getStationEquipmentInspections();
         IInspectionStorage inspectionStorage = application.getInspectionStorage();
 

@@ -57,7 +57,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onViewCreated(long nextTowerUniqId) {
 
-        line = application.getCurrentLineInspection().getLine();
+        line = application.getState().getCurrentLineInspection().getLine();
         towers = line.getTowers();
         nextSections = null;
 
@@ -74,7 +74,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     }
 
     private void setViewData() {
-        if(currentTower==null){
+        if (currentTower == null) {
             view.hideUI();
             return;
         }
@@ -179,6 +179,25 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         //определяем пролет
         nextSections = getNextSections();
 
+        gotoSections();
+    }
+
+    @Override
+    public void previousButtonPressed() {
+        if (currentTower == null) {
+            return;
+        }
+
+        saveCurrentTower();
+
+        //определяем пролет
+        nextSections = getPreviousSections();
+
+        gotoSections();
+
+    }
+
+    private void gotoSections() {
         if (nextSections == null || nextSections.isEmpty()) {
             view.showEndOfLineDialog();
             return;
@@ -277,14 +296,26 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
 
         List< Tower > filteredTowers = new ArrayList<>();
+        Map< Double, Tower > filteredTowersMap = new HashMap<>();
+
         ILocation locationService = application.getLocationService();
         for (Tower tower : line.getTowers()) {
             double distance = locationService.distanceBetween(tower.getMapPoint(), locationService.getUserPosition());
             if (distance <= SEARCH_RADIUS) {
-                filteredTowers.add(tower);
+                filteredTowersMap.put(Double.valueOf(distance), tower);
+                //        filteredTowers.add(tower);
             }
         }
 
+        List< Double > distances = new ArrayList<>(filteredTowersMap.keySet());
+        Collections.sort(distances);
+
+        for (Double dist : distances) {
+            Tower tower = filteredTowersMap.get(dist);
+            if (tower != null) {
+                filteredTowers.add(tower);
+            }
+        }
         return filteredTowers;
     }
 
@@ -341,6 +372,18 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         return sectionModels;
     }
 
+
+    private List< LineSection > getPreviousSections() {
+        if (currentTower == null) {
+            return new ArrayList<>();
+        }
+
+        List< LineSection > sectionModels = application.getLineSectionStorage().getByLineEndWithTower(line.getUniqId(), currentTower.getUniqId());
+
+        return sectionModels;
+    }
+
+
     private List< Tower > getNearestTowerFromCurrent(int max) {
 
         List< Tower > sorted = new ArrayList<>();
@@ -383,7 +426,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     @Override
     public void onCurrentTowerNameChange(String name) {
         Tower tower = line.getTowerByName(name);
-        if(tower == null){
+        if (tower == null) {
             view.hideUI();
             return;
         }
