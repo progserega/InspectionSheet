@@ -8,8 +8,8 @@ android {
         applicationId "ru.drsk.progserega.inspectionsheet"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 4
-        versionName "0.6.1"
+        versionCode 5
+        versionName "0.6.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
