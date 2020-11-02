@@ -268,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case CLEAR_DB:
                 application.getState().clear();
                 application.getRemoteStorage().clearStorage();
+                application.getFileStorage().removeInspectionsPhotos();
                 return;
             case LOAD_ORGANIZATION:
                 application.getRemoteStorage().loadOrganization();

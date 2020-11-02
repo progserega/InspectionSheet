@@ -282,7 +282,7 @@ public class LoadDeffectTypesTask implements ObservableOnSubscribe< String > {
 
            }
 
-           File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+           File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES+"/defects");
            String targetpath = storageDir.getAbsolutePath() + "/" + descriptionJson.getFileName();
 
            writeResponseBodyToDisk((ResponseBody) response.body(), targetpath);

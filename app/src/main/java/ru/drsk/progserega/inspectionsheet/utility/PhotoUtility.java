@@ -58,7 +58,7 @@ public class PhotoUtility {
 
     private ChoosedListener choosedListener;
 
-    private ArrayList<String> mResults = new ArrayList<>();
+    private ArrayList< String > mResults = new ArrayList<>();
 
     public PhotoUtility(Activity activity, ChoosedListener choosedListener) {
         this.context = activity.getBaseContext();
@@ -148,7 +148,7 @@ public class PhotoUtility {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -202,7 +202,7 @@ public class PhotoUtility {
         }
 
 
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
         String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
 
         File sourceLocation = new File(galeryFilePath);

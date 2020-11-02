@@ -730,6 +730,11 @@ public class DBDataImporter {
             }
 
             if(descriptionJson.getImageUrl().equals(oldPhoto.getImageUrl())) {
+                //если не существует на диске
+                if(!isPhotoExist(oldPhoto)){
+                    db.defectDescriptionPhotoDao().deleteById(oldPhoto.getId());
+                    descriptionsForDownload.add(descriptionJson);
+                }
                 continue;
             }
 
@@ -748,6 +753,15 @@ public class DBDataImporter {
         }
         File imageFile = new File(photo.getPhotoPath());
         imageFile.delete();
+    }
+
+    private boolean isPhotoExist(DefectDescriptionPhotoModel photo){
+        if(photo == null || photo.getPhotoPath() == null || photo.getPhotoPath().isEmpty() ){
+            return false;
+        }
+
+        File imageFile = new File(photo.getPhotoPath());
+        return imageFile.exists();
     }
 
     public void loadDefectDescriptionPhotoFile(DeffectDescriptionJson descriptionJson, String filePath){
