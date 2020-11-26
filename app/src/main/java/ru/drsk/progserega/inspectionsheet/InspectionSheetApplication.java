@@ -24,6 +24,7 @@ import ru.drsk.progserega.inspectionsheet.services.PhotoFullscreenManager;
 import ru.drsk.progserega.inspectionsheet.services.StationInspectionFactory;
 import ru.drsk.progserega.inspectionsheet.services.StationInspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
+import ru.drsk.progserega.inspectionsheet.storages.IFileStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineSectionStorage;
@@ -38,6 +39,7 @@ import ru.drsk.progserega.inspectionsheet.storages.ITowerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ITransformerSubstationStorage;
+import ru.drsk.progserega.inspectionsheet.storages.files.FileStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IRemoteStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.RemoteStorageRx;
 import ru.drsk.progserega.inspectionsheet.storages.shared_preferences.SettingsStorageImpl;
@@ -115,6 +117,8 @@ public class InspectionSheetApplication extends Application {
     private ILogStorage logStorage;
 
     private IStationEquipmentStorage stationEquipmentStorage;
+
+    private IFileStorage fileStorage;
 
     public ITransformerStorage getTransformerStorage() {
         return transformerStorage;
@@ -210,6 +214,10 @@ public class InspectionSheetApplication extends Application {
 
     public IStationEquipmentStorage getStationEquipmentStorage() {
         return stationEquipmentStorage;
+    }
+
+    public IFileStorage getFileStorage() {
+        return fileStorage;
     }
 
     @Override
@@ -313,6 +321,8 @@ public class InspectionSheetApplication extends Application {
                 equipmentService,
                 stationInspectionService
         );
+
+        fileStorage = new FileStorage( getApplicationContext());
 
         this.LockOrientation();
     }
