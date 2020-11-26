@@ -1,7 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
-import android.util.Pair;
-
 import java.util.List;
 
 
@@ -18,10 +16,14 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ApiGetResponce;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.DeffectDescriptionJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineData;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LinesResponseJson;
+import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResLine;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.ResModel;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectTypesJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectsJson;
@@ -142,6 +144,15 @@ public interface IApiInspectionSheet {
    // @Headers("Accept-Encoding: identity")
     @GET("/api/lines")
     Call< LinesResponseJson > getLines(@Query("res_id") long resId, @Query("offset") int offset, @Query("limit") int limit);
+
+    //------------------------- api v2 --------------------------------------------------------------------------------------
+    @GET("/api/v2/res/lines")
+    Call< ApiGetResponce< ResLine > > getResLines(@Query("res_ids") List<Long> resIds);
+
+    @GET("/api/v2/lines")
+    Call< ApiGetResponce< LineData > > getLines(@Query("uids") String uids);
+
+
 
     @GET("/api/appversion")
     Call< AppVersionJson > getVersion();
