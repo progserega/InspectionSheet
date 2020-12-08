@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,7 +40,8 @@ http://wiki.rs.int/doku.php/osm:api#данные_линии_по_имени
 public class MainActivity extends AppCompatActivity implements IProgressListener, SelectOrganizationDialogFragment.ISelectOrganizationListener {
 
     private InspectionSheetApplication application;
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
+    private LinearLayout progressBar;
     private TextView progressText;
     private SelectOrganizationDialogFragment selectOrganizationDlog;
     private long enterpriseId = 0;
@@ -73,8 +75,10 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         setTitle(R.string.app_name);
 
 
-        progressBar = (ProgressBar) findViewById(R.id.loading_progress);
-        progressText = (TextView) findViewById(R.id.loading_progress_text);
+        progressBar = (LinearLayout) findViewById(R.id.main_progress_bar);
+        progressBar.setVisibility(View.GONE);
+
+        progressText = (TextView) progressBar.findViewById(R.id.pbText);
 
         //application.getRemoteStorage().setProgressListener(this);
         networkTasksQueue.clear();
@@ -82,8 +86,36 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         //comment for DEBUG
         //Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
         //exportBtn.setVisibility(View.GONE);
+
     }
 
+    private void setInspectionsStatus(){
+        Log.d("MAIN ACTIVITY","CALC STATUS....");
+
+        InspectionService inspectionService = application.getInspectionService();
+
+        List< IStationInspection > inspectedSubstations = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION, application.getStationInspectionFactory());
+        List< IStationInspection > inspectedTp = inspectionService.getInspectionByEquipment(EquipmentType.TP, application.getStationInspectionFactory());
+        List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
+
+
+        TextView linesCntText = (TextView) findViewById(R.id.main__lines_inspected_cnt);
+        linesCntText.setText(String.valueOf(inspectedLines.size()));
+
+        TextView substationsCntText = (TextView) findViewById(R.id.main__substation_inspected_cnt);
+        substationsCntText.setText(String.valueOf(inspectedSubstations.size()));
+
+        TextView tpCntText = (TextView) findViewById(R.id.main__tp_inspected_cnt);
+        tpCntText.setText(String.valueOf(inspectedTp.size()));
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setInspectionsStatus();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -191,13 +223,13 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     }
 
     private void showProgress() {
-        progressText.setVisibility(View.VISIBLE);
+        //progressText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        progressText.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
+        //progressText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
 
     }
 
@@ -210,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             s = writer.toString();
         }
         showError("Ошибка", s);
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
         networkTasksQueue.clear();
     }
 

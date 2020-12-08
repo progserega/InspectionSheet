@@ -2,7 +2,7 @@
     <string name="app_name">Inspection Sheet</string>
     <string name="selectTaskText">Please, select task</string>
     <string name="addDefectBtText">Start Inspection</string>
-    <string name="syncBtText">Sync data</string>
+    <string name="syncBtText">Fetch objects data</string>
     <string name="defectCreate">Defect create</string>
     <string name="vl04BtText">Vl 0.4 kV</string>
     <string name="vl_6_10_kv_text">Vl 6-10 kV</string>
