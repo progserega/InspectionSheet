@@ -26,4 +26,9 @@ public interface LineInspectionDao {
 
     @Query("DELETE FROM line_inspection")
     void deleteAll();
+
+    @Query("DELETE FROM line_inspection where id = :inspectionId")
+    void delete(long inspectionId);
+
+
 }

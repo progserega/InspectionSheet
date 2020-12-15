@@ -26,6 +26,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffec
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectJson;
@@ -43,12 +44,14 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     private IApiInspectionSheet apiArmIS;
     private List<InspectedLine> inspectedLines;
+    private InspectionService inspectionService;
     private long resId;
 
-    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId) {
+    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId, InspectionService inspectionService) {
         this.apiArmIS = apiArmIS;
         this.inspectedLines = inspectedLines;
         this.resId = resId;
+        this.inspectionService = inspectionService;
     }
 
     @Override
@@ -113,7 +116,11 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
             }
 
+            emitter.onNext("Очистка данных осмотра линии: " + line.getLineInspection().getLine().getName());
 
+            this.inspectionService.deleteLineInspection(line);
+
+            emitter.onNext("Выполнено "+ line.getLineInspection().getLine().getName());
         }
 
         emitter.onComplete();

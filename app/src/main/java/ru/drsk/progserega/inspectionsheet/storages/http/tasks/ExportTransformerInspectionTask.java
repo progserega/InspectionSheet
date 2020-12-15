@@ -31,6 +31,7 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadStationImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TransformerInfo;
 
+@Deprecated
 public class ExportTransformerInspectionTask implements ObservableOnSubscribe<String> {
 
     private IApiInspectionSheet apiArmIS;

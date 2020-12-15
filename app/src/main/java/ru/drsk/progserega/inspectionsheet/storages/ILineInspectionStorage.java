@@ -4,9 +4,11 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Line;
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.PhotoSubject;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.sqlight.entities.TowerDeffectModel;
@@ -44,5 +46,15 @@ public interface ILineInspectionStorage {
     List<LineInspection> getAllLineInspections();
 
     long saveLineInspection(LineInspection inspection);
+
+    void deleteLineInspection(long inspectionId);
+
+    void deleteLineSectionInspections(List<Long> sectionInspectionsIds);
+
+    void deleteLineSectionDeffects(List<Long> sectionDeffectsIds);
+
+    void deleteLineTowersInspections(List<Long> towersInspectionsIds);
+
+    void deleteLineTowerDeffects(List<Long> towersDeffectsIds);
 
 }

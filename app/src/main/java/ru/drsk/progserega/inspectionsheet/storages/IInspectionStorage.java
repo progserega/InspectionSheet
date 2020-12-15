@@ -31,4 +31,7 @@ public interface IInspectionStorage {
     void loadInspections(StationEquipmentInspection inspection);
 
     void loadStationInspections(long stationUniqId, List<InspectionItem> inspectionItems);
+
+    void deleteInspections(List<Long> inspectionsIds);
+
 }

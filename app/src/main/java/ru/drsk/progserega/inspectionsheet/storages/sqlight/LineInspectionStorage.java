@@ -16,6 +16,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffec
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.ICatalogStorage;
+import ru.drsk.progserega.inspectionsheet.storages.IFileStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.ILineStorage;
@@ -188,7 +189,7 @@ public class LineInspectionStorage implements ILineInspectionStorage {
     }
 
     @Override
-    public List< LineSectionDeffect > getSectionDeffects(long sectionId,  Line line) {
+    public List< LineSectionDeffect > getSectionDeffects(long sectionId, Line line) {
 
         List< LineSectionDeffectModel > lineSectionDeffects = db.lineSectionDeffectDao().getLineSectionDeffects(sectionId);
 
@@ -358,5 +359,33 @@ public class LineInspectionStorage implements ILineInspectionStorage {
         }
 
         return inspections;
+    }
+
+    @Override
+    public void deleteLineInspection(long inspectionId) {
+        db.lineInspectionDao().delete(inspectionId);
+
+    }
+
+    @Override
+    public void deleteLineSectionInspections(List< Long > sectionInspectionsIds) {
+        db.lineSectionInspectionDao().delete(sectionInspectionsIds);
+    }
+
+    @Override
+    public void deleteLineSectionDeffects(List< Long > sectionDeffectsIds) {
+        db.lineSectionDeffectDao().delete(sectionDeffectsIds);
+    }
+
+
+
+    @Override
+    public void deleteLineTowersInspections(List< Long > towersInspectionsIds) {
+        db.towerInspectionDao().delete(towersInspectionsIds);
+    }
+
+    @Override
+    public void deleteLineTowerDeffects(List< Long > towersDeffectsIds) {
+        db.towerDeffectDao().delete(towersDeffectsIds);
     }
 }

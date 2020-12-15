@@ -22,6 +22,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.StationInspectionJson;
@@ -36,6 +37,7 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Strin
     private IApiInspectionSheet apiArmIS;
     private List< IStationInspection > stationInspections;
     private ISettingsStorage settingsStorage;
+    private InspectionService inspectionService;
 
     private final String EXPORT_TAG = "EXPORT STATIONS:";
 
@@ -44,10 +46,11 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Strin
 
     private ObservableEmitter< String > emitter;
 
-    public ExportStationInspectionTask(IApiInspectionSheet apiArmIS, List< IStationInspection > stationInspections, ISettingsStorage settingsStorage) {
+    public ExportStationInspectionTask(IApiInspectionSheet apiArmIS, List< IStationInspection > stationInspections, ISettingsStorage settingsStorage, InspectionService inspectionService) {
         this.apiArmIS = apiArmIS;
         this.stationInspections = stationInspections;
         this.settingsStorage = settingsStorage;
+        this.inspectionService = inspectionService;
     }
 
     @Override
@@ -72,7 +75,8 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Strin
 
             if (inspectionArmId == 0) {
                 DBLog.e(EXPORT_TAG, "Ошибка при экспорте осмотра.  inspectionArmId = 0");
-                continue;
+                emitter.onError(new Exception("Ошибка передачи результатов осмотра на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                return;
             }
 
             //грузим общие фото
@@ -94,6 +98,11 @@ public class ExportStationInspectionTask implements ObservableOnSubscribe< Strin
                 uplodEquipmentInspectionItems(stationUid, stationType, inspectionArmId, transformerIdInArm, equipmentInspection.getInspectionItems());
 
             }
+
+            DBLog.d(EXPORT_TAG, " Удаляем данные осмотра %s [%s] uid = %d ", stationTypeName, station.getName(), stationUid);
+            inspectionService.deleteStationInspection(inspection);
+
+            DBLog.d(EXPORT_TAG, " Экспорт осмотра %s [%s] uid = %d Выполнен", stationTypeName, station.getName(), stationUid);
         }
         emitter.onNext("Сохранение осмотров Подстанции/ТП - Выполнено" );
         emitter.onComplete();

@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.PrintWriter;
@@ -28,7 +27,6 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
@@ -62,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private static final String LOAD_TP = "load_tp";
     private static final String LOAD_SUBSTATIONS = "load_substations";
     private static final String LOAD_DEFFECT_TYPES = "load_deffect_types";
+    private static final String SHOW_SUCCESS_EXPORT_DIALOG = "show_success_export_dialog";
 
     private Queue< String > networkTasksQueue = new LinkedList<>();
 
@@ -108,6 +107,20 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         TextView tpCntText = (TextView) findViewById(R.id.main__tp_inspected_cnt);
         tpCntText.setText(String.valueOf(inspectedTp.size()));
 
+        Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
+        Button syncBtn = (Button) findViewById(R.id.syncButton);
+
+
+        if(inspectedLines.size() == 0 && inspectedTp.size() == 0 && inspectedSubstations.size() == 0){
+            //нет осмотров
+            exportBtn.setEnabled(false);
+            syncBtn.setEnabled(true);
+        }
+        else{
+            exportBtn.setEnabled(true);
+            syncBtn.setEnabled(false);
+        }
+        //exportBtn.setVisibility(View.GONE);
 
     }
 
@@ -144,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
                 Intent intentJournal = new Intent(this, Journal.class);
                 startActivity(intentJournal);
                 return true;
+            case R.id.menu_clear:
+                clearDBData();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -158,11 +174,13 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
     public void syncData(View view) {
         if (networkTasksQueue.size() != 0) {
-            showError("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
+            showMessage("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
             return;
         }
         //showQuestion("Загрузить данные с сервера?", "Важно! Будут экспортированны результаты осмотров, после этого данные будут очищены и загружены новые");
-        showQuestion("Загрузить данные с сервера?", "Важно! Все не экспортированные результаты осмотров будут очищены!");
+        //showQuestion("Загрузить данные с сервера?", "Важно! Все не экспортированные результаты осмотров будут очищены!");
+
+        loadData();
     }
 
     private void showQuestion(String title, String message) {
@@ -183,6 +201,31 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         builder.create().show();
     }
 
+    private void clearDBData(){
+        if (networkTasksQueue.size() != 0) {
+            showMessage("Ошибка ", "Синхронизация уже выполняется, дождитесь завершения!");
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Очистить данные осмотров")
+                .setMessage("ВНИМАНИЕ! Все собранные данные осмотров будут потеряны! Вы делаете это на свой страх и риск!")
+                .setPositiveButton(/*android.R.string.ok*/"Да, удалить - я осознаю риск", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        application.getState().clear();
+                        application.getRemoteStorage().clearStorage();
+                        application.getFileStorage().removeAllInspectionsPhotos();
+                        showMessage("Операция выполнена ", "Данные очищены!");
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        builder.create().show();
+    }
 
     private void loadData() {
 
@@ -218,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     public void progressComplete() {
         hideProgress();
 
+        setInspectionsStatus();
+
         networkTasksQueue.poll();
         nextTask();
     }
@@ -241,12 +286,14 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             ex.printStackTrace(new PrintWriter(writer));
             s = writer.toString();
         }
-        showError("Ошибка", s);
+        showMessage("Ошибка", s);
         progressBar.setVisibility(View.GONE);
         networkTasksQueue.clear();
+
+        setInspectionsStatus();
     }
 
-    private void showError(String title, String message) {
+    private void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(message)
@@ -262,11 +309,14 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         application.getRemoteStorage().setProgressListener(this);
 
+        application.getState().clear();
+
         networkTasksQueue.add(SELECT_ACTIVE_SERVER);
         networkTasksQueue.add(EXPORT_SUBST_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_TP_TRANSFORMERS);
         networkTasksQueue.add(EXPORT_LINES);
 
+        networkTasksQueue.add(SHOW_SUCCESS_EXPORT_DIALOG);
 
         nextTask();
     }
@@ -300,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case CLEAR_DB:
                 application.getState().clear();
                 application.getRemoteStorage().clearStorage();
-                application.getFileStorage().removeInspectionsPhotos();
+                application.getFileStorage().removeAllInspectionsPhotos();
                 return;
             case LOAD_ORGANIZATION:
                 application.getRemoteStorage().loadOrganization();
@@ -320,6 +370,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             case LOAD_DEFFECT_TYPES:
                 application.getRemoteStorage().loadDeffectTypes();
                 return;
+            case SHOW_SUCCESS_EXPORT_DIALOG:
+                showMessage("Операция выполнена", "Данные успешно отправлены");
+                networkTasksQueue.poll();
+                nextTask();
+                return;
         }
     }
 
@@ -327,16 +382,16 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         InspectionService inspectionService = application.getInspectionService();
         List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION, application.getStationInspectionFactory());
 
-        application.getRemoteStorage().exportStationsInspections(inspections);
+        //int a = 0;
+       application.getRemoteStorage().exportStationsInspections(inspections);
     }
 
     private void exportTPTransformers() {
         InspectionService inspectionService = application.getInspectionService();
         List< IStationInspection > inspections = inspectionService.getInspectionByEquipment(EquipmentType.TP, application.getStationInspectionFactory());
 
-//        int a = 0;
         application.getRemoteStorage().exportStationsInspections(inspections);
-        // application.getRemoteStorage().exportTransformersInspections(inspections);
+
     }
 
     private void exportLines() {
@@ -351,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         // settings.setResId(0);
         if (settings.getResId() == 0) {
             hideProgress();
-            showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
+            showMessage("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
             return;
         }
 
@@ -368,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
     private void loadLines() {
         long resId = application.getSettingsStorage().loadSettings().getResId();
         if (resId == 0) {
-            showError("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
+            showMessage("Не выбран Район Электрических Сетей", "Перейдите в Меню -> Насройки и укажите район");
             return;
         }
         application.getRemoteStorage().loadLines(resId);
@@ -383,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
         //Toast.makeText(this, "Enterprise is =" + enterpriseId + " RES ID = " + areaId, Toast.LENGTH_LONG).show();
 
         if (this.areaId == 0) {
-            showError("Ошибка", "Не выбран РЭС");
+            showMessage("Ошибка", "Не выбран РЭС");
             return;
         }
 
