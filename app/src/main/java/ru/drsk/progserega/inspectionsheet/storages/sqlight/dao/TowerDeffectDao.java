@@ -26,4 +26,7 @@ public interface TowerDeffectDao {
 
     @Query("DELETE FROM tower_deffects")
     void deleteAll();
+
+    @Query("DELETE FROM tower_deffects where id IN (:defectsIds)")
+    void delete(List<Long> defectsIds);
 }

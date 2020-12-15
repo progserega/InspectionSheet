@@ -26,6 +26,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffec
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerInspection;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.http.IApiInspectionSheet;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.LineInspectionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.SectionDeffectJson;
@@ -43,12 +44,14 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     private IApiInspectionSheet apiArmIS;
     private List<InspectedLine> inspectedLines;
+    private InspectionService inspectionService;
     private long resId;
 
-    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId) {
+    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId, InspectionService inspectionService) {
         this.apiArmIS = apiArmIS;
         this.inspectedLines = inspectedLines;
         this.resId = resId;
+        this.inspectionService = inspectionService;
     }
 
     @Override
@@ -60,7 +63,9 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
             emitter.onNext("Экспорт данных линии: " + line.getLineInspection().getLine().getName());
             long inspectionId = exportInspection(line.getLineInspection(), resId);
             if (inspectionId == 0) {
-                continue;//что-то пошло не так
+                //что-то пошло не так
+                emitter.onError(new Exception("Ошибка передачи результатов осмотра на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                return;
             }
 
             for (InspectedTower inspectedTower : line.getInspectedTowers()) {
@@ -71,11 +76,16 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
                 emitter.onNext("Экспорт данных осмотра опоры: " + inspectedTower.getTower().getName());
                 long towerInspectionId = exportTowerInspection(inspectionId, inspectedTower.getInspection());
                 if (towerInspectionId == 0) {
-                    continue; //что-то пошло не так
+                    emitter.onError(new Exception("Ошибка передачи результатов осмотра опоры на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                    return;
                 }
 
                 emitter.onNext("Экспорт деффектов опоры: " + inspectedTower.getTower().getName());
-                exportTowerDeffects(inspectedTower.getDeffects(), towerInspectionId);
+                long res = exportTowerDeffects(inspectedTower.getDeffects(), towerInspectionId);
+                if(res == 0){
+                    emitter.onError(new Exception("Ошибка передачи дефектов опоры на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                    return;
+                }
 
                 emitter.onNext("Экспорт фотографий деффектов опоры: " + inspectedTower.getTower().getName());
                 exportTowerDeffectsPhotos(inspectedTower.getInspection().getPhotos(), towerInspectionId);
@@ -89,19 +99,28 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
                 emitter.onNext("Экспорт данных осмотра пролета: " + inspectedSection.getSection().getName());
                 long sectionInspectionId = exportSectionInspection(inspectionId, inspectedSection);
                 if (sectionInspectionId == 0) {
-                    continue; //что-то пошло не так
+                    //что-то пошло не так
+                    emitter.onError(new Exception("Ошибка передачи результатов осмотра пролета на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                    return;
                 }
 
                 emitter.onNext("Экспорт деффектов пролета: " + inspectedSection.getSection().getName());
-                exportSectionDeffects(inspectedSection.getSection(), inspectedSection.getDeffects(), sectionInspectionId);
-
+                long res  = exportSectionDeffects(inspectedSection.getSection(), inspectedSection.getDeffects(), sectionInspectionId);
+                if(res == 0){
+                    emitter.onError(new Exception("Ошибка передачи дефектов пролета на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                    return;
+                }
                 emitter.onNext("Экспорт фотографий деффектов пролета: " + inspectedSection.getSection().getName());
                 exportSectionDeffectsPhotos(inspectedSection.getInspection().getPhotos(), sectionInspectionId);
 
 
             }
 
+            emitter.onNext("Очистка данных осмотра линии: " + line.getLineInspection().getLine().getName());
 
+            this.inspectionService.deleteLineInspection(line);
+
+            emitter.onNext("Выполнено "+ line.getLineInspection().getLine().getName());
         }
 
         emitter.onComplete();
@@ -130,6 +149,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
             DBLog.e("UPLOAD LINE INSPECTION", "export line inspection connection exception ");
             return 0;
         } catch (IOException e) {
+            DBLog.e("UPLOAD LINE INSPECTION", e);
             e.printStackTrace();
             return 0;
         }
@@ -219,6 +239,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineTowerDeffects(deffectsJson).execute();
         } catch (IOException e) {
+            DBLog.e("TOWER DEFECTS", "Ошибка отправки дефектов опоры");
+            DBLog.e("TOWER DEFECTS", e);
             e.printStackTrace();
             return 0;
         }
@@ -270,9 +292,14 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
 
         } catch (IOException e) {
+            DBLog.e("UPLOAD FILE", "Ошибка отправки фотографии осмотра");
+            DBLog.e("UPLOAD FILE", e);
+
             e.printStackTrace();
             return false;
         } catch (Exception e) {
+            DBLog.e("UPLOAD FILE", "Ошибка отправки фотографии осмотра");
+            DBLog.e("UPLOAD FILE", e);
             e.printStackTrace();
             return false;
         }

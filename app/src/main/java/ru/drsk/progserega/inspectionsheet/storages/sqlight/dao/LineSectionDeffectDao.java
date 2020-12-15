@@ -25,4 +25,7 @@ public interface LineSectionDeffectDao {
 
     @Query("DELETE FROM line_section_deffects")
     void deleteAll();
+
+    @Query("DELETE FROM line_section_deffects where id in (:sectionDeffectsIds)")
+    void delete(List<Long> sectionDeffectsIds);
 }

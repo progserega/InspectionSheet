@@ -19,7 +19,7 @@ public class FileStorage implements IFileStorage {
     }
 
     @Override
-    public void removeInspectionsPhotos() {
+    public void removeAllInspectionsPhotos() {
 
         removeAllFilesFromDir(Environment.DIRECTORY_PICTURES);
         removeAllFilesFromDir(Environment.DIRECTORY_PICTURES+"/inspections");
@@ -57,5 +57,11 @@ public class FileStorage implements IFileStorage {
             }
 
         }
+    }
+
+    @Override
+    public void removePhoto(String path) {
+        File imageFile = new File(path);
+        imageFile.delete();
     }
 }

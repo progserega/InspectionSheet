@@ -8,6 +8,7 @@ import io.reactivex.Observer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineInspection;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
@@ -33,7 +34,7 @@ public interface IRemoteStorage {
 
     void exportStationsInspections(List< IStationInspection > stationInspections);
 
-    void exportLinesInspections( List< InspectedLine > inspectedLines, long resId);
+    void exportLinesInspections(List< InspectedLine > inspectedLines, long resId);
 
     void setServerUrls(List<String> serverUrls);
 
