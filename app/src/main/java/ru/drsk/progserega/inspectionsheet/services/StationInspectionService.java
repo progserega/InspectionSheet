@@ -5,24 +5,22 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
-import ru.drsk.progserega.inspectionsheet.entities.Transformer;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionItem;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.StationEquipmentInspection;
-import ru.drsk.progserega.inspectionsheet.entities.inspections.TransformerInspection;
 import ru.drsk.progserega.inspectionsheet.storages.IInspectionStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IStationDeffectTypesStorage;
 import ru.drsk.progserega.inspectionsheet.storages.IStationEquipmentStorage;
-import ru.drsk.progserega.inspectionsheet.storages.IStationPhotoStorage;
+import ru.drsk.progserega.inspectionsheet.storages.IInspectionPhotoStorage;
 
 public class StationInspectionService implements IStationInspectionService {
 
     private IStationDeffectTypesStorage deffectTypesStorage;
     private IInspectionStorage inspectionStorage;
     private IStationEquipmentStorage equipmentStorage;
-private IStationPhotoStorage stationPhotoStorage;
+    private IInspectionPhotoStorage stationPhotoStorage;
 
-    public StationInspectionService(IStationDeffectTypesStorage deffectTypesStorage, IInspectionStorage inspectionStorage, IStationEquipmentStorage equipmentStorage, IStationPhotoStorage stationPhotoStorage) {
+    public StationInspectionService(IStationDeffectTypesStorage deffectTypesStorage, IInspectionStorage inspectionStorage, IStationEquipmentStorage equipmentStorage, IInspectionPhotoStorage stationPhotoStorage) {
         this.deffectTypesStorage = deffectTypesStorage;
         this.inspectionStorage = inspectionStorage;
         this.equipmentStorage = equipmentStorage;

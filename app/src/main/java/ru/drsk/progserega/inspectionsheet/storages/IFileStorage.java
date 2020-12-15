@@ -2,6 +2,8 @@ package ru.drsk.progserega.inspectionsheet.storages;
 
 public interface IFileStorage {
 
-    void removeInspectionsPhotos();
+    void removeAllInspectionsPhotos();
+
+    void removePhoto(String path);
 
 }

@@ -256,38 +256,42 @@ public class InspectionStorage implements IInspectionStorage {
         loadInspectionPhotos(inspectionItems);
     }
 
-    private void fillInspectionValues(List< InspectionItem > inspectionItems, List< InspectionModel > inspectionModels) {
-        Map< Long, InspectionModel > inpectionsMap = new HashMap<>();
-        for (InspectionModel inspectionModel : inspectionModels) {
-            inpectionsMap.put(inspectionModel.getDeffectId(), inspectionModel);
+    private void fillInspectionValues(List< InspectionItem > templateInspectionItems, List< InspectionModel > savedInspections) {
+        Map< Long, InspectionModel > savedInspectionsMap = new HashMap<>();
+        for (InspectionModel inspectionModel : savedInspections) {
+            savedInspectionsMap.put(inspectionModel.getDeffectId(), inspectionModel);
         }
 
-        for (InspectionItem inspectionItem : inspectionItems) {
+        for (InspectionItem templateInspectionItem : templateInspectionItems) {
 
-            if (inspectionItem.getType().equals(InspectionItemType.HEADER)) {
+            if (templateInspectionItem.getType().equals(InspectionItemType.HEADER)) {
                 continue;
             }
 
-            InspectionModel inspectionModel = inpectionsMap.get(Long.valueOf(inspectionItem.getValueId()));
+            InspectionModel inspectionModel = savedInspectionsMap.get(Long.valueOf(templateInspectionItem.getValueId()));
             if (inspectionModel != null) {
-                inspectionItem.setId(inspectionModel.getId());
-                inspectionItem.getResult().setComment(inspectionModel.getDeffectComment());
+                templateInspectionItem.setId(inspectionModel.getId());
+                templateInspectionItem.getResult().setComment(inspectionModel.getDeffectComment());
                 String valuesString = inspectionModel.getDeffectValues();
                 if (!valuesString.isEmpty()) {
                     List< String > values = Arrays.asList(valuesString.split(","));
-                    inspectionItem.getResult().getValues().addAll(values);
+                    templateInspectionItem.getResult().getValues().addAll(values);
                 }
 
                 String subValuesString = inspectionModel.getDeffectSubValues();
                 if (!subValuesString.isEmpty()) {
                     List< String > subValues = Arrays.asList(subValuesString.split(","));
-                    inspectionItem.getResult().getSubValues().addAll(subValues);
+                    templateInspectionItem.getResult().getSubValues().addAll(subValues);
                 }
-            } else {
-                inspectionItem.setId(0);
             }
+//            else {
+//                templateInspectionItem.setId(0);
+//            }
 
         }
+
+        //!!
+        //int a = 0;
     }
 
     private void loadInspectionPhotos(List< InspectionItem > inspectionItems) {
@@ -375,5 +379,10 @@ public class InspectionStorage implements IInspectionStorage {
                 photo.setId(photoId);
             }
         }
+    }
+
+    @Override
+    public void deleteInspections(List< Long > inspectionsIds) {
+        this.db.inspectionDao().delete(inspectionsIds);
     }
 }

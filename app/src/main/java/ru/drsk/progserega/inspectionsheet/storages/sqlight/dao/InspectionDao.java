@@ -35,6 +35,11 @@ public interface InspectionDao {
     @Delete
     void delete(InspectionModel inspectionModel);
 
+    @Query("DELETE FROM inspections where id IN (:inspectionsIds)")
+    void delete(List<Long> inspectionsIds);
+
     @Query("DELETE FROM inspections")
     void deleteAll();
+
+
 }

@@ -52,4 +52,9 @@ public class InspectionStorageStub implements IInspectionStorage {
     public void updateStationInspectionInfo(Equipment station, Date inspectionDate, float inspectionPercent) {
 
     }
+
+    @Override
+    public void deleteInspections(List< Long > inspectionsIds) {
+
+    }
 }

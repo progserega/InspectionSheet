@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/menu_settings"
-        android:title="@string/settings" />
 
     <item
         android:id="@+id/menu_about"
@@ -13,6 +10,20 @@
         android:id="@+id/menu_journal"
         android:title="@string/journal" />
 
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings" />
 
+    <item
+        android:id="@+id/action_developer"
+        android:title="Разработчик">
+
+        <menu xmlns:android="http://schemas.android.com/apk/res/android">
+            <item
+                android:id="@+id/menu_clear"
+                android:title="Очистка данных" />
+        </menu>
+
+    </item>
 
 </menu>

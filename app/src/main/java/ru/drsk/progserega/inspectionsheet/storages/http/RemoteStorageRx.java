@@ -20,6 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
+import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.storages.ISettingsStorage;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.AppVersionJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.tasks.ExportLineInspectionTask;
@@ -52,10 +53,13 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     private List< String > serverUrls;
 
+    private InspectionService inspectionService;
 
-    public RemoteStorageRx(DBDataImporter dbDataImporter, Context context, ISettingsStorage settingsStorage) {
+    public RemoteStorageRx(DBDataImporter dbDataImporter, Context context, ISettingsStorage settingsStorage, InspectionService inspectionService) {
         this.dbDataImporter = dbDataImporter;
         this.context = context;
+
+        this.inspectionService = inspectionService;
 
         RetrofitApiSTEServiceFactory apiSTEServiceFactory = new RetrofitApiSTEServiceFactory();
         apiSTE = apiSTEServiceFactory.create();
@@ -162,7 +166,7 @@ public class RemoteStorageRx implements IRemoteStorage {
 
     @Override
     public void exportStationsInspections(List< IStationInspection > stationInspections) {
-        Observable.create(new ExportStationInspectionTask(apiArmIs, stationInspections, settingsStorage))
+        Observable.create(new ExportStationInspectionTask(apiArmIs, stationInspections, settingsStorage, inspectionService))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());
@@ -172,7 +176,7 @@ public class RemoteStorageRx implements IRemoteStorage {
     public void exportLinesInspections(List< InspectedLine > inspectedLines, long resId) {
 
         Log.d("EXPORT", "Start export lines inspection");
-        Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines, resId))
+        Observable.create(new ExportLineInspectionTask(apiArmIs, inspectedLines, resId, inspectionService))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResultObserver());

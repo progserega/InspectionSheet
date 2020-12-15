@@ -92,7 +92,7 @@ public class StationDeffectsTypesStorage implements IStationDeffectTypesStorage 
 
 
             inspectionItems.add(new InspectionItem(
-                    (int) type.getId(),
+                    0,//(int) type.getId(),
                     (int) type.getId(),
                     type.getNumber(),
                     type.getName(),

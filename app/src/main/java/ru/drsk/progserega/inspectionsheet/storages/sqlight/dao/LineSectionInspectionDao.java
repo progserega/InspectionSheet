@@ -32,4 +32,8 @@ public interface LineSectionInspectionDao {
 
     @Query("DELETE FROM line_section_inspection")
     void deleteAll();
+
+    @Query("DELETE FROM line_section_inspection where id IN (:inspectionIds)")
+    void delete(List<Long> inspectionIds);
+
 }

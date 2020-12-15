@@ -29,4 +29,7 @@ public interface TowerInspectionDao {
 
     @Query("DELETE FROM tower_inspection")
     void deleteAll();
+
+    @Query("DELETE FROM tower_inspection where id  IN (:inspectionIds)")
+    void delete(List<Long> inspectionIds);
 }

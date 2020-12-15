@@ -26,7 +26,7 @@
     <string name="addPhotoDefectBtText">Фотофиксация</string>
     <string name="towerTiltText">Наклон опоры</string>
     <string name="faundedDefectsText">Выявленные дефекты</string>
-    <string name="syncBtText">Синхронизация данных</string>
+    <string name="syncBtText">Загрузка перечня оборудования </string>
     <string name="defectCreate">Выбор объектов осмотра</string>
     <string name="defectBracesText">Ослабленные или повреждённые оттяжки</string>
     <string name="defectNestsText">Наличие гнёзд</string>

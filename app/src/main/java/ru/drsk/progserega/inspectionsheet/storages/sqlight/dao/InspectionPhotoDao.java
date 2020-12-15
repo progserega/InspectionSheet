@@ -28,6 +28,9 @@ public interface InspectionPhotoDao {
     @Query("DELETE FROM inspections_photos WHERE id =:photoId")
     void deleteById(long photoId);
 
+    @Query("DELETE FROM inspections_photos WHERE id IN (:photoIds)")
+    void deleteByIds(List<Long> photoIds);
+
     @Query("DELETE FROM inspections_photos")
     void deleteAll();
 
