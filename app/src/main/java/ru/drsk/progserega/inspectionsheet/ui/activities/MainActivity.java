@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
             return;
         }
 
+        application.getRemoteStorage().setProgressListener(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Очистить данные осмотров")
                 .setMessage("ВНИМАНИЕ! Все собранные данные осмотров будут потеряны! Вы делаете это на свой страх и риск!")
