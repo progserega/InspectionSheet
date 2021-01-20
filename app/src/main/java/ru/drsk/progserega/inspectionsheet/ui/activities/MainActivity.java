@@ -27,6 +27,7 @@ import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
 import ru.drsk.progserega.inspectionsheet.entities.Settings;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.IStationInspection;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectedLine;
+import ru.drsk.progserega.inspectionsheet.galleryselect.ImagesSelectorActivity;
 import ru.drsk.progserega.inspectionsheet.services.DBLog;
 import ru.drsk.progserega.inspectionsheet.services.InspectionService;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.IProgressListener;
@@ -445,5 +446,11 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         networkTasksQueue.poll();
         nextTask();
+    }
+
+    public void showGallery(View view) {
+        Intent intent = new Intent(this, ImagesSelectorActivity.class);
+        startActivity(intent);
+
     }
 }

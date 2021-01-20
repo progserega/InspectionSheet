@@ -439,7 +439,7 @@ public class InspectTransformer extends AppCompatActivity implements
         if(currentInspection == null){
             return;
         }
-        photoUtility.showPhotoDialog();
+        photoUtility.showPhotoDialog(application.getState().getCurrentStationInspection().getStation().getUniqId());
 
     }
 
@@ -450,7 +450,7 @@ public class InspectTransformer extends AppCompatActivity implements
 
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
         //currentInspection.getEquipment().getPhotoList().add(new InspectionPhoto(0,photoPath, this));
         //commonPhotoListAdapter.notifyDataSetChanged();
     }

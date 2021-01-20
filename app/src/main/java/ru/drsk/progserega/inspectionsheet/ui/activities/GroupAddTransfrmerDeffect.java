@@ -81,7 +81,7 @@ public class GroupAddTransfrmerDeffect extends Activity implements
 
     @Override
     public void showSelectPhotoDialog() {
-        photoUtility.showPhotoDialog();
+        photoUtility.showPhotoDialog(this.application.getState().getCurrentStationInspection().getStation().getUniqId());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class GroupAddTransfrmerDeffect extends Activity implements
 
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
         groupListAdapter.addPhoto(currentDeffectPosition, photoPath);
         groupListAdapter.notifyDataSetChanged();
     }

@@ -113,7 +113,7 @@ public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDe
     @Override
     public void addPhotoBtnPressed(TowerDeffect deffect) {
         currentDeffect = deffect;
-        photoUtility.showPhotoDialog();
+        photoUtility.showPhotoDialog(0);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TowerDeffectsActivity extends AppCompatActivity  implements TowerDe
 
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
       //  currentDeffect.addPhoto(new InspectionPhoto(0, photoPath, this));
         deffectsListAdapter.notifyDataSetChanged();
     }

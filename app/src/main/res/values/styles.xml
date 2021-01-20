@@ -20,4 +20,10 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@animator/fade_in</item>
+        <item name="android:windowExitAnimation">@animator/fade_out</item>
+    </style>
+<!--    Theme.AppCompat.Light.NoActionBar-->
+<!--    <style name=""-->
 </resources>
