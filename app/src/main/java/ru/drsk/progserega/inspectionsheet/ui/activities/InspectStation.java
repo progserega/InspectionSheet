@@ -102,7 +102,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
         WeakReference< Context > contextWeakReference = new WeakReference<>(this);
         photoUtility = new PhotoUtility(this, new PhotoUtility.ChoosedListener() {
             @Override
-            public void onImageTaken(String photoPath) {
+            public void onImageTaken(String photoPath, String source) {
                 presenter.onCommonPhotoTaken(photoPath);
                 commonPhotoListAdapter.notifyDataSetChanged();
             }
@@ -208,7 +208,7 @@ public class InspectStation extends AppCompatActivity implements InspectStationC
     }
 
     public void onAddCommonPhotoBtnClick(View view) {
-        photoUtility.showPhotoDialog();
+        photoUtility.showPhotoDialog(application.getState().getCurrentStationInspection().getStation().getUniqId());
     }
 
 

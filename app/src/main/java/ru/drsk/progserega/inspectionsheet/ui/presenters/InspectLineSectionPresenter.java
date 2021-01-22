@@ -147,6 +147,12 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
     }
 
     @Override
+    public void onAddLineSectionPhotoBtnClick() {
+
+        view.showGetPhotoDialog(currentSection.generateUniqId());
+    }
+
+    @Override
     public void finishButtonPressed() {
         saveCurrentSection();
     }

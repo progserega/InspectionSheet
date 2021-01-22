@@ -16,6 +16,11 @@ public interface EquipmentPhotoDao {
     @Query("SELECT * FROM equipment_photos  WHERE equipment_id = :equipmentId AND substation_type =:substationType")
     List<EquipmentPhotoModel> getByEquipment(long equipmentId, int substationType);
 
+    @Query("SELECT count(id) as cnt FROM equipment_photos  WHERE photo_path = :path")
+    int countPhotoFileRef(String path);
+
+
+
     @Insert
     long insert(EquipmentPhotoModel photoModel);
 

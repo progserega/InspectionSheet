@@ -24,6 +24,7 @@ public class InspectLineSectionContract {
 
         void startDeffectDescriptionActivity();
 
+        void showGetPhotoDialog(long equipmentId);
     }
 
     public interface Presenter{
@@ -37,6 +38,8 @@ public class InspectLineSectionContract {
         void previousButtonPressed();
 
         void onMaterialSelected(int pos);
+
+        void onAddLineSectionPhotoBtnClick();
 
         void onImageTaken(String photoPath);
 

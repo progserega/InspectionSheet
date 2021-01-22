@@ -26,6 +26,8 @@ public class InspectLineTowerContract {
 
         String getComment();
 
+        void showGetPhotoDialog(long equipmentId);
+
         void setTowerPhotos(List<InspectionPhoto> photos);
 
         void showNextSectionSelectorDialog(String[] selectionItems);
@@ -72,5 +74,7 @@ public class InspectLineTowerContract {
         void finishButtonPressed();
 
         void onCurrentTowerNameChange(String name);
+
+        void onAddTowerPhotoBtnClick();
     }
 }

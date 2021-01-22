@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.drsk.progserega.inspectionsheet">
-
+    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <application
         android:name=".InspectionSheetApplication"
         android:allowBackup="true"
@@ -12,7 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activities.DeffectDescription"></activity>
+        <activity android:name=".galleryselect.ImagesSelectorActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+
+            ></activity>
+        <activity android:name=".ui.activities.DeffectDescription" />
         <activity android:name=".ui.activities.InspectStationEquipment" />
         <activity android:name=".ui.activities.StationEquipment" />
         <activity android:name=".ui.activities.InspectStation" />
@@ -37,7 +41,6 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activities.searchBySpRes" />
-        <activity android:name=".activities.createInspection" />
         <activity android:name=".activities.FoundedDefects" />
         <activity android:name=".activities.EndInspection" />
         <activity android:name=".activities.InspectTower" />
@@ -45,11 +48,9 @@
             android:name=".ui.activities.AddTransformerDefect"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activities.InspectTransformer" />
-
         <activity
             android:name=".ui.activities.TowerDeffectsActivity"
             android:label="@string/title_activity_tower_deffects" />
-
         <activity
             android:name=".ui.activities.FullscreenImageActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
@@ -57,12 +58,13 @@
             android:name=".ui.activities.GroupAddTransfrmerDeffect"
             android:label="@string/title_activity_group_add_transfrmer_deffect"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
-            android:configChanges="orientation|screenSize" />
+<!--        <activity-->
+<!--            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"-->
+<!--            android:configChanges="orientation|screenSize" />-->
         <activity android:name=".ui.activities.InspectLine" />
         <activity android:name=".ui.activities.InspectLineTower" />
         <activity android:name=".ui.activities.InspectLineSection" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="ru.drsk.progserega.inspectionsheet.fileprovider"
@@ -72,17 +74,17 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
-    <uses-feature android:name="android.hardware.location.gps" />
+    </application>
 
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:required="true" />
+    <uses-feature android:name="android.hardware.location.gps" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="true" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:required="true" />
 
 </manifest>

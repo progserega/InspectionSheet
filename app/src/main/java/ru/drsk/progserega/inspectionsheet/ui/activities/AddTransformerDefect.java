@@ -16,6 +16,7 @@ import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
 import ru.drsk.progserega.inspectionsheet.R;
+import ru.drsk.progserega.inspectionsheet.entities.Equipment;
 import ru.drsk.progserega.inspectionsheet.ui.adapters.ImageAdapter;
 import ru.drsk.progserega.inspectionsheet.utility.ButtonUtils;
 import ru.drsk.progserega.inspectionsheet.utility.MetricsUtils;
@@ -132,7 +133,7 @@ public class AddTransformerDefect extends AppCompatActivity
     }
 
     public void onAddPhotoBtnClick(View view) {
-        photoUtility.showPhotoDialog();
+        photoUtility.showPhotoDialog( this.application.getState().getCurrentStationInspection().getStation().getUniqId());
     }
 
     @Override
@@ -198,7 +199,7 @@ public class AddTransformerDefect extends AppCompatActivity
 
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
 
         inspectionPhotos.add(new InspectionPhoto(0, photoPath, this));
         imageAdapter.notifyDataSetChanged();

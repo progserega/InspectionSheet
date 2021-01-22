@@ -15,8 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
-import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
-import com.zfdang.multiple_images_selector.SelectorSettings;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,12 +27,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import ru.drsk.progserega.inspectionsheet.galleryselect.ImagesSelectorActivity;
+import ru.drsk.progserega.inspectionsheet.galleryselect.SelectorSettings;
+
 import static ru.drsk.progserega.inspectionsheet.utility.PermissionsUtility.REQUEST_CODE_WRITE_EXTERNAL_STORAGE;
 
 public class PhotoUtility {
 
     public interface ChoosedListener {
-        void onImageTaken(String photoPath);
+        void onImageTaken(String photoPath, String source);
 
     }
 
@@ -43,7 +46,7 @@ public class PhotoUtility {
     private String userChooseTask;
     private String mCurrentPhotoPath;
 
-
+    private long mCurrentEquipmentID = 0;
     private Context context;
 
     public String getmCurrentPhotoPath() {
@@ -66,8 +69,10 @@ public class PhotoUtility {
         this.choosedListener = choosedListener;
     }
 
-    public void showPhotoDialog() {
-        final CharSequence[] items = {"Камера", "Галерея", "Отмена"};
+    public void showPhotoDialog( long equipmentUID) {
+        mCurrentEquipmentID = equipmentUID;
+
+        final CharSequence[] items = {"Камера", "Галерея", "Текущий осмотр", "Отмена"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Добавить фото");
@@ -82,8 +87,13 @@ public class PhotoUtility {
 
                 } else if (items[item].equals("Галерея")) {
                     userChooseTask = "GALERY";
-                    if (result) galeryIntent();
-                } else if (items[item].equals("Отмена")) {
+                    if (result) galeryIntent(false);
+
+                } else if (items[item].equals("Текущий осмотр")) {
+                    userChooseTask = "INSPECTION";
+                    if (result) galeryIntent(true);
+                }
+                else if (items[item].equals("Отмена")) {
                     userChooseTask = "NONE";
                     dialog.dismiss();
                 }
@@ -123,13 +133,7 @@ public class PhotoUtility {
         }
     }
 
-    private void galeryIntent() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        activity.startActivityForResult(Intent.createChooser(intent, "Select file"), SELECT_FILE);
-
+    private void galeryIntent(boolean isShowInspectionPhotos) {
         // start multiple photos selecto
         Intent intent = new Intent(this.activity, ImagesSelectorActivity.class);
         // max number of images to be selected
@@ -140,6 +144,13 @@ public class PhotoUtility {
         intent.putExtra(SelectorSettings.SELECTOR_SHOW_CAMERA, false);
         // pass current selected images as the initial value
         intent.putStringArrayListExtra(SelectorSettings.SELECTOR_INITIAL_SELECTED_LIST, mResults);
+        if(isShowInspectionPhotos){
+            String inspectionPath =  getInspectionStorageDir();
+            intent.putExtra(SelectorSettings.EXTRA_MEDIA_PATH, inspectionPath);
+        }
+        else{
+            intent.putExtra(SelectorSettings.EXTRA_MEDIA_PATH, "");
+        }
         // start the selector
         activity.startActivityForResult(intent, SELECT_FILE);
     }
@@ -148,7 +159,7 @@ public class PhotoUtility {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/"+ String.valueOf(mCurrentEquipmentID));
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -174,7 +185,7 @@ public class PhotoUtility {
 
                 String imagePath = copyImageInsideAppPicturesFolder(result);
                 if (imagePath != null) {
-                    choosedListener.onImageTaken(imagePath);
+                    choosedListener.onImageTaken(imagePath, userChooseTask);
                 } else {
                     Toast.makeText(this.context, "Ошибка копирования файла из галереи!" + result, Toast.LENGTH_SHORT).show();
                 }
@@ -186,10 +197,16 @@ public class PhotoUtility {
 
         if (requestCode == REQUEST_CAMERA) {
             //Toast.makeText(this, "IMAGE FROM CAMERA", Toast.LENGTH_SHORT).show();
-            choosedListener.onImageTaken(mCurrentPhotoPath);
+            choosedListener.onImageTaken(mCurrentPhotoPath, userChooseTask);
         }
     }
 
+    private String getInspectionStorageDir(){
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/"+String.valueOf(mCurrentEquipmentID));
+       ///String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
+        return storageDir.getAbsolutePath();
+
+    }
     private String copyImageInsideAppPicturesFolder(String galeryFilePath) {
 
         String[] parts = galeryFilePath.split("/");
@@ -201,9 +218,15 @@ public class PhotoUtility {
             return null;
         }
 
+        if(galeryFilePath.contains("inspectionsheet/files/Pictures/inspections/") && userChooseTask.equals("INSPECTION")){
+            return galeryFilePath;
+        }
+        ///storage/emulated/0/Android/data/ru.drsk.progserega.inspectionsheet/files/Pictures/inspections/47205/1611105930018_zf0ag4yxvf4vsw9xoftd_acnr38.png
 
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
-        String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
+       // File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
+        //String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
+
+        String targetpath = getInspectionStorageDir() + "/" + System.currentTimeMillis() + "_" + imageName;
 
         File sourceLocation = new File(galeryFilePath);
         File targetLocation = new File(targetpath);
@@ -238,7 +261,10 @@ public class PhotoUtility {
                         cameraIntent();
                     }
                     if (userChooseTask.equals("GALERY")) {
-                        galeryIntent();
+                        galeryIntent(false);
+                    }
+                    if (userChooseTask.equals("INSPECTION")) {
+                        galeryIntent(true);
                     }
                 } else {
                     // Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();

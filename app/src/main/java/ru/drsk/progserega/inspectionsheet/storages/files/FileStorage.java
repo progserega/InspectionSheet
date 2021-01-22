@@ -21,21 +21,22 @@ public class FileStorage implements IFileStorage {
     @Override
     public void removeAllInspectionsPhotos() {
 
-        removeAllFilesFromDir(Environment.DIRECTORY_PICTURES);
-        removeAllFilesFromDir(Environment.DIRECTORY_PICTURES+"/inspections");
+        removeAllFilesFromDir(Environment.DIRECTORY_PICTURES, false);
+        removeAllFilesFromDir(Environment.DIRECTORY_PICTURES + "/inspections", true);
+        clearSubDir(Environment.DIRECTORY_PICTURES + "/inspections");
 
     }
 
-    private void removeAllFilesFromDir(String path){
+    private void removeAllFilesFromDir(String path, boolean recursive) {
         File storageDir = context.getExternalFilesDir(path);
 
-        if(!storageDir.exists()){
+        if (!storageDir.exists()) {
             return;
         }
 
-        List<File> result = new ArrayList<>();
+        List< File > result = new ArrayList<>();
 
-        search(".*\\.*", storageDir, result, false);
+        search(".*\\.*", storageDir, result, recursive);
 
         for (File file : result) {
             System.out.println(file.getAbsolutePath());
@@ -43,7 +44,14 @@ public class FileStorage implements IFileStorage {
         }
     }
 
-    public static void search(final String pattern, final File folder, List<File> result, boolean recursive) {
+    private void clearSubDir(String path){
+        File folder = context.getExternalFilesDir(path);
+        for (final File f : folder.listFiles()) {
+            f.delete();
+        }
+    }
+
+    public static void search(final String pattern, final File folder, List< File > result, boolean recursive) {
         for (final File f : folder.listFiles()) {
 
             if (f.isDirectory() && recursive) {
@@ -62,6 +70,9 @@ public class FileStorage implements IFileStorage {
     @Override
     public void removePhoto(String path) {
         File imageFile = new File(path);
-        imageFile.delete();
+
+        if (imageFile.exists()) {
+            imageFile.delete();
+        }
     }
 }

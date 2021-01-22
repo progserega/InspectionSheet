@@ -445,7 +445,12 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     public void onAddTowerPhotoBtnClick(View view) {
-        photoUtility.showPhotoDialog();
+       // photoUtility.showPhotoDialog();
+        presenter.onAddTowerPhotoBtnClick();
+    }
+    @Override
+    public void showGetPhotoDialog(long equipmentId){
+        photoUtility.showPhotoDialog(equipmentId);
     }
 
     @Override
@@ -468,7 +473,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
         //  Toast.makeText(this, "выбрана фотография\n" + photoPath, Toast.LENGTH_SHORT).show();
         presenter.onImageTaken(photoPath);
         deffectsPhotoListAdapter.notifyDataSetChanged();

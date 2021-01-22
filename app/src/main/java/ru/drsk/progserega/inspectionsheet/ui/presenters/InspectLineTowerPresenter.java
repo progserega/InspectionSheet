@@ -383,6 +383,10 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         return sectionModels;
     }
 
+    @Override
+    public void onAddTowerPhotoBtnClick() {
+        view.showGetPhotoDialog(currentTower.getUniqId());
+    }
 
     private List< Tower > getNearestTowerFromCurrent(int max) {
 

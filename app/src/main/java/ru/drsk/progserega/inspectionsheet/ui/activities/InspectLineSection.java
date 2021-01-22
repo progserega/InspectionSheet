@@ -219,8 +219,16 @@ public class InspectLineSection extends AppCompatActivity implements
         deffectsPhotoListAdapter.notifyDataSetChanged();
     }
 
+
     public void onAddLineSectionPhotoBtnClick(View view) {
-        photoUtility.showPhotoDialog();
+    //    photoUtility.showPhotoDialog();
+
+        presenter.onAddLineSectionPhotoBtnClick();
+    }
+
+    @Override
+    public void showGetPhotoDialog(long equipmentId){
+        photoUtility.showPhotoDialog(equipmentId);
     }
 
     @Override
@@ -243,7 +251,7 @@ public class InspectLineSection extends AppCompatActivity implements
     }
 
     @Override
-    public void onImageTaken(String photoPath) {
+    public void onImageTaken(String photoPath, String source) {
         //  Toast.makeText(this, "выбрана фотография\n" + photoPath, Toast.LENGTH_SHORT).show();
         presenter.onImageTaken(photoPath);
         deffectsPhotoListAdapter.notifyDataSetChanged();

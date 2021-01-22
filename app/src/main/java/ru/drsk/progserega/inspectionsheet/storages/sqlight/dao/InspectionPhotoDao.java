@@ -16,6 +16,9 @@ public interface InspectionPhotoDao {
     @Query("SELECT * FROM inspections_photos WHERE inspection_id = :inspectionId AND type = :type")
     List<InspectionPhotoModel> getByInspection(long inspectionId, String type);
 
+    @Query("SELECT count(id) as cnt FROM inspections_photos  WHERE photo_path = :path")
+    int countPhotoFileRef(String path);
+
     @Insert
     long insert(InspectionPhotoModel photoModel);
 

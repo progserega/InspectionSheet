@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 
 android {
     compileSdkVersion 28
@@ -87,7 +88,16 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
     //https://github.com/zfdang/android-multiple-images-selector
-    implementation 'com.zfdang.multiple-images-selector:multiple-images-selector:1.1.5'
+    //implementation 'com.zfdang.multiple-images-selector:multiple-images-selector:1.1.5'
+   // implementation 'com.facebook.fresco:fresco:2.3.0'
+    implementation 'com.facebook.fresco:fresco:1.11.0'
+    // For animated GIF support
+    implementation "com.facebook.fresco:animated-gif:1.11.0"
+//    // For WebP support, including animated WebP
+    implementation "com.facebook.fresco:webpsupport:1.11.0"
+    implementation "com.facebook.fresco:animated-webp:1.11.0"
+
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

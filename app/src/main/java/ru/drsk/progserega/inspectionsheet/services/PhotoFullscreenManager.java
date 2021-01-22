@@ -66,8 +66,10 @@ public class PhotoFullscreenManager {
         }
         InspectionPhoto photo = photos.get(position);
         //TODO перенести удаление в листенер
-        removePhotoFromStorage(photo);
         removePhotoFromSqlight(photo);
+        if(coutPhotoFileRef(photo) == 0) {
+            removePhotoFromFiletorage(photo);
+        }
 
         photos.remove(position);
 
@@ -76,7 +78,7 @@ public class PhotoFullscreenManager {
         }
     }
 
-    private void removePhotoFromStorage(InspectionPhoto photo){
+    private void removePhotoFromFiletorage(InspectionPhoto photo){
         if(photo == null || photo.getPath() == null){
             return;
         }
@@ -100,6 +102,18 @@ public class PhotoFullscreenManager {
         if(photoOwner == LINE_INSPECTION_PHOTO){
             db.inspectionPhotoDao().deleteById(photo.getId());
         }
+
+    }
+
+    private int coutPhotoFileRef(InspectionPhoto photo){
+        if(photo.getId() == 0){
+            return 0;
+        }
+
+        int refCnt = 0;
+        refCnt += equipmentPhotoDao.countPhotoFileRef(photo.getPath());
+        refCnt += inspectionPhotoDao.countPhotoFileRef(photo.getPath());
+        return refCnt;
 
     }
 }
