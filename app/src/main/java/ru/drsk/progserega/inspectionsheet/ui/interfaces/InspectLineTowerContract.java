@@ -1,7 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.ui.interfaces;
 
 import java.util.List;
-import java.util.Map;
 
 import ru.drsk.progserega.inspectionsheet.entities.Tower;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
@@ -14,7 +13,7 @@ public class InspectLineTowerContract {
 
         void showSelectTowerDialog(List<Tower> towers);
 
-        void setTowerNumber(String number);
+        void setTowerNumber(String number, List<String> allNumbers);
 
         void gotoSectionInspection(long nextSectionId);
 
@@ -36,9 +35,17 @@ public class InspectLineTowerContract {
 
         void startDeffectDescriptionActivity();
 
+        void showEmpyInspectionWarningDialog(String action, String title);
+
+        void gotoFinishActivity();
+
         void hideUI();
 
         void showUI();
+
+        void disableTowerNumEvents();
+
+        void enableTowerNumEvents();
     }
 
     public interface Presenter{
@@ -76,5 +83,9 @@ public class InspectLineTowerContract {
         void onCurrentTowerNameChange(String name);
 
         void onAddTowerPhotoBtnClick();
+
+        void onEmptyInspectionWarningResult(boolean result, String action);
+
+
     }
 }

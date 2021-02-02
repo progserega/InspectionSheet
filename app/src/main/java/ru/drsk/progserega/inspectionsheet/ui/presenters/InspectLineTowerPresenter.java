@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     private Line line;
     private Tower currentTower;
+    private Tower NextTower = null;
     private List< Tower > towers;
     private List< TowerDeffect > deffects;
     private Set< Integer > changedDeffects;
@@ -44,6 +46,12 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     private static final int NEAREST_TOWERS_CNT = 20;
 
     private boolean useGPS = false;
+
+    private static final String NEXT_ACTION = "next";
+    private static final String PREVIOUS_ACTION = "previous";
+    private static final String FINISH_ACTION = "finish";
+    private static final String CHANGE_NAME_ACTION = "change_name";
+    private static final String CHANGE_TOWER = "change_tower";
 
     public InspectLineTowerPresenter(InspectLineTowerContract.View view, InspectionSheetApplication application) {
         this.view = view;
@@ -80,7 +88,9 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
 
         view.showUI();
-        view.setTowerNumber(currentTower.getName());
+        view.disableTowerNumEvents();
+        view.setTowerNumber(currentTower.getName(), allTowersNames());
+        view.enableTowerNumEvents();
 
         view.setMaterialsSpinnerData(getMaterials(), getMaterialIdx());
         view.setTowerTypesSpinnerData(getTowerTypes(), getTowerTypeIdx());
@@ -99,6 +109,15 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         view.setTowerPhotos(inspection.getPhotos());
     }
 
+    private List<String> allTowersNames(){
+        List<Tower> towers = line.getTowers();
+        List<String> names = new ArrayList<>();
+        for(Tower tw: towers){
+            names.add(tw.getName());
+        }
+        Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
+        return names;
+    }
     private int getMaterialIdx() {
 
         if (currentTower.getMaterial() != null && currentTower.getMaterial().getId() != 0) {
@@ -143,8 +162,15 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         }
 
         long towerUniqId = towers.get(pos).getUniqId();
-        currentTower = application.getTowerStorage().getByUniqId(towerUniqId);
-        setViewData();
+        NextTower = application.getTowerStorage().getByUniqId(towerUniqId);
+        //setViewData(true);
+
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(CHANGE_TOWER,  "Не выбраны дефекты опоры " + currentTower.getName());
+            return;
+        }
+        saveCurrentTower();
+        switchTower();
     }
 
     @Override
@@ -165,7 +191,7 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
     public void onDeffectSelectionChange(int pos, boolean isSelected) {
         deffects.get(pos).setValue(isSelected ? 1 : 0);
         changedDeffects.add(pos);
-        saveCurrentTower();
+        saveDeffects();
     }
 
     @Override
@@ -174,28 +200,43 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
             return;
         }
 
-        saveCurrentTower();
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(NEXT_ACTION, "Не выбраны дефекты опоры " + currentTower.getName());
+            return;
+        }
 
+        saveCurrentTower();
+        gotoNextSection();
+    }
+
+    private void gotoNextSection(){
         //определяем пролет
         nextSections = getNextSections();
-
         gotoSections();
     }
+
+    private void gotoPrevSection(){
+        //определяем пролет
+        nextSections = getPreviousSections();
+        gotoSections();
+    }
+
 
     @Override
     public void previousButtonPressed() {
         if (currentTower == null) {
             return;
         }
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(PREVIOUS_ACTION,  "Не выбраны дефекты опоры " + currentTower.getName());
+            return;
+        }
 
         saveCurrentTower();
-
-        //определяем пролет
-        nextSections = getPreviousSections();
-
-        gotoSections();
-
+        gotoPrevSection();
     }
+
+
 
     private void gotoSections() {
         if (nextSections == null || nextSections.isEmpty()) {
@@ -234,6 +275,25 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
         application.getLineInspectionStorage().saveToweInspection(inspection);
     }
 
+    private boolean isInspectionEmpty(){
+        for (TowerDeffect defect: deffects) {
+            if(defect.getValue() == 1){
+                return false;
+            }
+        }
+
+        String comment = view.getComment();
+        if(!comment.isEmpty()){
+            return false;
+        }
+
+        if(inspection.getPhotos().size() > 0){
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public void onDefectAboutBtnClick(TowerDeffect towerDeffect) {
         application.getState().setDeffectDescription(towerDeffect.getDeffectType().getDeffectDescription());
@@ -250,21 +310,32 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     @Override
     public void finishButtonPressed() {
+
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(FINISH_ACTION,  "Не выбраны дефекты опоры " + currentTower.getName());
+            return;
+        }
+
         saveCurrentTower();
+        view.gotoFinishActivity();
     }
 
     @Override
     public void onMaterialSelected(int pos) {
         currentTower.setMaterial(application.getCatalogStorage().getMaterials().get(pos));
+        application.getTowerStorage().update(currentTower);
+        //saveCurrentTower();
+
         line.setCachedTowerMaterial(application.getCatalogStorage().getMaterials().get(pos));
-        saveCurrentTower();
     }
 
     @Override
     public void onTowerTypeSelected(int pos) {
         currentTower.setTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
+        application.getTowerStorage().update(currentTower);
+        //saveCurrentTower();
+
         line.setCachedTowerType(application.getCatalogStorage().getTowerTypes().get(pos));
-        saveCurrentTower();
     }
 
     @Override
@@ -429,14 +500,52 @@ public class InspectLineTowerPresenter implements InspectLineTowerContract.Prese
 
     @Override
     public void onCurrentTowerNameChange(String name) {
-        Tower tower = line.getTowerByName(name);
-        if (tower == null) {
+        NextTower = line.getTowerByName(name);
+        if (NextTower == null) {
             view.hideUI();
             return;
         }
 
-        currentTower = tower;
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(CHANGE_NAME_ACTION,  "Не выбраны дефекты опоры " + currentTower.getName());
+            return;
+        }
+
+        saveCurrentTower();
+        switchTower();
+    }
+
+    private void switchTower(){
+        currentTower = NextTower;
         setViewData();
+    }
+
+
+    @Override
+    public void onEmptyInspectionWarningResult(boolean result, String action) {
+
+        if(result){
+            saveCurrentTower();
+        }
+        else{
+            application.getLineInspectionStorage().deleteLineTowersInspections(Arrays.asList(inspection.getId()));
+        }
+
+        switch (action){
+            case NEXT_ACTION:
+                gotoNextSection();
+                break;
+            case PREVIOUS_ACTION:
+                gotoPrevSection();
+                break;
+            case FINISH_ACTION:
+                view.gotoFinishActivity();
+                break;
+            case CHANGE_NAME_ACTION:
+            case CHANGE_TOWER:
+                switchTower();
+                break;
+        }
     }
 
     @Override

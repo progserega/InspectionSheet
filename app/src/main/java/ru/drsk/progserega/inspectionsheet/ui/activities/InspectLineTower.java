@@ -11,11 +11,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,7 +24,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -75,11 +75,14 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
     //private boolean towerNumEdited = false;
 
-    private EditText towerNumEditText;
+    //private EditText towerNumEditText;
+    private AutoCompleteTextView towerNumAutocomplete;
+    private ArrayAdapter< String > towerNumArrayAdapter;
     private TextWatcher editTowerNumTextWatcher = null;
+    private boolean towerNumSelected = false;
 
+    private AutoCompleteTextView.OnDismissListener dismissListener;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspect_line_tower);
@@ -116,7 +119,6 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         }
 
 
-
         presenter.onViewCreated(nextTower);
     }
 
@@ -136,25 +138,21 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     private void initTowerNumTextView() {
-        towerNumEditText = (EditText) findViewById(R.id.inspect_line_tower_number);
-        final InspectLineTower that = this;
+        towerNumAutocomplete = (AutoCompleteTextView) findViewById(R.id.inspect_line_tower_number);
+        towerNumArrayAdapter = new ArrayAdapter< String >(this, android.R.layout.simple_list_item_1, new ArrayList<>());
+        towerNumAutocomplete.setThreshold(1);
+        towerNumAutocomplete.setAdapter(towerNumArrayAdapter);
 
-        editTowerNumTextWatcher = new TextWatcher() {
+        dismissListener = new AutoCompleteTextView.OnDismissListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //Toast.makeText(that, "after text " + s.toString(), Toast.LENGTH_SHORT).show();
-                presenter.onCurrentTowerNameChange(s.toString());
+            public void onDismiss() {
+                String text =  towerNumAutocomplete.getText().toString();
+                Log.d("AUTOCOMPLETE", "DISMISS !!!!!!!" + towerNumAutocomplete.getText().toString());
+                presenter.onCurrentTowerNameChange(text);
             }
         };
-        towerNumEditText.addTextChangedListener(editTowerNumTextWatcher);
+
+        towerNumAutocomplete.setOnDismissListener(dismissListener);
     }
 
 
@@ -280,12 +278,22 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
     }
 
     @Override
-    public void setTowerNumber(String number) {
+    public void setTowerNumber(String number, List< String > allNumbers) {
 
-        towerNumEditText.removeTextChangedListener(editTowerNumTextWatcher);
-        towerNumEditText.setText(number);
-        towerNumEditText.setSelection(towerNumEditText.getText().length());
-        towerNumEditText.addTextChangedListener(editTowerNumTextWatcher);
+//        towerNumEditText.removeTextChangedListener(editTowerNumTextWatcher);
+//        towerNumEditText.setText(number);
+//        towerNumEditText.setSelection(towerNumEditText.getText().length());
+//        towerNumEditText.addTextChangedListener(editTowerNumTextWatcher);
+
+
+        towerNumAutocomplete.setText(number, false);
+        towerNumArrayAdapter.clear();
+        towerNumArrayAdapter.addAll(allNumbers);
+        towerNumArrayAdapter.notifyDataSetChanged();
+//        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
+//        towerNumAutocomplete.setThreshold(1);
+//        towerNumAutocomplete.setAdapter(stringArrayAdapter);
+
     }
 
     private void initAddPhotoBtnImg() {
@@ -440,16 +448,22 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
     public void onFinishBtnClick() {
         presenter.finishButtonPressed();
+    }
+
+    @Override
+    public void gotoFinishActivity() {
         Intent intent = new Intent(this, InspectLineFinish.class);
         startActivity(intent);
     }
 
+
     public void onAddTowerPhotoBtnClick(View view) {
-       // photoUtility.showPhotoDialog();
+        // photoUtility.showPhotoDialog();
         presenter.onAddTowerPhotoBtnClick();
     }
+
     @Override
-    public void showGetPhotoDialog(long equipmentId){
+    public void showGetPhotoDialog(long equipmentId) {
         photoUtility.showPhotoDialog(equipmentId);
     }
 
@@ -507,7 +521,7 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         photoUtility.setmCurrentPhotoPath(savedState.getString("image_path_tower"));
     }
 
-    private void initNavigationButtons(){
+    private void initNavigationButtons() {
         TextView prevBtn = (TextView) findViewById(R.id.inpsect_tower__previous_btn_text);
         final InspectLineTower that = this;
         prevBtn.setOnClickListener(new View.OnClickListener() {
@@ -537,6 +551,34 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
 
     }
 
+    @Override
+    public void showEmpyInspectionWarningDialog(String action, String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Зафиксировать осмотр объекта как \"без дефектов\"?")
+                .setTitle(title);
+        builder.setPositiveButton("да, без дефектов", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                presenter.onEmptyInspectionWarningResult(true, action);
+            }
+        });
+        builder.setNegativeButton("пропуск осмотра", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                presenter.onEmptyInspectionWarningResult(false, action);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     @Override
     public void hideUI() {
@@ -549,6 +591,21 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         list.setVisibility(View.GONE);
         EditText commentView = (EditText) findViewById(R.id.inspect_line_tower_comment);
         commentView.setVisibility(View.GONE);
+
+        TextView materialLabel = (TextView)findViewById(R.id.inspect_line_tower_material_label);
+        materialLabel.setVisibility(View.GONE);
+
+        TextView typeLabel = (TextView)findViewById(R.id.inspect_line_tower_type_label);
+        typeLabel.setVisibility(View.GONE);
+
+        TextView deffectsTitleLabel = (TextView)findViewById(R.id.inspection_line_tower_defects_title_label);
+        deffectsTitleLabel.setVisibility(View.GONE);
+
+        TextView textCommentLabel = (TextView)findViewById(R.id.inspection_line_tower_textcomment);
+        textCommentLabel.setVisibility(View.GONE);
+
+        TextView photosLabel = (TextView)findViewById(R.id.inspection_line_tower_photos_label);
+        photosLabel.setVisibility(View.GONE);
     }
 
     @Override
@@ -562,6 +619,33 @@ public class InspectLineTower extends ActivityWithGPS implements InspectLineTowe
         list.setVisibility(View.VISIBLE);
         EditText commentView = (EditText) findViewById(R.id.inspect_line_tower_comment);
         commentView.setVisibility(View.VISIBLE);
+
+        TextView materialLabel = (TextView)findViewById(R.id.inspect_line_tower_material_label);
+        materialLabel.setVisibility(View.VISIBLE);
+
+        TextView typeLabel = (TextView)findViewById(R.id.inspect_line_tower_type_label);
+        typeLabel.setVisibility(View.VISIBLE);
+
+        TextView deffectsTitleLabel = (TextView)findViewById(R.id.inspection_line_tower_defects_title_label);
+        deffectsTitleLabel.setVisibility(View.VISIBLE);
+
+        TextView textCommentLabel = (TextView)findViewById(R.id.inspection_line_tower_textcomment);
+        textCommentLabel.setVisibility(View.VISIBLE);
+
+        TextView photosLabel = (TextView)findViewById(R.id.inspection_line_tower_photos_label);
+        photosLabel.setVisibility(View.VISIBLE);
+
+
+    }
+
+    @Override
+    public void disableTowerNumEvents() {
+        towerNumAutocomplete.setOnDismissListener(null);
+    }
+
+    @Override
+    public void enableTowerNumEvents() {
+        towerNumAutocomplete.setOnDismissListener(dismissListener);
     }
 
     @Override

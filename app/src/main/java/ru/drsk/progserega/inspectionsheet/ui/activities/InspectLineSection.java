@@ -1,8 +1,10 @@
 package ru.drsk.progserega.inspectionsheet.ui.activities;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -164,12 +166,13 @@ public class InspectLineSection extends AppCompatActivity implements
     }
 
     public void onFinishBtnClick() {
-
         presenter.finishButtonPressed();
+    }
 
+    @Override
+    public void gotoFinishActivity() {
         Intent intent = new Intent(this, InspectLineFinish.class);
         startActivity(intent);
-
     }
 
     @Override
@@ -229,6 +232,35 @@ public class InspectLineSection extends AppCompatActivity implements
     @Override
     public void showGetPhotoDialog(long equipmentId){
         photoUtility.showPhotoDialog(equipmentId);
+    }
+
+    @Override
+    public void showEmpyInspectionWarningDialog(String action, String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Зафиксировать осмотр объекта как \"без дефектов\"?")
+                .setTitle(title);
+        builder.setPositiveButton("да, без дефектов", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                presenter.onEmptyInspectionWarningResult(true, action);
+            }
+        });
+        builder.setNegativeButton("пропуск осмотра", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                presenter.onEmptyInspectionWarningResult(false, action);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override

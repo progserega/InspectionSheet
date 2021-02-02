@@ -42,19 +42,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+
+                <AutoCompleteTextView
                     android:id="@+id/inspect_line_tower_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="4dp"
                     android:inputType="text"
                     android:text=""
                     app:layout_constraintEnd_toStartOf="@+id/inspect_line_select_tower_btn"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/text_tower_num"
                     app:layout_constraintTop_toTopOf="parent" />
-
 
                 <Switch
                     android:id="@+id/inspect_line_tower_switch_gps"
@@ -91,7 +93,7 @@
             </android.support.constraint.ConstraintLayout>
 
             <TextView
-                android:id="@+id/inspect_line_tower_textView5"
+                android:id="@+id/inspect_line_tower_material_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -105,7 +107,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/inspect_line_tower_textView6"
+                android:id="@+id/inspect_line_tower_type_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -119,7 +121,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/inspection_line_tower_textView7"
+                android:id="@+id/inspection_line_tower_defects_title_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -161,7 +163,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/inspection_line_tower_photos_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
@@ -185,7 +187,7 @@
                     android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintTop_toBottomOf="@+id/inspection_line_tower_photos_label" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/inspect_line_tower_deffect_photos"
@@ -197,7 +199,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/add_line_tower_deffect_photo_btn"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintTop_toBottomOf="@+id/inspection_line_tower_photos_label" />
 
             </android.support.constraint.ConstraintLayout>
 
