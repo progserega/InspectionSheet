@@ -1,6 +1,7 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import ru.drsk.progserega.inspectionsheet.entities.inspections.InspectionPhoto;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineDeffectType;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionDeffect;
 import ru.drsk.progserega.inspectionsheet.entities.inspections.LineSectionInspection;
+import ru.drsk.progserega.inspectionsheet.entities.inspections.TowerDeffect;
 import ru.drsk.progserega.inspectionsheet.ui.interfaces.InspectLineSectionContract;
 
 public class InspectLineSectionPresenter implements InspectLineSectionContract.Presenter {
@@ -32,6 +34,9 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
 
     private LineSectionInspection inspection;
 
+    private static final String NEXT_ACTION = "next";
+    private static final String PREVIOUS_ACTION = "previous";
+    private static final String FINISH_ACTION = "finish";
 
 
     public InspectLineSectionPresenter(InspectLineSectionContract.View view, InspectionSheetApplication application) {
@@ -95,6 +100,7 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
     public void onDeffectSelectionChange(int pos, boolean isSelected) {
         deffects.get(pos).setValue(isSelected ? 1 : 0);
         changedDeffects.add(pos);
+        saveDeffects();
     }
 
     @Override
@@ -103,12 +109,20 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             return;
         }
 
-        saveCurrentSection();
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(NEXT_ACTION, "Не выбраны дефекты пролета " + currentSection.getName());
+            return;
+        }
 
+        saveCurrentSection();
+        gotoNextTower();
+    }
+
+    private void gotoNextTower(){
         //определяем следующую опору
         long nextTowerUniqId = currentSection.getTowerToUniqId();
-
         view.gotoNextTowerInspection(nextTowerUniqId);
+
     }
 
     @Override
@@ -117,11 +131,18 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             return;
         }
 
-        saveCurrentSection();
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(PREVIOUS_ACTION, "Не выбраны дефекты пролета " + currentSection.getName());
+            return;
+        }
 
+        saveCurrentSection();
+        gotoPreviousTower();
+    }
+
+    private void gotoPreviousTower(){
         //определяем следующую опору
         long nextTowerUniqId = currentSection.getTowerFromUniqId();
-
         view.gotoNextTowerInspection(nextTowerUniqId);
     }
 
@@ -147,19 +168,37 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
     }
 
     @Override
+    public void onAddLineSectionPhotoBtnClick() {
+
+        view.showGetPhotoDialog(currentSection.generateUniqId());
+    }
+
+    @Override
     public void finishButtonPressed() {
+
+
+        if(isInspectionEmpty()){
+            view.showEmpyInspectionWarningDialog(FINISH_ACTION,  "Не выбраны дефекты пролета " + currentSection.getName());
+            return;
+        }
+
         saveCurrentSection();
+        view.gotoFinishActivity();
     }
 
     @Override
     public void onMaterialSelected(int pos) {
         currentSection.setMaterial(application.getCatalogStorage().getLineSectionMaterials().get(pos));
+        //сохраняем материал
+        application.getLineSectionStorage().update(currentSection);
+
         line.setCachedSectionMaterial(application.getCatalogStorage().getLineSectionMaterials().get(pos));
     }
 
     @Override
     public void onImageTaken(String photoPath) {
         inspection.getPhotos().add(new InspectionPhoto(0, photoPath, application.getApplicationContext()));
+        saveCurrentSection();
     }
 
     private List<String> getMaterials() {
@@ -213,6 +252,49 @@ public class InspectLineSectionPresenter implements InspectLineSectionContract.P
             } else {
                    application.getLineInspectionStorage().updateSectionDeffect(deffect);
             }
+        }
+    }
+
+    private boolean isInspectionEmpty(){
+        for (LineSectionDeffect defect: deffects) {
+            if(defect.getValue() == 1){
+                return false;
+            }
+        }
+
+        String comment = view.getComment();
+        if(!comment.isEmpty()){
+            return false;
+        }
+
+        if(inspection.getPhotos().size() > 0){
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onEmptyInspectionWarningResult(boolean result, String action) {
+
+        if(result){
+            saveCurrentSection();
+        }
+        else{
+            application.getLineInspectionStorage().deleteLineSectionInspections(Arrays.asList(inspection.getId()));
+        }
+
+        switch (action){
+            case NEXT_ACTION:
+                gotoNextTower();
+                break;
+            case PREVIOUS_ACTION:
+                gotoPreviousTower();
+                break;
+            case FINISH_ACTION:
+                view.gotoFinishActivity();
+                break;
+
         }
     }
 

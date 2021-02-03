@@ -63,33 +63,43 @@ public class SelectTowerDialog extends DialogFragment {
         towersListView = (ListView) view.findViewById(R.id.select_tower_towers_list);
         towersListAdapter = new TowersListAdapter(this.getActivity(), towers);
         towersListView.setAdapter(towersListAdapter);
-        towersListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//        towersListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parentView) {
+//                // your code here
+//            }
+//
+//        });
+
+        towersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
-
-
-        Button selectButton = (Button) view.findViewById(R.id.select_tower_select_btn);
-        selectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  TransformerType transformerType =  (TransformerType) transformerList.getSelectedItem();
-                int pos = towersListView.getCheckedItemPosition();
-
-                if (pos != -1) {
-                    selectTowerListener.onSelectTower(pos);
+            public void onItemClick(AdapterView< ? > parent, View view, int position, long id) {
+                if (position != -1) {
+                    selectTowerListener.onSelectTower(position);
                     getDialog().dismiss();
                 }
-
             }
         });
+
+
+//        Button selectButton = (Button) view.findViewById(R.id.select_tower_select_btn);
+//        selectButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //  TransformerType transformerType =  (TransformerType) transformerList.getSelectedItem();
+//                int pos = towersListView.getCheckedItemPosition();
+//
+//                if (pos != -1) {
+//                    selectTowerListener.onSelectTower(pos);
+//                    getDialog().dismiss();
+//                }
+//
+//            }
+//        });
 
         TextView textView = (TextView) view.findViewById(R.id.select_tower_list_txtclose);
         textView.setOnClickListener(new View.OnClickListener() {

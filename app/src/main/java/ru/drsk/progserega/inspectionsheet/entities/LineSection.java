@@ -57,4 +57,9 @@ public class LineSection extends Equipment {
     public Point getLocation() {
         return null;
     }
+
+    public long generateUniqId(){
+        String uniqStr = String.format("%d%d%d", this.lineUniqId,this.towerFromUniqId, this.towerToUniqId);
+        return Long.parseLong(uniqStr);
+    }
 }

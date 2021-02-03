@@ -1,5 +1,6 @@
 package ru.drsk.progserega.inspectionsheet.ui.presenters;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.drsk.progserega.inspectionsheet.InspectionSheetApplication;
@@ -66,6 +67,16 @@ public class InspectLinePresenter implements InspectLineContract.Presenter {
 
         application.getLineStorage().updateStartExploitationYear(line.getId(), line.getStartExploitationYear());
 
+        String inspectorName = lineInspection.getInspectorName();
+        if (inspectorName == null || inspectorName.isEmpty()) {
+            inspectorName = application.getSettingsStorage().loadSettings().getFio();
+            lineInspection.setInspectorName(inspectorName);
+        }
+
+        Date inspectionDate = lineInspection.getInspectionDate();
+        if (inspectionDate == null) {
+            lineInspection.setInspectionDate(new Date());
+        }
 
         long id = application.getLineInspectionStorage().saveLineInspection(lineInspection);
         lineInspection.setId(id);

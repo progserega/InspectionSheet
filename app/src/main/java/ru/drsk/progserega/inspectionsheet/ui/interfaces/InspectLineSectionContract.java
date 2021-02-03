@@ -24,6 +24,11 @@ public class InspectLineSectionContract {
 
         void startDeffectDescriptionActivity();
 
+        void showGetPhotoDialog(long equipmentId);
+
+        void showEmpyInspectionWarningDialog(String action, String title);
+
+        void gotoFinishActivity();
     }
 
     public interface Presenter{
@@ -38,6 +43,8 @@ public class InspectLineSectionContract {
 
         void onMaterialSelected(int pos);
 
+        void onAddLineSectionPhotoBtnClick();
+
         void onImageTaken(String photoPath);
 
         void onDestroy();
@@ -45,6 +52,8 @@ public class InspectLineSectionContract {
         void onDefectAboutBtnClick(LineSectionDeffect sectionDeffect);
 
         void finishButtonPressed();
+
+        void onEmptyInspectionWarningResult(boolean result, String action);
 
     }
 }
