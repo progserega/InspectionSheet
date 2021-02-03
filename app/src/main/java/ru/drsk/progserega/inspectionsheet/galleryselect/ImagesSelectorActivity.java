@@ -415,6 +415,11 @@ public class ImagesSelectorActivity extends AppCompatActivity
                 FolderItem folderItem = new FolderItem(StringUtils.getLastPathSegment(SelectorSettings.mExtraMediaPath), SelectorSettings.mExtraMediaPath, path);
                 FolderListContent.addItem(folderItem);
                 for (File file : files) {
+                    if(file.length() < 100){
+                        //file.delete();
+                        continue;
+
+                    }
                     ImageItem item = new ImageItem(file.getName(), file.getPath(), file.lastModified());
                     folderItem.addImageItem(item);
                     results.add(item);
