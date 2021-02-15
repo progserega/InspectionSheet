@@ -175,7 +175,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineTowerInspection(inspectionJson).execute();
         } catch (IOException e) {
-            e.printStackTrace();
+            DBLog.e("UPLOAD TOWER INSPECTION", e);
             return 0;
         }
 
@@ -200,6 +200,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineTowerInfo(towerJson).execute();
         } catch (IOException e) {
+            DBLog.e("UPLOAD TOWER INFO", e);
             e.printStackTrace();
             emitter.onNext("Ошибка обновления информации о Опоре");
             return;
@@ -347,6 +348,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineSectionInfo(sectionJson).execute();
         } catch (IOException e) {
+            DBLog.e("UPLOAD SECTION INFO", "Ошибка отправки информации о пролете");
+            DBLog.e("UPLOAD SECTION INFO", e);
             e.printStackTrace();
             return;
         }
@@ -385,6 +388,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineSectionInspection(inspectionJson).execute();
         } catch (IOException e) {
+            DBLog.e("UPLOAD SECTION INSPECTION", "Ошибка отправки информации о осмотре пролета");
+            DBLog.e("UPLOAD SECTION INSPECTION", e);
             e.printStackTrace();
             return 0;
         }
@@ -416,6 +421,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         try {
             response = apiArmIS.uploadLineSectionDeffects(deffectsJson).execute();
         } catch (IOException e) {
+            DBLog.e("UPLOAD SECTION DEFECT", "Ошибка отправки информации о дефекте пролета");
+            DBLog.e("UPLOAD SECTION DEFECT", e);
             e.printStackTrace();
             return 0;
         }
