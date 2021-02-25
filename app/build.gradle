@@ -9,8 +9,8 @@ android {
         applicationId "ru.drsk.progserega.inspectionsheet"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 8
-        versionName "0.6.5"
+        versionCode 9
+        versionName "0.6.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -58,7 +58,13 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    //OkHttp
+    def okhttp_version="3.12.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation("com.squareup.okhttp3:okhttp") {
+        version { strictly "$okhttp_version" }
+    }
+    //implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
 
     implementation 'com.android.support:support-v4:+'
     testImplementation 'junit:junit:4.12'

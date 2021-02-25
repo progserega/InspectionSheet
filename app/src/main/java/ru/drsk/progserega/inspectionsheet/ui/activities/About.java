@@ -161,7 +161,8 @@ public class About extends AppCompatActivity implements AboutContract.View {
     private void startDownload(String downloadPath, String destinationPath, String fileName) {
         Uri uri = Uri.parse(downloadPath); // Path where you want to download file.
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+       // request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
+        request.setAllowedNetworkTypes( DownloadManager.Request.NETWORK_WIFI);  // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);  // This will show notification on top when downloading the file.
         request.setTitle(fileName); // Title for notification.
         request.setDescription(fileName);
