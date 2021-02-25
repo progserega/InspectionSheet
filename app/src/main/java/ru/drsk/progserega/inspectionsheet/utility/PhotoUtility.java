@@ -6,6 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -14,7 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
-
 
 
 import java.io.File;
@@ -27,7 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ru.drsk.progserega.inspectionsheet.entities.EquipmentType;
+import javax.xml.transform.Source;
+
 import ru.drsk.progserega.inspectionsheet.galleryselect.ImagesSelectorActivity;
 import ru.drsk.progserega.inspectionsheet.galleryselect.SelectorSettings;
 
@@ -42,6 +47,14 @@ public class PhotoUtility {
 
 
     public static final int REQUEST_CAMERA = 100, SELECT_FILE = 101;
+
+    public static final int REQ_IMAGE_WIDTH = 1200;
+    public static final int REQ_IMAGE_HEIGHT = 1200;
+    public static final int JPEG_QUALITY = 75;
+
+    private static final String TASK_CAMERA = "camera";
+    private static final String TASK_GALLERY = "gallery";
+    private static final String TASK_INSPECTION = "inspection";
 
     private String userChooseTask;
     private String mCurrentPhotoPath;
@@ -66,10 +79,10 @@ public class PhotoUtility {
     public PhotoUtility(Activity activity, ChoosedListener choosedListener) {
         this.context = activity.getBaseContext();
         this.activity = activity;
-        this.choosedListener = choosedListener;
+        this.choosedListener = new onImageReady(choosedListener);
     }
 
-    public void showPhotoDialog( long equipmentUID) {
+    public void showPhotoDialog(long equipmentUID) {
         mCurrentEquipmentID = equipmentUID;
 
         final CharSequence[] items = {"Камера", "Галерея", "Текущий осмотр", "Отмена"};
@@ -82,18 +95,17 @@ public class PhotoUtility {
                 boolean result = PermissionsUtility.getPermissionExternalStorage(activity);
 
                 if (items[item].equals("Камера")) {
-                    userChooseTask = "CAMERA";
+                    userChooseTask = TASK_CAMERA;
                     if (result) cameraIntent();
 
                 } else if (items[item].equals("Галерея")) {
-                    userChooseTask = "GALERY";
+                    userChooseTask = TASK_GALLERY;
                     if (result) galeryIntent(false);
 
                 } else if (items[item].equals("Текущий осмотр")) {
-                    userChooseTask = "INSPECTION";
+                    userChooseTask = TASK_INSPECTION;
                     if (result) galeryIntent(true);
-                }
-                else if (items[item].equals("Отмена")) {
+                } else if (items[item].equals("Отмена")) {
                     userChooseTask = "NONE";
                     dialog.dismiss();
                 }
@@ -144,11 +156,10 @@ public class PhotoUtility {
         intent.putExtra(SelectorSettings.SELECTOR_SHOW_CAMERA, false);
         // pass current selected images as the initial value
         intent.putStringArrayListExtra(SelectorSettings.SELECTOR_INITIAL_SELECTED_LIST, mResults);
-        if(isShowInspectionPhotos){
-            String inspectionPath =  getInspectionStorageDir();
+        if (isShowInspectionPhotos) {
+            String inspectionPath = getInspectionStorageDir();
             intent.putExtra(SelectorSettings.EXTRA_MEDIA_PATH, inspectionPath);
-        }
-        else{
+        } else {
             intent.putExtra(SelectorSettings.EXTRA_MEDIA_PATH, "");
         }
         // start the selector
@@ -159,7 +170,7 @@ public class PhotoUtility {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/"+ String.valueOf(mCurrentEquipmentID));
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/" + String.valueOf(mCurrentEquipmentID));
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -201,12 +212,13 @@ public class PhotoUtility {
         }
     }
 
-    private String getInspectionStorageDir(){
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/"+String.valueOf(mCurrentEquipmentID));
-       ///String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
+    private String getInspectionStorageDir() {
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections/" + String.valueOf(mCurrentEquipmentID));
+        ///String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
         return storageDir.getAbsolutePath();
 
     }
+
     private String copyImageInsideAppPicturesFolder(String galeryFilePath) {
 
         String[] parts = galeryFilePath.split("/");
@@ -218,12 +230,12 @@ public class PhotoUtility {
             return null;
         }
 
-        if(galeryFilePath.contains("inspectionsheet/files/Pictures/inspections/") && userChooseTask.equals("INSPECTION")){
+        if (galeryFilePath.contains("inspectionsheet/files/Pictures/inspections/") && userChooseTask.equals(TASK_INSPECTION)) {
             return galeryFilePath;
         }
         ///storage/emulated/0/Android/data/ru.drsk.progserega.inspectionsheet/files/Pictures/inspections/47205/1611105930018_zf0ag4yxvf4vsw9xoftd_acnr38.png
 
-       // File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
+        // File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/inspections");
         //String targetpath = storageDir.getAbsolutePath() + "/" + System.currentTimeMillis() + "_" + imageName;
 
         String targetpath = getInspectionStorageDir() + "/" + System.currentTimeMillis() + "_" + imageName;
@@ -257,18 +269,116 @@ public class PhotoUtility {
         switch (requestCode) {
             case REQUEST_CODE_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChooseTask.equals("CAMERA")) {
+                    if (userChooseTask.equals(TASK_CAMERA)) {
                         cameraIntent();
                     }
-                    if (userChooseTask.equals("GALERY")) {
+                    if (userChooseTask.equals(TASK_GALLERY)) {
                         galeryIntent(false);
                     }
-                    if (userChooseTask.equals("INSPECTION")) {
+                    if (userChooseTask.equals(TASK_INSPECTION)) {
                         galeryIntent(true);
                     }
                 } else {
                     // Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
+        }
+    }
+
+    class onImageReady implements ChoosedListener {
+        private ChoosedListener listener;
+
+        public onImageReady(ChoosedListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onImageTaken(String photoPath, String source) {
+            if(!source.equals(TASK_INSPECTION)) {
+                compressImage(photoPath, REQ_IMAGE_WIDTH, REQ_IMAGE_HEIGHT);
+            }
+
+            if (listener != null) {
+                listener.onImageTaken(photoPath, source);
+            }
+        }
+
+        public int calculateInSampleSize(
+                BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            // Raw height and width of image
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+
+            if (height > reqHeight || width > reqWidth) {
+
+                // Calculate ratios of height and width to requested height and width
+                final int heightRatio = Math.round((float) height / (float) reqHeight);
+                final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+                // Choose the smallest ratio as inSampleSize value, this will guarantee
+                // a final image with both dimensions larger than or equal to the
+                // requested height and width.
+                inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            }
+
+            return inSampleSize;
+        }
+
+        public Bitmap decodeSampledBitmapFromFile(String imagePath, int reqWidth, int reqHeight) {
+
+            // First decode with inJustDecodeBounds=true to check dimensions
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(imagePath, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            return BitmapFactory.decodeFile(imagePath, options);
+        }
+
+        public  Bitmap rotateImage(Bitmap bitmap, String path) throws IOException {
+            int rotate = 0;
+            ExifInterface exif;
+            exif = new ExifInterface(path);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotate);
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true);
+        }
+
+
+        public void compressImage(String imagePath, int reqWidth, int reqHeight) {
+
+            try {
+                Bitmap img = decodeSampledBitmapFromFile(imagePath, reqWidth, reqHeight);
+
+                //поворачиваем
+                Bitmap rotatedImg = rotateImage(img, imagePath);
+
+                //convert array of bytes into file
+                FileOutputStream fileOuputStream = new FileOutputStream(imagePath);
+                rotatedImg.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileOuputStream);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         }
     }
 }
