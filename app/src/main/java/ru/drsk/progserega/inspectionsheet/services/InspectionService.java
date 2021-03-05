@@ -339,4 +339,23 @@ public class InspectionService {
         inspectionStorage.deleteInspections(inspectionsIds);
         inspectionPhotoStorage.deleteInspectionPhotos(inspectionPhotos);
     }
+
+    public int getInspectedStationsCount(EquipmentType equipmentType){
+        if (equipmentType.equals(EquipmentType.SUBSTATION)) {
+            List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.SUBSTATION.getValue());
+            return stationModels.size();
+        }
+
+        if (equipmentType.equals(EquipmentType.TP)) {
+            List< StationModel > stationModels = db.stationDao().loadInspectedByType(EquipmentType.TP.getValue());
+            return stationModels.size();
+        }
+
+        return 0;
+    }
+
+    public int  getInspectedLinesCount() {
+        List< LineInspection > lineInspections = lineInspectionStorage.getAllLineInspections();
+        return  lineInspections.size();
+    }
 }

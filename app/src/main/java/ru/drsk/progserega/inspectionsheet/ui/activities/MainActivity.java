@@ -94,25 +94,28 @@ public class MainActivity extends AppCompatActivity implements IProgressListener
 
         InspectionService inspectionService = application.getInspectionService();
 
-        List< IStationInspection > inspectedSubstations = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION, application.getStationInspectionFactory());
-        List< IStationInspection > inspectedTp = inspectionService.getInspectionByEquipment(EquipmentType.TP, application.getStationInspectionFactory());
-        List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
+//        List< IStationInspection > inspectedSubstations = inspectionService.getInspectionByEquipment(EquipmentType.SUBSTATION, application.getStationInspectionFactory());
+//        List< IStationInspection > inspectedTp = inspectionService.getInspectionByEquipment(EquipmentType.TP, application.getStationInspectionFactory());
+//        List< InspectedLine > inspectedLines = application.getInspectionService().getInspectedLines();
 
+        int inspectedSubstations = inspectionService.getInspectedStationsCount(EquipmentType.SUBSTATION);
+        int inspectedTp =  inspectionService.getInspectedStationsCount(EquipmentType.TP);
+        int inspectedLines = inspectionService.getInspectedLinesCount();
 
         TextView linesCntText = (TextView) findViewById(R.id.main__lines_inspected_cnt);
-        linesCntText.setText(String.valueOf(inspectedLines.size()));
+        linesCntText.setText(String.valueOf(inspectedLines));
 
         TextView substationsCntText = (TextView) findViewById(R.id.main__substation_inspected_cnt);
-        substationsCntText.setText(String.valueOf(inspectedSubstations.size()));
+        substationsCntText.setText(String.valueOf(inspectedSubstations));
 
         TextView tpCntText = (TextView) findViewById(R.id.main__tp_inspected_cnt);
-        tpCntText.setText(String.valueOf(inspectedTp.size()));
+        tpCntText.setText(String.valueOf(inspectedTp));
 
         Button exportBtn = (Button) findViewById(R.id.export_inspections_btn);
         Button syncBtn = (Button) findViewById(R.id.syncButton);
 
 
-        if(inspectedLines.size() == 0 && inspectedTp.size() == 0 && inspectedSubstations.size() == 0){
+        if(inspectedLines == 0 && inspectedTp == 0 && inspectedSubstations == 0){
             //нет осмотров
             exportBtn.setEnabled(false);
             syncBtn.setEnabled(true);
