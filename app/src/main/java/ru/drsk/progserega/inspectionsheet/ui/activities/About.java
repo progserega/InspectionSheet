@@ -150,7 +150,14 @@ public class About extends AppCompatActivity implements AboutContract.View {
 
                     }
                 });
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        TextView aboutText = (TextView) dialog.findViewById(android.R.id.message);
+
+        aboutText.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutText.setLinksClickable(true);
+
     }
 
     @Override

@@ -54,6 +54,7 @@ public class AboutPresenter implements AboutContract.Presenter, IProgressListene
         Log.d("CHECK UPDATE", "CHECK UPDATE!!!!!!!!!");
         selectServerTask = true;
 
+        view.ShowProgressBar();
         application.getRemoteStorage().setProgressListener(this);
         application.getRemoteStorage().selectActiveServer();
     }
@@ -112,7 +113,20 @@ public class AboutPresenter implements AboutContract.Presenter, IProgressListene
     private void compareWithCurrentVersion(AppVersionJson remoteVersionInfo) {
         if (remoteVersionInfo.getCode() > currentVersionCode) {
             Log.d("CHECK UPDATE", "update need");
-            view.showNeedUpdateDialog("Проверка наличия обновления", String.format("Доступна новая версия: %s<br><br>%sЗагрузить?", remoteVersionInfo.getVersionName(), remoteVersionInfo.getDescription()));
+
+            String serverUrl = application.getSettingsStorage().loadSettings().getServerUrl();
+            String downloadLink = serverUrl + "/mobile/" + remoteVersionInfo.getFileName();
+            view.showNeedUpdateDialog("Проверка наличия обновления", String.format("" +
+                    "Доступна новая версия: %s" +
+                    "<br>" +
+                    "<br>" +
+                    "%s\n" +
+                    "<br>" +
+                    "<br>" +
+                    "Скачать вручную:\n<br>" +
+                    "<a href='%s'>%s</a>" +
+                    "<br><br>" +
+                    "Загрузить?", remoteVersionInfo.getVersionName(),  remoteVersionInfo.getDescription(), downloadLink, downloadLink));
         } else {
             Log.d("CHECK UPDATE", "update don`t need");
             view.showMessage("Проверка наличия обновления", "Обновление не требуется, вы используете последнюю версию программы");
