@@ -40,14 +40,14 @@ import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.TowerJson;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadInspectionImageInfo;
 import ru.drsk.progserega.inspectionsheet.storages.http.api_is_models.UploadRes;
 
-public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
+public class ExportLineInspectionTask implements ObservableOnSubscribe< String > {
 
     private IApiInspectionSheet apiArmIS;
-    private List<InspectedLine> inspectedLines;
+    private List< InspectedLine > inspectedLines;
     private InspectionService inspectionService;
     private long resId;
 
-    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List<InspectedLine> inspectedLines, long resId, InspectionService inspectionService) {
+    public ExportLineInspectionTask(IApiInspectionSheet apiArmIS, List< InspectedLine > inspectedLines, long resId, InspectionService inspectionService) {
         this.apiArmIS = apiArmIS;
         this.inspectedLines = inspectedLines;
         this.resId = resId;
@@ -55,7 +55,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
     }
 
     @Override
-    public void subscribe(ObservableEmitter<String> emitter) {
+    public void subscribe(ObservableEmitter< String > emitter) {
 
         long unixTime = System.currentTimeMillis() / 1000L;
         for (InspectedLine line : inspectedLines) {
@@ -82,7 +82,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
                 emitter.onNext("Экспорт деффектов опоры: " + inspectedTower.getTower().getName());
                 long res = exportTowerDeffects(inspectedTower.getDeffects(), towerInspectionId);
-                if(res == 0){
+                if (res == 0) {
                     emitter.onError(new Exception("Ошибка передачи дефектов опоры на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
                     return;
                 }
@@ -105,8 +105,8 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
                 }
 
                 emitter.onNext("Экспорт деффектов пролета: " + inspectedSection.getSection().getName());
-                long res  = exportSectionDeffects(inspectedSection.getSection(), inspectedSection.getDeffects(), sectionInspectionId);
-                if(res == 0){
+                long res = exportSectionDeffects(inspectedSection.getSection(), inspectedSection.getDeffects(), sectionInspectionId);
+                if (res == 0) {
                     emitter.onError(new Exception("Ошибка передачи дефектов пролета на сервер.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
                     return;
                 }
@@ -116,17 +116,23 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
             }
 
+            emitter.onNext("Завршение передачи данных осмотра");
+            if (!finalizeInspection(line.getLineInspection().getLine().getUniqId(), inspectionId)) {
+                emitter.onError(new Exception("Ошибка финализации передачи осмотра линии.\nОтправка отменена.\nПопробуйте позже или обратитесь в службу поддержки"));
+                return;
+            }
+
             emitter.onNext("Очистка данных осмотра линии: " + line.getLineInspection().getLine().getName());
 
             this.inspectionService.deleteLineInspection(line);
 
-            emitter.onNext("Выполнено "+ line.getLineInspection().getLine().getName());
+            emitter.onNext("Выполнено " + line.getLineInspection().getLine().getName());
         }
 
         emitter.onComplete();
     }
 
-    private long exportInspection(LineInspection inspection, long resId)  {
+    private long exportInspection(LineInspection inspection, long resId) {
 
         long timestamp = 0;
         if (inspection.getInspectionDate() != null) {
@@ -183,7 +189,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     }
 
-    private void exportTowerInfo(ObservableEmitter<String> emitter, Tower tower) {
+    private void exportTowerInfo(ObservableEmitter< String > emitter, Tower tower) {
 
         TowerJson towerJson = new TowerJson(
                 tower.getUniqId(),
@@ -220,11 +226,11 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     }
 
-    private long exportTowerDeffects(List<TowerDeffect> deffectList, long towerInspectionId) {
+    private long exportTowerDeffects(List< TowerDeffect > deffectList, long towerInspectionId) {
 
-        List<TowerDeffectJson> deffectsJsonList = new ArrayList<>();
+        List< TowerDeffectJson > deffectsJsonList = new ArrayList<>();
         for (TowerDeffect deffect : deffectList) {
-            if(deffect.getValue() == 0){
+            if (deffect.getValue() == 0) {
                 continue;
             }
             deffectsJsonList.add(new TowerDeffectJson(
@@ -250,7 +256,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     }
 
-    private long exportTowerDeffectsPhotos(List<InspectionPhoto> photos, long towerInspectionId) {
+    private long exportTowerDeffectsPhotos(List< InspectionPhoto > photos, long towerInspectionId) {
 
         if (photos == null || photos.size() == 0) {
             return 0;
@@ -333,7 +339,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         return uploadRes.getId();
     }
 
-    private void exportSectionInfo(ObservableEmitter<String> emitter, LineSection section) {
+    private void exportSectionInfo(ObservableEmitter< String > emitter, LineSection section) {
 
         SectionJson sectionJson = new SectionJson(
                 section.getLineUniqId(),
@@ -397,12 +403,12 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
         return processResult(response);
     }
 
-    private long exportSectionDeffects(LineSection section, List<LineSectionDeffect> deffectList, long sectionInspectionId) {
+    private long exportSectionDeffects(LineSection section, List< LineSectionDeffect > deffectList, long sectionInspectionId) {
 
-        List<SectionDeffectJson> deffectsJsonList = new ArrayList<>();
+        List< SectionDeffectJson > deffectsJsonList = new ArrayList<>();
         for (LineSectionDeffect deffect : deffectList) {
 
-            if(deffect.getValue() == 0){
+            if (deffect.getValue() == 0) {
                 continue;
             }
 
@@ -431,7 +437,7 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
     }
 
-    private void exportSectionDeffectsPhotos(List<InspectionPhoto> photos, long sectionInspectionId) {
+    private void exportSectionDeffectsPhotos(List< InspectionPhoto > photos, long sectionInspectionId) {
         if (photos == null || photos.size() == 0) {
             return;
         }
@@ -442,5 +448,31 @@ public class ExportLineInspectionTask implements ObservableOnSubscribe<String> {
 
         return;
     }
+
+    private boolean finalizeInspection(Long lineUid, Long inspectionId) {
+        Response response = null;
+        try {
+            response = apiArmIS.finalizeLineInspection(lineUid, inspectionId).execute();
+        } catch (IOException e) {
+            DBLog.e("UPLOAD FINALIZE", "Ошибка отправки финализации осмотра");
+            DBLog.e("UPLOAD FINALIZE", e);
+            e.printStackTrace();
+            return false;
+        }
+
+        if (response.body() == null) {
+            return false;
+        }
+
+        UploadRes uploadRes = (UploadRes) response.body();
+        DBLog.d("UPLOAD :", "result " + uploadRes.getStatus());
+        if (uploadRes.getStatus() != 200) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 }
 

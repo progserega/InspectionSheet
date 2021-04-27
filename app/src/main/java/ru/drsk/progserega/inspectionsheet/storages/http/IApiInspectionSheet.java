@@ -1,7 +1,5 @@
 package ru.drsk.progserega.inspectionsheet.storages.http;
 
-import android.util.Pair;
-
 import java.util.List;
 
 
@@ -15,6 +13,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
@@ -138,6 +137,9 @@ public interface IApiInspectionSheet {
     @Multipart
     @POST("/api/line/section/inspection/image")
     Call< UploadRes > uploadSectionInspectionImage(@Part MultipartBody.Part file, @Part("file_info") RequestBody fileInfo);
+
+    @POST("/api/line/{lineUid}/inspection/{inspectionId}/finalize")
+    Call< UploadRes > finalizeLineInspection(@Path("lineUid") Long lineUid, @Path("inspectionId") Long inspectionId);
 
    // @Headers("Accept-Encoding: identity")
     @GET("/api/lines")
